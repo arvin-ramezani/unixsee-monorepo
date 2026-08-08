@@ -1,0 +1,35 @@
+---
+description: Unixsee monorepo layout, trust boundaries, and doc map
+alwaysApply: true
+---
+
+# Unixsee monorepo
+
+Flat deployables at repo root: `admin-panel/`, `client/`, `backend/`, `agent/`, `docs/`.
+
+## Ownership
+
+- `admin-panel/` — staff Next.js UI
+- `client/` — customer / public Next.js UI
+- `backend/` — NestJS control plane
+- `agent/` — VPS edge agent (outbound HTTPS to NestJS only)
+- `docs/` — canonical documentation
+
+Do not invent `apps/` or `packages/` without an ADR.
+
+## Trust boundaries
+
+- NestJS owns auth, persistence, orchestration, and agent validation.
+- Admin and client never talk to agents or VPS hosts.
+- Read `docs/architecture/overview.md` and `docs/architecture/monorepo.md`.
+
+## Phase
+
+Documentation-first; apps may be empty. UI-only boundaries apply until superseded:
+`docs/architecture/decisions/0003-ui-only-phase-boundaries.md`.
+
+## Docs over invention
+
+- Start from `docs/README.md` and `AGENTS.md`.
+- Put lasting detail in `docs/`; keep rules thin.
+- Do not invent APIs, schemas, auth providers, or unavailable scripts.

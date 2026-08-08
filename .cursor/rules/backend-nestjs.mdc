@@ -1,0 +1,33 @@
+---
+description: NestJS backend ownership and agent control plane
+globs: backend/**
+alwaysApply: false
+---
+
+# Backend (NestJS)
+
+`backend/` owns the NestJS API and control plane.
+
+## Responsibilities
+
+- Auth, sessions, authorization
+- PostgreSQL persistence
+- Business rules and orchestration
+- Agent enrollment validation and ingestion
+- APIs for `admin-panel/` and `client/`
+
+## Trust boundaries
+
+- Agents connect outbound HTTPS to NestJS only.
+- UIs never talk to agents or VPS hosts.
+- Do not invent final routes, DTOs, auth providers, or event names without a
+  specification — mark unknowns explicitly.
+
+## Canonical docs
+
+- `docs/backend/README.md`
+- `docs/architecture/overview.md`
+- `docs/agent/README.md`
+- `docs/product/notes/servers-agent-data-flow.md`
+- `docs/architecture/decisions/0002-stack-choices.md`
+- Phase 1: `docs/product/phase-1-application-features.md`

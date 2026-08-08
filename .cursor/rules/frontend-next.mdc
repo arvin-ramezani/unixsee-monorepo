@@ -1,0 +1,32 @@
+---
+description: Next.js conventions for admin-panel and client
+globs: admin-panel/**,client/**
+alwaysApply: false
+---
+
+# Frontend (Next.js)
+
+Applies to `admin-panel/` and `client/`.
+
+## Stack
+
+- Next.js 16.3, React 19, App Router
+- Tailwind CSS v4 (not v3 patterns)
+- Zustand with per-request store pattern; React state for local UI
+- Persian RTL-first; prefer logical CSS properties
+
+## Rules
+
+- Prefer Server Components; Client Components only when required.
+- Use `proxy.ts` for Next.js 16 request interception; do not add `middleware.ts` for new work.
+- Feature components under `src/components/<domain>/`; primitives under `src/components/ui/`.
+- Respect UI-only phase: no NestJS/DB/auth/agent integration until ADRs allow it.
+
+## Canonical docs
+
+- `docs/frontend/README.md`
+- `docs/frontend/nextjs.md`
+- `docs/frontend/state.md`
+- `docs/frontend/styling.md`
+- `docs/architecture/project.md`
+- Admin product: `docs/product/README.md`

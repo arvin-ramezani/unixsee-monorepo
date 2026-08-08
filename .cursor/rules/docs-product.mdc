@@ -1,0 +1,25 @@
+---
+description: Product and UX doc conventions for Phase 1 and admin flows
+globs: docs/product/**
+alwaysApply: false
+---
+
+# Product documentation
+
+`docs/product/` is the behavioral source of truth for Phase 1.
+
+## Rules
+
+- Prefer updating Phase 1 or the matching UX flow over inventing behavior in code docs.
+- Preserve UX flow document-control tables, confidence summaries, and evidence gaps.
+- Do not treat deferred Phase 1 features as shipped; coming-soon is allowed only when honest.
+- Keep notes short; promote durable structure changes to ADRs under `docs/architecture/decisions/`.
+- Admin UX flows are Persian-label aware; keep wording consistent with existing flows.
+
+## Index
+
+- `docs/product/README.md`
+- Phase 1: `docs/product/phase-1-application-features.md`
+- UX flows: `docs/product/ux-flows/`
+- Notes: `docs/product/notes/`
+- Doc standards: `docs/quality/documentation.md`
