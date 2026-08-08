@@ -64,3 +64,5 @@ What becomes easier, harder, or forbidden?
 | [0001](./0001-flat-monorepo-layout.md) | Flat monorepo layout | Accepted |
 | [0002](./0002-stack-choices.md) | Stack choices | Accepted |
 | [0003](./0003-ui-only-phase-boundaries.md) | UI-only phase boundaries | Accepted |
+| [0004](./0004-api-audience-namespaces.md) | API audience namespaces | Accepted |
+| [0005](./0005-domain-modules-multi-audience-controllers.md) | Domain modules with multi-audience controllers | Accepted |

@@ -25,11 +25,14 @@ Do not invent `apps/` or `packages/` without an ADR.
 
 ## Phase
 
-Documentation-first; apps may be empty. UI-only boundaries apply until superseded:
-`docs/architecture/decisions/0003-ui-only-phase-boundaries.md`.
+- `backend/` is an active NestJS control plane; follow
+  `docs/backend/modules-and-routes.md` and ADRs 0004–0005.
+- Next.js apps stay UI-only until integration is allowed:
+  `docs/architecture/decisions/0003-ui-only-phase-boundaries.md`.
 
 ## Docs over invention
 
 - Start from `docs/README.md` and `AGENTS.md`.
 - Put lasting detail in `docs/`; keep rules thin.
-- Do not invent APIs, schemas, auth providers, or unavailable scripts.
+- Do not invent APIs that conflict with `docs/backend/modules-and-routes.md`,
+  or unavailable root scripts.

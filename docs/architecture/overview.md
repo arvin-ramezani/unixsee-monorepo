@@ -45,14 +45,18 @@ Persian and RTL-first; see [`docs/frontend/styling.md`](../frontend/styling.md).
 
 ## Current phase
 
-This repository is documentation-first. Application folders are placeholders
-until scaffolding begins. UI work must follow the UI-only boundaries in
-[`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
-until backend integration ADRs supersede them.
+- `backend/` is an active NestJS control plane. Module and route targets:
+  [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
+- `client/` and `admin-panel/` remain UI-first until integration work begins;
+  follow [`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
+  for those apps until a superseding integration ADR lands.
+- API audience namespaces:
+  [`decisions/0004-api-audience-namespaces.md`](./decisions/0004-api-audience-namespaces.md).
 
 ## Related docs
 
 - Monorepo ownership: [`monorepo.md`](./monorepo.md)
 - Next.js app layout: [`project.md`](./project.md)
 - Architecture decisions: [`decisions/`](./decisions/)
+- Backend modules/routes: [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)
 - Product index: [`../product/README.md`](../product/README.md)

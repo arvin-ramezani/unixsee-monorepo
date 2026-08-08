@@ -28,7 +28,10 @@ Details: [`../product/notes/servers-agent-data-flow.md`](../product/notes/server
 
 ## Related docs
 
-- Backend: [`../backend/README.md`](../backend/README.md)
+- Backend modules/routes:
+  [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)
+  (agent ingest/enroll under `/api/internal/agent/v1`)
+- Backend index: [`../backend/README.md`](../backend/README.md)
 - Overview: [`../architecture/overview.md`](../architecture/overview.md)
 - Admin servers/websites/agents UX:
   [`../product/ux-flows/admin-servers-websites-agents.md`](../product/ux-flows/admin-servers-websites-agents.md)

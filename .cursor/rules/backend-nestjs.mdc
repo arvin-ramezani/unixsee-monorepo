@@ -10,24 +10,34 @@ alwaysApply: false
 
 ## Responsibilities
 
-- Auth, sessions, authorization
+- Auth, sessions, authorization (keep current JWT/OTP; do not redesign)
 - PostgreSQL persistence
 - Business rules and orchestration
 - Agent enrollment validation and ingestion
 - APIs for `admin-panel/` and `client/`
 
+## Audience namespaces
+
+- `/api/v1/public/...` — unauthenticated intake
+- `/api/v1/...` — customer JWT
+- `/api/v1/admin/...` — staff JWT + role/capability
+- `/api/internal/agent/v1/...` — agent only
+
+Domain modules with separate public/customer/admin controllers. No mega `AdminModule`.
+
 ## Trust boundaries
 
 - Agents connect outbound HTTPS to NestJS only.
 - UIs never talk to agents or VPS hosts.
-- Do not invent final routes, DTOs, auth providers, or event names without a
-  specification — mark unknowns explicitly.
+- Follow the module/route map; do not invent conflicting URL shapes.
 
 ## Canonical docs
 
 - `docs/backend/README.md`
+- `docs/backend/modules-and-routes.md`
+- `docs/architecture/decisions/0004-api-audience-namespaces.md`
+- `docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md`
 - `docs/architecture/overview.md`
 - `docs/agent/README.md`
 - `docs/product/notes/servers-agent-data-flow.md`
-- `docs/architecture/decisions/0002-stack-choices.md`
 - Phase 1: `docs/product/phase-1-application-features.md`

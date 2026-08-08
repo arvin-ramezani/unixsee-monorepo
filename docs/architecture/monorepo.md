@@ -12,7 +12,7 @@
 unixsee-monorepo/
 ├── admin-panel/     # Staff Next.js app (not scaffolded yet)
 ├── client/          # Customer / public Next.js app (not scaffolded yet)
-├── backend/         # NestJS API and control plane (not scaffolded yet)
+├── backend/         # NestJS API and control plane (active)
 ├── agent/           # VPS edge agent (not scaffolded yet)
 ├── docs/            # Canonical documentation
 ├── README.md
@@ -52,9 +52,11 @@ Default: **no premature shared packages**.
 
 ## Tooling status
 
-Workspace tooling (package manager workspaces, lint/build scripts, CI) is not
-configured yet. Do not invent unavailable scripts or claim builds pass. When
-tooling lands, document it here and in [`../quality/validation.md`](../quality/validation.md).
+- `backend/` has its own Nest/pnpm tooling; run scripts from that folder.
+- Monorepo-wide workspace tooling (root workspaces, shared CI) is not configured
+  yet. Do not invent unavailable root scripts or claim builds pass.
+- Backend module/route targets:
+  [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
 
 ## Where to put new work
 
@@ -62,7 +64,7 @@ tooling lands, document it here and in [`../quality/validation.md`](../quality/v
 |---|---|
 | Admin UI feature | `admin-panel/` + related `docs/product/ux-flows/` |
 | Customer / public UI | `client/` + product docs |
-| API / business rules | `backend/` + architecture / product docs as needed |
+| API / business rules | `backend/` per [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md) |
 | Agent behavior | `agent/` + `docs/agent/` and product notes |
 | Structural decision | ADR under `docs/architecture/decisions/` |
 | Product behavior | `docs/product/` |
