@@ -15,11 +15,16 @@ export class SslCertificatesService {
     const thresholdDate = new Date();
     thresholdDate.setDate(now.getDate() + daysThreshold);
 
+    const tenantIds = (
+      await this.prisma.membership.findMany({
+        where: { userId },
+        select: { tenantId: true },
+      })
+    ).map((row) => row.tenantId);
+
     const certificates = await this.prisma.sSLCertificate.findMany({
       where: {
-        website: {
-          userId,
-        },
+        website: { tenantId: { in: tenantIds } },
         validTo: {
           not: null,
           lte: thresholdDate,

@@ -19,6 +19,23 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const UserAccountStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type UserAccountStatus = (typeof UserAccountStatus)[keyof typeof UserAccountStatus]
+
+
+export const MembershipRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  VIEWER: 'VIEWER'
+} as const
+
+export type MembershipRole = (typeof MembershipRole)[keyof typeof MembershipRole]
+
+
 export const VpsNodeStatus = {
   UNKNOWN: 'UNKNOWN',
   ONLINE: 'ONLINE',
@@ -38,6 +55,15 @@ export const WebsiteProbeSource = {
 export type WebsiteProbeSource = (typeof WebsiteProbeSource)[keyof typeof WebsiteProbeSource]
 
 
+export const WebsiteLifecycleStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  RETIRED: 'RETIRED'
+} as const
+
+export type WebsiteLifecycleStatus = (typeof WebsiteLifecycleStatus)[keyof typeof WebsiteLifecycleStatus]
+
+
 export const AlertSeverity = {
   MONITORING: 'MONITORING',
   WARNING: 'WARNING',
@@ -49,7 +75,9 @@ export type AlertSeverity = (typeof AlertSeverity)[keyof typeof AlertSeverity]
 
 export const AlertStatus = {
   ACTIVE: 'ACTIVE',
-  RESOLVED: 'RESOLVED'
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  RESOLVED: 'RESOLVED',
+  SUPPRESSED: 'SUPPRESSED'
 } as const
 
 export type AlertStatus = (typeof AlertStatus)[keyof typeof AlertStatus]
@@ -61,3 +89,95 @@ export const OtpContext = {
 } as const
 
 export type OtpContext = (typeof OtpContext)[keyof typeof OtpContext]
+
+
+export const PlanRequestStatus = {
+  SUBMITTED: 'SUBMITTED',
+  LINKED: 'LINKED',
+  ENABLED: 'ENABLED',
+  DECLINED: 'DECLINED'
+} as const
+
+export type PlanRequestStatus = (typeof PlanRequestStatus)[keyof typeof PlanRequestStatus]
+
+
+export const ComplementaryRequestStatus = {
+  SUBMITTED: 'SUBMITTED',
+  QUOTED: 'QUOTED',
+  ASSIGNED: 'ASSIGNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  WITHDRAWN: 'WITHDRAWN',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ComplementaryRequestStatus = (typeof ComplementaryRequestStatus)[keyof typeof ComplementaryRequestStatus]
+
+
+export const DiscoveryStatus = {
+  NEW: 'NEW',
+  REVIEWED: 'REVIEWED',
+  ASSIGNED: 'ASSIGNED',
+  IGNORED: 'IGNORED'
+} as const
+
+export type DiscoveryStatus = (typeof DiscoveryStatus)[keyof typeof DiscoveryStatus]
+
+
+export const EnrollmentTokenStatus = {
+  ACTIVE: 'ACTIVE',
+  USED: 'USED',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type EnrollmentTokenStatus = (typeof EnrollmentTokenStatus)[keyof typeof EnrollmentTokenStatus]
+
+
+export const TicketStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  WAITING_CUSTOMER: 'WAITING_CUSTOMER',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+} as const
+
+export type TicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority]
+
+
+export const NotificationStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus]
+
+
+export const OperationalActionStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OperationalActionStatus = (typeof OperationalActionStatus)[keyof typeof OperationalActionStatus]
+
+
+export const OperationalActionType = {
+  CACHE_CLEAR: 'CACHE_CLEAR',
+  OTHER: 'OTHER'
+} as const
+
+export type OperationalActionType = (typeof OperationalActionType)[keyof typeof OperationalActionType]

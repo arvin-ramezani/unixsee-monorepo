@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { AppConfigType } from '#/utils/config/app.config.js';
-import { UserService } from '#/modules/user/services/user/user.service.js';
+import { UsersService } from '#/modules/users/services/users.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { Request } from 'express';
 import { createAppLogger } from '#/common/logging/app-logger.js';
@@ -37,7 +37,7 @@ export class MonitoringAccessStrategy extends PassportStrategy(
     // private readonly prisma: PrismaService,
     // private readonly reflector: Reflector,
     private readonly config: ConfigService<AppConfigType, true>,
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([extractMonitoringAccessToken]),

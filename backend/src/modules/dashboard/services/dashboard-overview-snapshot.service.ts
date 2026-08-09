@@ -5,6 +5,7 @@ import { createAppLogger } from '#/common/logging/app-logger.js';
 import { SystemHealthService } from '#/modules/health/services/system-health.service.js';
 import { TrafficLoadService } from '#/modules/metrics/services/traffic-load.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 
 @Injectable()
 export class DashboardOverviewSnapshotService {
@@ -14,13 +15,15 @@ export class DashboardOverviewSnapshotService {
     private readonly prisma: PrismaService,
     private readonly systemHealthService: SystemHealthService,
     private readonly trafficLoadService: TrafficLoadService,
+    private readonly tenantAccess: TenantAccessService,
   ) {}
 
   async getOverviewSnapshot(userId: string) {
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     const [websites, vpsNodes, recentAlerts, expiringCertificates] =
       await Promise.all([
         this.prisma.website.findMany({
-          where: { userId },
+          where: { tenantId: { in: tenantIds } },
           orderBy: { domain: 'asc' },
           select: {
             id: true,
@@ -81,16 +84,11 @@ export class DashboardOverviewSnapshotService {
         }),
         this.prisma.vpsNode.findMany({
           where: {
-            OR: [
-              { userId },
-              {
-                websites: {
-                  some: {
-                    userId,
-                  },
-                },
+            websites: {
+              some: {
+                tenantId: { in: tenantIds },
               },
-            ],
+            },
           },
           distinct: ['id'],
           orderBy: { name: 'asc' },
@@ -117,7 +115,7 @@ export class DashboardOverviewSnapshotService {
               },
             },
             websites: {
-              where: { userId },
+              where: { tenantId: { in: tenantIds } },
               select: {
                 id: true,
               },
@@ -131,34 +129,16 @@ export class DashboardOverviewSnapshotService {
         }),
         this.prisma.alert.findMany({
           where: {
-            OR: [
-              {
-                website: {
-                  userId,
-                },
-              },
-              {
-                vpsNode: {
-                  OR: [
-                    { userId },
-                    {
-                      websites: {
-                        some: {
-                          userId,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
+            website: {
+              tenantId: { in: tenantIds },
+            },
           },
           orderBy: {
             createdAt: 'desc',
           },
           take: 20,
         }),
-        this.getOverviewExpiringCertificates(userId),
+        this.getOverviewExpiringCertificates(tenantIds),
       ]);
 
     const uptimeSamples = await this.getRecentWebsiteUptimeSamples(
@@ -386,11 +366,11 @@ export class DashboardOverviewSnapshotService {
     };
   }
 
-  async getOverviewWebsiteTick(websiteId: string) {
+  async getOverviewWebsiteTick(websiteId: string, userId?: string) {
     const website = await this.prisma.website.findUnique({
       where: { id: websiteId },
       select: {
-        userId: true,
+        tenantId: true,
       },
     });
 
@@ -401,7 +381,17 @@ export class DashboardOverviewSnapshotService {
       return null;
     }
 
-    const overview = await this.getOverviewSnapshot(website.userId);
+    const ownerMembership = await this.prisma.membership.findFirst({
+      where: { tenantId: website.tenantId },
+      orderBy: { createdAt: 'asc' },
+      select: { userId: true },
+    });
+    const snapshotUserId = userId ?? ownerMembership?.userId;
+    if (!snapshotUserId) {
+      return null;
+    }
+
+    const overview = await this.getOverviewSnapshot(snapshotUserId);
     const websiteOverview = overview.websites.find(
       (item) => item.websiteId === websiteId,
     );
@@ -409,7 +399,7 @@ export class DashboardOverviewSnapshotService {
     if (!websiteOverview) {
       this.logger.warn('dashboard.overview_website_tick.not_found', {
         websiteId,
-        userId: website.userId,
+        tenantId: website.tenantId,
       });
       return null;
     }
@@ -445,16 +435,14 @@ export class DashboardOverviewSnapshotService {
     };
   }
 
-  private getOverviewExpiringCertificates(userId: string, daysThreshold = 14) {
+  private getOverviewExpiringCertificates(tenantIds: string[], daysThreshold = 14) {
     const now = new Date();
     const thresholdDate = new Date();
     thresholdDate.setDate(now.getDate() + daysThreshold);
 
     return this.prisma.sSLCertificate.findMany({
       where: {
-        website: {
-          userId,
-        },
+        website: { tenantId: { in: tenantIds } },
         validTo: {
           not: null,
           lte: thresholdDate,

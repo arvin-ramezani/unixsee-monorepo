@@ -6,7 +6,7 @@ import type { Request } from 'express';
 
 import type { AppConfigType } from '#/utils/config/app.config.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
-import { UserService } from '#/modules/user/services/user/user.service.js';
+import { UsersService } from '#/modules/users/services/users.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
 
   constructor(
     private readonly config: ConfigService<AppConfigType, true>,
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

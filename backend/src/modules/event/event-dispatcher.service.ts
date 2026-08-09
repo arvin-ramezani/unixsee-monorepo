@@ -38,8 +38,8 @@ export class EventDispatcherService {
     this.eventEmitter.emit(EVENT_NAMES.WEBSITE_PROBE_EVALUATED, payload);
     this.logger.debug('event.website_probe_evaluated.dispatched', {
       websiteId: payload.websiteId,
-      isUp: payload.isUp,
-      statusCode: payload.statusCode,
+      isUp: payload.availability.isUp,
+      statusCode: payload.availability.statusCode,
     });
   }
 }

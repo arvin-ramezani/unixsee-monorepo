@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { AlertStatus, WebsiteProbeSource } from '#/generated/prisma/enums.js';
 import { TrafficLoadService } from '#/modules/metrics/services/traffic-load.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import { DashboardOverviewSnapshotService } from './dashboard-overview-snapshot.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 
@@ -14,6 +15,7 @@ export class DashboardService {
     private readonly dashboardOverviewSnapshotService: DashboardOverviewSnapshotService,
     private readonly trafficLoadService: TrafficLoadService,
     private readonly prisma: PrismaService,
+    private readonly tenantAccess: TenantAccessService,
   ) {}
 
   async getOverview(userId: string) {
@@ -30,10 +32,10 @@ export class DashboardService {
   }
 
   async getWebsiteDetails(userId: string, websiteId: string) {
+    await this.tenantAccess.assertWebsiteAccess(userId, websiteId);
     const website = await this.prisma.website.findFirst({
       where: {
         id: websiteId,
-        userId,
       },
       select: {
         id: true,
@@ -334,7 +336,7 @@ export class DashboardService {
 
     const [websites, vpsNodes] = await Promise.all([
       this.prisma.website.findMany({
-        where: { userId },
+        where: { tenantId: { in: await this.tenantAccess.getAccessibleTenantIds(userId) } },
         orderBy: { domain: 'asc' },
         select: {
           id: true,
@@ -418,7 +420,7 @@ export class DashboardService {
       }),
       this.prisma.vpsNode.findMany({
         where: {
-          OR: [{ userId }, { websites: { some: { userId } } }],
+          websites: { some: { tenantId: { in: await this.tenantAccess.getAccessibleTenantIds(userId) } } },
         },
         orderBy: { name: 'asc' },
         select: {

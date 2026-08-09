@@ -27,8 +27,13 @@ export class AgentSignatureGuard implements CanActivate {
     const incomingSignature = request.headers['x-agent-signature'];
     const activationToken = request.headers['x-activation-token'];
 
-    const requestBody = request.body;
-    if (!requestBody?.batch?.[0]?.machineId) {
+    const requestBody = request.body as
+      | { batch?: Array<{ machineId?: string }>; machineId?: string }
+      | undefined;
+    const machineId =
+      requestBody?.batch?.[0]?.machineId ?? requestBody?.machineId;
+
+    if (!machineId) {
       this.logger.warn('agent.auth.payload_invalid', {
         ip: request.ip,
         path: request.originalUrl,
@@ -37,8 +42,6 @@ export class AgentSignatureGuard implements CanActivate {
         'Invalid payload topology or missing machineId.',
       );
     }
-
-    const machineId = requestBody.batch[0].machineId;
 
     if (activationToken && !incomingSignature) {
       const configuredActivationToken = this.configService.get<string>(

@@ -23,10 +23,25 @@ export * from './enums.js';
  */
 export type User = Prisma.UserModel
 /**
+ * Model Tenant
+ * 
+ */
+export type Tenant = Prisma.TenantModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
+/**
  * Model Server
  * 
  */
 export type Server = Prisma.ServerModel
+/**
+ * Model ServerEnrollmentToken
+ * 
+ */
+export type ServerEnrollmentToken = Prisma.ServerEnrollmentTokenModel
 /**
  * Model VpsNode
  * 
@@ -37,6 +52,11 @@ export type VpsNode = Prisma.VpsNodeModel
  * 
  */
 export type Website = Prisma.WebsiteModel
+/**
+ * Model WebsiteDiscovery
+ * 
+ */
+export type WebsiteDiscovery = Prisma.WebsiteDiscoveryModel
 /**
  * Model VpsMetric
  * 
@@ -87,3 +107,88 @@ export type Alert = Prisma.AlertModel
  * 
  */
 export type Otp = Prisma.OtpModel
+/**
+ * Model Plan
+ * 
+ */
+export type Plan = Prisma.PlanModel
+/**
+ * Model PlanRequest
+ * 
+ */
+export type PlanRequest = Prisma.PlanRequestModel
+/**
+ * Model ServiceCatalogItem
+ * 
+ */
+export type ServiceCatalogItem = Prisma.ServiceCatalogItemModel
+/**
+ * Model ComplementaryServiceRequest
+ * 
+ */
+export type ComplementaryServiceRequest = Prisma.ComplementaryServiceRequestModel
+/**
+ * Model ServiceQuotation
+ * 
+ */
+export type ServiceQuotation = Prisma.ServiceQuotationModel
+/**
+ * Model ServiceAssignment
+ * 
+ */
+export type ServiceAssignment = Prisma.ServiceAssignmentModel
+/**
+ * Model ServiceUsage
+ * 
+ */
+export type ServiceUsage = Prisma.ServiceUsageModel
+/**
+ * Model ServiceDeliverable
+ * 
+ */
+export type ServiceDeliverable = Prisma.ServiceDeliverableModel
+/**
+ * Model Ticket
+ * 
+ */
+export type Ticket = Prisma.TicketModel
+/**
+ * Model TicketMessage
+ * 
+ */
+export type TicketMessage = Prisma.TicketMessageModel
+/**
+ * Model TicketAttachment
+ * 
+ */
+export type TicketAttachment = Prisma.TicketAttachmentModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model NotificationRead
+ * 
+ */
+export type NotificationRead = Prisma.NotificationReadModel
+/**
+ * Model Activity
+ * 
+ */
+export type Activity = Prisma.ActivityModel
+/**
+ * Model AuditRecord
+ * 
+ */
+export type AuditRecord = Prisma.AuditRecordModel
+/**
+ * Model OperationalAction
+ * 
+ */
+export type OperationalAction = Prisma.OperationalActionModel
+/**
+ * Model IdempotencyRecord
+ * 
+ */
+export type IdempotencyRecord = Prisma.IdempotencyRecordModel

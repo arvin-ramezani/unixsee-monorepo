@@ -9,13 +9,14 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
-import { UserService } from '#/modules/user/services/user/user.service.js';
+import { UsersService } from '#/modules/users/services/users.service.js';
+import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 import type { AppConfigType } from '#/utils/config/app.config.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import type { LoginDto } from '../dto/login.dto.js';
 import type { Tokens } from '../types/tokens.types.js';
 import type { RegisterDto } from '../dto/register.dto.js';
-import { OtpContext } from '#/generated/prisma/enums.js';
+import { OtpContext, UserAccountStatus } from '#/generated/prisma/enums.js';
 import { User } from '#/generated/prisma/client.js';
 import { OtpService } from './otp-service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
@@ -27,7 +28,8 @@ export class AuthenticationService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
+    private readonly tenantsService: TenantsService,
     private readonly jwtService: JwtService,
     private readonly otpService: OtpService,
     private readonly config: ConfigService<AppConfigType, true>,
@@ -58,6 +60,11 @@ export class AuthenticationService {
       fullName,
       phoneNumber,
     });
+
+    await this.tenantsService.ensurePersonalTenantForUser(
+      createdUser.id,
+      fullName ?? username,
+    );
 
     const tokens = await this.createTokens({ userId: createdUser.id });
     RequestContext.setUserId(createdUser.id);
@@ -90,6 +97,13 @@ export class AuthenticationService {
         userId: existUser.id,
       });
       throw new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
+    }
+
+    if (existUser.status === UserAccountStatus.SUSPENDED) {
+      this.logger.warn('auth.login.rejected_suspended', {
+        userId: existUser.id,
+      });
+      throw new UnauthorizedException(ERROR_MESSAGES.fa.suspended);
     }
 
     const tokens = await this.createTokens({ userId: existUser.id });

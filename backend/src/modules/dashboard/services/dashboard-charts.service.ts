@@ -1,3 +1,4 @@
+import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { WebsiteProbeSource } from '#/generated/prisma/enums.js';
@@ -124,6 +125,7 @@ export class DashboardChartsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly trafficLoadService: TrafficLoadService,
+    private readonly tenantAccess: TenantAccessService,
   ) {}
 
   async getOverviewCharts(
@@ -185,11 +187,9 @@ export class DashboardChartsService {
     intervalInput?: string,
   ) {
     const range = this.resolveRange(rangeInput, intervalInput);
+    await this.tenantAccess.assertWebsiteAccess(userId, websiteId);
     const website = await this.prisma.website.findFirst({
-      where: {
-        id: websiteId,
-        userId,
-      },
+      where: { id: websiteId },
       select: {
         id: true,
         domain: true,
@@ -237,10 +237,11 @@ export class DashboardChartsService {
     intervalInput?: string,
   ) {
     const range = this.resolveRange(rangeInput, intervalInput);
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     const vpsNode = await this.prisma.vpsNode.findFirst({
       where: {
         id: vpsNodeId,
-        OR: [{ userId }, { websites: { some: { userId } } }],
+        websites: { some: { tenantId: { in: tenantIds } } },
       },
       select: {
         id: true,
@@ -351,9 +352,10 @@ export class DashboardChartsService {
     };
   }
 
-  private getUserWebsites(userId: string) {
+  private async getUserWebsites(userId: string) {
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     return this.prisma.website.findMany({
-      where: { userId },
+      where: { tenantId: { in: tenantIds } },
       orderBy: { domain: 'asc' },
       select: {
         id: true,
@@ -362,10 +364,11 @@ export class DashboardChartsService {
     });
   }
 
-  private getUserVpsNodes(userId: string) {
+  private async getUserVpsNodes(userId: string) {
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     return this.prisma.vpsNode.findMany({
       where: {
-        OR: [{ userId }, { websites: { some: { userId } } }],
+        websites: { some: { tenantId: { in: tenantIds } } },
       },
       distinct: ['id'],
       orderBy: { name: 'asc' },
@@ -461,18 +464,12 @@ export class DashboardChartsService {
     });
   }
 
-  private countActiveAlerts(userId: string) {
+  private async countActiveAlerts(userId: string) {
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     return this.prisma.alert.count({
       where: {
         status: 'ACTIVE',
-        OR: [
-          { website: { userId } },
-          {
-            vpsNode: {
-              OR: [{ userId }, { websites: { some: { userId } } }],
-            },
-          },
-        ],
+        website: { tenantId: { in: tenantIds } },
       },
     });
   }

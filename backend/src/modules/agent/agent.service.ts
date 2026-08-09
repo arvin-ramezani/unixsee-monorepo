@@ -1,5 +1,9 @@
 import { randomBytes, randomUUID } from 'crypto';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { EventDispatcherService } from '../event/event-dispatcher.service.js';
@@ -10,6 +14,9 @@ import {
 import { WebsiteMetricsEvaluatedEvent } from '#/common/events/website-metrics-evaluated.event.js';
 import type { Website } from '#/generated/prisma/client.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
+import { ServersService } from '#/modules/servers/services/servers.service.js';
+import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+import { VpsNodeStatus } from '#/generated/prisma/enums.js';
 
 @Injectable()
 export class AgentService {
@@ -18,7 +25,45 @@ export class AgentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventDispatcher: EventDispatcherService,
+    private readonly serversService: ServersService,
   ) {}
+
+  async enroll(plaintextToken: string, machineId: string) {
+    return this.serversService.enrollWithToken(plaintextToken, machineId);
+  }
+
+  async heartbeat(machineId: string) {
+    const now = new Date();
+    const existing = await this.prisma.vpsNode.findUnique({
+      where: { machineId },
+      select: { id: true },
+    });
+    if (!existing) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    const updated = await this.prisma.vpsNode.update({
+      where: { machineId },
+      data: {
+        lastHeartbeatAt: now,
+        lastSeenAt: now,
+        status: VpsNodeStatus.ONLINE,
+      },
+      select: {
+        id: true,
+        machineId: true,
+        lastHeartbeatAt: true,
+        lastSeenAt: true,
+        status: true,
+      },
+    });
+
+    this.logger.debug('agent.heartbeat.received', {
+      machineId,
+      vpsNodeId: updated.id,
+    });
+    return updated;
+  }
 
   async processTelemetryIngestion(
     payload: IngestAgentMetricsDto,
@@ -212,6 +257,7 @@ export class AgentService {
     }
 
     const fallbackUserId = vpsNodeUserId ?? (await this.getFallbackUserId());
+    const fallbackTenantId = await this.getFallbackTenantId(fallbackUserId);
 
     this.logger.log('agent.websites.discovered', {
       vpsNodeId,
@@ -224,6 +270,7 @@ export class AgentService {
         id: randomUUID(),
         vpsNodeId,
         userId: fallbackUserId,
+        tenantId: fallbackTenantId,
         domain: website.domain,
         directAdminUser: website.owner,
         documentRoot: website.documentRoot,
@@ -279,6 +326,29 @@ export class AgentService {
     }
 
     return systemAdminUser.id;
+  }
+
+  private async getFallbackTenantId(userId: string): Promise<string> {
+    const membership = await this.prisma.membership.findFirst({
+      where: { userId },
+      select: { tenantId: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    if (membership) {
+      return membership.tenantId;
+    }
+
+    const tenant = await this.prisma.tenant.create({
+      data: {
+        name: `system-${userId.substring(0, 8)}`,
+        displayName: 'System tenant',
+        memberships: {
+          create: { userId, role: 'OWNER' },
+        },
+      },
+      select: { id: true },
+    });
+    return tenant.id;
   }
 
   private buildWebMetricRows(
