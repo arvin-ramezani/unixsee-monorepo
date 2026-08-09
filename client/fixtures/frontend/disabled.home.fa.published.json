@@ -1,0 +1,141 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/",
+      "lang": "fa",
+      "type": "page",
+      "pageId": 101
+    },
+    "page": {
+      "id": 101,
+      "type": "home_page",
+      "lang": "fa",
+      "path": "/",
+      "title": "یونیکس‌سی",
+      "slug": "home",
+      "status": "publish",
+      "seo": {
+        "title": "یونیکس‌سی | زیرساخت فروشگاه وردپرس",
+        "description": "مدیریت، بهینه‌سازی و پایدارسازی فروشگاه‌های وردپرس و ووکامرس.",
+        "canonical": "https://example.com/",
+        "provider": "yoast"
+      },
+      "preview": {
+        "enabled": false,
+        "usesDraftData": false,
+        "draftUpdatedAt": null
+      },
+      "sections": [
+        {
+          "id": "home-hero-fa",
+          "type": "HomeHeroSection",
+          "props": {
+            "eyebrow": "زیرساخت فروشگاه وردپرس",
+            "title": "فروشگاه ووکامرس خود را برای رشد جدی آماده کنید",
+            "subtitle": "Unixsee برای تیم‌هایی است که وردپرس را به‌عنوان زیرساخت فروش واقعی می‌بینند.",
+            "primaryCta": {
+              "label": "درخواست مشاوره",
+              "href": "/consultation"
+            },
+            "image": {
+              "id": 123,
+              "url": "https://api.example.com/wp-content/uploads/2026/05/hero.jpg",
+              "alt": "Unixsee dashboard",
+              "mimeType": "image/jpeg",
+              "width": 1200,
+              "height": 630
+            }
+          }
+        },
+        {
+          "id": "home-problem-fa",
+          "type": "HomeProblemSection",
+          "props": {
+            "eyebrow": "چالش",
+            "title": "وقتی فروش رشد می‌کند، وردپرس باید قابل اتکا بماند",
+            "items": [
+              {
+                "id": "speed",
+                "title": "افت سرعت",
+                "description": "کمپین‌ها و محصولات زیاد، بدون معماری درست، فروش را کند می‌کنند."
+              },
+              {
+                "id": "ops",
+                "title": "عملیات پراکنده",
+                "description": "تیم محتوا، مارکتینگ و فنی به یک contract مشترک نیاز دارند."
+              }
+            ]
+          }
+        },
+        {
+          "id": "home-testimonials-fa",
+          "type": "HomeTestimonialsSection",
+          "props": {
+            "source": "testimonials",
+            "limit": 2,
+            "order": "manual",
+            "selectedIds": [501, 502],
+            "items": [
+              {
+                "id": 501,
+                "lang": "fa",
+                "name": "علی رحیمی",
+                "role": "Founder",
+                "company": "Example Commerce",
+                "quote": "Unixsee helped us stabilize WooCommerce during campaign traffic.",
+                "rating": 5,
+                "avatar": {
+                  "id": 701,
+                  "url": "https://api.example.com/wp-content/uploads/2026/05/ali-rahimi.jpg",
+                  "alt": "Ali Rahimi",
+                  "mimeType": "image/jpeg",
+                  "width": 300,
+                  "height": 300
+                }
+              },
+              {
+                "id": 502,
+                "lang": "fa",
+                "name": "سارا احمدی",
+                "role": "Marketing Lead",
+                "company": "Retail Labs",
+                "quote": "The preview and revalidation workflow gave our team confidence before launch.",
+                "rating": 5,
+                "avatar": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "home-faq-fa",
+          "type": "HomeFaqSection",
+          "props": {
+            "source": "faq",
+            "limit": 2,
+            "order": "manual",
+            "category": "home",
+            "selectedIds": [601, 602],
+            "items": [
+              {
+                "id": 601,
+                "lang": "fa",
+                "question": "آیا یونیکس‌سی فقط برای ووکامرس است؟",
+                "answer": "تمرکز اصلی روی فروشگاه‌های وردپرس و ووکامرس است.",
+                "category": "home"
+              },
+              {
+                "id": 602,
+                "lang": "fa",
+                "question": "آیا Preview قبل از انتشار جداست؟",
+                "answer": "بله، داده draft در preview از داده published جدا نگهداری می‌شود.",
+                "category": "home"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

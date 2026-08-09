@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/en",
+      "lang": "en",
+      "type": "page",
+      "pageId": 102
+    },
+    "page": {
+      "id": 102,
+      "type": "home_page",
+      "lang": "en",
+      "path": "/en",
+      "title": "Unixsee",
+      "slug": "home-en",
+      "status": "publish",
+      "seo": {
+        "title": "Unixsee | WordPress Commerce Infrastructure",
+        "description": "A headless WordPress bridge for reliable WooCommerce growth.",
+        "canonical": "https://example.com/en",
+        "provider": "yoast"
+      },
+      "preview": {
+        "enabled": false,
+        "usesDraftData": false,
+        "draftUpdatedAt": null
+      },
+      "sections": [
+        {
+          "id": "home-hero-en",
+          "type": "HomeHeroSection",
+          "props": {
+            "eyebrow": "WordPress commerce infrastructure",
+            "title": "Prepare your WooCommerce store for serious growth",
+            "subtitle": "Unixsee keeps content, APIs, preview, and revalidation predictable for production teams.",
+            "primaryCta": {
+              "label": "Book a consultation",
+              "href": "/en/consultation"
+            },
+            "image": {
+              "id": 123,
+              "url": "https://api.example.com/wp-content/uploads/2026/05/hero.jpg",
+              "alt": "Unixsee dashboard",
+              "mimeType": "image/jpeg",
+              "width": 1200,
+              "height": 630
+            }
+          }
+        },
+        {
+          "id": "home-testimonials-en",
+          "type": "HomeTestimonialsSection",
+          "props": {
+            "source": "testimonials",
+            "limit": 1,
+            "order": "latest",
+            "selectedIds": [],
+            "items": [
+              {
+                "id": 801,
+                "lang": "en",
+                "name": "Mina Carter",
+                "role": "Operations Director",
+                "company": "Commerce Studio",
+                "quote": "Unixsee made our content and deployment workflow auditable.",
+                "rating": 5,
+                "avatar": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "home-faq-en",
+          "type": "HomeFaqSection",
+          "props": {
+            "source": "faq",
+            "limit": 1,
+            "order": "latest",
+            "category": "home",
+            "selectedIds": [],
+            "items": [
+              {
+                "id": 901,
+                "lang": "en",
+                "question": "Does preview stay isolated from published content?",
+                "answer": "Yes. Preview draft sections are stored separately and resolved only with a valid preview token.",
+                "category": "home"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

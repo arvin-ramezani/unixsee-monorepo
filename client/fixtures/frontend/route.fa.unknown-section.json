@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/",
+      "lang": "fa",
+      "type": "page",
+      "pageId": 101
+    },
+    "page": {
+      "id": 101,
+      "type": "home_page",
+      "lang": "fa",
+      "path": "/",
+      "title": "یونیکس‌سی",
+      "sections": [
+        {
+          "id": "home-hero-fa",
+          "type": "HomeHeroSection",
+          "props": {
+            "title": "Known section"
+          }
+        },
+        {
+          "id": "experimental-section",
+          "type": "HomeExperimentalSection",
+          "props": {
+            "title": "Future section"
+          }
+        }
+      ]
+    }
+  }
+}

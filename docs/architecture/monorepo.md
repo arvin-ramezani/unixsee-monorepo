@@ -10,8 +10,8 @@
 
 ```text
 unixsee-monorepo/
-├── admin-panel/     # Staff Next.js app (not scaffolded yet)
-├── client/          # Customer / public Next.js app (not scaffolded yet)
+├── admin-panel/     # Staff Next.js app (active, UI-first)
+├── client/          # Customer / public Next.js app (active)
 ├── backend/         # NestJS API and control plane (active)
 ├── agent/           # VPS edge agent (active)
 ├── docs/            # Canonical documentation
@@ -55,6 +55,10 @@ Default: **no premature shared packages**.
 - `backend/` has its own Nest/pnpm tooling; run scripts from that folder.
 - `agent/` has its own npm tooling; run scripts from that folder (see
   [`../../agent/README.md`](../../agent/README.md)).
+- `client/` has its own npm tooling; run scripts from that folder (see
+  [`../../client/README.md`](../../client/README.md)).
+- `admin-panel/` has its own npm tooling; run scripts from that folder (see
+  [`../../admin-panel/README.md`](../../admin-panel/README.md)).
 - Monorepo-wide workspace tooling (root workspaces, shared CI) is not configured
   yet. Do not invent unavailable root scripts or claim builds pass.
 - Backend module/route targets:

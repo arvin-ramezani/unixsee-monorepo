@@ -1,0 +1,4143 @@
+{
+  "brand": "Unixsee",
+  "slogan": "I see you",
+  "FormErrors": {
+    "fullNameRequired": "Full name is required",
+    "fullNameInvalid": "Please enter your full name",
+    "businessEmailRequired": "Business email is required",
+    "businessEmailInvalid": "Please enter a valid business email",
+    "emailInvalid": "Please enter a valid email address",
+    "emailRequired": "Email is required",
+    "aboutProjectTooLong": "Message must be less than 1000 characters",
+    "budgetRequired": "Please select a budget range",
+    "servicesRequired": "Please select at least one service",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "messageTooShort": "Message must be at least 20 characters",
+    "messageRequired": "Message content is required",
+    "websiteInvalid": "Please enter a valid website url"
+  },
+  "ServerActionMessages": {
+    "requestAssessment": {
+      "validationFailed": "Please review the form fields and try again.",
+      "submissionFailed": "We couldn't submit your request. Please try again.",
+      "submissionSucceeded": "Your request has been submitted successfully."
+    },
+    "newsletter": {
+      "validationFailed": "Please enter a valid email address.",
+      "submissionFailed": "We couldn't save your subscription. Please try again.",
+      "submissionSucceeded": "Your subscription has been saved successfully.",
+      "alreadySubscribed": "This email is already subscribed to the newsletter."
+    }
+  },
+  "formHelpers": {
+    "about": "/100 characters"
+  },
+  "Layout": {
+    "Navigation": {
+      "server": {
+        "label": "Server",
+        "title": "Server solutions",
+        "items": {
+          "overview": "Overview",
+          "infrastructure": "Infrastructure",
+          "monitoring": "Monitoring",
+          "support": "Support"
+        }
+      },
+      "services": {
+        "label": "Services",
+        "title": "Service areas",
+        "items": {
+          "migrationOptimization": "Managed Server",
+          "performanceTuning": "WooCommerce SEO",
+          "securityHardening": "Graphic Design",
+          "technicalConsulting": "Social Media Marketing"
+        }
+      },
+      "customers": {
+        "label": "Customers",
+        "title": "Customer proof",
+        "items": {
+          "caseStudies": "Case Studies",
+          "testimonials": "Testimonials"
+        }
+      },
+      "resources": {
+        "label": "Resources",
+        "title": "Resources",
+        "items": {
+          "knowledgeBase": "Knowledge Base",
+          "faq": "FAQ"
+        }
+      },
+      "aboutUs": {
+        "label": "About Us",
+        "title": "About Unixsee",
+        "items": {
+          "about": "About Unixsee",
+          "contact": "Contact"
+        }
+      },
+      "requestConsultation": "Request Consultation",
+      "bottomFloatingNavigation": {
+        "home": "Home",
+        "managedServer": "Managed Server",
+        "complementaryServices": "Complementary",
+        "migrationAndOptimization": "Migration"
+      },
+      "languageSwitcher": {
+        "fa": "FA",
+        "en": "EN"
+      },
+      "primaryCta": {
+        "label": "Request Store Assessment",
+        "href": "/"
+      }
+    },
+    "HomeSecondaryNavigation": {
+      "services": {
+        "label": "Services",
+        "href": "services"
+      },
+      "aboutUs": {
+        "label": "Why Unixsee",
+        "href": "why-unixsee"
+      },
+      "solutionOverview": {
+        "label": "Solution",
+        "href": "solution"
+      },
+      "numbersOfSuccess": {
+        "label": "Results",
+        "href": "numbers-of-success"
+      },
+      "infrastructure": {
+        "label": "Infrastructure",
+        "href": "infrastructure"
+      },
+      "process": {
+        "label": "Process",
+        "href": "process"
+      },
+      "testimonials": {
+        "label": "Clients",
+        "href": "testimonials"
+      },
+      "portfolio": {
+        "label": "Portfolio",
+        "href": "portfolio"
+      },
+      "consultation": {
+        "label": "Assessment",
+        "href": "assessment"
+      },
+      "blog": {
+        "label": "Insights",
+        "href": "insights"
+      }
+    },
+    "SpecialNavigation": {
+      "openLabel": "Open special services",
+      "closeLabel": "Close special services",
+      "items": {
+        "managedServer": {
+          "label": "Managed Server"
+        },
+        "migration": {
+          "label": "Migration and optimization"
+        },
+        "consultation": {
+          "label": "Expert consultation"
+        }
+      }
+    },
+    "WoocommerceSeoContentNavigation": {
+      "plans": {
+        "label": "Plans",
+        "href": "plans"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "href": "monitoring"
+      },
+      "protection": {
+        "label": "Protection",
+        "href": "protection"
+      },
+      "managedServer": {
+        "label": "Managed Server",
+        "href": "managed-hosting"
+      },
+      "connect": {
+        "label": "Connect",
+        "href": "connect"
+      },
+      "performance": {
+        "label": "Performance",
+        "href": "performance"
+      },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
+      }
+    },
+    "WoocommerceDesignNavigation": {
+      "plans": {
+        "label": "Plans",
+        "href": "plans"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "href": "monitoring"
+      },
+      "protection": {
+        "label": "Protection",
+        "href": "protection"
+      },
+      "managedServer": {
+        "label": "Managed Server",
+        "href": "managed-hosting"
+      },
+      "connect": {
+        "label": "Connect",
+        "href": "connect"
+      },
+      "performance": {
+        "label": "Performance",
+        "href": "performance"
+      },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
+      }
+    },
+    "ManagedServerSecondaryNavigation": {
+      "plans": {
+        "label": "Plans",
+        "href": "plans"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "href": "monitoring"
+      },
+      "protection": {
+        "label": "Protection",
+        "href": "protection"
+      },
+      "managedServer": {
+        "label": "Managed Server",
+        "href": "managed-hosting"
+      },
+      "connect": {
+        "label": "Connect",
+        "href": "connect"
+      },
+      "performance": {
+        "label": "Performance",
+        "href": "performance"
+      },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
+      }
+    },
+    "MigrationSecondaryNavigation": {
+      "plans": {
+        "label": "Plans",
+        "href": "plans"
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "href": "monitoring"
+      },
+      "protection": {
+        "label": "Protection",
+        "href": "protection"
+      },
+      "managedServer": {
+        "label": "Managed Server",
+        "href": "managed-hosting"
+      },
+      "connect": {
+        "label": "Connect",
+        "href": "connect"
+      },
+      "performance": {
+        "label": "Performance",
+        "href": "performance"
+      },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
+      }
+    }
+  },
+  "ManagedServerPage": {
+    "HeroSection": {
+      "subTitle": "From migration to complete store infrastructure management",
+      "heading": "Managed WooCommerce Server",
+      "description": "Unixsee servers are configured and managed around the real needs of each WooCommerce store, covering resources, databases, caching, security, backups, and monitoring of critical store functions.",
+      "primaryCTA": "Request a Store Assessment"
+    },
+    "PlansSection": {
+      "heading": "WooCommerce Server Plans",
+      "subHeading": "Managed servers tailored to your storeU+0060s traffic, order volume, and technical requirements.",
+      "popularLabel": "Most Popular",
+      "items": {
+        "semiDedicated": {
+          "title": "Managed Semi-Dedicated Servers",
+          "description": "A balanced, managed infrastructure for growing WooCommerce stores that need greater stability, predictable performance, and genuine operational oversight.",
+          "badge": "Ideal for Growing Stores",
+          "features": {
+            "ram": "16 GB RAM",
+            "cpu": "6 vCPU Cores",
+            "storage": "250 GB NVMe SSD",
+            "bandwidth": "Fair-use traffic allowance for active stores",
+            "serverType": "Managed semi-dedicated environment",
+            "controlPanel": "Managed hosting control panel",
+            "backup": "Daily backups",
+            "monitoring": "24/7 server and store health monitoring",
+            "optimization": "WooCommerce performance optimization",
+            "security": "Baseline security hardening",
+            "migration": "Managed migration included with the plan",
+            "support": "WooCommerce-aware technical support"
+          },
+          "idealFor": "Ideal for growing WooCommerce stores with consistent daily traffic, regular orders, and no in-house infrastructure team.",
+          "cta": {
+            "label": "Talk to Our Specialists",
+            "href": "/contact"
+          }
+        },
+        "dedicated": {
+          "title": "Managed Dedicated Servers",
+          "description": "Dedicated resources and deeper operational control for high-traffic WooCommerce stores that require stronger isolation, consistent performance, and campaign readiness.",
+          "badge": "Ideal for High-Traffic Stores",
+          "features": {
+            "ram": "32 GB RAM",
+            "cpu": "12 Dedicated CPU Cores",
+            "storage": "500 GB NVMe SSD",
+            "bandwidth": "Bandwidth provisioned for high traffic",
+            "serverType": "Fully managed dedicated server",
+            "controlPanel": "Managed hosting control panel",
+            "backup": "Daily backups with recovery support",
+            "monitoring": "24/7 infrastructure, uptime, and store-status monitoring",
+            "optimization": "Advanced WooCommerce, database, cache, and checkout optimization",
+            "security": "Advanced server security hardening",
+            "migration": "Migration planning with no downtime",
+            "support": "Priority, WooCommerce-aware technical support"
+          },
+          "idealFor": "Ideal for stores with higher order volumes, larger product databases, traffic spikes, sales campaigns, or critical operational requirements.",
+          "cta": {
+            "label": "Talk to Our Specialists",
+            "href": "/contact"
+          }
+        },
+        "woocommerceSupport": {
+          "title": "Specialized WooCommerce Support",
+          "description": "Technical support built around the realities of WooCommerce stores, not generic hosting tickets. Ideal for stores that need specialized help with performance, stability, plugins, payments, and operational issues.",
+          "badge": "Ideal for Operational Support",
+          "features": {
+            "ram": "Based on your current infrastructure",
+            "cpu": "Based on your current infrastructure",
+            "storage": "Based on your current infrastructure",
+            "serverType": "Available on Unixsee managed infrastructure or your existing infrastructure",
+            "monitoring": "Operational visibility into store health, uptime, and performance",
+            "woocommerceReview": "Review of plugins, theme, checkout flow, and database",
+            "performanceSupport": "Troubleshooting for speed, caching, databases, and resource usage",
+            "security": "WordPress and WooCommerce security review",
+            "incidentSupport": "Support during critical store incidents",
+            "consulting": "Technical recommendations for scalability and stability",
+            "migration": "Migration guidance when an infrastructure upgrade is required",
+            "support": "Specialized WooCommerce technical support"
+          },
+          "idealFor": "Ideal for WooCommerce stores that need a technical partner who understands both hosting infrastructure and real-world store issues.",
+          "cta": {
+            "label": "Talk to Our Specialists",
+            "href": "/contact"
+          }
+        }
+      }
+    },
+    "MonitoringSection": {
+      "heading": "Control Campaign Traffic",
+      "description": "User traffic is controlled based on your store’s infrastructure capacity.",
+      "VideoCard": {
+        "videoBadge": "Waiting Room",
+        "title": "Control User Access Before WooCommerce",
+        "description": "During campaigns, the Waiting Room sits in front of your store and controls user access based on the defined capacity. As a result, all requests do not reach WordPress, WooCommerce, and the database simultaneously.",
+        "cta": {
+          "label": "Discover Unixsee Waiting Room",
+          "href": "/migration-optimization"
+        }
+      },
+      "items": {
+        "item1": {
+          "title": "Control Traffic Before WooCommerce",
+          "description": "Excess requests are managed before they reach PHP, WordPress, WooCommerce, and the database.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "item2": {
+          "title": "Gradual Entry Through the Waiting Room",
+          "description": "Users enter the store according to the defined capacity, limiting simultaneous load on product pages, carts, and checkout.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "item3": {
+          "title": "Manage User Entry Capacity",
+          "description": "Entry capacity and Campaign Gateway status are monitored throughout the campaign to keep user flow aligned with the store’s real operating conditions.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        }
+      }
+    },
+    "ManageSection": {
+      "heading": "What Do We Manage, from the Server to WooCommerce?",
+      "cta": {
+        "label": "Get a Consultation",
+        "href": "/contact"
+      },
+      "items": {
+        "item1": {
+          "title": "Server and Infrastructure Management",
+          "description": "The web server, PHP, database, cache, SSL, backups, and security settings are configured for your store’s needs and maintained continuously.",
+          "image": "/images/migration-service/manage-1.avif"
+        },
+        "item2": {
+          "title": "Monitoring Critical Store Functions",
+          "description": "The purchasing journey, from adding a product to the cart through checkout and payment-gateway connection, is tested like a real customer experience. This helps identify issues that a basic uptime check cannot detect.",
+          "image": "/images/migration-service/manage-2.avif"
+        },
+        "item3": {
+          "title": "WooCommerce Performance Optimization",
+          "description": "Cache and database settings, resource-intensive queries, and processing bottlenecks are reviewed to keep the infrastructure aligned with the store’s traffic, orders, and actual requirements.",
+          "image": "/images/migration-service/manage-3.avif"
+        }
+      }
+    },
+    "ConnectSection": {
+      "heading": "We Assess Your Store Before Server Selection",
+      "description": "Before recommending a plan, we review the store’s database, plugins, caching, resource usage, and purchasing journey to determine server capacity based on actual WooCommerce requirements.",
+      "cta": {
+        "label": "Learn More",
+        "href": "/contact"
+      },
+      "image": {
+        "src": "/images/migration-service/connect-section.avif",
+        "alt": "Contact us for a migration consultation"
+      }
+    },
+    "PerformanceSection": {
+      "badge": "Beyond WooCommerce Hosting",
+      "heading": "WooCommerce Hosting or a Managed Server?",
+      "items": {
+        "item1": {
+          "title": "When Is WooCommerce Hosting Suitable?",
+          "description": "WooCommerce hosting can be sufficient for newly launched or low-traffic stores, provided its resource limits, backup policy, and support are clearly defined.",
+          "icon": "/icons/video-section/dh-shape-creative.svg"
+        },
+        "item2": {
+          "title": "When Do Hosting Limitations Become Noticeable?",
+          "description": "As the database grows and concurrent orders, resource-intensive searches, or campaigns increase, shared hosting resources reach their limits sooner.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "item3": {
+          "title": "The Difference Is Not Just CPU and RAM",
+          "description": "With a managed server, the web server, PHP, cache, and database are configured and maintained around the store’s actual behavior.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "item4": {
+          "title": "How Does Unixsee Determine Its Final Recommendation?",
+          "description": "After reviewing the database, plugins, resource usage, and purchasing journey, we recommend the appropriate plan or a dedicated infrastructure solution.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        }
+      }
+    },
+    "ProtectionSection": {
+      "heading": "Migrating WooCommerce to a New Server",
+      "items": {
+        "preMigrationAudit": {
+          "title": "Plan the Migration Schedule",
+          "description": "File volume, database size, and connected services are reviewed to determine the best time for the final migration.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "dataIntegrityProtection": {
+          "title": "Prepare the Destination Infrastructure",
+          "description": "Before migration begins, the new server is prepared according to the selected plan and the store’s technical requirements.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "downtimePrevention": {
+          "title": "Complete the Final Store Data Transfer",
+          "description": "Order processing is paused briefly, and a custom maintenance page is displayed instead of a 404 error while the latest files, orders, and database changes are transferred.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        },
+        "postMigrationMonitoring": {
+          "title": "Launch the Store on the New Server",
+          "description": "After migration, store pages, customer accounts, carts, checkout, the payment gateway, and connected services are tested before the store is made available to users.",
+          "icon": "/icons/video-section/dh-shape-creative.svg"
+        }
+      }
+    },
+    "CtaSection": {
+      "heading": "Building a Powerful Online Store Is Now Easier",
+      "subHeading": "Professional performance at a reasonable cost with managed WooCommerce hosting.",
+      "cta": {
+        "label": "Get Started!",
+        "href": "/"
+      }
+    },
+    "FAQSection": {
+      "heading": "Managed WooCommerce Server FAQs",
+      "subHeading": "Everything you need to know before moving your store to a more secure, faster, and fully managed infrastructure.",
+      "items": {
+        "item1": {
+          "title": "Which Stores Are Managed WooCommerce Servers Suitable For?",
+          "description": "They are suitable for stores whose shared hosting can no longer handle their database size, concurrent orders, background processes, or traffic, and that need more clearly allocated resources and continuous technical management."
+        },
+        "item2": {
+          "title": "How Is a Unixsee Managed Server Different from WooCommerce Hosting?",
+          "description": "With WooCommerce hosting, some resources are typically shared among multiple websites. Unixsee plans provide semi-dedicated or dedicated resources and allow deeper management of the web server, PHP, cache, and database."
+        },
+        "item3": {
+          "title": "Which Server Plan Is Right for My Store?",
+          "description": "Plan selection is not based on visitor numbers alone. We review the database, plugins, resource usage, concurrent orders, and purchasing-journey performance before recommending CORE, SCALE, PEAK, or dedicated infrastructure."
+        },
+        "item4": {
+          "title": "Are Unixsee Servers Located in Iran or Germany?",
+          "description": "Intel Xeon configurations are provided on infrastructure located in Iran, while AMD Ryzen configurations are provided on infrastructure located in Germany. Available locations and specifications will be confirmed before activation."
+        },
+        "item5": {
+          "title": "Will I Receive Direct Access to the Server?",
+          "description": "No. This is a managed service, and the Unixsee team is responsible for infrastructure configuration, maintenance, security, and health monitoring."
+        },
+        "item6": {
+          "title": "How Is a WooCommerce Store Migrated?",
+          "description": "We first review the file volume, database, and connected services. The destination infrastructure is then prepared, and the final migration is completed at the agreed time."
+        },
+        "item7": {
+          "title": "How Long Does Store Migration Take?",
+          "description": "The migration timeline depends on the volume of files, database size, plugins, and connected services. It is confirmed after the technical assessment."
+        },
+        "item8": {
+          "title": "What Access Is Required to Begin the Store Migration?",
+          "description": "Depending on the store’s setup, we may require access to WordPress, the current hosting account or server, the database, and services such as DNS and CDN."
+        }
+      }
+    }
+  },
+  "MigrationPage": {
+    "HeroSection": {
+      "subTitle": "Upgrade your store’s foundation",
+      "heading": "WooCommerce migration without downtime",
+      "description": "A structured migration process designed to reduce risk and ensure a smooth transition to better infrastructure.",
+      "primaryCTA": "Request Consultation"
+    },
+    "PlansSection": {
+      "heading": "Choose the right infrastructure for your store",
+      "subHeading": "Tailored hosting solutions designed to support your store’s growth and stability.",
+      "popularLabel": "Most popular",
+      "items": {
+        "core": {
+          "title": "UNIX CORE",
+          "badge": "Managed semi-dedicated server",
+          "description": "For WooCommerce stores where regular hosting no longer meets daily traffic and order demands, and continued growth requires more stable resources and ongoing infrastructure management.",
+          "features": {
+            "germanyConfiguration": {
+              "label": "Germany configuration",
+              "value": "AMD Ryzen, 4 CPU cores, 8 GB DDR4, 100 GB NVMe"
+            },
+            "iranConfiguration": {
+              "label": "Iran configuration",
+              "value": "Intel Xeon, 8 CPU cores, 8 GB DDR4, 100 GB NVMe"
+            },
+            "backup": {
+              "label": "Backup",
+              "value": "Daily"
+            },
+            "ssl": {
+              "label": "SSL certificate",
+              "value": "Free"
+            },
+            "monitoring": {
+              "label": "Monitoring",
+              "value": "Real-time, 24/7"
+            },
+            "serviceManagement": {
+              "label": "Service management",
+              "value": "Infrastructure configuration, maintenance, and monitoring by Unixsee"
+            }
+          },
+          "note": "The final configuration and service cost will be confirmed before activation based on location and available capacity.",
+          "cta": {
+            "label": "Request consultation",
+            "href": "/contact"
+          }
+        },
+        "scale": {
+          "title": "UNIX SCALE",
+          "badge": "Managed dedicated server",
+          "description": "For high-traffic WooCommerce stores with concurrent orders and larger databases; dedicated resources and continuous infrastructure management provide greater capacity for a stable checkout journey and continued growth.",
+          "features": {
+            "germanyConfiguration": {
+              "label": "Germany configuration",
+              "value": "AMD Ryzen, 8 CPU cores, 16 GB DDR4, 150 GB NVMe"
+            },
+            "iranConfiguration": {
+              "label": "Iran configuration",
+              "value": "Intel Xeon, 12 CPU cores, 16 GB DDR4, 150 GB NVMe"
+            },
+            "backup": {
+              "label": "Backup",
+              "value": "Daily"
+            },
+            "ssl": {
+              "label": "SSL certificate",
+              "value": "Free"
+            },
+            "monitoring": {
+              "label": "Monitoring",
+              "value": "Real-time, 24/7"
+            },
+            "serviceManagement": {
+              "label": "Service management",
+              "value": "Infrastructure configuration, maintenance, and monitoring by Unixsee"
+            }
+          },
+          "note": "The final configuration and service cost will be confirmed before activation based on location and available capacity.",
+          "cta": {
+            "label": "Request consultation",
+            "href": "/contact"
+          }
+        },
+        "peak": {
+          "title": "UNIX PEAK",
+          "badge": "Managed campaign server",
+          "description": "For high-traffic sales campaigns, with substantial processing resources and real-time monitoring; suited to periods when the stability of product pages, cart, and order placement carries greater operational importance.",
+          "features": {
+            "location": {
+              "label": "Location",
+              "value": "Germany"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "AMD Ryzen, 32 cores"
+            },
+            "memory": {
+              "label": "Memory",
+              "value": "32 GB DDR4"
+            },
+            "storage": {
+              "label": "Storage",
+              "value": "200 GB NVMe"
+            },
+            "backup": {
+              "label": "Backup",
+              "value": "Daily"
+            },
+            "ssl": {
+              "label": "SSL certificate",
+              "value": "Free"
+            },
+            "monitoring": {
+              "label": "Monitoring",
+              "value": "Real-time, 24/7"
+            }
+          },
+          "addOn": {
+            "label": "OPTIONAL ADD-ON",
+            "description": "Unixsee Campaign Gateway and Waiting Room can be enabled as an optional service. After reviewing the campaign conditions, this service can help control user entry and reduce simultaneous load on the purchase journey."
+          },
+          "note": "Campaign add-on activation is not included in the server’s base resources and its terms are reviewed separately.",
+          "cta": {
+            "label": "Request consultation",
+            "href": "/contact"
+          }
+        },
+        "enterprise": {
+          "title": "UNIX ENTERPRISE",
+          "badge": "Custom dedicated server",
+          "description": "For large, high-transaction stores that require dedicated resources, a tailored architecture, and greater control and stability. Server capacity, backup structure, security, monitoring, and management level are defined after a technical review of the store.",
+          "features": {
+            "serviceType": {
+              "label": "Service type",
+              "value": "Dedicated server and custom architecture"
+            },
+            "location": {
+              "label": "Location",
+              "value": "Iran or Germany, based on technical and access requirements"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "Based on the store’s technical scenario"
+            },
+            "memoryAndStorage": {
+              "label": "Memory and storage",
+              "value": "Based on data volume and operational load"
+            },
+            "backupAndRecovery": {
+              "label": "Backup and recovery",
+              "value": "Designed around data sensitivity and the required RPO/RTO"
+            },
+            "monitoringAndSecurity": {
+              "label": "Monitoring and security",
+              "value": "Based on the architecture and agreed service level"
+            }
+          },
+          "note": "Service details will be provided after reviewing the store’s technical requirements.",
+          "cta": {
+            "label": "Request consultation",
+            "href": "/contact"
+          }
+        }
+      },
+      "slideLabel": "Plan {current} of {total}"
+    },
+    "MonitoringSection": {
+      "heading": "We see the state of your store",
+      "description": "Real-time monitoring with continuous visibility into performance, health.",
+      "VideoCard": {
+        "videoBadge": "Real-time monitoring",
+        "title": "Your store’s health is our priority, not just hosting",
+        "description": "We don’t just move your store to a new server. We carefully migrate it to a more stable and optimized infrastructure, while continuously monitoring its health and performance before, during, and after the transition.",
+        "cta": {
+          "label": "Learn about our monitoring",
+          "href": "/migration-optimization"
+        }
+      },
+      "items": {
+        "item1": {
+          "title": "Structured migration process",
+          "description": "A step-by-step migration process designed to minimize risk and ensure a smooth transition to better infrastructure.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "item2": {
+          "title": "Risk reduction & technical precision",
+          "description": "We handle the technical complexities of migration with care, ensuring data integrity and minimizing operational disruption.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "item3": {
+          "title": "Continuous monitoring during migration",
+          "description": "Your store is monitored throughout the migration process, allowing us to detect and address any issues in real time.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        }
+      }
+    },
+    "ProtectionSection": {
+      "heading": "We protect your store during migration",
+      "description": "Our migration process is designed to minimize risk and ensure a smooth transition to better infrastructure without downtime or data loss.",
+      "items": {
+        "preMigrationAudit": {
+          "title": "Pre-migration risk audit",
+          "description": "Before anything moves, we review your current store, server, database, plugins, traffic patterns, and operational risks to plan the safest migration path.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "dataIntegrityProtection": {
+          "title": "Data integrity protection",
+          "description": "Orders, customers, products, payments, and store records are handled carefully to prevent data loss, duplication, or broken business-critical workflows.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "downtimePrevention": {
+          "title": "Downtime prevention strategy",
+          "description": "The migration is planned around your store’s activity, with controlled steps designed to keep the shopping experience stable and avoid unnecessary interruption.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        },
+        "postMigrationMonitoring": {
+          "title": "Post-migration monitoring",
+          "description": "After the move, we continue monitoring performance, uptime, checkout behavior, and server health to catch issues early and confirm the store is running properly.",
+          "icon": "/icons/video-section/dh-shape-creative.svg"
+        }
+      }
+    },
+    "ManageSection": {
+      "heading": "We manage the technical details, you focus on your business",
+      "cta": {
+        "label": "Request Consultation",
+        "href": "/contact"
+      },
+      "items": {
+        "item1": {
+          "title": "Technical precision in migration",
+          "description": "We handle the technical complexities of migration with care, ensuring data integrity and minimizing operational disruption.",
+          "image": "/images/migration-service/manage-1.avif"
+        },
+        "item2": {
+          "title": "Continuous monitoring during migration",
+          "description": "Your store is monitored throughout the migration process, allowing us to detect and address any issues in real time.",
+          "image": "/images/migration-service/manage-2.avif"
+        },
+        "item3": {
+          "title": "Post-migration support and optimization",
+          "description": "After migration, we continue to monitor and optimize your store’s performance, ensuring a smooth transition to the new infrastructure.",
+          "image": "/images/migration-service/manage-3.avif"
+        }
+      }
+    },
+    "ConnectSection": {
+      "heading": "Ready to connect with the right infrastructure for your store?",
+      "description": "Our team is here to understand your store’s needs and help you find the best hosting solution for stability and growth.",
+      "cta": {
+        "label": "Learn more",
+        "href": "/contact"
+      },
+      "image": {
+        "src": "/images/migration-service/connect-section.avif",
+        "alt": "Contact us for migration consultation"
+      }
+    },
+    "PerformanceSection": {
+      "badge": "Performance after migration",
+      "heading": "A better infrastructure make your store faster",
+      "items": {
+        "item1": {
+          "title": "Performance review before migration",
+          "description": "We analyze your current server, database, plugins, cache setup, and WooCommerce behavior to understand what is slowing the store down before moving it.",
+          "icon": "/icons/video-section/dh-shape-creative.svg"
+        },
+        "item2": {
+          "title": "Infrastructure tuned for WooCommerce",
+          "description": "Your new environment is prepared around the way WooCommerce actually works, including product pages, cart actions, checkout flow, and database-heavy operations.",
+          "icon": "/icons/video-section/dh-shape-customised.svg"
+        },
+        "item3": {
+          "title": "Cache and database optimization",
+          "description": "After migration, we fine-tune caching, database performance, and resource usage to help the store respond faster under real customer traffic.",
+          "icon": "/icons/video-section/dh-shape-full-stack.svg"
+        },
+        "item4": {
+          "title": "Stability during traffic spikes",
+          "description": "The new setup is designed to keep performance consistent during campaigns, peak hours, and sudden traffic increases, reducing the risk of slowdowns when sales matter most.",
+          "icon": "/icons/video-section/dh-shape-open.svg"
+        }
+      }
+    },
+    "CtaSection": {
+      "heading": "Building an ecommerce empire just got easier",
+      "subHeading": "With managed WooCommerce hosting — premium performance made affordable.",
+      "cta": {
+        "label": "Get started!",
+        "href": "/"
+      }
+    },
+    "FAQSection": {
+      "heading": "WooCommerce Managed Server FAQs",
+      "items": {
+        "item1": {
+          "title": "Will my WooCommerce store go offline during migration?",
+          "description": "Our migration process is planned to minimize downtime. We review your current setup, prepare the new environment, and schedule the final switch carefully so your store remains available as much as possible."
+        },
+        "item2": {
+          "title": "Is my store data protected during migration?",
+          "description": "Yes. Orders, customers, products, payments, and database records are handled carefully to reduce the risk of data loss, duplication, or broken WooCommerce workflows."
+        },
+        "item3": {
+          "title": "Do you migrate only the website files?",
+          "description": "No. We look beyond files. A proper WooCommerce migration includes database handling, server configuration, cache setup, plugin behavior, checkout flow, and post-migration testing."
+        },
+        "item4": {
+          "title": "Do you check the store before starting the migration?",
+          "description": "Yes. Before the migration begins, we assess your current infrastructure, server health, database condition, plugins, traffic patterns, and potential risks."
+        },
+        "item5": {
+          "title": "Can you migrate stores with many products and orders?",
+          "description": "Yes. WooCommerce stores with larger product catalogs, order history, and customer data require more careful planning, but they can be migrated safely with the right process."
+        },
+        "item6": {
+          "title": "Will the new infrastructure improve performance?",
+          "description": "The goal is not only to move your store, but to place it on infrastructure better suited for WooCommerce performance, stability, checkout behavior, and real customer traffic."
+        },
+        "item7": {
+          "title": "Do you optimize the store after migration?",
+          "description": "Yes. After migration, we review performance, cache behavior, database usage, server resources, and WooCommerce-specific bottlenecks to help the store run more smoothly."
+        },
+        "item8": {
+          "title": "What happens after the migration is complete?",
+          "description": "We continue monitoring the store after the move to confirm that uptime, performance, checkout flow, and server health are stable on the new infrastructure."
+        },
+        "item9": {
+          "title": "Can you help during traffic spikes or campaigns?",
+          "description": "Yes. The migration and infrastructure planning can be aligned with your store’s growth, campaign periods, and traffic sensitivity to reduce the risk of slowdowns during important sales moments."
+        },
+        "item10": {
+          "title": "Do you migrate from shared hosting?",
+          "description": "Yes. Many growing WooCommerce stores move away from generic shared hosting when they need better stability, monitoring, resource control, and technical support."
+        },
+        "item11": {
+          "title": "Is this service only for WooCommerce stores?",
+          "description": "This migration service is designed specifically around WooCommerce needs, including products, carts, checkout, orders, database load, plugins, and store-level operational risks."
+        },
+        "item12": {
+          "title": "How do I know which infrastructure is right for my store?",
+          "description": "We start with an assessment of your current store, traffic, order volume, technical risks, and growth plans, then recommend the right managed hosting setup based on real needs."
+        }
+      }
+    }
+  },
+  "HomePage": {
+    "brand": "Unixsee",
+    "slogan": "I see you",
+    "HeroSection": {
+      "title": "Managed Hosting Built for WooCommerce",
+      "description": "At Unixsee, we don’t just host your store. We monitor, manage, and support it with infrastructure built for WooCommerce growth.",
+      "primaryCTA": "Request Store Assessment",
+      "secondaryCTA": "Explore Services",
+      "microcopy": "For stores that care about stability and real support.",
+      "infiniteHorizontalScroll": {
+        "title": "They trusted us"
+      }
+    },
+    "ProblemSection": {
+      "title": "Your WooCommerce store needs infrastructure, not just hosting.",
+      "description": "Shared hosting may work at first, but it limits growing WooCommerce stores. Your store needs infrastructure built for speed, security, stability, monitoring, and expert support.",
+      "items": {
+        "genericSupport": {
+          "title": "Preventive monitoring, always on",
+          "subTitle": "Critical error detection • Health monitoring • Downtime control",
+          "tags": [
+            "Critical error detection",
+            "Health monitoring",
+            "Downtime control"
+          ],
+          "description": "Our monitoring team keeps an eye on your website continuously — not only after customers start reporting problems.",
+          "metric": "70%",
+          "metricLabel": "Recurring tickets"
+        },
+        "infrastructureMismatch": {
+          "title": "More than servers, a specialist team",
+          "subTitle": "Expert support • Unified site management • Business-aligned team",
+          "tags": [
+            "Expert support",
+            "Unified site management",
+            "Business-aligned team"
+          ],
+          "description": "Commerce infrastructure goes beyond servers. Our teams support your website operations, content, development, and execution.",
+          "metric": "2x",
+          "metricLabel": "Peak-time risk"
+        },
+        "noMonitoring": {
+          "title": "Real support, without canned responses",
+          "subTitle": "Website assistance • Technical follow-up • Hosting-plus support",
+          "tags": [
+            "Website assistance",
+            "Technical follow-up",
+            "Hosting-plus support"
+          ],
+          "description": "Our support is not based on generic replies. Every ticket is reviewed according to your issue, your website, and your business situation.",
+          "metric": "-",
+          "metricLabel": "Real-time visibility"
+        }
+      }
+    },
+    "NumberOfSuccess": {
+      "title": "Numbers from our journey with online stores",
+      "items": {
+        "storesManaged": {
+          "value": "90",
+          "suffix": "+",
+          "label": "WooCommerce stores under management"
+        },
+        "uptime": {
+          "value": "99.99",
+          "suffix": "%",
+          "label": "Server stability and availability"
+        },
+        "monitoring": {
+          "value": "24/7",
+          "suffix": "",
+          "label": "Continuous monitoring and supervision"
+        },
+        "experience": {
+          "value": "14",
+          "suffix": "+ years",
+          "label": "Experience in WordPress and hosting"
+        }
+      }
+    },
+    "ProcessSection": {
+      "badge": "How We Work",
+      "title": "The path to starting with Unixsee",
+      "items": {
+        "step1": {
+          "number": "01",
+          "title": "We start with your store",
+          "description": "First, you submit a store review request so the Unixsee team can carefully assess your website status, key needs, and goals for working with us.",
+          "duration": "1 to 2 days"
+        },
+        "step2": {
+          "number": "02",
+          "title": "We review your website condition",
+          "description": "We review your website performance, infrastructure status, traffic, plugins, technical needs, and possible store issues to build a clear picture of your current situation.",
+          "duration": "2 to 3 days"
+        },
+        "step3": {
+          "number": "03",
+          "title": "We align the right path with you",
+          "description": "After the review, we identify which plan, resources, and services are the best fit for your store, so the final decision is based on your website’s real needs.",
+          "duration": "Depends on the situation"
+        },
+        "step4": {
+          "number": "04",
+          "title": "We move forward step by step",
+          "description": "After the proposed path is approved, the setup, migration, technical configuration, and required store services begin in coordination with the Unixsee team.",
+          "duration": "Ongoing"
+        }
+      }
+    },
+    "TestimonialsSection": {
+      "title": "Unixsee Client Stories",
+      "subtitle": "Hear it from our clients",
+      "items": {
+        "item1": {
+          "quote": "After moving to Unixsee, our store became noticeably more stable during daily operations. The difference in support quality was clear from the first week.",
+          "company": "BrandName",
+          "author": "Ali R",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "Founder",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        },
+        "item2": {
+          "quote": "We finally have a team that understands WooCommerce issues beyond basic hosting. Problems are detected earlier, and responses are much more precise.",
+          "company": "ShopCo",
+          "author": "Sara M",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "Operations Manager",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        },
+        "item3": {
+          "quote": "During our campaign periods, the infrastructure remained stable without last-minute stress. Monitoring and readiness made a real difference.",
+          "company": "MarketPlus",
+          "author": "Daniel K",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "eCommerce Lead",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        },
+        "item4": {
+          "quote": "Migration was handled carefully with minimal disruption. The process was structured and gave us confidence at every step.",
+          "company": "StoreHub",
+          "author": "Nina T",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "Product Manager",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        },
+        "item5": {
+          "quote": "Unixsee feels less like a hosting provider and more like an operational partner. Their understanding of store workflows is valuable.",
+          "company": "RetailFlow",
+          "author": "James L",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "CTO",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        },
+        "item6": {
+          "quote": "We now have better visibility into our store’s health and performance. Issues are handled before they impact customers.",
+          "company": "CommerceX",
+          "author": "Emily R",
+          "authorImage": {
+            "src": "/images/testimonials-1.jpg",
+            "alt": "Employer"
+          },
+          "role": "Growth Manager",
+          "video": "/videos/testimonials/testimonial-1.mp4"
+        }
+      }
+    },
+    "ConsultationSection": {
+      "title": "Build the right store infrastructure",
+      "description": "We’ll get back to you as quickly as possible.",
+      "tabs": {
+        "requestAssessment": "Request Assessment",
+        "bookConsultation": "Book a Consultation"
+      },
+      "requestAssessment": {
+        "form": {
+          "title": "Contact Information",
+          "fields": {
+            "name": {
+              "label": "Name",
+              "placeholder": "Full name"
+            },
+            "email": {
+              "label": "Email",
+              "placeholder": "Work email"
+            },
+            "aboutProject": {
+              "label": "Tell us about your project",
+              "placeholder": "Tell us about your project"
+            },
+            "budget": {
+              "label": "Budget",
+              "placeholder": "Select...",
+              "options": {
+                "under_5k": "Less than 300 million tomans",
+                "5k_10k": "300 to 600 million tomans",
+                "10k_25k": "600 million to 1.5 billion tomans",
+                "25k_plus": "More than 1.5 billion tomans",
+                "not_sure": "I’m not sure yet"
+              }
+            },
+            "traffic": {
+              "label": "Traffic / Order Volume",
+              "placeholder": "Select..."
+            },
+            "service": {
+              "label": "How can we help you?",
+              "options": {
+                "managedServer": "Managed Server",
+                "migrationOptimization": "Managed Server",
+                "woocommerceSupport": "WooCommerce SEO",
+                "seo": "SEO",
+                "graphicDesign": "Graphic Design",
+                "productDataEntry": "Product Data Entry",
+                "socialMedia": "Social Media Support"
+              }
+            }
+          },
+          "actions": {
+            "sendMessage": "Send Message",
+            "submitting": "Sending…",
+            "cancel": "Cancel Request"
+          }
+        }
+      },
+      "bookConsultation": {
+        "title": "No sales pressure",
+        "description": "A transparent conversation to review your store’s current situation and see whether Unixsee is the right fit for you."
+      }
+    },
+    "InfrastructureSection": {
+      "title": "Services for more reliable store management",
+      "description": "",
+      "items": {
+        "woocommerceExpertise": {
+          "title": "Daily backups of critical data",
+          "description": "Important store data, orders, and website settings are backed up daily, so recovery can happen faster when issues occur."
+        },
+        "continuousMonitoring": {
+          "title": "Free migration to Unixsee infrastructure",
+          "description": "Your store migration is handled with a technical review, helping the move to Unixsee happen with less friction and lower operational risk."
+        },
+        "growthReadyInfrastructure": {
+          "title": "Multi-layer security for online sales",
+          "description": "Sensitive areas, access permissions, data, and payments are protected with a multi-layer approach to reduce security risks."
+        },
+        "operationalSupport": {
+          "title": "WordPress maintenance and support",
+          "description": "WordPress, plugins, and the technical parts of your store are reviewed and managed so small issues do not turn into serious problems in the sales journey."
+        }
+      }
+    },
+    "scrollingCardsSection": {
+      "sectionTitle": "From Infrastructure to Business Stability",
+      "cta": "Request Consultation",
+      "items": [
+        {
+          "title": "Managed WooCommerce Infrastructure",
+          "tags": [
+            "Managed Hosting",
+            "WooCommerce Optimization",
+            "Infrastructure Control",
+            "Performance Stability"
+          ],
+          "description": "A dedicated infrastructure layer designed specifically for WooCommerce stores that need more than generic hosting. It ensures stability, scalability, and consistent performance under real traffic conditions."
+        },
+        {
+          "title": "Real-time Monitoring & Visibility",
+          "tags": [
+            "System Monitoring",
+            "Live Health Status",
+            "Uptime Tracking",
+            "Operational Visibility"
+          ],
+          "description": "Continuous monitoring of your store and server health with real-time insights, ensuring issues are detected before they impact your customers."
+        },
+        {
+          "title": "WooCommerce-Aware Support",
+          "tags": [
+            "Expert Support",
+            "Store-Level Understanding",
+            "Technical Assistance",
+            "Operational Support"
+          ],
+          "description": "Support that understands WooCommerce logic, not just servers. We handle issues with awareness of your store structure and business impact."
+        },
+        {
+          "title": "Performance & Scalability Engineering",
+          "tags": [
+            "Speed Optimization",
+            "Load Handling",
+            "Scalable Architecture",
+            "Traffic Readiness"
+          ],
+          "description": "Infrastructure tuned for growth, ensuring your store performs reliably during traffic spikes, campaigns, and seasonal peaks."
+        },
+        {
+          "title": "Migration & Operational Continuity",
+          "tags": [
+            "Safe Migration",
+            "Zero Downtime Approach",
+            "System Transition",
+            "Risk Reduction"
+          ],
+          "description": "Seamless migration process designed to reduce risk and ensure your store moves to a better infrastructure without disruption."
+        }
+      ]
+    },
+    "SolutionOverviewSection": {
+      "title": "Why do growing online stores trust Unixsee?",
+      "description": "Upgrade your WordPress store with Unixsee’s optimized commerce infrastructure.",
+      "items": {
+        "continuousMonitoring": {
+          "title": "Faster sales performance",
+          "tags": {
+            "tag1": "24/7 monitoring",
+            "tag2": "Health indicators",
+            "tag3": "Real-time alerts",
+            "tag4": "Issue prevention"
+          },
+          "description": "In an online store, speed is not just a technical metric; it directly affects product browsing, search, cart experience, checkout, order completion, and the customer’s final decision. Every delay in the sales journey can make users abandon their order and reduce sales opportunities. Unixsee manages the critical paths of your store with a customer-experience-first approach, helping purchases happen faster, smoother, and more reliably.",
+          "cta": {
+            "label": "View Monitoring System",
+            "href": "/migration-optimization"
+          }
+        },
+        "storeAwareSupport": {
+          "title": "Theme and plugin compatibility",
+          "tags": {
+            "tag1": "WooCommerce expertise",
+            "tag2": "E-commerce focused",
+            "tag3": "Preventive support",
+            "tag4": "Technical assistance"
+          },
+          "description": "Commerce themes and plugins usually generate more Ajax requests, static assets, heavy scripts, and database queries than regular websites. Unixsee manages your store infrastructure with these dependencies in mind, helping your site perform more smoothly, quickly, and reliably alongside your theme, payment gateway, search tools, SMS services, and essential plugins.",
+          "cta": {
+            "label": "Talk to Specialists",
+            "href": "/contact"
+          }
+        },
+        "operationalStability": {
+          "title": "Smart multi-layer caching",
+          "tags": {
+            "tag1": "Business continuity",
+            "tag2": "System reliability",
+            "tag3": "No downtime",
+            "tag4": "Stable performance"
+          },
+          "description": "In WooCommerce stores, speed does not depend only on server power. Page caching, browser caching, Object Cache, and repeated request handling play a major role in reducing pressure on PHP and the database. Unixsee configures different caching layers according to your store structure, helping pages respond faster without disrupting sensitive areas such as the cart, checkout, and user account.",
+          "cta": {
+            "label": "Ensure Stability",
+            "href": "/managed-hosting"
+          }
+        },
+        "optimizedInfrastructure": {
+          "title": "Optimized server and database",
+          "tags": {
+            "tag1": "Optimized architecture",
+            "tag2": "WooCommerce focused",
+            "tag3": "Scalable infrastructure",
+            "tag4": "Traffic management"
+          },
+          "description": "In WooCommerce stores, traffic growth does not only slow down pages. Cart actions, checkout, order placement, and concurrent request processing also create more pressure on the server and database. If not managed properly, this can directly affect the customer’s purchase journey. Unixsee configures the infrastructure, server, and database based on the real needs of your store, helping your website stay faster, more stable, and more reliable during high-traffic moments.",
+          "cta": {
+            "label": "Review Infrastructure",
+            "href": "/managed-hosting"
+          }
+        }
+      }
+    },
+    "CoreServicesSection": {
+      "title": "Core Services for Store Growth",
+      "description": "Services designed to support and scale your store operations.",
+      "items": {
+        "semiDedicated": {
+          "title": "Managed Semi-Dedicated Servers",
+          "description": "Balanced infrastructure for growing stores that need more stability, oversight, and predictable performance."
+        },
+        "dedicated": {
+          "title": "Managed Dedicated Servers",
+          "description": "Dedicated resources and deeper operational control for stores with higher traffic and operational sensitivity."
+        },
+        "woocommerceSupport": {
+          "title": "WooCommerce-Aware Support",
+          "description": "Technical support shaped around the realities of WooCommerce stores, not generic hosting tickets."
+        },
+        "complementaryServices": {
+          "title": "Complementary eCommerce Services",
+          "description": "Supporting services that help stores inside the Unixsee ecosystem operate and grow with better coordination."
+        }
+      }
+    },
+    "WhyChooseUsSection": {
+      "title": "Why Stores Choose Unixsee",
+      "description": "A focused, managed approach built for WooCommerce operations.",
+      "items": {
+        "woocommerceSpecialization": "WooCommerce specialization",
+        "fullyManaged": "Fully managed approach",
+        "monitoringMindset": "Real-time monitoring mindset",
+        "growthReadyInfrastructure": "Growth-ready infrastructure",
+        "operationalSupport": "Operational support",
+        "focusedPremiumService": "Focused premium service, not generic mass-market hosting"
+      }
+    },
+    "AudienceFitSection": {
+      "title": "Is Unixsee Right for You?",
+      "description": "A clear fit for stores that need operational confidence, and not for projects looking for commodity hosting.",
+      "forLabel": "Suitable for",
+      "notForLabel": "Not suitable for",
+      "forItems": {
+        "growingStores": "Growing WooCommerce stores",
+        "trafficSensitiveStores": "Stores with traffic sensitivity",
+        "stabilityFocusedBrands": "Brands that need stability and support",
+        "noInternalInfraTeam": "Businesses without a strong internal infrastructure team",
+        "coordinatedSupport": "Stores that want coordinated support"
+      },
+      "notForItems": {
+        "nonWordPress": "Non-WordPress websites",
+        "cheapestPlan": "Customers only looking for the cheapest plan",
+        "sharedHostingSeekers": "Generic shared hosting seekers",
+        "lowNeedProjects": "Projects that don’t require specialized monitoring and support"
+      }
+    },
+    "MonitoringSection": {
+      "title": "Your Store, Always Under Watch",
+      "description": "Real-time monitoring with continuous visibility into performance, health, and issues before they become bigger operational problems.",
+      "items": {
+        "liveStatus": "Live server and store status",
+        "healthMetrics": "Health indicators and performance signals",
+        "issueDetection": "Fast issue detection",
+        "operationalAlerts": "Operational alerts and ongoing awareness"
+      }
+    },
+    "prevProcessSection": {
+      "title": "How Your Journey With Unixsee Begins",
+      "description": "A structured process designed to reduce risk and create the right technical fit from day one.",
+      "steps": {
+        "assessment": {
+          "title": "Assess the current store",
+          "description": "We review your current store, infrastructure, risks, and operational needs."
+        },
+        "recommendation": {
+          "title": "Recommend the right setup",
+          "description": "We propose the right infrastructure and support model based on your stage and priorities."
+        },
+        "migrationOrLaunch": {
+          "title": "Migrate or launch",
+          "description": "We move your store or prepare the new environment with care and technical clarity."
+        },
+        "monitorAndSupport": {
+          "title": "Monitor, support, and scale",
+          "description": "After launch, we continue with monitoring, support, and operational follow-up."
+        }
+      }
+    },
+    "AdditionalServicesSection": {
+      "title": "Complementary Services for Store Growth",
+      "description": "These services exist to support the growth of stores already aligned with the Unixsee ecosystem.",
+      "items": {
+        "seo": "SEO",
+        "graphicDesign": "Graphic design",
+        "productDataEntry": "Product data entry",
+        "socialMedia": "Social media",
+        "operationalSupport": "eCommerce operational support"
+      }
+    },
+    "SocialProofSection": {
+      "title": "Experiences From Unixsee-Powered Stores",
+      "description": "Stores that improved stability, support, and operational readiness with a more focused infrastructure partner.",
+      "items": {
+        "caseStudy1": {
+          "title": "More stability under daily sales pressure",
+          "description": "A WooCommerce store moved away from generic hosting and gained more consistent performance and calmer operations."
+        },
+        "caseStudy2": {
+          "title": "Better support during critical store moments",
+          "description": "A growing brand gained access to support that understood store operations, plugins, and infrastructure risks together."
+        },
+        "caseStudy3": {
+          "title": "Improved readiness for traffic spikes",
+          "description": "A store preparing for campaigns and seasonal peaks entered a more controlled environment with better visibility."
+        }
+      }
+    },
+    "FAQSection": {
+      "title": "Frequently Asked Questions",
+      "description": "Answers to common questions before starting with us.",
+      "items": {
+        "woocommerceOnly": {
+          "question": "Is Unixsee a general hosting company?",
+          "answer": "No. Unixsee is a specialized provider of managed WooCommerce infrastructure and monitoring, focused specifically on stability, security, and technical optimization for growing, high-traffic online stores."
+        },
+        "managedServer": {
+          "question": "How is Unixsee’s managed WooCommerce server different from regular hosting?",
+          "answer": "With regular hosting, server management, security configuration, updates, and database issue resolution are usually your responsibility. At Unixsee, our engineering team handles infrastructure maintenance, while our real-time monitoring system continuously tracks the critical parts of WooCommerce, such as the cart and checkout process."
+        },
+        "migration": {
+          "question": "How does store migration to Unixsee work, and will there be any downtime?",
+          "answer": "The migration process is fully handled by the Unixsee technical team without downtime or data loss. First, we evaluate your current infrastructure. Then, the migration is performed during low-traffic hours. After full stability testing and optimization, your domain is connected to the new infrastructure."
+        },
+        "fixedPlans": {
+          "question": "Does Unixsee offer fixed public pricing plans?",
+          "answer": "No. Since every store has different conditions in terms of database size, traffic behavior, and operational needs, the infrastructure and service cost are determined based on an initial assessment and the real needs of your business."
+        },
+        "complementaryServices": {
+          "question": "How are complementary services such as SEO, design, and data entry provided?",
+          "answer": "These services are designed as supporting arms for business growth and are only provided to stores that use the Unixsee ecosystem, so every activity is handled by a coordinated team familiar with your store structure."
+        },
+        "bestFit": {
+          "question": "Which stores is this service best suited for?",
+          "answer": "Unixsee is built specifically for WordPress and WooCommerce stores that have reached the growth stage, run regular sales campaigns, lose revenue when server speed or uptime drops, and need a specialized technical team to take full responsibility for their infrastructure."
+        }
+      }
+    },
+    "BlogSection": {
+      "title": "Latest Insights From Unixsee",
+      "description": "Explore practical articles about WooCommerce hosting, infrastructure stability, performance, and operational reliability.",
+      "items": {
+        "woocommercePerformance": {
+          "title": "How Fast Hosting Improves WooCommerce Conversions",
+          "description": "Learn how infrastructure performance, caching, and server optimization directly affect user experience and store revenue.",
+          "action": {
+            "label": "Read More",
+            "href": "/"
+          }
+        },
+        "serverMonitoring": {
+          "title": "Why Server Monitoring Matters for Online Stores",
+          "description": "Discover how proactive monitoring helps detect issues early, reduce downtime, and maintain a stable shopping experience.",
+          "action": {
+            "label": "Read More",
+            "href": "/"
+          }
+        },
+        "migrationGuide": {
+          "title": "WooCommerce Migration Without Downtime",
+          "description": "Understand the structured migration process used to move stores safely while minimizing operational and SEO risks.",
+          "action": {
+            "label": "Read More",
+            "href": "/"
+          }
+        }
+      }
+    },
+    "CallToActionSection": {
+      "title": "Choose Your Store’s Right Infrastructure",
+      "description": "Share your current setup and challenges so we can recommend the right service.",
+      "primaryCTA": "Request Consultation"
+    },
+    "SiteFooter": {
+      "title": "Specialized WooCommerce infrastructure built for sustainable eCommerce growth",
+      "description": "Unixsee is a premium, managed infrastructure provider engineered for WooCommerce growth. By combining specialized architecture with 24/7 monitoring, we safeguard your store’s health so you can focus entirely on scaling your business. We see, we monitor, and we support.",
+      "nav": {
+        "home": "Home",
+        "managedServer": "Managed Server",
+        "complementaryServices": "Complementary Services",
+        "migrationOptimization": "Migration & Optimization",
+        "customers": "Customers",
+        "about": "About",
+        "contact": "Contact / Consultation"
+      },
+      "legal": {
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+      }
+    }
+  },
+  "ContactUsPage": {
+    "ContactFormSection": {
+      "title": "Contact with Unixsee",
+      "form": {
+        "fields": {
+          "subject": {
+            "label": "Select the subject",
+            "placeholder": "Select the subject",
+            "options": {
+              "managedServer": {
+                "label": "Managed Server",
+                "value": "managedServer"
+              },
+              "migrationOptimization": {
+                "label": "Migration & optimization",
+                "value": "migrationOptimization"
+              },
+              "woocommerceSupport": {
+                "label": "WooCommerce technical support",
+                "value": "woocommerceSupport"
+              },
+              "seo": {
+                "label": "SEO",
+                "value": "seo"
+              },
+              "graphicDesign": {
+                "label": "Graphic design",
+                "value": "graphicDesign"
+              },
+              "productDataEntry": {
+                "label": "Product data entry",
+                "value": "productDataEntry"
+              },
+              "socialMedia": {
+                "label": "Social media support",
+                "value": "socialMedia"
+              }
+            }
+          },
+          "fullName": {
+            "label": "Full name",
+            "placeholder": "Full name"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Business email"
+          },
+          "phone": {
+            "label": "Phone number",
+            "placeholder": "Phone number"
+          },
+          "message": {
+            "label": "Message content",
+            "placeholder": "Your message..."
+          },
+          "website": {
+            "label": "Website"
+          },
+          "activityBasin": {
+            "label": "Activity Basin"
+          },
+          "fileUpload": {
+            "label": "At most 5 images jpeg or PNG at most 1M, one video MP4 at most 50M",
+            "buttonLabel": "Upload image or video"
+          }
+        },
+        "actions": {
+          "sendMessage": "Send message"
+        }
+      }
+    },
+    "ContactInfoSection": {
+      "title": "Unixsee Information",
+      "office": {
+        "title": "Central Office"
+      },
+      "support": {
+        "title": "Post-Sales Support",
+        "description": "Please send the product for return and shipment to the post-sale services of Digikala via postal box 3469-15875. (You can initiate the return process through the 'My Orders' section)"
+      },
+      "contactInfo": {
+        "title": "24/7 Support and Availability",
+        "phone": {
+          "label": "Phone number",
+          "phone": "+981144412446",
+          "labelNumber": "+98 11 444 12446",
+          "href": "+981144412446"
+        },
+        "email": {
+          "label": "Email",
+          "value": "value@example.com"
+        }
+      }
+    }
+  },
+  "Email": {
+    "requestAssessment": {
+      "adminSubject": "New store assessment request — {fullName}",
+      "adminTitle": "New store assessment request",
+      "customerSubject": "We received your store assessment request",
+      "customerTitle": "Your request has been received",
+      "customerGreeting": "Hello {fullName},",
+      "customerDescription": "Thank you for contacting Unixsee. Our team will review your request and contact you as soon as possible.",
+      "fields": {
+        "requestId": "Request ID",
+        "fullName": "Full name",
+        "email": "Email",
+        "service": "Requested service",
+        "description": "Project description"
+      },
+      "notProvided": "Not provided"
+    },
+    "newsletter": {
+      "subject": "Your Unixsee newsletter subscription",
+      "title": "Your subscription request was received",
+      "description": "Your email has been added to the Unixsee newsletter list. We will only send relevant updates and useful content.",
+      "admin": {
+        "subject": "New newsletter subscription",
+        "title": "New newsletter subscription",
+        "description": "A new user subscribed to the Unixsee newsletter.",
+        "emailLabel": "Subscriber email"
+      }
+    }
+  },
+  "common": {
+    "emailPlaceholder": "Enter your email...",
+    "copywrite": ". All rights reserved.",
+    "brand": "Unixsee",
+    "slogan": "I see you",
+    "lightMode": "Light",
+    "darkMode": "Dark",
+    "system": "System",
+    "seeMore": "See more",
+    "seeLess": "See less",
+    "cancelLabel": "Cancel",
+    "phone": {
+      "label": "+98-11-444-12446",
+      "textMobile": "Call with Unixsee",
+      "text": "Phone number",
+      "href": "+981144412446"
+    },
+    "address": {
+      "label": "Address",
+      "value": "Iran, Mazandaran, Babolsar, Pasdaran Street, Corner of Pasdaran 24, Tarannom Complex, 6th Floor"
+    }
+  },
+  "Metadata": {
+    "dashboard": {
+      "title": "Unixsee Dashboard",
+      "description": "Manage websites, domains, and backups."
+    },
+    "search": {
+      "title": "Search | Unixsee",
+      "description": "Find websites, tickets, Help Center articles, pages, and common actions."
+    },
+    "activityHistory": {
+      "title": "Unixsee recent activities",
+      "description": "Review meaningful work and service events across your Unixsee account."
+    },
+    "notifications": {
+      "title": "Notifications | Unixsee",
+      "description": "Read the latest Unixsee stories, ideas, and product updates."
+    },
+    "notificationDetails": {
+      "title": "{notification} | Notifications | Unixsee"
+    },
+    "plans": {
+      "title": "Choose a plan | Unixsee",
+      "description": "Pick the plan that fits your new website before you add it."
+    },
+    "checkout": {
+      "title": "Checkout | Unixsee",
+      "description": "Confirm your plan and complete your purchase."
+    },
+    "plansSuccess": {
+      "title": "Purchase complete | Unixsee",
+      "description": "Your purchase is complete. Our team will call you shortly."
+    },
+    "helpCenter": {
+      "title": "Help Center | Unixsee",
+      "description": "Search guides, browse topics, and learn about Unixsee services and operational concepts."
+    },
+    "helpCenterTopic": {
+      "title": "{topic} | Help Center | Unixsee",
+      "description": "Guides and articles for {topic} on Unixsee."
+    },
+    "helpCenterArticle": {
+      "title": "{article} | Help Center | Unixsee",
+      "description": "Read the {article} guide in the {topic} section of the Unixsee Help Center."
+    },
+    "websites": {
+      "title": "Websites | Unixsee",
+      "description": "Manage your websites, connected domains, plans, and backups."
+    },
+    "domains": {
+      "title": "Domains | Unixsee",
+      "description": "View domains connected to your Unixsee websites."
+    },
+    "tickets": {
+      "title": "Tickets | Unixsee",
+      "description": "Create and track requests across Unixsee services."
+    },
+    "newTicket": {
+      "title": "New ticket | Unixsee",
+      "description": "Send a new request to Unixsee support."
+    },
+    "ticketDetails": {
+      "title": "{number} | Unixsee",
+      "description": "Conversation and status for ticket {number}."
+    },
+    "profile": {
+      "title": "Profile | Unixsee",
+      "description": "Manage your personal information and account security."
+    },
+    "complementaryServices": {
+      "title": "Complementary Services | Unixsee",
+      "description": "View specialist services connected to your websites."
+    },
+    "requestComplementaryService": {
+      "title": "Request a service | Unixsee",
+      "description": "Request a consultation with a Unixsee specialist."
+    },
+    "complementaryServiceDetails": {
+      "title": "Service details | Unixsee",
+      "description": "View service scope, progress, and activity."
+    },
+    "websiteDetails": {
+      "title": "{name} | Unixsee",
+      "description": "Monitoring details for {name}."
+    }
+  },
+  "Common": {
+    "userName": "Jane",
+    "viewAll": "View All",
+    "view": "View",
+    "views": {
+      "label": "View mode",
+      "table": "Table view",
+      "grid": "Grid view"
+    },
+    "actions": "Actions",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageNumber": "Page {page, number}",
+    "plans": {
+      "starter": "Starter",
+      "business": "Business",
+      "pro": "Pro",
+      "premium": "Premium",
+      "dedicated": "Dedicated",
+      "dedicatedPlan": "Dedicated Plan"
+    },
+    "statuses": {
+      "online": "Online",
+      "attention": "Attention",
+      "needsAttention": "Needs Attention",
+      "maintenance": "Maintenance",
+      "setupPending": "Setup Pending"
+    },
+    "backups": {
+      "successful": "Successful",
+      "scheduled": "Scheduled",
+      "needsReview": "Needs Review"
+    },
+    "descriptions": {
+      "ecommerce": "eCommerce Store",
+      "portfolio": "Creative Portfolio",
+      "saas": "SaaS Platform",
+      "agency": "Agency Website",
+      "blog": "Blog & Magazine"
+    },
+    "duration": {
+      "hoursMinutes": "{hours, number}h {minutes, number}m",
+      "minutes": "{minutes, number}m",
+      "minutesSeconds": "{minutes, number}m {seconds, number}s",
+      "current": "Current"
+    }
+  },
+  "Navigation": {
+    "primary": "Primary navigation",
+    "breadcrumb": "Breadcrumb",
+    "mobile": "Mobile navigation",
+    "open": "Open navigation",
+    "close": "Close navigation",
+    "dashboard": "Dashboard",
+    "activities": "Unixsee activities",
+    "domains": "Domains",
+    "websites": "Websites",
+    "billing": "Billing",
+    "support": "Support",
+    "tickets": "Tickets",
+    "complementaryServices": "Complementary Services",
+    "helpCenter": "Help Center",
+    "profile": "Profile",
+    "expand": "Expand menu",
+    "collapse": "Collapse menu",
+    "collapseLabel": "Collapse Menu",
+    "comingSoon": "Coming soon"
+  },
+  "Header": {
+    "searchLabel": "Search websites, tickets, pages, and actions",
+    "searchDefault": "Search websites, tickets, pages, and actions…",
+    "globalSearch": {
+      "title": "Search Unixsee",
+      "description": "Find an entity, jump to a page, or start a common action.",
+      "label": "Search websites, tickets, pages, and actions",
+      "open": "Open global search",
+      "placeholder": "Search websites, tickets, pages, and actions…",
+      "clear": "Clear search",
+      "cancel": "Cancel",
+      "resultsLabel": "Global search results",
+      "groups": {
+        "recent": "Recent",
+        "quickActions": "Quick actions",
+        "destinations": "Suggested destinations",
+        "websites": "Websites",
+        "tickets": "Tickets",
+        "helpCenter": "Help Center",
+        "pagesActions": "Pages and actions"
+      },
+      "types": {
+        "helpArticle": "Help article",
+        "action": "Action",
+        "page": "Page"
+      },
+      "items": {
+        "addWebsite": {
+          "label": "Add website",
+          "description": "Choose a plan and connect a new website"
+        },
+        "createTicket": {
+          "label": "Create support ticket",
+          "description": "Start a new request for Unixsee support"
+        },
+        "viewActivities": {
+          "label": "View activities",
+          "description": "Review recent service and account activity"
+        },
+        "websites": {
+          "label": "Websites",
+          "description": "Manage websites, status, plans, and backups"
+        },
+        "tickets": {
+          "label": "Tickets",
+          "description": "View and manage support requests"
+        },
+        "helpCenter": {
+          "label": "Help Center",
+          "description": "Browse guides and operational help"
+        }
+      },
+      "noResultsTitle": "No matching results",
+      "noResultsDescription": "Try a website name, domain, ticket number, page, or a broader term.",
+      "viewAllResults": "View all {count} results",
+      "allResults": {
+        "title": "Search results",
+        "summary": "{count, plural, one {# result} other {# results}} for “{query}”",
+        "description": "Use the header search to find websites, tickets, Help Center articles, pages, and actions.",
+        "emptyTitle": "Start a global search"
+      }
+    },
+    "helpCenter": "Help Center",
+    "applications": "Open applications",
+    "notifications": "Notifications, {count, plural, =0 {no unseen stories} one {# unseen story} other {# unseen stories}}",
+    "notificationCenter": {
+      "title": "Notifications",
+      "description": "The latest Unixsee stories, ideas, and product updates.",
+      "unseenCount": "{count, plural, =0 {No unseen notifications} one {# unseen story} other {# unseen stories}}",
+      "markAllSeen": "Mark all as seen",
+      "listLabel": "Latest Unixsee notifications",
+      "unseen": "Unseen",
+      "close": "Close notifications",
+      "emptyTitle": "No notifications yet",
+      "emptyDescription": "New Unixsee stories and product updates will appear here."
+    },
+    "profile": "Open profile menu",
+    "changeLanguage": "Switch language to {language}",
+    "english": "English",
+    "persian": "Persian"
+  },
+  "Dashboard": {
+    "hero": {
+      "title": "Welcome Back, {name}!",
+      "description": "Manage your websites, domains, backups, and account services from one place.",
+      "addSite": "Add Site"
+    },
+    "table": {
+      "title": "Your Websites",
+      "viewAll": "View All Websites",
+      "caption": "Your websites and their current status",
+      "website": "Website",
+      "domain": "Connected Domain",
+      "plan": "Plan",
+      "status": "Status",
+      "backup": "Backup",
+      "lastUpdated": "Last Updated",
+      "siteActions": "Actions for {name}",
+      "summary": "Showing {start, number} to {end, number} of {total, number} websites"
+    },
+    "feeds": {
+      "notifications": "Notifications",
+      "activities": "Unixsee recent activities",
+      "allNotifications": "View all notifications",
+      "allActivities": "View all Unixsee activities",
+      "platformUpdateTitle": "What's new at Unixsee this month",
+      "platformUpdateDetail": "A quick look at the latest product and service improvements.",
+      "seoGuideTitle": "New SEO guide: building search visibility",
+      "seoGuideDetail": "Practical recommendations for improving your website's organic reach.",
+      "designShowcaseTitle": "Design inspiration: July highlights",
+      "designShowcaseDetail": "A curated selection of visual ideas from the Unixsee design team.",
+      "socialMediaTrendsTitle": "Social media trends worth watching",
+      "socialMediaTrendsDetail": "Formats and audience behaviors shaping this month's content.",
+      "domainConnected": "Connected domain {domain}",
+      "backupCreated": "Backup created for {domain}",
+      "contentUpdated": "Updated content on {domain}",
+      "ticketResolved": "Support ticket #{id} resolved"
+    },
+    "status": {
+      "title": "Website Status",
+      "total": "{count} total",
+      "attention": "Needs Attention",
+      "online": "Online & Healthy",
+      "maintenance": "Under Maintenance",
+      "setupPending": "Setup Pending",
+      "viewAll": "View All Websites"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "addSite": "Add Site",
+      "connectDomain": "Connect Domain",
+      "createBackup": "Create Backup",
+      "openTicket": "Open Ticket"
+    },
+    "help": {
+      "title": "Need Help?",
+      "description": "Our support team is here 24/7 to help you succeed.",
+      "contact": "Contact Support",
+      "visit": "Visit Help Center",
+      "dialogTitle": "Contact Unixsee support",
+      "dialogDescription": "Call us directly, copy our support number, or create a ticket for help that needs more detail.",
+      "phoneLabel": "Unixsee support number",
+      "call": "Call support",
+      "copy": "Copy number",
+      "copied": "Number copied",
+      "copyError": "Could not copy",
+      "createTicket": "Create a support ticket",
+      "close": "Close support dialog"
+    }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "description": "The latest Unixsee stories, ideas, and product updates, collected in one place.",
+    "listLabel": "Latest Unixsee notifications",
+    "unseen": "Unseen",
+    "back": "Back to notifications",
+    "more": "More notifications",
+    "relatedLabel": "Related notifications",
+    "published": "Published {date, date, shortDate}",
+    "date": "{date, date, shortDate}",
+    "readingTime": "{count, plural, one {# min read} other {# min read}}",
+    "loading": "Loading notifications",
+    "categories": {
+      "platformUpdate": "Product update",
+      "seoGuide": "SEO guide",
+      "designShowcase": "Design inspiration",
+      "socialMediaTrends": "Social media"
+    },
+    "articles": {
+      "platformUpdate": {
+        "imageAlt": "Unixsee dashboard illustration showing website monitoring, recent activity, performance checks, and complementary services.",
+        "first": {
+          "title": "A smoother day-to-day experience",
+          "paragraphOne": "This month’s improvements focus on the small moments that make managing your online work feel clearer. Dashboard navigation is more consistent, recent activity is easier to review, and important service information stays close to the work it describes.",
+          "paragraphTwo": "We also refined how complementary services appear across Unixsee. SEO, graphic design, product data entry, and social media support now use a shared structure, making it easier to understand where work is happening and what changed."
+        },
+        "second": {
+          "title": "What comes next",
+          "paragraphOne": "The next round of improvements will continue to connect notifications with the pages they describe. Each story will provide enough context to understand the update without turning the experience into an urgent alert or operational task.",
+          "paragraphTwo": "Your feedback continues to shape these refinements. As the dashboard evolves, we will keep prioritizing calm communication, predictable navigation, and information that is useful when you choose to read it."
+        }
+      },
+      "seoGuide": {
+        "first": {
+          "title": "Build strong search foundations",
+          "paragraphOne": "Search visibility starts with pages that answer a clear question well. Give every important page one focused purpose, a descriptive title, and a summary that helps people understand what they will find before they open it.",
+          "paragraphTwo": "Technical health matters too. Stable page addresses, descriptive links, useful alternative text, and fast loading give search engines a clearer view of the site while also improving the experience for visitors."
+        },
+        "second": {
+          "title": "Create a repeatable review routine",
+          "paragraphOne": "Review performance on a regular schedule instead of reacting to isolated changes. Look for pages that steadily gain impressions, queries that bring the right audience, and content that receives attention but does not yet lead to meaningful engagement.",
+          "paragraphTwo": "Use those signals to update the most valuable pages first. Small improvements to clarity, internal links, and content depth are easier to measure and maintain than a large collection of disconnected SEO changes."
+        }
+      },
+      "designShowcase": {
+        "first": {
+          "title": "Clarity before decoration",
+          "paragraphOne": "The strongest work in this month’s selection uses hierarchy before ornament. Confident headings, deliberate spacing, and a restrained color palette help the message arrive quickly without making the composition feel plain.",
+          "paragraphTwo": "Editorial layouts are also becoming more flexible. Large type, compact supporting details, and modular image areas create personality while still adapting cleanly to smaller screens and translated content."
+        },
+        "second": {
+          "title": "Designing as a system",
+          "paragraphOne": "A memorable visual direction becomes more useful when it can repeat. Reusable spacing, typography, image treatments, and component patterns make each new asset feel connected without forcing every piece to look identical.",
+          "paragraphTwo": "When reviewing new work, test the system with both short and long content. A design that remains balanced in English and Persian is more resilient and easier to extend across future campaigns."
+        }
+      },
+      "socialMediaTrends": {
+        "first": {
+          "title": "Formats people finish",
+          "paragraphOne": "Audiences are responding to content that reaches its point quickly and rewards continued attention. Short demonstrations, focused carousels, and concise explanations work best when every frame contributes to one clear idea.",
+          "paragraphTwo": "The opening still matters, but a strong hook should accurately represent the rest of the story. Clear expectations build more durable attention than exaggerated promises that the content cannot support."
+        },
+        "second": {
+          "title": "Consistency over volume",
+          "paragraphOne": "A recognizable publishing rhythm is often more valuable than posting as frequently as possible. Consistent topics, visual cues, and tone help the right audience understand what they can expect from the brand.",
+          "paragraphTwo": "Choose a small group of repeatable formats, review how people respond, and refine them over time. This creates a practical content system while leaving room for timely ideas and experimentation."
+        }
+      }
+    }
+  },
+  "ActivityHistory": {
+    "title": "Unixsee recent activities",
+    "description": "The latest meaningful work and service events across your Unixsee account.",
+    "allActivity": "All Unixsee activities",
+    "resultSummary": "Showing {shown, number} of {total, number} activities",
+    "timelineLabel": "Account activity timeline",
+    "filters": {
+      "service": "Service",
+      "resource": "Resource or project",
+      "allResources": "All resources",
+      "dateRange": "Date range",
+      "mobile": "Filters",
+      "clear": "Clear all filters",
+      "start": "Start date",
+      "end": "End date",
+      "dateError": "The end date must be on or after the start date."
+    },
+    "categories": {
+      "all": "All services",
+      "seo": "SEO",
+      "graphic-design": "Graphic Design",
+      "product-data-entry": "Product Data Entry",
+      "social-media-support": "Social Media Support"
+    },
+    "dateRanges": {
+      "all": "All time",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "custom": "Custom range"
+    },
+    "dates": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "records": {
+      "availabilityRestored": "Availability restored for {domain} after an automated recovery action.",
+      "backupCompleted": "Daily backup completed for {domain}.",
+      "catalogImported": "Product catalog import completed: {count, number} records processed.",
+      "contentScheduleApproved": "July content schedule approved for the {project} campaign.",
+      "dnsUpdated": "DNS configuration updated for {domain}.",
+      "domainConnected": "Domain {domain} connected successfully.",
+      "formPublished": "Contact form update published to {domain}.",
+      "monitoringDetected": "A service issue was detected for {domain} and requires review.",
+      "projectArchived": "Completed project {project} was archived.",
+      "revisionDelivered": "Homepage banner revision delivered for the {project} project.",
+      "seoReviewCompleted": "Monthly SEO review completed for {domain}.",
+      "ticketResolved": "Support ticket {id} was resolved.",
+      "websiteContentUpdated": "Website content update published to {domain}."
+    },
+    "sources": {
+      "monitoring": "Unixsee Monitoring",
+      "team": "Unixsee Team",
+      "customer": "Customer"
+    },
+    "outcomes": {
+      "completed": "Completed",
+      "resolved": "Resolved",
+      "updated": "Updated",
+      "detected": "Detected",
+      "restored": "Restored",
+      "attention": "Attention required"
+    },
+    "viewResource": "View resource",
+    "resourceUnavailable": "Resource unavailable",
+    "loadMore": "Load older activity",
+    "loadingOlder": "Loading older activity",
+    "endOfHistory": "You’ve reached the beginning of your activity history.",
+    "states": {
+      "emptyTitle": "No activity yet",
+      "emptyDescription": "Meaningful monitoring and service work will appear here as your Unixsee services become active.",
+      "filteredTitle": "No matching activity",
+      "filteredDescription": "No activities match the selected filters. Clear the filters to return to the account-wide history.",
+      "errorTitle": "Activity could not be loaded",
+      "errorDescription": "The local activity view is temporarily unavailable. Try again to restore the activity history.",
+      "loadErrorTitle": "Older activity could not be loaded",
+      "loadErrorDescription": "Your existing results are still available. Try loading the older activity again.",
+      "retry": "Try again"
+    }
+  },
+  "Plans": {
+    "title": "Choose a plan",
+    "description": "Select the plan that fits your new website. You can change it later.",
+    "back": "Back to websites",
+    "recommended": "Recommended",
+    "perMonth": "/mo",
+    "select": "Choose {plan}",
+    "featuresLabel": "What's included",
+    "empty": "Plans will be available here soon."
+  },
+  "Checkout": {
+    "title": "Complete your purchase",
+    "description": "Review your plan and confirm. No payment is taken in this demo.",
+    "back": "Back to plans",
+    "summaryTitle": "Order summary",
+    "planLabel": "Plan",
+    "billingLabel": "Billing",
+    "billingValue": "Monthly",
+    "totalLabel": "Total due today",
+    "perMonth": "/mo",
+    "contactTitle": "Contact details",
+    "contactDescription": "We use these to reach you about setup.",
+    "nameLabel": "Full name",
+    "namePlaceholder": "Jane Doe",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "+1 555 000 1234",
+    "nameError": "Please enter your name.",
+    "phoneError": "Please enter a phone number.",
+    "pay": "Complete purchase",
+    "processing": "Processing...",
+    "reassurance": "By completing your purchase, our team will contact you to finish setup."
+  },
+  "PlansSuccess": {
+    "title": "Your purchase is complete!",
+    "description": "Thank you for your order. Our team will call you as soon as possible to finish setting up your plan.",
+    "planLabel": "Purchased plan",
+    "nextTitle": "What happens next",
+    "step1": "Our team reviews your order.",
+    "step2": "We call you to confirm setup details.",
+    "step3": "Your plan goes live and your website is ready.",
+    "backToWebsites": "Go to websites",
+    "viewPlans": "View plans"
+  },
+  "HelpCenter": {
+    "intro": {
+      "eyebrow": "Help Center",
+      "title": "Find Unixsee answers and guides",
+      "description": "Explore troubleshooting guides, platform documentation, and best practices."
+    },
+    "search": {
+      "label": "Search the Help Center",
+      "placeholder": "What do you need help with?",
+      "hint": "Try: Getting started · Performance & caching · DNS & SSL · Migration",
+      "popularTopicsLabel": "Popular topics",
+      "searchButton": "Search",
+      "resultsSummary": "{count, plural, =0 {No results} one {# result} other {# results}}",
+      "empty": "Nothing matches “{query}”. Try another term or browse the topics below.",
+      "clear": "Clear search",
+      "topicSuggestionsLabel": "Browse topics",
+      "articleSuggestionsLabel": "Articles",
+      "submitHint": "Press Enter to search",
+      "noSuggestions": "No matches for “{query}”",
+      "searchAll": "Search all Help Center guides for “{query}”",
+      "topicContext": "Search in {topic} or all guides"
+    },
+    "topics": {
+      "sectionTitle": "Browse by topic",
+      "articleCount": "{count, plural, one {# article} other {# articles}}",
+      "items": {
+        "gettingStarted": {
+          "title": "Getting started with Unixsee",
+          "articleCount": "8"
+        },
+        "managedWoo": {
+          "title": "Managed WooCommerce infrastructure",
+          "articleCount": "12"
+        },
+        "performanceCaching": {
+          "title": "Performance & caching",
+          "articleCount": "9"
+        },
+        "monitoringAvailability": {
+          "title": "Monitoring & availability",
+          "articleCount": "7"
+        },
+        "wooOperations": {
+          "title": "WooCommerce operations",
+          "articleCount": "15"
+        },
+        "securityBackups": {
+          "title": "Security, backups & recovery",
+          "articleCount": "10"
+        },
+        "domainsDnsSslMigrations": {
+          "title": "Domains, DNS, SSL & migrations",
+          "articleCount": "11"
+        },
+        "campaignReadiness": {
+          "title": "Campaign & traffic readiness",
+          "articleCount": "6"
+        },
+        "accountServices": {
+          "title": "Account & service management",
+          "articleCount": "5"
+        },
+        "seoDesignContent": {
+          "title": "SEO, design & store content",
+          "articleCount": "9"
+        }
+      }
+    },
+    "guides": {
+      "sectionTitle": "Popular guides",
+      "updated": "Last updated: {date}",
+      "type": {
+        "stepByStep": "Step-by-step guide",
+        "checklist": "Checklist"
+      },
+      "items": {
+        "domainConnect": {
+          "title": "Connecting a domain to your WooCommerce store",
+          "description": "Steps to connect a domain and fix common domain-path issues."
+        },
+        "speedCdn": {
+          "title": "Speeding up your store with caching or a CDN",
+          "description": "Practical ways to improve store page-load performance."
+        },
+        "securitySettings": {
+          "title": "Essential security settings for WooCommerce",
+          "description": "Key steps to secure your store and protect its data."
+        },
+        "migrateToUnixsee": {
+          "title": "Migrating your site to Unixsee infrastructure",
+          "description": "A step-by-step guide to migrating onto Unixsee managed servers."
+        }
+      }
+    },
+    "allTopics": {
+      "sectionTitle": "All topics",
+      "description": "Navigate the full list of Unixsee help topics.",
+      "articleCount": "{count, plural, one {# article} other {# articles}}",
+      "items": {
+        "gettingStarted": {
+          "summary": "Installation, first-time setup, and getting to know the Unixsee panel."
+        },
+        "managedWoo": {
+          "summary": "Managing dedicated infrastructure and configuring WooCommerce."
+        },
+        "performanceCaching": {
+          "summary": "Caching, speed optimization, and reducing load times."
+        },
+        "monitoringAvailability": {
+          "summary": "Real-time monitoring, alerts, and availability checks."
+        },
+        "wooOperations": {
+          "summary": "Orders, payments, plugins, and day-to-day store operations."
+        },
+        "securityBackups": {
+          "summary": "Hardening, taking backups, and restoring data."
+        },
+        "domainsDnsSslMigrations": {
+          "summary": "Connecting domains, DNS setup, SSL certificates, and migration."
+        },
+        "campaignReadiness": {
+          "summary": "Preparing your store for high traffic and campaigns."
+        },
+        "accountServices": {
+          "summary": "Managing your account, billing, and services."
+        },
+        "seoDesignContent": {
+          "summary": "SEO, design, and store content production services."
+        }
+      }
+    },
+    "topicPage": {
+      "startHere": "Start here",
+      "articleType": {
+        "stepByStep": "Step-by-step",
+        "explainer": "Explainer",
+        "checklist": "Checklist",
+        "reference": "Reference"
+      },
+      "mobileNav": {
+        "label": "Help topics",
+        "current": "Help topics · {topic}",
+        "description": "Browse the full list of Unixsee help topics."
+      },
+      "recovery": {
+        "allTopics": "See all topics",
+        "search": "Search the Help Center"
+      },
+      "articleCount": "{count, plural, one {# article} other {# articles}}"
+    },
+    "topicPages": {
+      "gettingStarted": {
+        "scope": "Everything you need to install Unixsee, sign in for the first time, and find your way around the panel.",
+        "groups": {
+          "basics": "The basics",
+          "account": "Your account"
+        },
+        "articles": {
+          "whatIsUnixsee": {
+            "title": "What is Unixsee?",
+            "description": "A quick overview of the platform and what it manages for your store."
+          },
+          "firstLogin": {
+            "title": "Signing in for the first time",
+            "description": "Activate your account and complete the initial setup."
+          },
+          "dashboardTour": {
+            "title": "A tour of the dashboard",
+            "description": "Where to find websites, monitoring, backups, and settings."
+          },
+          "connectSite": {
+            "title": "Connecting your first site",
+            "description": "Add a website to Unixsee and confirm it's reporting data."
+          },
+          "inviteTeam": {
+            "title": "Inviting your team",
+            "description": "Add colleagues and choose what each of them can access."
+          },
+          "planLimits": {
+            "title": "Plan limits and quotas",
+            "description": "How resources, sites, and features map to your current plan."
+          }
+        }
+      },
+      "managedWoo": {
+        "scope": "How Unixsee runs and scales your managed WooCommerce infrastructure.",
+        "groups": {
+          "platform": "The platform",
+          "scaling": "Scaling & environments"
+        },
+        "articles": {
+          "stack": {
+            "title": "The managed stack",
+            "description": "The web server, PHP, and database layers behind your store."
+          },
+          "phpVersions": {
+            "title": "Supported PHP versions",
+            "description": "Which versions are available and how to switch safely."
+          },
+          "autoscale": {
+            "title": "How autoscaling works",
+            "description": "The way resources expand and contract as demand changes."
+          },
+          "resourceLimits": {
+            "title": "Resource limits",
+            "description": "CPU, memory, and worker limits for each plan tier."
+          },
+          "staging": {
+            "title": "Creating a staging site",
+            "description": "Clone your store to test changes before they go live."
+          }
+        }
+      },
+      "performanceCaching": {
+        "scope": "Understand caching, diagnose slow pages, and tune performance for your store.",
+        "groups": {
+          "intro": "Understand caching",
+          "troubleshoot": "Diagnose a slow site",
+          "tune": "Tune your cache"
+        },
+        "articles": {
+          "whatIsCache": {
+            "title": "What is caching?",
+            "description": "How cached responses cut work and speed up your pages."
+          },
+          "whatIsTtfb": {
+            "title": "What is TTFB?",
+            "description": "Time to first byte and why it matters for perceived speed."
+          },
+          "whySlow": {
+            "title": "Why is my site slow?",
+            "description": "The most common causes of slow pages and how to spot them."
+          },
+          "firstChecks": {
+            "title": "First things to check",
+            "description": "A short checklist to run before digging deeper."
+          },
+          "pageVsObject": {
+            "title": "Page vs. object caching",
+            "description": "What each layer stores and when each one helps."
+          },
+          "whenPurge": {
+            "title": "When to purge the cache",
+            "description": "Situations that call for a manual purge — and when to wait."
+          }
+        }
+      },
+      "monitoringAvailability": {
+        "scope": "Track uptime, read the monitoring timeline, and respond when an incident starts.",
+        "groups": {
+          "uptime": "Uptime checks",
+          "incidents": "Incidents"
+        },
+        "articles": {
+          "checks": {
+            "title": "How uptime checks work",
+            "description": "What Unixsee probes, how often, and from where."
+          },
+          "readTimeline": {
+            "title": "Reading the monitoring timeline",
+            "description": "Interpret status, latency, and gaps at a glance."
+          },
+          "respond": {
+            "title": "Responding to an incident",
+            "description": "Steps to take the moment a site goes down."
+          },
+          "statusHistory": {
+            "title": "Status history",
+            "description": "Where past incidents and durations are recorded."
+          }
+        }
+      },
+      "wooOperations": {
+        "scope": "Run day-to-day WooCommerce operations, from orders to catalog and taxes.",
+        "groups": {
+          "orders": "Orders & payments",
+          "catalog": "Catalog & inventory"
+        },
+        "articles": {
+          "manageOrders": {
+            "title": "Managing orders",
+            "description": "Find, process, and update orders from the dashboard."
+          },
+          "refunds": {
+            "title": "Issuing a refund",
+            "description": "Refund an order fully or partially and notify the customer."
+          },
+          "products": {
+            "title": "Adding products",
+            "description": "Create products, variations, and pricing."
+          },
+          "inventory": {
+            "title": "Inventory checklist",
+            "description": "Keep stock levels accurate across your catalog."
+          },
+          "taxes": {
+            "title": "Tax settings reference",
+            "description": "How tax rates and classes are configured."
+          }
+        }
+      },
+      "securityBackups": {
+        "scope": "Harden your store, back it up on a schedule, and restore quickly when needed.",
+        "groups": {
+          "harden": "Harden your store",
+          "recover": "Backup & restore"
+        },
+        "articles": {
+          "essentials": {
+            "title": "Security essentials",
+            "description": "A short checklist covering the highest-impact protections."
+          },
+          "access": {
+            "title": "Controlling access",
+            "description": "Limit who can sign in and what they can change."
+          },
+          "firewall": {
+            "title": "How the firewall works",
+            "description": "What the web application firewall blocks and why."
+          },
+          "restore": {
+            "title": "Restoring from a backup",
+            "description": "Roll your store back to an earlier snapshot."
+          },
+          "schedule": {
+            "title": "Backup schedule reference",
+            "description": "Retention windows and how often snapshots run."
+          }
+        }
+      },
+      "domainsDnsSslMigrations": {
+        "scope": "Connect a domain, manage DNS and SSL, and migrate a site into Unixsee.",
+        "groups": {
+          "connect": "Connect a domain",
+          "ssl": "SSL certificates",
+          "migrate": "Migrations"
+        },
+        "articles": {
+          "pointDomain": {
+            "title": "Pointing your domain",
+            "description": "Direct your domain to Unixsee step by step."
+          },
+          "dnsRecords": {
+            "title": "DNS records reference",
+            "description": "The records Unixsee expects and what each one does."
+          },
+          "issueSsl": {
+            "title": "Issuing an SSL certificate",
+            "description": "Secure your domain with HTTPS."
+          },
+          "fixSsl": {
+            "title": "Fixing SSL problems",
+            "description": "A checklist for the most common certificate errors."
+          },
+          "migrateSite": {
+            "title": "Migrating a site to Unixsee",
+            "description": "Move an existing store with minimal downtime."
+          }
+        }
+      },
+      "campaignReadiness": {
+        "scope": "Prepare your store to handle campaign traffic without slowing down or going offline.",
+        "groups": {
+          "prepare": "Prepare",
+          "scale": "Handle the traffic"
+        },
+        "articles": {
+          "checklist": {
+            "title": "Campaign readiness checklist",
+            "description": "Everything to confirm before a big sale."
+          },
+          "loadTest": {
+            "title": "Running a load test",
+            "description": "Simulate campaign traffic to find limits early."
+          },
+          "trafficSpikes": {
+            "title": "How traffic spikes are handled",
+            "description": "The way infrastructure absorbs sudden demand."
+          },
+          "cdn": {
+            "title": "Using the CDN",
+            "description": "Serve assets from the edge to stay fast under load."
+          }
+        }
+      },
+      "accountServices": {
+        "scope": "Manage billing, plans, and the people on your account.",
+        "groups": {
+          "billing": "Billing & plans",
+          "team": "Team & access"
+        },
+        "articles": {
+          "invoices": {
+            "title": "Invoices reference",
+            "description": "Where to find and download your invoices."
+          },
+          "changePlan": {
+            "title": "Changing your plan",
+            "description": "Upgrade or downgrade and understand what changes."
+          },
+          "roles": {
+            "title": "Roles reference",
+            "description": "What each role can see and do."
+          },
+          "transfer": {
+            "title": "Transferring ownership",
+            "description": "Hand an account or site over to someone else."
+          }
+        }
+      },
+      "seoDesignContent": {
+        "scope": "Improve SEO and prepare design and content for your store.",
+        "groups": {
+          "seo": "SEO",
+          "content": "Design & content"
+        },
+        "articles": {
+          "basics": {
+            "title": "SEO basics checklist",
+            "description": "Foundational steps that help your store get found."
+          },
+          "sitemaps": {
+            "title": "Sitemaps reference",
+            "description": "How sitemaps are generated and submitted."
+          },
+          "images": {
+            "title": "Optimizing images",
+            "description": "Keep visuals sharp without slowing pages down."
+          },
+          "storefront": {
+            "title": "Preparing your storefront",
+            "description": "Set up a clean, fast-loading store layout."
+          }
+        }
+      }
+    },
+    "articlePage": {
+      "onThisPage": "On this page",
+      "relatedArticles": "Related articles",
+      "backToTopic": "Back to {topic}",
+      "allTopicsLink": "All topics",
+      "readingTime": "{minutes} min read",
+      "lastReviewed": "Last reviewed {date}",
+      "copyCode": "Copy",
+      "copied": "Copied!",
+      "notices": {
+        "beforeYouBegin": "Before you begin",
+        "tip": "Tip",
+        "important": "Important",
+        "warning": "Warning"
+      },
+      "keyTakeaways": "Key takeaways",
+      "expectedOutcome": "Expected outcome",
+      "checklistHint": "These checkboxes are for your reference only.",
+      "recovery": {
+        "title": "Didn't find what you were looking for?",
+        "search": "Search Help Center",
+        "backToTopic": "Back to {topic}",
+        "allTopics": "Browse all topics"
+      },
+      "notFound": {
+        "title": "Guide not found",
+        "description": "This guide is not available or may have been moved.",
+        "search": "Search Help Center",
+        "allTopics": "Browse all topics",
+        "home": "Help Center"
+      }
+    },
+    "articleBodies": {
+      "performanceCaching": {
+        "whatIsTtfb": {
+          "lede": "TTFB — Time to First Byte — measures how long a browser waits before it receives the first byte of a server response. It is one of the earliest signals of site performance.",
+          "h1": "What is TTFB?",
+          "p1": "When a browser makes a request to your site, the server must receive it, process it, and begin sending a response. TTFB counts only the time until that first byte arrives — not how long the full page takes to load.",
+          "h2": "Factors that affect TTFB",
+          "p2": "Several delays accumulate before any content is sent:",
+          "l1": "DNS lookup — translating the domain name to a server IP address.",
+          "l2": "TCP and TLS handshakes — establishing and securing the connection.",
+          "l3": "Time to send the request — usually very short on modern connections.",
+          "l4": "Server processing time — generating or retrieving the response.",
+          "h3": "When is TTFB a sign of a problem?",
+          "p3": "For a cached static response, a TTFB above 200 ms is worth investigating. For uncached dynamic pages, values up to 500 ms are common and expected.",
+          "n1": "TTFB alone does not describe the full user experience. Rendering, JavaScript execution, and image loading all affect what users see, but none of these are reflected in TTFB.",
+          "h4": "Limitations of this metric",
+          "p4": "TTFB is sensitive to network conditions between the user and the server. A user on a mobile connection far from the data center will always see a higher TTFB than a fiber user next to it. Use a CDN to bring content closer to your audience.",
+          "k1": "TTFB measures the time until the first byte of a server response arrives.",
+          "k2": "A high TTFB on a cached page is a useful signal; a high TTFB on an uncached dynamic page is expected.",
+          "k3": "Network distance, DNS, TLS, and server processing all add to TTFB."
+        },
+        "firstChecks": {
+          "purpose": "Run through these checks before spending time on deeper performance analysis. Each one is quick to confirm and covers the most common causes of a suddenly slow site.",
+          "h1": "Checklist",
+          "c1": "Reproduce the issue in an incognito window without extensions to rule out a local cache or plugin conflict.",
+          "c2": "Check the monitoring timeline for any downtime or elevated response times in the last 24 hours.",
+          "c3": "Test with a tool such as GTmetrix or PageSpeed Insights to get an objective baseline measurement.",
+          "c4": "Verify that page caching is active and returning cached responses for anonymous visitors.",
+          "c5": "Check for a recent change: plugin update, theme change, content import, or traffic spike.",
+          "tip": "Run speed checks from a data center in the same region as your customers for a more representative result.",
+          "h2": "What to do next",
+          "after": "If all five checks pass and the site is still slow, open the performance topic for deeper investigation guides."
+        },
+        "whenPurge": {
+          "scope": "Cache purging clears stored responses and forces your server to rebuild them fresh. Knowing when to purge prevents unnecessary load and avoids clearing caches that are still serving users correctly.",
+          "h1": "When to purge",
+          "thWhen": "Situation",
+          "thAction": "Recommended action",
+          "r1a": "You published or updated a page and the old version is still visible",
+          "r1b": "Purge the cache for that URL only",
+          "r2a": "A plugin or theme update changed global layout or CSS",
+          "r2b": "Purge the full site cache",
+          "r3a": "Prices, inventory, or time-sensitive data are stale",
+          "r3b": "Purge specific URLs or object-cache keys",
+          "h2": "Running a full purge via WP-CLI",
+          "p2": "Use WP-CLI when you need to purge from the command line or from a script:",
+          "cap": "Clears all cached objects and page cache entries.",
+          "h3": "Limitations",
+          "n1": "A full purge causes a brief spike in server load while pages are rebuilt. For high-traffic stores, purge individual URLs where possible, or schedule a full purge outside peak hours.",
+          "k1": "Purge individual URLs first; full-site purges cause a short load spike.",
+          "k2": "Purge immediately after publishing changes that must be visible to all users."
+        },
+        "whatIsCache": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "what-is-caching",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "how-caching-works",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "heading",
+              "id": "page-cache",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "object-cache",
+              "textKey": "h4"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p5"
+            },
+            {
+              "kind": "heading",
+              "id": "cache-benefits",
+              "textKey": "h5"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "heading",
+              "id": "when-cache-needs-clearing",
+              "textKey": "h6"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p6"
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Understand how caching works and why it is important for improving WooCommerce store performance.",
+          "h1": "What is caching?",
+          "p1": "Caching is a technique that stores frequently requested data so it can be delivered faster without repeating the same processing every time a visitor requests a page.",
+          "p2": "For WooCommerce stores, caching helps reduce unnecessary server work and improves the speed of common customer interactions.",
+          "h2": "How does caching work?",
+          "p3": "When a visitor opens a page, the system can either generate the response from the application or serve a previously stored version from cache.",
+          "h3": "Page caching",
+          "p4": "Page caching stores generated page responses so future visitors can receive the content faster without requiring WordPress and WooCommerce to rebuild the page every time.",
+          "h4": "Object caching",
+          "p5": "Object caching stores frequently used data from the application, such as database query results, so repeated operations can complete faster.",
+          "h5": "Benefits of caching",
+          "l1": "Reduces server processing time.",
+          "l2": "Improves page loading speed for visitors.",
+          "l3": "Helps stores handle more traffic efficiently.",
+          "h6": "When should cache be cleared?",
+          "p6": "Cache may need to be cleared after important changes such as updating website design, changing configuration, or modifying content that should appear immediately.",
+          "k1": "Caching stores reusable data to improve performance.",
+          "k2": "Different cache layers improve different parts of the WooCommerce experience.",
+          "k3": "Correct cache management helps maintain a fast and reliable store."
+        }
+      },
+      "gettingStarted": {
+        "whatIsUnixsee": {
+          "lede": "Learn what Unixsee is and how it helps WooCommerce stores.",
+          "h1": "What is Unixsee?",
+          "p1": "Unixsee is a managed WooCommerce infrastructure platform designed to help store owners run their online stores with less technical complexity.",
+          "p2": "It combines managed infrastructure, monitoring, and operational tools to provide better visibility into website health and performance.",
+          "h2": "How does Unixsee work?",
+          "p3": "Unixsee connects your WooCommerce environment with tools that help you understand the current state of your store.",
+          "h3": "Managed infrastructure",
+          "p4": "Unixsee provides an environment prepared for WooCommerce workloads such as products, orders, customer activity, and traffic changes.",
+          "h4": "Website monitoring",
+          "p5": "Unixsee monitors important signals such as availability, response time, SSL status, and operational events.",
+          "h5": "Key takeaways",
+          "k1": "Unixsee is built for WooCommerce infrastructure.",
+          "k2": "It provides visibility into website health and performance.",
+          "k3": "It helps store owners manage operations more effectively."
+        },
+        "firstLogin": {
+          "outcome": "By the end of this guide, you will have signed in to the Unixsee dashboard for the first time and confirmed that your account is active.",
+          "before": "You need the invitation email sent to your registered address. Check your spam folder if it has not arrived within ten minutes of account creation.",
+          "h1": "Steps",
+          "s1": "Open the invitation email and click the activation link. The link is valid for 48 hours.",
+          "s2": "You will be taken to the login page. Enter your email address and click Continue.",
+          "s3": "Create a strong password. Use at least twelve characters with a mix of letters, numbers, and symbols.",
+          "s3warn": "Do not reuse a password from another service. If your password is compromised, all sites managed under this account are at risk.",
+          "s4": "After setting your password, you will land on the Unixsee dashboard. Check that your company name appears in the top bar and that at least one website is listed.",
+          "h2": "Confirming your setup",
+          "o1": "The dashboard header shows your company name.",
+          "o2": "The website list shows at least one connected site.",
+          "o3": "Your monitoring status shows Active or Setup pending — not an error state."
+        }
+      },
+      "managedWoo": {
+        "stack": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "what-is-managed-stack",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "stack-layers",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "heading",
+              "id": "web-server",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "php-layer",
+              "textKey": "h4"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p5"
+            },
+            {
+              "kind": "heading",
+              "id": "database-layer",
+              "textKey": "h5"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p6"
+            },
+            {
+              "kind": "heading",
+              "id": "why-managed-stack",
+              "textKey": "h6"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p7"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Understand the technology layers that power a managed WooCommerce store on Unixsee.",
+          "h1": "The managed stack",
+          "p1": "The managed stack is the combination of server technologies, application services, and configurations that work together to run your WooCommerce store.",
+          "p2": "Instead of manually configuring each layer, Unixsee manages the underlying environment so your store can run on infrastructure prepared for ecommerce workloads.",
+          "h2": "The layers behind your store",
+          "p3": "A WooCommerce store depends on multiple layers working together. Each layer has a specific responsibility in delivering a reliable shopping experience.",
+          "h3": "Web server layer",
+          "p4": "The web server receives customer requests and delivers website content. Unixsee configures this layer to handle common WooCommerce traffic patterns efficiently.",
+          "h4": "PHP application layer",
+          "p5": "WooCommerce and WordPress run on PHP. The PHP environment controls how your store processes requests, executes plugins, and generates dynamic content.",
+          "h5": "Database layer",
+          "p6": "The database stores important WooCommerce information such as products, orders, customers, settings, and website configuration data.",
+          "h6": "Why does the managed stack matter?",
+          "p7": "A managed stack reduces the complexity of maintaining the technical environment behind your store and provides a more consistent foundation for daily operations.",
+          "l1": "A WooCommerce-focused environment instead of a generic server setup.",
+          "l2": "Managed configuration across important infrastructure layers.",
+          "l3": "Better visibility into the systems supporting your store.",
+          "k1": "The managed stack combines multiple technologies required to run WooCommerce.",
+          "k2": "Each infrastructure layer has a specific role in store operation.",
+          "k3": "Unixsee manages the underlying environment so teams can focus on their business."
+        },
+        "phpVersions": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "what-are-php-versions",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "supported-versions",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "heading",
+              "id": "changing-php-version",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "before-switching",
+              "textKey": "h4"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l4", "l5", "l6"]
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Learn how Unixsee manages PHP versions and how to choose a compatible version for your WooCommerce store.",
+          "h1": "Supported PHP versions",
+          "p1": "PHP is the programming language that powers WordPress and WooCommerce. The PHP version running on your server affects compatibility, security, and application performance.",
+          "p2": "Unixsee provides supported PHP environments designed to run WooCommerce stores reliably while keeping the underlying platform maintained.",
+          "h2": "Which PHP versions are supported?",
+          "p3": "Supported PHP versions depend on your service environment and the compatibility requirements of your WordPress and WooCommerce setup.",
+          "l1": "Current PHP versions recommended for modern WordPress and WooCommerce installations.",
+          "l2": "Stable PHP versions maintained for compatibility and security.",
+          "l3": "Version choices that allow teams to test compatibility before changes are applied.",
+          "h3": "Changing your PHP version",
+          "p4": "Changing PHP versions can affect WordPress core, themes, and plugins. Always review compatibility before switching the runtime environment.",
+          "h4": "Before switching versions",
+          "l4": "Check that your WordPress version supports the target PHP version.",
+          "l5": "Confirm that important plugins and themes are compatible.",
+          "l6": "Test changes in a staging environment when possible.",
+          "k1": "PHP versions affect WordPress and WooCommerce compatibility.",
+          "k2": "Choose versions based on security, support, and application requirements.",
+          "k3": "Test PHP changes before applying them to a production store."
+        }
+      },
+      "monitoringAvailability": {
+        "checks": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "what-are-uptime-checks",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "how-checks-work",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "heading",
+              "id": "monitoring-request",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "response-evaluation",
+              "textKey": "h4"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p5"
+            },
+            {
+              "kind": "heading",
+              "id": "when-an-issue-is-detected",
+              "textKey": "h5"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p6"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Understand how Unixsee checks website availability and detects problems before they affect your store operations.",
+          "h1": "How uptime checks work",
+          "p1": "Uptime checks regularly test whether your website is reachable and responding correctly. They provide visibility into availability and help identify interruptions quickly.",
+          "p2": "Unixsee uses monitoring checks to verify important website signals and record availability events over time.",
+          "h2": "How do uptime checks work?",
+          "p3": "An uptime check sends a request to your website at regular intervals and evaluates the response to determine whether the service is available.",
+          "h3": "Monitoring request",
+          "p4": "The monitoring system sends a request to the configured website address and checks whether the server responds successfully.",
+          "h4": "Response evaluation",
+          "p5": "The response is evaluated based on availability signals such as successful responses, response time, and detected errors.",
+          "h5": "When an issue is detected",
+          "p6": "If a check fails, Unixsee records the event and provides information that helps you understand when the issue started and how it changed.",
+          "l1": "Identify when a website becomes unavailable.",
+          "l2": "Track availability history and incident periods.",
+          "l3": "Review performance signals during website issues.",
+          "k1": "Uptime checks verify that your website is reachable and responding.",
+          "k2": "Monitoring history helps identify availability problems.",
+          "k3": "Regular checks provide visibility into website reliability."
+        }
+      },
+      "securityBackups": {
+        "firewall": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "what-is-firewall",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "how-firewall-works",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "heading",
+              "id": "traffic-analysis",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "blocking-threats",
+              "textKey": "h4"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p5"
+            },
+            {
+              "kind": "heading",
+              "id": "security-rules",
+              "textKey": "h5"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p6"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Learn how the Unixsee firewall helps protect WooCommerce stores by monitoring requests and blocking suspicious activity.",
+          "h1": "How the firewall works",
+          "p1": "A firewall is a security layer that examines incoming requests before they reach your website application. It helps identify and block potentially harmful traffic.",
+          "p2": "For WooCommerce stores, a firewall helps reduce exposure to common attacks while allowing normal customer activity such as browsing products and placing orders.",
+          "h2": "How does the firewall work?",
+          "p3": "The firewall analyzes incoming traffic and applies security rules to decide whether a request should be allowed, challenged, or blocked.",
+          "h3": "Traffic analysis",
+          "p4": "Each request is evaluated using available security signals such as request patterns, source information, and known threat indicators.",
+          "h4": "Blocking suspicious activity",
+          "p5": "When traffic matches known attack patterns or violates security rules, the firewall can prevent the request from reaching your website.",
+          "h5": "Security rules",
+          "p6": "Firewall rules are designed to protect important parts of your website while minimizing impact on legitimate visitors and store operations.",
+          "l1": "Detect suspicious requests before they reach your application.",
+          "l2": "Reduce exposure to common web attacks.",
+          "l3": "Protect website availability and customer experience.",
+          "k1": "The firewall filters incoming requests using security rules.",
+          "k2": "Suspicious traffic can be blocked before reaching WooCommerce.",
+          "k3": "Firewall protection helps maintain a safer store environment."
+        }
+      },
+      "domainsDnsSslMigrations": {
+        "migrateSite": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "textKey": "lede"
+            },
+            {
+              "kind": "heading",
+              "id": "migration-overview",
+              "textKey": "h1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p1"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p2"
+            },
+            {
+              "kind": "heading",
+              "id": "before-migration",
+              "textKey": "h2"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p3"
+            },
+            {
+              "kind": "list",
+              "itemKeys": ["l1", "l2", "l3"]
+            },
+            {
+              "kind": "heading",
+              "id": "migration-process",
+              "textKey": "h3"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p4"
+            },
+            {
+              "kind": "heading",
+              "id": "data-transfer",
+              "textKey": "h4"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p5"
+            },
+            {
+              "kind": "heading",
+              "id": "testing-after-migration",
+              "textKey": "h5"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p6"
+            },
+            {
+              "kind": "heading",
+              "id": "switching-domain",
+              "textKey": "h6"
+            },
+            {
+              "kind": "paragraph",
+              "textKey": "p7"
+            },
+            {
+              "kind": "keyTakeaways",
+              "itemKeys": ["k1", "k2", "k3"]
+            }
+          ],
+          "lede": "Learn how to move your WooCommerce store to Unixsee infrastructure and prepare for a smooth migration.",
+          "h1": "Migrating a site to Unixsee",
+          "p1": "Migrating a website means moving your WordPress files, database, and configuration from your current hosting environment to Unixsee.",
+          "p2": "A successful migration keeps important store data available, including products, orders, customers, settings, and website content.",
+          "h2": "Before migration",
+          "p3": "Before starting the migration process, review your current website configuration and prepare the information required for a successful transfer.",
+          "l1": "Confirm your domain and DNS settings.",
+          "l2": "Review WordPress, WooCommerce, and plugin compatibility.",
+          "l3": "Create a backup of your current website before making changes.",
+          "h3": "Migration process",
+          "p4": "The migration process includes transferring website files, importing the database, configuring the new environment, and verifying that the store works correctly.",
+          "h4": "Data transfer",
+          "p5": "Website files and database information are transferred to the Unixsee environment while maintaining important WooCommerce data and configuration settings.",
+          "h5": "Testing after migration",
+          "p6": "After the migration is complete, important store functions should be tested before directing all visitors to the new environment.",
+          "h6": "Switching the domain",
+          "p7": "After confirming that the migrated store works correctly, DNS settings can be updated to point your domain to Unixsee infrastructure.",
+          "k1": "Migration moves your website files, database, and configuration to Unixsee.",
+          "k2": "Testing is important before switching customer traffic.",
+          "k3": "A careful migration helps maintain store availability and data integrity."
+        }
+      }
+    }
+  },
+  "Websites": {
+    "title": "Websites",
+    "description": "Manage your websites, connected domains, plans, backups, and support from one place.",
+    "addSite": "Add Site",
+    "moreAddOptions": "More add-site options",
+    "searchHeader": "Search for websites, domains, tickets...",
+    "allWebsites": "All Websites",
+    "tablist": "Website status",
+    "tabs": {
+      "all": "All",
+      "online": "Online",
+      "needsAttention": "Needs Attention",
+      "maintenance": "Maintenance",
+      "setupPending": "Setup Pending"
+    },
+    "filters": {
+      "searchLabel": "Search websites",
+      "searchPlaceholder": "Search websites...",
+      "statusLabel": "Filter by status",
+      "status": "Status",
+      "planLabel": "Filter by plan",
+      "plan": "Plan",
+      "backupLabel": "Filter by backup",
+      "backup": "Backup",
+      "sortLabel": "Sort websites",
+      "lastUpdated": "Sort: Last Updated",
+      "name": "Sort: Name",
+      "reset": "Reset filters"
+    },
+    "table": {
+      "caption": "All websites and their current service status",
+      "website": "Website",
+      "domain": "Connected Domain",
+      "plan": "Plan",
+      "status": "Status",
+      "backup": "Backup",
+      "lastUpdated": "Last Updated",
+      "actions": "Actions",
+      "manage": "Manage",
+      "moreActions": "More actions for {name}",
+      "emptyTitle": "No websites found",
+      "emptyDescription": "Try changing your search or filters.",
+      "clearFilters": "Clear filters",
+      "summary": "Showing {start, number} to {end, number} of {total, number} websites"
+    },
+    "help": {
+      "title": "Need Help?",
+      "description": "Our support team is here 24/7 to help you succeed.",
+      "contact": "Contact Support",
+      "center": "Check our Help Center"
+    }
+  },
+  "Domains": {
+    "title": "Domains",
+    "description": "View every domain connected to your websites. Domain setup and changes are managed by the Unixsee server team.",
+    "searchHeader": "Search domains and websites...",
+    "notice": {
+      "label": "Domain management information",
+      "description": "To add, remove, or change a domain, contact Unixsee support. Domain configuration is read-only in this dashboard."
+    },
+    "allDomains": "All domains",
+    "readOnlyLabel": "Read-only domain inventory",
+    "domainCount": "{count, plural, one {# domain} other {# domains}}",
+    "viewWebsite": "View website",
+    "types": {
+      "primary": "Primary",
+      "alias": "Alias",
+      "redirect": "Redirect"
+    },
+    "statuses": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "misconfigured": "Needs correction",
+      "valid": "Valid",
+      "expiring": "Expiring soon",
+      "missing": "Not available"
+    },
+    "filters": {
+      "searchLabel": "Search by domain or website name",
+      "searchPlaceholder": "Search domains or websites...",
+      "websiteLabel": "Filter by website",
+      "allWebsites": "All websites",
+      "problemLabel": "Filter by problem status",
+      "allStatuses": "All statuses",
+      "problemsOnly": "Needs attention"
+    },
+    "table": {
+      "caption": "Domains, their related websites, and current DNS and SSL status",
+      "domain": "Domain",
+      "website": "Website name",
+      "type": "Type",
+      "dns": "DNS status",
+      "ssl": "SSL status",
+      "lastChecked": "Last checked",
+      "action": "Website"
+    },
+    "states": {
+      "loadingLabel": "Loading domains",
+      "emptyTitle": "No domains yet",
+      "emptyDescription": "Domains connected by the Unixsee server team will appear here.",
+      "filteredTitle": "No matching domains",
+      "filteredDescription": "Try another domain or website name, or clear the current filters.",
+      "clearFilters": "Clear filters",
+      "errorTitle": "Domains could not be displayed",
+      "errorDescription": "The domain inventory is temporarily unavailable. No settings were changed."
+    },
+    "summary": "Showing {visible} of {total} domains"
+  },
+  "Tickets": {
+    "title": "Tickets",
+    "description": "Create and track your requests across Unixsee services.",
+    "newTicket": "New ticket",
+    "allTickets": "All tickets",
+    "searchHeader": "Search tickets, services, and websites...",
+    "unread": "Unread ticket",
+    "notApplicable": "Not applicable",
+    "viewTicket": "View ticket",
+    "services": {
+      "managed_server": "Managed Server",
+      "migration_optimization": "Migration and Optimization",
+      "woocommerce_support": "Specialized WooCommerce Support",
+      "seo": "SEO",
+      "graphic_design": "Graphic Design",
+      "product_data_entry": "Product Data Entry",
+      "social_media_support": "Social Media Support"
+    },
+    "statuses": {
+      "submitted": "Submitted",
+      "in_progress": "In progress",
+      "waiting_for_user": "Waiting for you",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "tabs": {
+      "label": "Ticket status",
+      "all": "All",
+      "needs_reply": "Needs your reply",
+      "active": "Active",
+      "resolved": "Resolved"
+    },
+    "filters": {
+      "searchLabel": "Search by ticket subject or number",
+      "searchPlaceholder": "Search subject or ticket number...",
+      "serviceLabel": "Filter by service",
+      "allServices": "All services",
+      "websiteLabel": "Filter by website",
+      "allWebsites": "All websites",
+      "statusLabel": "Filter by status",
+      "allStatuses": "All statuses",
+      "sortLabel": "Sort tickets",
+      "latest": "Latest activity",
+      "oldest": "Oldest activity",
+      "mobile": "More filters"
+    },
+    "activity": {
+      "support": "Unixsee replied",
+      "user": "You replied"
+    },
+    "states": {
+      "loading": "Loading tickets",
+      "errorTitle": "Tickets could not be displayed",
+      "errorDescription": "The ticket list is temporarily unavailable. Try loading the local view again.",
+      "retry": "Try again",
+      "emptyTitle": "No tickets yet",
+      "emptyDescription": "Tickets help you request work and follow conversations with the Unixsee team.",
+      "create": "Create ticket",
+      "filteredTitle": "No matching tickets",
+      "filteredDescription": "Try another subject or ticket number, or clear the current filters.",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "caption": "All support tickets and their current status",
+      "ticket": "Ticket",
+      "service": "Service",
+      "website": "Website",
+      "status": "Status",
+      "activity": "Last activity",
+      "action": "Action"
+    },
+    "pagination": {
+      "summary": "{count, plural, one {# ticket} other {# tickets}}",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "fixtures": {
+      "subjects": {
+        "checkoutRecovery": "Checkout intermittently unavailable",
+        "migrationPlan": "Plan migration to the new environment",
+        "seoReport": "Review indexing issues from the latest report",
+        "brandAssets": "Prepare campaign visual assets",
+        "productImport": "Import the summer product catalog",
+        "serverReview": "Review managed server configuration"
+      },
+      "messages": {
+        "checkoutInitial": "Checkout requests sometimes return an error after the payment method is selected. The issue started this morning and affects both desktop and mobile customers.",
+        "supportInvestigating": "Thanks for the clear report. We checked the website health data and are reviewing the checkout integration. Please confirm whether the issue occurs with every payment method.",
+        "userDetails": "The issue appears only with the card gateway. Cash on delivery still works. I attached the gateway response from the latest test.",
+        "supportResolved": "The checkout integration was updated and the latest checks completed successfully."
+      }
+    },
+    "new": {
+      "back": "Back to tickets",
+      "title": "Create a new ticket",
+      "pageDescription": "Share the request context and details so the Unixsee team can route it correctly.",
+      "context": {
+        "title": "Request context",
+        "description": "Choose the service and website related to this request."
+      },
+      "details": {
+        "title": "Request details",
+        "description": "Describe what you need and include any details that will help the support team."
+      },
+      "service": {
+        "label": "Service",
+        "hint": "Select the Unixsee service that best matches your request.",
+        "placeholder": "Select a service"
+      },
+      "website": {
+        "label": "Related website",
+        "placeholder": "Select a website",
+        "requiredHint": "Required for this service",
+        "optionalHint": "Optional for this service"
+      },
+      "subject": {
+        "label": "Subject",
+        "placeholder": "Briefly describe the request"
+      },
+      "descriptionField": {
+        "label": "Description",
+        "hint": "Include what happened, when it started, and any useful steps.",
+        "placeholder": "Describe the request in detail..."
+      },
+      "attachments": {
+        "label": "Attachments",
+        "hint": "Optional screenshots or documents.",
+        "choose": "Choose files",
+        "remove": "Remove {name}"
+      },
+      "errors": {
+        "service": "Select a service.",
+        "website": "Select the related website.",
+        "subject": "Enter a subject.",
+        "description": "Enter at least 20 characters."
+      },
+      "submitting": "Submitting...",
+      "submit": "Submit ticket",
+      "cancel": "Cancel"
+    },
+    "detail": {
+      "back": "Back to tickets",
+      "you": "You",
+      "service": "Service",
+      "website": "Related website",
+      "created": "Created",
+      "updated": "Last updated",
+      "ticketNumber": "Ticket number",
+      "summary": "Ticket summary",
+      "reply": "Reply",
+      "reopen": "Reopen ticket",
+      "close": "Close ticket",
+      "resolvedTitle": "This ticket is resolved",
+      "resolvedDescription": "If the issue continues, reopen the ticket and add the latest details."
+    },
+    "conversation": {
+      "title": "Conversation",
+      "description": "Messages are shown in chronological order.",
+      "empty": "No conversation messages are available for this fixture.",
+      "roles": {
+        "user": "User",
+        "support": "Unixsee Support"
+      },
+      "attachmentSize": "{size, number} KB"
+    },
+    "reply": {
+      "title": "Add a reply",
+      "description": "Your draft stays in this page until the reply is sent.",
+      "closed": "Replies are disabled because this ticket is closed.",
+      "label": "Reply message",
+      "placeholder": "Write your reply...",
+      "required": "Enter a reply before sending.",
+      "attach": "Attach files",
+      "remove": "Remove {name}",
+      "sending": "Sending...",
+      "send": "Send reply"
+    }
+  },
+  "Profile": {
+    "title": "Profile",
+    "description": "Manage your personal information and account security.",
+    "searchHeader": "Search profile and security settings...",
+    "loading": "Loading profile",
+    "avatar": {
+      "title": "Profile image",
+      "hint": "JPG, PNG, or WebP up to 2 MB.",
+      "alt": "Profile image for {name}",
+      "upload": "Upload image",
+      "replace": "Replace image",
+      "remove": "Remove image",
+      "invalid": "Choose an image file smaller than 2 MB.",
+      "confirm": "Remove the current profile image?",
+      "confirmRemove": "Remove",
+      "cancel": "Cancel"
+    },
+    "verification": {
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "pending": "Verification pending"
+    },
+    "personal": {
+      "title": "Personal information",
+      "description": "Update the contact details and language used for your account.",
+      "name": "Full name",
+      "email": "Email",
+      "mobile": "Mobile number",
+      "language": "Preferred language",
+      "emailChanged": "Verification will be required after saving.",
+      "sendEmail": "Send verification email",
+      "mobileChanged": "OTP verification will be required after saving.",
+      "verifyMobile": "Verify mobile number",
+      "reset": "Reset changes",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "saved": "Profile changes saved",
+      "saveFailed": "Changes could not be saved. Your entries are preserved.",
+      "errors": {
+        "name": "Enter your full name.",
+        "email": "Enter a valid email address.",
+        "mobile": "Use 09xxxxxxxxx or +989xxxxxxxxx."
+      }
+    },
+    "unsaved": {
+      "title": "Discard unsaved changes?",
+      "description": "Your current profile edits will be lost.",
+      "cancel": "Keep editing",
+      "discard": "Discard changes"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage password access and two-factor authentication.",
+      "password": {
+        "title": "Password",
+        "notSetTitle": "Password not set",
+        "lastChanged": "Last changed 3 months ago",
+        "notSetDescription": "You currently sign in using an OTP or verification link.",
+        "change": "Change password",
+        "set": "Set password",
+        "dialog": {
+          "changeTitle": "Change password",
+          "setTitle": "Set a password",
+          "requirements": "Use at least 8 characters. A mix of letters, numbers, and symbols is recommended.",
+          "current": "Current password",
+          "new": "New password",
+          "confirm": "Confirm new password",
+          "code": "Six-digit verification code",
+          "show": "Show passwords",
+          "hide": "Hide passwords",
+          "error": "Complete all fields and make sure the new passwords match.",
+          "cancel": "Cancel",
+          "saving": "Saving...",
+          "submit": "Save password"
+        }
+      },
+      "twoFactor": {
+        "onTitle": "Two-factor authentication is on",
+        "offTitle": "Two-factor authentication is off",
+        "method": "Method: Authenticator app",
+        "offDescription": "Add an authenticator app as an extra sign-in step.",
+        "enable": "Enable 2FA",
+        "manage": "Manage 2FA",
+        "dialog": {
+          "setupTitle": "Set up two-factor authentication",
+          "manageTitle": "Manage two-factor authentication",
+          "qr": "QR-code placeholder",
+          "scan": "Scan this placeholder with your authenticator app, or enter the manual secret key.",
+          "secretLabel": "Manual secret key",
+          "code": "Six-digit verification code",
+          "error": "Enter a six-digit code and confirm that you saved the recovery codes.",
+          "recoveryTitle": "Recovery codes",
+          "savedCodes": "I saved these recovery codes in a secure place.",
+          "confirmEnable": "Confirm and enable",
+          "enabled": "Two-factor authentication is enabled with an authenticator app.",
+          "newRecovery": "New recovery codes",
+          "viewCodes": "View new recovery codes",
+          "regenerate": "Regenerate codes",
+          "disable": "Disable 2FA",
+          "disableConfirm": "Disable two-factor authentication for this account?",
+          "confirmDisable": "Confirm disable",
+          "cancel": "Cancel",
+          "done": "Done",
+          "working": "Working..."
+        }
+      }
+    }
+  },
+  "WebsiteDetails": {
+    "searchHeader": "Search websites, incidents, and metrics...",
+    "loading": "Loading website details",
+    "back": "Back to websites",
+    "health": {
+      "healthy": "Healthy",
+      "warning": "Needs attention",
+      "incident": "Active incident",
+      "reconnecting": "Reconnecting"
+    },
+    "environment": {
+      "production": "Production",
+      "staging": "Staging"
+    },
+    "lastUpdated": {
+      "updated": "Updated {relative}",
+      "lastLive": "Last live update {relative}",
+      "connected": "Connected {relative}"
+    },
+    "notice": {
+      "stale": "Showing the latest available snapshot. Live updates are reconnecting automatically.",
+      "partial": "The latest error-rate sample is temporarily unavailable. Traffic and availability remain current."
+    },
+    "summary": {
+      "healthy": {
+        "title": "Everything is operating normally",
+        "message": "The website and configured checks are healthy."
+      },
+      "performance": {
+        "title": "Performance needs attention",
+        "message": "The website is available, but response times are above the usual baseline.",
+        "warning": "API response time has remained above 800 ms for 12 minutes."
+      },
+      "incident": {
+        "title": "An incident is affecting availability",
+        "message": "Some visitors may see intermittent errors while automatic recovery runs.",
+        "warning": "Elevated 5xx responses are affecting the primary application service."
+      },
+      "reconnecting": {
+        "title": "Live updates are reconnecting",
+        "message": "The last successful snapshot is still available while live monitoring reconnects.",
+        "warning": "Metrics may be up to 6 minutes old."
+      },
+      "ready": {
+        "title": "Monitoring is ready",
+        "message": "No incidents are active. Traffic history will appear after the first requests are recorded."
+      },
+      "partial": {
+        "title": "Website is healthy; one metric is unavailable",
+        "message": "Traffic, availability, and website checks are current.",
+        "warning": "The latest error-rate sample could not be loaded."
+      },
+      "attention": "Attention:"
+    },
+    "snapshot": {
+      "title": "Current snapshot",
+      "description": "Website-level activity and performance from the latest monitoring sample."
+    },
+    "metrics": {
+      "activeRequests": {
+        "label": "Active requests",
+        "value": "{value}",
+        "helper": "HTTP requests currently being processed",
+        "trend": "{value} compared with 1 hour ago"
+      },
+      "requestRate": {
+        "label": "Request rate",
+        "value": "{value} requests/min",
+        "helper": "Requests served per minute",
+        "trend": "Average over the last 5 minutes"
+      },
+      "responseTime": {
+        "label": "Response time",
+        "value": "{value} ms",
+        "helper": "Median website response time",
+        "trend": "Measured over the last 5 minutes"
+      },
+      "errorRate": {
+        "label": "Error rate",
+        "value": "{value}",
+        "helper": "Requests that returned a 5xx response",
+        "trend": "Measured over the last 5 minutes"
+      }
+    },
+    "traffic": {
+      "title": "Traffic trend",
+      "description": "Requests served over the selected period.",
+      "rangeLabel": "Traffic time range",
+      "range24": "24h",
+      "range7": "7d",
+      "range30": "30d",
+      "aria": "Traffic requests for the last {range}",
+      "requests": "{value} requests",
+      "emptyTitle": "No chart data yet",
+      "emptyTraffic": "Traffic history will appear after requests are recorded.",
+      "now": "Now"
+    },
+    "storage": {
+      "title": "Website storage quota",
+      "description": "Storage used from this website's assigned quota.",
+      "usedValue": "{value} GB",
+      "ofTotal": "of {value} GB",
+      "label": "Website storage used",
+      "ariaValue": "{used} gigabytes of the {total} gigabyte website quota used",
+      "percentage": "{value} used"
+    },
+    "availability": {
+      "title": "Availability",
+      "description": "Website health across the last 24 hours.",
+      "uptimeLabel": "30-day uptime",
+      "timeline": "Availability timeline",
+      "hoursAgo": "24 hours ago",
+      "now": "Now",
+      "healthy": "Healthy",
+      "degraded": "Degraded",
+      "downtime": "Downtime",
+      "period": "{status}: {duration}",
+      "hint": "Hover or focus the timeline segments for period details."
+    },
+    "incidents": {
+      "title": "Recent incidents and events",
+      "description": "Operational events from the last seven days.",
+      "emptyTitle": "No recent incidents",
+      "emptyDescription": "No operational incidents have been recorded.",
+      "investigating": "Investigation in progress",
+      "elevated": {
+        "title": "Elevated response times",
+        "description": "Checkout requests were slower than the website's usual baseline."
+      },
+      "maintenance": {
+        "title": "Scheduled storage maintenance",
+        "description": "Storage optimization completed without customer impact."
+      },
+      "errors": {
+        "title": "Intermittent application errors",
+        "description": "Engineers are investigating elevated 5xx responses."
+      },
+      "resolved": "Resolved in {minutes, number} minutes",
+      "completed": "Completed in {minutes, number} minutes"
+    },
+    "checks": {
+      "title": "Website checks",
+      "subtitle": "HTTP, health check, and SSL",
+      "description": "Latest checks performed against the public website.",
+      "httpStatus": {
+        "label": "Current HTTP status",
+        "value": "HTTP {value}"
+      },
+      "lastCheck": {
+        "label": "Latest successful health check"
+      },
+      "ssl": {
+        "label": "SSL certificate",
+        "valid": "Valid",
+        "expiring": "Expires soon",
+        "expires": "Expires {date}"
+      }
+    }
+  },
+  "ComplementaryServices": {
+    "title": "Complementary Services",
+    "description": "View services connected to your websites and request help from Unixsee specialists.",
+    "searchHeader": "Search services, websites, and tickets...",
+    "requestService": "Request a service",
+    "viewDetails": "View details",
+    "contentTitle": "Services and consultation requests",
+    "requestAside": {
+      "label": "Complementary service shortcuts",
+      "quickActions": {
+        "title": "Quick actions",
+        "label": "Complementary service navigation",
+        "activeServices": "View active services",
+        "consultationRequests": "View consultation requests",
+        "serviceHistory": "View service history"
+      },
+      "help": {
+        "title": "Need help choosing a service?",
+        "description": "Not sure which service fits your website? Open a support ticket and the Unixsee team will guide you.",
+        "action": "Open support ticket"
+      }
+    },
+    "services": {
+      "seo": "SEO",
+      "graphic-design": "Graphic Design",
+      "product-data-entry": "Product Data Entry",
+      "social-media-support": "Social Media Support"
+    },
+    "statuses": {
+      "requested": "Requested",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "engagement": {
+      "recurring": "Recurring",
+      "one-time": "One-time"
+    },
+    "preferences": {
+      "recurring": "Recurring",
+      "one-time": "One-time",
+      "not-sure": "Not sure"
+    },
+    "tabs": {
+      "label": "Service lifecycle",
+      "active": "Active",
+      "requests": "Requests",
+      "history": "History"
+    },
+    "filters": {
+      "website": "Website",
+      "service": "Service",
+      "allWebsites": "All websites",
+      "allServices": "All services",
+      "reset": "Reset filters",
+      "mobile": "Filters",
+      "close": "Close filters"
+    },
+    "usage": {
+      "remaining": "{remaining} of {total} {unit} remaining",
+      "used": "{used} used of {total}",
+      "quotaLabel": "Service quota used",
+      "projectLabel": "Project progress",
+      "exhausted": "Current quota is exhausted",
+      "projectStage": "Current project stage",
+      "renews": "Renews {date}",
+      "expected": "Expected completion {date}",
+      "units": {
+        "design-requests": "design requests",
+        "posts": "posts",
+        "products": "products"
+      },
+      "stages": {
+        "discovery": "Discovery",
+        "production": "In production",
+        "review": "Specialist review",
+        "delivered": "Delivered"
+      }
+    },
+    "requests": {
+      "explanation": "Unixsee will review your request and contact you to define the scope and pricing.",
+      "preference": "Engagement preference",
+      "submitted": "Submitted",
+      "view": "View request",
+      "cancel": "Cancel request",
+      "cancelledFeedback": "The consultation request was cancelled."
+    },
+    "cancelDialog": {
+      "title": "Cancel this request?",
+      "description": "Unixsee will stop reviewing this consultation request. This does not affect any active services.",
+      "keep": "Keep request",
+      "confirm": "Cancel request"
+    },
+    "states": {
+      "loading": "Loading complementary services",
+      "errorTitle": "Services could not be displayed",
+      "errorDescription": "This local service view is temporarily unavailable. Try again to restore the sample data.",
+      "retry": "Try again",
+      "activeTitle": "No active complementary services",
+      "activeDescription": "Complementary services are optional. Request a consultation when your website needs specialist help.",
+      "requestsTitle": "No consultation requests",
+      "requestsDescription": "Your pending consultation requests will appear here after you submit them.",
+      "historyTitle": "No service history",
+      "historyDescription": "Completed, cancelled, and expired services will appear here.",
+      "filteredTitle": "No matching services",
+      "filteredDescription": "Change the website or service filter to see more results.",
+      "action": "Request a service"
+    },
+    "fixtures": {
+      "titles": {
+        "campaignDesign": "Monthly campaign design",
+        "socialSupport": "Monthly social media support",
+        "catalogEntry": "Summer catalog product entry",
+        "seoAudit": "Technical SEO audit",
+        "logoDesign": "Orbit identity and logo design"
+      },
+      "requestTitles": {
+        "seasonalSeo": "Improve seasonal search visibility",
+        "newBrandSystem": "Create a flexible visual system",
+        "monthlySocial": "Plan recurring social content"
+      },
+      "requestSummaries": {
+        "seasonalSeo": "Review the store's current search performance and recommend the right one-time or ongoing engagement.",
+        "newBrandSystem": "Define a reusable visual direction for upcoming website and campaign assets.",
+        "monthlySocial": "Prepare a consistent monthly content and visual support plan for the product launch."
+      }
+    },
+    "form": {
+      "back": "Back to complementary services",
+      "pageTitle": "Request a consultation",
+      "pageDescription": "Tell us what your website needs. Unixsee will review the request and contact you to define scope and pricing.",
+      "service": {
+        "label": "Service"
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Select a website"
+      },
+      "engagement": {
+        "label": "Engagement type"
+      },
+      "scope": {
+        "label": "Preferred scope",
+        "placeholder": "Select an option",
+        "productCount": "Approximate number of products",
+        "postCount": "Approximate monthly post count",
+        "options": {
+          "technical": "Technical SEO",
+          "audit": "SEO audit",
+          "content": "Content SEO",
+          "ongoing": "Ongoing SEO",
+          "unsure": "Not sure",
+          "logo": "Logo",
+          "banner": "Banner",
+          "socialPost": "Social-media post",
+          "other": "Other"
+        }
+      },
+      "title": {
+        "label": "Request title",
+        "placeholder": "Summarize what you need"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Describe the goal, current situation, deadlines, and any important constraints.",
+        "hint": "Include enough context for a specialist to understand the request."
+      },
+      "attachments": {
+        "label": "Attachments",
+        "hint": "Optional: PNG, JPG, WebP, PDF, CSV, or XLSX. Up to 5 MB each. Files stay in this browser preview.",
+        "add": "Add attachments",
+        "invalid": "One or more files use an unsupported format or exceed 5 MB.",
+        "remove": "Remove {name}"
+      },
+      "duplicate": {
+        "title": "An active or pending item already exists",
+        "description": "You already have an active or pending service request of this type for this website.",
+        "view": "View existing service",
+        "continue": "You can still continue with a separate request."
+      },
+      "errors": {
+        "service": "Select a service.",
+        "website": "Select a website.",
+        "engagement": "Select an engagement type.",
+        "title": "Enter a short request title.",
+        "description": "Add at least 20 characters so we can understand the request."
+      },
+      "submit": "Submit consultation request",
+      "submitting": "Submitting request...",
+      "cancel": "Cancel",
+      "success": {
+        "title": "Consultation request submitted",
+        "description": "Your local sample request is ready for Unixsee review. No data was sent or uploaded.",
+        "action": "View requests"
+      }
+    },
+    "detail": {
+      "back": "Back to complementary services",
+      "createTicket": "Create support ticket",
+      "additionalWork": "Request additional work",
+      "usageTitle": "Current quota",
+      "usageDescription": "Usage in the current service period.",
+      "progressTitle": "Project progress",
+      "progressDescription": "Current stage and expected completion for this one-time project.",
+      "scopeTitle": "Included scope",
+      "scopeDescription": "The agreed work included in this engagement.",
+      "scopeItems": {
+        "designAllowance": "Up to five design requests during the monthly period, with review and delivery tracking.",
+        "postPlanning": "Monthly content planning and prepared social-media post assets.",
+        "productEntry": "Structured product data entry for the agreed catalog count.",
+        "seoAudit": "Technical review, prioritized findings, and an actionable SEO audit report.",
+        "logoPackage": "Primary logo, practical variations, and delivery-ready source assets."
+      },
+      "activityTitle": "Service activity",
+      "activityDescription": "A chronological record of major service milestones.",
+      "events": {
+        "consultationRequested": "Consultation requested",
+        "serviceActivated": "Service activated",
+        "projectStarted": "Project started",
+        "quotaUsed": "Quota usage updated",
+        "deliverableCompleted": "Deliverable completed",
+        "periodRenewed": "Service period renewed",
+        "projectCompleted": "Project completed"
+      }
+    }
+  },
+  "Errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The requested page does not exist.",
+    "backHome": "Back to dashboard"
+  },
+  "WebsiteServiceDetails": {
+    "searchHeader": "Search websites and services...",
+    "loading": "Loading website details",
+    "common": {
+      "noData": "No data"
+    },
+    "header": {
+      "managedPlan": "Managed WooCommerce — {plan}",
+      "lastChecked": "Last checked {relative}"
+    },
+    "availability": {
+      "online": {
+        "label": "Online",
+        "title": "Website is online",
+        "summary": "The latest availability check completed successfully."
+      },
+      "needsAttention": {
+        "label": "Needs attention",
+        "title": "Website is available",
+        "summary": "The website is responding, but one or more important items need review."
+      },
+      "unavailable": {
+        "label": "Unavailable",
+        "title": "Website is unavailable",
+        "summary": "The latest check could not reach the website successfully. {code}"
+      },
+      "unknown": {
+        "label": "Status unknown",
+        "title": "Current status is unknown",
+        "summary": "The latest status check is delayed or unavailable."
+      }
+    },
+    "health": {
+      "title": "Website health",
+      "workingQuestion": "Is my website working?",
+      "issueQuestion": "Is anything wrong?",
+      "nextQuestion": "What can I do next?",
+      "noIssues": "No active issues",
+      "noIssuesDescription": "No availability, maintenance, or service warning is active.",
+      "issueCount": "{count, plural, one {# item needs attention} other {# items need attention}}",
+      "issueDescription": "Review the active alerts below, ordered by priority."
+    },
+    "alerts": {
+      "title": "Active alerts",
+      "description": "Issues that currently need review or action.",
+      "detected": "Detected {relative}",
+      "items": {
+        "unavailable": {
+          "title": "Website is unavailable",
+          "description": "The latest availability check returned {code}. The service is temporarily unavailable."
+        },
+        "storage": {
+          "title": "Storage is almost full",
+          "description": "{percent} of the available storage is in use. Reaching the limit may affect uploads, updates, backups, or website stability.",
+          "usage": "Storage usage",
+          "progressLabel": "{percent} of website storage is used"
+        },
+        "updates": {
+          "title": "WordPress updates are available",
+          "description": "{count, plural, one {# WordPress update needs review} other {# WordPress updates need review}}. Review them before applying changes."
+        },
+        "security": {
+          "title": "Security scan found an issue",
+          "description": "{count, plural, one {# item needs a safe review} other {# items need a safe review}}. Sensitive technical findings are not shown here."
+        },
+        "renewal": {
+          "title": "Service renewal is approaching",
+          "description": "Review the due date and renew the service when ready."
+        },
+        "statusUnknown": {
+          "title": "Status may be outdated",
+          "description": "The latest status check is delayed. Retry the check before treating the displayed status as current."
+        }
+      }
+    },
+    "actions": {
+      "openTicket": "Open ticket",
+      "openWordPress": "Open WordPress Admin",
+      "openDirectAdmin": "Open DirectAdmin",
+      "clearCache": "Clear Cache",
+      "clearingCache": "Clearing cache...",
+      "cacheCleared": "Cache cleared successfully",
+      "checkAgain": "Check again",
+      "checking": "Checking status...",
+      "checked": "Website status checked again",
+      "reviewStorage": "Review storage",
+      "reviewUpdates": "Review updates",
+      "renewService": "Renew service",
+      "viewIssue": "View issue details",
+      "retryStatus": "Retry status check",
+      "recommendedMarker": "Recommended",
+      "recommended": {
+        "openWordPress": "Open WordPress Admin",
+        "reviewStorage": "Review storage usage",
+        "renewService": "Renew the service",
+        "viewIssue": "Review the active issue",
+        "retryStatus": "Retry the status check"
+      },
+      "opensNewTab": "Opens in a new tab"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "description": "Common actions for this website.",
+      "wordpressDescription": "Open the website administration area in a new tab.",
+      "cacheDescription": "Clear the LiteSpeed Cache for this website.",
+      "directAdminDescription": "Open the authorized hosting control panel.",
+      "wordpressUnavailable": "WordPress Admin is not available for this service.",
+      "directAdminUnavailable": "A direct DirectAdmin destination is not available."
+    },
+    "software": {
+      "title": "Software and maintenance",
+      "description": "Installed versions and the latest maintenance checks.",
+      "wordpress": "WordPress",
+      "php": "PHP",
+      "imagick": "Imagick",
+      "lastChecked": "Last checked {relative}",
+      "updates": {
+        "title": "WordPress update status",
+        "upToDate": "Up to date",
+        "updatesAvailable": "{count, plural, one {# update available} other {# updates available}}",
+        "unknown": "Update status unknown"
+      },
+      "security": {
+        "title": "Security scan status",
+        "noIssues": "No issues found",
+        "issuesFound": "{count, plural, one {# issue found} other {# issues found}}",
+        "inProgress": "Scan in progress",
+        "unavailable": "Scan unavailable",
+        "notScanned": "Not scanned yet"
+      }
+    },
+    "traffic": {
+      "title": "Traffic and activity",
+      "description": "Visitor activity is shown separately from website availability.",
+      "activeNow": "Active now",
+      "last24Hours": "Active visitors — last 24 hours",
+      "measured": "Measured {relative}",
+      "definition": "Distinct active visitors recorded during the latest 24-hour period."
+    },
+    "service": {
+      "title": "Service information",
+      "description": "Core details for this managed website service.",
+      "domain": "Domain",
+      "plan": "Plan",
+      "location": "Server location",
+      "controlPanel": "Control panel",
+      "locations": {
+        "frankfurtGermany": "Frankfurt, Germany",
+        "helsinkiFinland": "Helsinki, Finland",
+        "unavailable": "Unavailable"
+      }
+    },
+    "billing": {
+      "title": "Plan and billing",
+      "description": "Billing information is kept separate from website health.",
+      "startDate": "Start date",
+      "dueDate": "Due date",
+      "cycleLabel": "Billing cycle",
+      "plan": "Plan",
+      "cycle": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly"
+      },
+      "renew": "Renew service",
+      "renewing": "Renewing service...",
+      "unavailable": "Online renewal is currently unavailable for this service.",
+      "dialog": {
+        "title": "Renew {name}",
+        "description": "Renew this service for {amount} ({cycle}). The new due date will be {date}.",
+        "cancel": "Cancel",
+        "confirm": "Confirm renewal"
+      },
+      "success": "Service renewed until {date}."
+    },
+    "support": {
+      "title": "Need help recovering this website?",
+      "description": "Open a support ticket when the issue cannot be resolved safely with the actions above.",
+      "unavailableDescription": "The website is currently unavailable. Open a ticket to preserve the website context and request help."
+    }
+  }
+}

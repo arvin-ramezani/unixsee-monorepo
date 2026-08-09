@@ -1,0 +1,66 @@
+{
+  "fixture": "home.fa.published.json",
+  "version": "2.2.15",
+  "page": {
+    "id": 101,
+    "type": "home_page",
+    "lang": "fa",
+    "path": "/",
+    "previewEnabled": false,
+    "usesDraftData": false,
+    "draftUpdatedAt": null
+  },
+  "sections": [
+    {
+      "index": 0,
+      "key": "home-hero-fa",
+      "type": "HomeHeroSection",
+      "known": true,
+      "entityBacked": false,
+      "selectedIds": []
+    },
+    {
+      "index": 1,
+      "key": "home-problem-fa",
+      "type": "HomeProblemSection",
+      "known": true,
+      "entityBacked": false,
+      "selectedIds": []
+    },
+    {
+      "index": 2,
+      "key": "home-testimonials-fa",
+      "type": "HomeTestimonialsSection",
+      "known": true,
+      "entityBacked": true,
+      "source": "testimonials",
+      "order": "manual",
+      "selectedIds": [
+        501,
+        502
+      ],
+      "itemCount": 2
+    },
+    {
+      "index": 3,
+      "key": "home-faq-fa",
+      "type": "HomeFaqSection",
+      "known": true,
+      "entityBacked": true,
+      "source": "faq",
+      "order": "manual",
+      "selectedIds": [
+        601,
+        602
+      ],
+      "itemCount": 2
+    }
+  ],
+  "unknownSections": [],
+  "breakingChangeGuards": {
+    "requiresHomePage": true,
+    "requiresNoUnknownSections": true,
+    "requiresEntityItemsResolved": true,
+    "requiresPreviewIsolation": true
+  }
+}

@@ -2,8 +2,8 @@
 
 Conventions for the Next.js applications:
 
-- `admin-panel/` — staff UI
-- `client/` — public website and customer dashboard
+- `admin-panel/` — staff UI (active, UI-first)
+- `client/` — public website and customer dashboard (active)
 
 Product behavior differs per surface. Engineering conventions below apply to
 both unless a doc says otherwise.

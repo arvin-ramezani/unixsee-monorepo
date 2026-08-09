@@ -36,7 +36,8 @@ For admin UI work: [`docs/product/README.md`](./docs/product/README.md).
 - Monorepo architecture and ADRs (including API audience namespaces): documented
 - `backend/`: NestJS control plane present; Phase 1 module gaps documented
 - `agent/`: VPS edge agent present (enrollment, discovery, HMAC ingest/heartbeat)
-- `client/` / `admin-panel/`: not scaffolded yet
+- `client/`: public website + customer dashboard Next.js app present
+- `admin-panel/`: staff Next.js app present (UI-first / fixture data)
 - Automated monorepo workspace tests: none yet
 
 Do not invent unavailable scripts or claim builds pass. See

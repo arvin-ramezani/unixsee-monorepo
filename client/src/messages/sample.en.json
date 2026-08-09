@@ -1,0 +1,191 @@
+{
+  "HeroSection": {
+    "title": "Managed hosting for WooCommerce stores with real-time visibility",
+    "description": "At Unixsee, we don’t just host your store. We monitor, manage, and support it with infrastructure built for WooCommerce growth.",
+    "primaryCTA": "Request Store Assessment",
+    "secondaryCTA": "Explore Services",
+
+    "infiniteHorizontalScroll": {
+      "title": "They trusted us",
+      "items": {
+        "item1": {
+          "company": "BrandName",
+          "image": "/images/brand1.png"
+        }
+      }
+    }
+  },
+
+  "ProblemSection": {
+    "title": "Why generic hosting fails WooCommerce stores",
+    "description": "Most hosting solutions are not built for the operational needs of eCommerce.",
+    "items": {
+      "genericSupport": {
+        "title": "Generic support",
+        "subTitle": "SUPPORT • SHARED HOSTING • TICKETS",
+        "description": "Support that doesn’t understand WooCommerce operations or store-critical issues.",
+        "metric": "+70%",
+        "metricLabel": "Repeat tickets",
+        "tag": "AUTOMoTIVE"
+      }
+    }
+  },
+
+  "SolutionOverviewSection": {
+    "title": "A focused solution for WooCommerce stores",
+    "description": "Managed infrastructure with continuous monitoring and specialized support.",
+
+    "items": {
+      "optimizedInfrastructure": {
+        "title": "WooCommerce-Optimized Infrastructure",
+        "tags": {
+          "tag1": "Optimized Architecture",
+          "tag2": "WooCommerce Focused",
+          "tag3": "Scalable Infrastructure",
+          "tag4": "Traffic Handling"
+        },
+        "description": "A custom-built infrastructure designed specifically for WooCommerce stores that operate under real business pressure. Instead of relying on generic hosting environments, we provide an architecture aligned with how WooCommerce actually behaves under load, transactions, and traffic spikes. This results in consistent performance, improved stability, and an infrastructure that scales alongside your store’s growth without introducing unnecessary complexity or risk.",
+        "cta": {
+          "label": "Explore Infrastructure",
+          "href": "/managed-hosting"
+        }
+      }
+    }
+  },
+
+  "NumberOfSuccessSection": {
+    "title": "Numbers that drive success",
+    "items": {
+      "item1": {
+        "number": "50+",
+        "title": "WooCommerce Stores Managed"
+      }
+    }
+  },
+
+  "InfrastructureSection": {
+    "title": "Infrastructure designed for your store",
+
+    "items": {
+      "woocommerceExpertise": {
+        "title": "WooCommerce-focused expertise",
+        "description": "We specialize in WordPress and WooCommerce, making technical decisions based on the real needs of eCommerce operations."
+      }
+    }
+  },
+
+  "ProcessSection": {
+    "title": "How we start working together",
+
+    "items": {
+      "step1": {
+        "number": "01",
+        "title": "Assess your current store",
+        "description": "We review your infrastructure, performance, risks, and operational needs to fully understand your current setup.",
+        "duration": "1–2 days"
+      }
+    }
+  },
+
+  "TestimonialsSection": {
+    "title": "Stories of success",
+
+    "items": {
+      "item1": {
+        "quote": "After moving to Unixsee, our store became noticeably more stable during daily operations. The difference in support quality was clear from the first week.",
+        "company": "BrandName",
+        "author": "Ali R",
+        "role": "Founder"
+      }
+    }
+  },
+
+  "ConsultationSection": {
+    "title": "Ready to start with the right infrastructure",
+
+    "tabs": {
+      "requestAssessment": "Request an assessment"
+    },
+
+    "requestAssessment": {
+      "form": {
+        "title": "Contact information",
+
+        "fields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "Full name"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Business email"
+          },
+          "aboutProject": {
+            "label": "Tell us about your project",
+            "placeholder": "Tell us about your project"
+          },
+          "budget": {
+            "label": "Budget",
+            "placeholder": "Select...",
+
+            "options": {
+              "under_5k": "Under $5K",
+              "5k_10k": "$5K - $10K",
+              "10k_25k": "$10K - $25K",
+              "25k_plus": "$25K+",
+              "not_sure": "Not sure yet"
+            }
+          },
+          "traffic": {
+            "label": "Traffic / order volume",
+            "placeholder": "Select..."
+          },
+          "service": {
+            "label": "How can we help you",
+
+            "options": {
+              "managedServer": "Managed hosting",
+              "migrationOptimization": "Migration & optimization",
+              "woocommerceSupport": "WooCommerce technical support",
+              "seo": "SEO",
+              "graphicDesign": "Graphic design",
+              "productDataEntry": "Product data entry",
+              "socialMedia": "Social media support"
+            }
+          }
+        },
+        "actions": {
+          "sendMessage": "Send message"
+        }
+      }
+    }
+  },
+
+  "FAQSection": {
+    "title": "FAQ",
+    "description": "Common questions before starting.",
+
+    "items": {
+      "woocommerceOnly": {
+        "question": "Is this service only for WooCommerce stores?",
+        "answer": "Yes. Unixsee is primarily designed for WordPress and WooCommerce stores that need specialized infrastructure and support."
+      },
+      "migration": {
+        "question": "Do you offer migration?",
+        "answer": "Yes. We review your current setup, reduce migration risk, and help move the store with a structured process."
+      },
+      "fixedPlans": {
+        "question": "Do you have fixed plans?",
+        "answer": "We focus on consultation and fit rather than crowded fixed-price plans. The recommendation depends on your store’s stage and needs."
+      },
+      "onlyInfrastructure": {
+        "question": "Do you only provide infrastructure?",
+        "answer": "No. Infrastructure is the core service, but we also provide supporting services that help aligned stores operate and grow."
+      },
+      "bestFit": {
+        "question": "Who is this service best suited for?",
+        "answer": "It is best suited for WooCommerce stores that care about stability, visibility, and access to specialized operational support."
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+# FROM docker.arvancloud.ir/node:22-alpine AS base
+FROM mirror.gcr.io/library/node:22-alpine AS base
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+
+
+FROM base AS deps
+
+COPY package.json package-lock.json ./
+# COPY package.json package-lock.json .npmrc ./
+
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline
+
+
+
+FROM base AS builder
+
+
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_SITE_ENV
+
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV NEXT_PUBLIC_SITE_ENV=${NEXT_PUBLIC_SITE_ENV}
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+
+RUN --mount=type=cache,target=/app/.next/cache \
+    npm run build
+
+
+
+FROM base AS runner
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser  --system --uid 1001 --ingroup nodejs nextjs
+
+# next.config.ts must have output: 'standalone' for this copy to work.
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static     ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
+
+USER nextjs
+EXPOSE 3000
+
+# Lightweight health check. Next.js 16 exposes /api/health by default
+# when experimental.instrumentationHook is enabled. Replace with your
+# own health endpoint if needed.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD wget -qO- http://localhost:3000/api/health || exit 1
+
+# server.js is the standalone entrypoint emitted by Next.js into .next/standalone.
+CMD ["node", "server.js"]

@@ -1,0 +1,165 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/",
+      "lang": "fa",
+      "type": "page",
+      "pageId": 101
+    },
+    "page": {
+      "id": 101,
+      "type": "home_page",
+      "lang": "fa",
+      "path": "/",
+      "title": "یونیکس‌سی",
+      "slug": "home",
+      "status": "publish",
+      "seo": {
+        "title": "یونیکس‌سی | زیرساخت فروشگاه وردپرس",
+        "description": "مدیریت، بهینه‌سازی و پایدارسازی فروشگاه‌های وردپرس و ووکامرس.",
+        "canonical": "https://example.com/",
+        "provider": "yoast"
+      },
+      "preview": {
+        "enabled": false,
+        "usesDraftData": false,
+        "draftUpdatedAt": null
+      },
+      "sections": [
+        {
+          "id": "home-hero-fa",
+          "type": "HomeHeroSection",
+          "props": {
+            "eyebrow": "هاستینگ مدیریت‌ شده تخصصی برای فروشگاه‌های وردپرس و ووکامرس",
+            "title": "هاستینگ مدیریت‌ شده تخصصی برای فروشگاه‌های وردپرس و ووکامرس",
+            "subtitle": "در یونیکسی فروشگاه شما فقط میزبانی نمی‌شود؛ با مانیتورینگ ریل‌تایم، پشتیبانی تخصصی و زیرساخت متناسب، دائماً تحت نظر است.",
+            "primaryCta": {
+              "label": "درخواست بررسی فروشگاه",
+              "href": "/fa/store-assessment"
+            },
+            "secondaryCta": {
+              "label": "آشنایی با خدمات",
+              "href": "/fa/services"
+            },
+            "microcopy": "برای فروشگاه‌هایی که پایداری و پشتیبانی واقعی برایشان مهم است."
+          }
+        },
+
+        {
+          "id": "home-problem-fa",
+          "type": "HomeProblemSection",
+          "props": {
+            "eyebrow": "چالش",
+            "title": "چرا هاستینگ عمومی برای فروشگاه‌ها کافی نیست؟",
+            "subtitle": "بیشتر سرویس‌های هاستینگ برای نیازهای واقعی فروشگاه‌های آنلاین طراحی نشده‌اند و در لحظات حساس، پاسخ مناسبی ارائه نمی‌دهند.",
+            "items": [
+              {
+                "id": "genericSupport",
+                "title": "پشتیبانی عمومی و غیرتخصصی",
+                "subtitle": "پشتیبانی • هاست اشتراکی • تیکت",
+                "description": "پشتیبانی‌ای که درکی از ووکامرس و مسائل حیاتی فروشگاه ندارد.",
+                "metric": "۷۰٪",
+                "metricLabel": "تیکت تکراری"
+              },
+              {
+                "id": "infrastructureMismatch",
+                "title": "زیرساخت نامتناسب با فروشگاه",
+                "subtitle": "سرور • منابع • مقیاس‌پذیری",
+                "description": "زیرساختی که با ترافیک، فرایند خرید و رشد فروشگاه هماهنگ نیست.",
+                "metric": "۲×",
+                "metricLabel": "ریسک پیک"
+              },
+              {
+                "id": "noMonitoring",
+                "title": "عدم مانیتورینگ واقعی",
+                "subtitle": "وضعیت • آپتایم • هشدارها",
+                "description": "عدم دید واقعی نسبت به عملکرد، آپتایم و مشکلات در حال شکل‌گیری.",
+                "metric": "-",
+                "metricLabel": "دید لحظه‌ای"
+              },
+              {
+                "id": "reactiveApproach",
+                "title": "واکنش به مشکل، نه پیشگیری",
+                "subtitle": "اختلال • خرابی • بازیابی",
+                "description": "مشکلات بعد از بروز رسیدگی می‌شوند، نه قبل از ایجاد اختلال.",
+                "metric": "۳×",
+                "metricLabel": "زمان بازیابی"
+              }
+            ]
+          }
+        },
+
+        {
+          "id": "home-testimonials-fa",
+          "type": "HomeTestimonialsSection",
+          "props": {
+            "source": "testimonials",
+            "limit": 2,
+            "order": "manual",
+            "selectedIds": [501, 502],
+            "items": [
+              {
+                "id": 501,
+                "lang": "fa",
+                "name": "علی رحیمی",
+                "role": "Founder",
+                "company": "Example Commerce",
+                "quote": "Unixsee helped us stabilize WooCommerce during campaign traffic.",
+                "rating": 5,
+                "avatar": {
+                  "id": 701,
+                  "url": "https://api.example.com/wp-content/uploads/2026/05/ali-rahimi.jpg",
+                  "alt": "Ali Rahimi",
+                  "mimeType": "image/jpeg",
+                  "width": 300,
+                  "height": 300
+                }
+              },
+              {
+                "id": 502,
+                "lang": "fa",
+                "name": "سارا احمدی",
+                "role": "Marketing Lead",
+                "company": "Retail Labs",
+                "quote": "The preview and revalidation workflow gave our team confidence before launch.",
+                "rating": 5,
+                "avatar": null
+              }
+            ]
+          }
+        },
+
+        {
+          "id": "home-faq-fa",
+          "type": "HomeFaqSection",
+          "props": {
+            "source": "faq",
+            "limit": 2,
+            "order": "manual",
+            "category": "home",
+            "selectedIds": [601, 602],
+
+            "items": [
+              {
+                "id": 601,
+                "lang": "fa",
+                "question": "آیا یونیکس‌سی فقط برای ووکامرس است؟",
+                "answer": "تمرکز اصلی روی فروشگاه‌های وردپرس و ووکامرس است.",
+                "category": "home"
+              },
+              {
+                "id": 602,
+                "lang": "fa",
+                "question": "آیا Preview قبل از انتشار جداست؟",
+                "answer": "بله، داده draft در preview از داده published جدا نگهداری می‌شود.",
+                "category": "home"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

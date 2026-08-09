@@ -1,0 +1,41 @@
+{
+  "fixture": "route.fa.preview.json",
+  "version": "2.2.15",
+  "page": {
+    "id": 101,
+    "type": "home_page",
+    "lang": "fa",
+    "path": "/",
+    "previewEnabled": true,
+    "usesDraftData": true,
+    "draftUpdatedAt": "2026-05-06T12:00:00+00:00"
+  },
+  "sections": [
+    {
+      "index": 0,
+      "key": "home-hero-fa",
+      "type": "HomeHeroSection",
+      "known": true,
+      "entityBacked": false,
+      "selectedIds": []
+    },
+    {
+      "index": 1,
+      "key": "home-testimonials-fa",
+      "type": "HomeTestimonialsSection",
+      "known": true,
+      "entityBacked": true,
+      "source": "testimonials",
+      "order": "manual",
+      "selectedIds": [502],
+      "itemCount": 1
+    }
+  ],
+  "unknownSections": [],
+  "breakingChangeGuards": {
+    "requiresHomePage": true,
+    "requiresNoUnknownSections": true,
+    "requiresEntityItemsResolved": true,
+    "requiresPreviewIsolation": true
+  }
+}

@@ -1,0 +1,61 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Set image name
+        id: image
+        run: echo "IMAGE_NAME=ghcr.io/unixseemaster-pixel/unixsee-web" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/unixseemaster-pixel/unixsee-web:staging
+            ghcr.io/unixseemaster-pixel/unixsee-web:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to staging server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          password: ${{ secrets.STAGING_SSH_PASSWORD }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+            docker pull ghcr.io/unixseemaster-pixel/unixsee-web:staging
+            docker stop client || true
+            docker rm client || true
+            docker run -d \
+              --name client \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              ghcr.io/unixseemaster-pixel/unixsee-web:staging

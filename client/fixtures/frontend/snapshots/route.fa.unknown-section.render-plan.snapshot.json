@@ -1,0 +1,40 @@
+{
+  "fixture": "route.fa.unknown-section.json",
+  "version": "2.2.15",
+  "page": {
+    "id": 101,
+    "type": "home_page",
+    "lang": "fa",
+    "path": "/",
+    "previewEnabled": false,
+    "usesDraftData": false,
+    "draftUpdatedAt": null
+  },
+  "sections": [
+    {
+      "index": 0,
+      "key": "home-hero-fa",
+      "type": "HomeHeroSection",
+      "known": true,
+      "entityBacked": false,
+      "selectedIds": []
+    },
+    {
+      "index": 1,
+      "key": "experimental-section",
+      "type": "HomeExperimentalSection",
+      "known": false,
+      "entityBacked": false,
+      "selectedIds": []
+    }
+  ],
+  "unknownSections": [
+    "HomeExperimentalSection"
+  ],
+  "breakingChangeGuards": {
+    "requiresHomePage": true,
+    "requiresNoUnknownSections": false,
+    "requiresEntityItemsResolved": true,
+    "requiresPreviewIsolation": true
+  }
+}

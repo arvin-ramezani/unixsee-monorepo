@@ -1,0 +1,218 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/en",
+      "lang": "en",
+      "type": "page",
+      "pageId": 102
+    },
+    "page": {
+      "id": 102,
+      "type": "home_page",
+      "lang": "en",
+      "path": "/en",
+      "title": "Unixsee",
+      "slug": "home-en",
+      "status": "publish",
+      "seo": {
+        "title": "Unixsee | WordPress Commerce Infrastructure",
+        "description": "A headless WordPress bridge for reliable WooCommerce growth.",
+        "canonical": "https://example.com/en",
+        "provider": "yoast"
+      },
+      "preview": {
+        "enabled": false,
+        "usesDraftData": false,
+        "draftUpdatedAt": null
+      },
+      "sections": [
+        {
+          "id": "home-hero-en",
+          "type": "HomeHeroSection",
+          "props": {
+            "eyebrow": "Managed WooCommerce hosting",
+            "title": "Managed hosting for WooCommerce stores with real-time visibility",
+            "subtitle": "At Unixsee, we don’t just host your store. We monitor, manage, and support it with infrastructure built for WooCommerce growth.",
+            "primaryCta": {
+              "label": "Request Store Assessment",
+              "href": "/en/store-assessment"
+            },
+            "secondaryCta": {
+              "label": "Explore Services",
+              "href": "/en/services"
+            },
+            "microcopy": "For stores that care about stability and real support."
+          }
+        },
+        {
+          "id": "home-problem-en",
+          "type": "HomeProblemSection",
+          "props": {
+            "title": "Why generic hosting fails WooCommerce stores",
+            "subtitle": "Most hosting solutions are not built for the operational needs of eCommerce.",
+            "items": [
+              {
+                "id": "generic-support",
+                "title": "Generic support",
+                "subtitle": "SUPPORT • SHARED HOSTING • TICKETS",
+                "description": "Support that doesn’t understand WooCommerce operations or store-critical issues.",
+                "metric": "+70%",
+                "metricLabel": "Repeat tickets"
+              },
+              {
+                "id": "infrastructure-mismatch",
+                "title": "Infrastructure mismatch",
+                "subtitle": "SERVERS • RESOURCES • SCALABILITY",
+                "description": "Infrastructure that isn’t aligned with traffic patterns, checkout flows, or growth.",
+                "metric": "2×",
+                "metricLabel": "Peak risk"
+              },
+              {
+                "id": "no-monitoring",
+                "title": "No real monitoring",
+                "subtitle": "VISIBILITY • UPTIME • ALERTS",
+                "description": "No real-time visibility into performance, uptime, or emerging issues.",
+                "metric": "-",
+                "metricLabel": "Live visibility"
+              },
+              {
+                "id": "reactive-approach",
+                "title": "Reactive instead of proactive",
+                "subtitle": "INCIDENTS • FAILURES • RECOVERY",
+                "description": "Problems are handled after failure, not prevented before impact.",
+                "metric": "3×",
+                "metricLabel": "Recovery time"
+              }
+            ]
+          }
+        },
+        {
+          "id": "home-testimonials-en",
+          "type": "HomeTestimonialsSection",
+          "props": {
+            "source": "testimonials",
+            "limit": 1,
+            "title": "Stories of success",
+            "description": "Hear it from our clients",
+            "order": "latest",
+            "selectedIds": [],
+            "items": [
+              {
+                "id": "item1",
+                "lang": "en",
+                "name": "Ali R",
+                "role": "Founder",
+                "company": "BrandName",
+                "quote": "After moving to Unixsee, our store became noticeably more stable during daily operations. The difference in support quality was clear from the first week.",
+                "rating": null,
+                "avatar": null
+              },
+              {
+                "id": "item2",
+                "lang": "en",
+                "name": "Sara M",
+                "role": "Operations Manager",
+                "company": "ShopCo",
+                "quote": "We finally have a team that understands WooCommerce issues beyond basic hosting. Problems are detected earlier, and responses are much more precise.",
+                "rating": null,
+                "avatar": null
+              },
+              {
+                "id": "item3",
+                "lang": "en",
+                "name": "Daniel K",
+                "role": "eCommerce Lead",
+                "company": "MarketPlus",
+                "quote": "During our campaign periods, the infrastructure remained stable without last-minute stress. Monitoring and readiness made a real difference.",
+                "rating": null,
+                "avatar": null
+              },
+              {
+                "id": "item4",
+                "lang": "en",
+                "name": "Nina T",
+                "role": "Product Manager",
+                "company": "StoreHub",
+                "quote": "Migration was handled carefully with minimal disruption. The process was structured and gave us confidence at every step.",
+                "rating": null,
+                "avatar": null
+              },
+              {
+                "id": "item5",
+                "lang": "en",
+                "name": "James L",
+                "role": "CTO",
+                "company": "RetailFlow",
+                "quote": "Unixsee feels less like a hosting provider and more like an operational partner. Their understanding of store workflows is valuable.",
+                "rating": null,
+                "avatar": null
+              },
+              {
+                "id": "item6",
+                "lang": "en",
+                "name": "Emily R",
+                "role": "Growth Manager",
+                "company": "CommerceX",
+                "quote": "We now have better visibility into our store’s health and performance. Issues are handled before they impact customers.",
+                "rating": null,
+                "avatar": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "home-faq-en",
+          "type": "HomeFaqSection",
+          "props": {
+            "source": "faq",
+            "limit": 1,
+            "order": "latest",
+            "category": "home",
+            "selectedIds": [],
+            "title": "FAQ",
+            "description": "Common questions before starting.",
+            "items": [
+              {
+                "id": "woocommerceOnly",
+                "lang": "en",
+                "question": "Is this service only for WooCommerce stores?",
+                "answer": "Yes. Unixsee is primarily designed for WordPress and WooCommerce stores that need specialized infrastructure and support.",
+                "category": "home"
+              },
+              {
+                "id": "migration",
+                "lang": "en",
+                "question": "Do you offer migration?",
+                "answer": "Yes. We review your current setup, reduce migration risk, and help move the store with a structured process.",
+                "category": "home"
+              },
+              {
+                "id": "fixedPlans",
+                "lang": "en",
+                "question": "Do you have fixed plans?",
+                "answer": "We focus on consultation and fit rather than crowded fixed-price plans. The recommendation depends on your store’s stage and needs.",
+                "category": "home"
+              },
+              {
+                "id": "onlyInfrastructure",
+                "lang": "en",
+                "question": "Do you only provide infrastructure?",
+                "answer": "No. Infrastructure is the core service, but we also provide supporting services that help aligned stores operate and grow.",
+                "category": "home"
+              },
+              {
+                "id": "bestFit",
+                "lang": "en",
+                "question": "Who is this service best suited for?",
+                "answer": "It is best suited for WooCommerce stores that care about stability, visibility, and access to specialized operational support.",
+                "category": "home"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

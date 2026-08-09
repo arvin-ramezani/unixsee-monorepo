@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "data": {
+    "schemaVersion": "2026-05-02-contract-v2.0.0",
+    "route": {
+      "path": "/",
+      "lang": "fa",
+      "type": "page",
+      "pageId": 101
+    },
+    "page": {
+      "id": 101,
+      "type": "home_page",
+      "lang": "fa",
+      "path": "/",
+      "title": "یونیکس‌سی - پیش‌نمایش",
+      "slug": "home",
+      "status": "draft-preview",
+      "seo": {
+        "title": "Preview | یونیکس‌سی",
+        "description": "Draft-mode preview fixture for Next.js integration tests.",
+        "canonical": "https://example.com/",
+        "provider": "yoast"
+      },
+      "preview": {
+        "enabled": true,
+        "usesDraftData": true,
+        "draftUpdatedAt": "2026-05-06T12:00:00+00:00"
+      },
+      "sections": [
+        {
+          "id": "home-hero-fa",
+          "type": "HomeHeroSection",
+          "props": {
+            "eyebrow": "Draft Preview",
+            "title": "متن Hero در حالت پیش‌نمایش",
+            "subtitle": "این داده نباید در خروجی published دیده شود.",
+            "primaryCta": {
+              "label": "تست پیش‌نمایش",
+              "href": "/consultation?preview=1"
+            },
+            "image": null
+          }
+        },
+        {
+          "id": "home-testimonials-fa",
+          "type": "HomeTestimonialsSection",
+          "props": {
+            "source": "testimonials",
+            "limit": 1,
+            "order": "manual",
+            "selectedIds": [502],
+            "items": [
+              {
+                "id": 502,
+                "lang": "fa",
+                "name": "سارا احمدی",
+                "role": "Marketing Lead",
+                "company": "Retail Labs",
+                "quote": "Draft selectedIds should resolve only inside preview.",
+                "rating": 5,
+                "avatar": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

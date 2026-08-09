@@ -49,9 +49,14 @@ Persian and RTL-first; see [`docs/frontend/styling.md`](../frontend/styling.md).
   [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
 - `agent/` is an active VPS edge agent (enrollment + discovery + HMAC
   ingest/heartbeat). See [`../agent/README.md`](../agent/README.md).
-- `client/` and `admin-panel/` remain UI-first until integration work begins;
-  follow [`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
-  for those apps until a superseding integration ADR lands.
+- `client/` is an active public + customer Next.js app (UI-first until Nest
+  integration is allowed). App-scoped docs live under `client/docs/`; product
+  and architecture truth stay in monorepo `docs/`.
+- `admin-panel/` is an active staff Next.js app (UI-first / fixtures). App-scoped
+  docs live under `admin-panel/docs/`; product UX flows stay in monorepo
+  `docs/product/`.
+- Follow [`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
+  for Next.js apps until a superseding integration ADR lands.
 - API audience namespaces:
   [`decisions/0004-api-audience-namespaces.md`](./decisions/0004-api-audience-namespaces.md).
 
