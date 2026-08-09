@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Builds / caches
+dist/
+build/
+out/
+.next/
+.turbo/
+.cache/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# Logs and runtime
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids/
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Temp
+.temp/
+.tmp/
+*.tmp
+*.swp
+*~
+
+# Backend local docker volumes
+backend/docker-data/*
+!backend/docker-data/.gitignore
