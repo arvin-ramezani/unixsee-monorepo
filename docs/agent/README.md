@@ -1,16 +1,16 @@
 # Agent documentation
 
-> **Status:** Stub — the VPS edge agent is not scaffolded in this repository yet.
+> **Status:** Active — VPS edge agent lives in `agent/` (unixsee-monitor-agent).
 
 ## Ownership
 
-`agent/` will host the edge process that runs on managed VPS hosts.
+`agent/` hosts the edge process that runs on managed VPS hosts (DirectAdmin + OpenLiteSpeed WordPress / WooCommerce fleets).
 
 ## Responsibilities
 
-- Enroll with NestJS using a staff-issued one-time enrollment token
-- Discover server and website inventory
-- Push monitoring and discovery payloads to NestJS over outbound HTTPS
+- Enroll with NestJS using a staff-issued one-time enrollment token (`POST /api/internal/agent/v1/enroll`)
+- Discover server and website inventory (OLS active routes, DirectAdmin domains/subdomains/pointers, optional filesystem fallbacks)
+- Push monitoring and discovery payloads to NestJS over outbound HTTPS (`/ingest`, `/heartbeat`)
 - Remain unreachable from admin/client UIs
 
 ## Trust boundary
@@ -25,6 +25,10 @@ agent ──outbound HTTPS──► NestJS (backend)
   records — not from raw discovery alone.
 
 Details: [`../product/notes/servers-agent-data-flow.md`](../product/notes/servers-agent-data-flow.md).
+
+## Install / ops
+
+See the agent package README: [`../../agent/README.md`](../../agent/README.md).
 
 ## Related docs
 

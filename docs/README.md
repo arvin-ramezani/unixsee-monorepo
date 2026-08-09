@@ -23,7 +23,7 @@ docs/
 ├── architecture/     System overview, monorepo ownership, ADRs, Next.js layout
 ├── frontend/         Conventions for admin-panel and client Next.js apps
 ├── backend/          NestJS ownership, modules, and route map
-├── agent/            Edge agent ownership (stub until scaffolding)
+├── agent/            Edge agent ownership and ops pointers
 ├── product/          Phase 1 features, notes, admin UX flows
 └── quality/          Validation and documentation standards
 ```

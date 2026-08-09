@@ -39,7 +39,9 @@ queues are REST-first.
 - Customer routes: access JWT + **tenant membership** scope on every query.
 - Admin routes: access JWT + staff role/capability (start coarse: `ADMIN` /
   `OPERATOR`; refine later).
-- Agent: HMAC or enrollment/activation token only; never expose agent secrets to browsers.
+- Agent: enrollment token exchange, then HMAC-signed ingest/heartbeat only;
+  never expose agent secrets to browsers. Backend may still accept a legacy
+  activation header during transition; the edge agent is enrollment-only.
 - Do not redesign OTP, refresh, or monitoring-access JWT flows.
 
 ```mermaid
@@ -127,9 +129,12 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 
 | Method | Path | Audience |
 |---|---|---|
-| POST | `/api/internal/agent/v1/ingest` | Agent (existing HMAC/activation) |
-| POST | `/api/internal/agent/v1/enroll` | Agent (when product replaces env activation) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (optional Phase 1 hardening) |
+| POST | `/api/internal/agent/v1/enroll` | Agent (one-time `x-enrollment-token` → `secretKey`) |
+| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC after enrollment) |
+| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness) |
+
+Product agent install uses enrollment, then HMAC. See
+[`../agent/README.md`](../agent/README.md) and [`../../agent/README.md`](../../agent/README.md).
 
 ---
 
@@ -316,8 +321,9 @@ Omit controllers that an audience does not need.
 3. **Admin onboarding:** admin users/tenants, plan-request enablement, servers +
    enrollment tokens, discoveries + website assign.
 4. **Support & comms:** tickets, notifications, activities, audit, admin overview.
-5. **Ops hardening:** operational-actions, richer alerts, agent enroll/heartbeat
-   if product requires beyond current ingest.
+5. **Ops hardening:** operational-actions, richer alerts; retire legacy agent
+   activation bootstrap once fleet is fully enroll-based; persist discovery
+   metadata/`WebsiteDiscovery` ownership if product assignment requires it.
 
 ## Related docs
 
