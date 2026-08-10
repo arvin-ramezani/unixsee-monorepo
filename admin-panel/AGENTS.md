@@ -1,63 +1,80 @@
-# Unixsee admin-panel agent instructions
+# AGENTS.md
 
-This folder is the **admin-panel** deployable in the Unixsee monorepo: staff
-Next.js UI for operating Unixsee. Persian / RTL is primary.
+## Purpose
 
-## Before editing
+Unixsee Admin Panel built with Next.js App Router. Current phase focuses on reusable UI components and pages with dummy data.
 
-1. Read monorepo orientation: [`../AGENTS.md`](../AGENTS.md) and
-   [`../docs/architecture/overview.md`](../docs/architecture/overview.md).
-2. Read the relevant admin UX flow under
-   [`../docs/product/ux-flows/`](../docs/product/ux-flows/).
-3. Read app-scoped docs under [`docs/`](docs/).
-4. Inspect existing implementation; prefer the smallest safe change.
+The repository, specifications, architecture documents, and existing implementation are the source of truth. Do not invent requirements or architecture.
 
-## Current stack
+## Stack
 
 - Next.js 16.3 App Router
 - React 19
 - TypeScript
 - Tailwind CSS v4
 - shadcn/ui (Base UI)
+- Zustand
+- Zod
+- React Hook Form
 - npm
 - Persian / RTL
 
-Source lives under `src/`.
+Source code is under `src/`.
 
-## Current scope
+## Current Scope
 
-Build UI with static/fixture data only. Do not introduce API calls,
-authentication, authorization, database access, or backend integration unless
-explicitly requested. Follow
-[`../docs/architecture/decisions/0003-ui-only-phase-boundaries.md`](../docs/architecture/decisions/0003-ui-only-phase-boundaries.md).
+Build UI with static data only. Do not introduce API calls, authentication, authorization, database access, or backend integration unless explicitly requested.
 
-## Required context
+## Project Rules
 
-| Task | Read first |
-| --- | --- |
-| Product / staff workflows | [`../docs/product/README.md`](../docs/product/README.md) |
-| Shared frontend conventions | [`../docs/frontend/README.md`](../docs/frontend/README.md) |
-| Components in this app | [`docs/development/components.md`](docs/development/components.md) |
-| Fixture data patterns | [`docs/development/data.md`](docs/development/data.md) |
-| Local workflow | [`docs/development/workflow.md`](docs/development/workflow.md) |
-| Validation | [`../docs/quality/validation.md`](../docs/quality/validation.md) |
+The following documents are part of the repository's development rules. Read the relevant documents before implementation:
 
-## Core rules
+- [Project Architecture](docs/architecture/project.md)
+- [Next.js](docs/frontend/nextjs.md)
+- [Components](docs/development/components.md)
+- [Data](docs/development/data.md)
+- [Styling](docs/frontend/styling.md)
+- [State](docs/frontend/state.md)
+- [Workflow](docs/development/workflow.md)
+- [Validation](docs/quality/validation.md)
+
+## Before Coding
+
+1. Read relevant instructions and documentation.
+2. Inspect existing implementation and dependencies.
+3. Reuse existing components and patterns.
+4. Make the smallest appropriate change.
+
+## Core Rules
 
 - Prefer reuse over duplication.
 - Do not over-engineer.
 - Keep components focused and composable.
+- Follow Single Responsibility Principle.
 - Do not make unrelated changes.
-- Do not invent Nest routes or talk to agents from this app.
-- Keep code, comments, and technical docs in English.
+- Do not use outdated framework patterns.
+- Do not add unnecessary dependencies.
 
-## Validation
+## Completion
 
-Use scripts that exist in this package:
+A task is complete when requirements are implemented, existing patterns are preserved, relevant validation passes, and the final diff contains no unrelated changes.
 
-```bash
-npm run lint
-npm run build
-```
+## Final Report
 
-Do not invent unavailable root monorepo scripts.
+Report:
+
+- Changes made
+- Important decisions
+- Validation performed
+- Manual actions required
+- Remaining limitations
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
