@@ -1,6 +1,5 @@
 import { Type } from 'class-transformer';
 import {
-  ArrayMinSize,
   Equals,
   IsArray,
   IsIn,
@@ -181,11 +180,4 @@ export class Phase1IngestDto {
   @ValidateNested({ each: true })
   @Type(() => ActiveVisitors3mDto)
   activeVisitors3m?: ActiveVisitors3mDto[];
-}
-
-/** @deprecated Legacy monitor ingest — quarantined (ADR 0008). */
-export class LegacyIngestAgentMetricsDto {
-  @IsArray()
-  @ArrayMinSize(1)
-  batch!: unknown[];
 }

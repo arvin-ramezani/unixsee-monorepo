@@ -14,7 +14,7 @@ import {
   HeartbeatAgentDto,
   Phase1DiscoveryDto,
   Phase1IngestDto,
-} from './dto/phase1-agent.dto.js';
+} from './dto/agent.dto.js';
 
 @Injectable()
 export class AgentService {

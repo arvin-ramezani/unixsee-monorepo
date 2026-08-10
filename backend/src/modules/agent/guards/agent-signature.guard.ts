@@ -89,7 +89,6 @@ export class AgentSignatureGuard implements CanActivate {
     }
 
     request.vpsMachineId = machineId;
-    request.isFirstProvisioningCycle = false;
 
     this.logger.debug('agent.auth.signature_verified', {
       machineId,

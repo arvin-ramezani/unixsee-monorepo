@@ -32,6 +32,11 @@ Team strength is TypeScript. Host work is I/O-bound (config/files/logs + HTTPS).
 4. Prefer Go only if fleet install forbids Node or measured RSS exceeds an
    agreed host budget.
 
+> **Update (ADR 0009):** Quarantined Nest monitor shapes moved to
+> `backend/src/modules/monitoring-agent/` (not wired). Live Nest ownership is
+> `backend/src/modules/agent/` only. See
+> [`0009-nest-agent-kind-module-split.md`](./0009-nest-agent-kind-module-split.md).
+
 ## Consequences
 
 - `agent/` ships as its own npm package (no shared `packages/` yet).

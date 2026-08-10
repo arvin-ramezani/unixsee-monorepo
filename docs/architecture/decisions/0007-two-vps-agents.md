@@ -34,6 +34,12 @@ patterns; exact API split is a backend follow-up and must not invent conflicting
 contracts against [`../../backend/modules-and-routes.md`](../../backend/modules-and-routes.md)
 without an explicit update.
 
+> **Update (ADR 0009):** Nest live plane is `backend/src/modules/agent/` at
+> `/api/internal/agent/v1`. Monitoring leftovers are archived under
+> `backend/src/modules/monitoring-agent/` (not wired). Future resume uses
+> `/api/internal/monitoring-agent/v1`. See
+> [`0009-nest-agent-kind-module-split.md`](./0009-nest-agent-kind-module-split.md).
+
 ## Consequences
 
 - Product PRD under `docs/agent/prd.md` applies to **`agent/` only**.

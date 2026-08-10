@@ -69,3 +69,4 @@ What becomes easier, harder, or forbidden?
 | [0006](./0006-rename-agent-to-monitoring-agent.md) | Rename edge deployable to `monitoring-agent/` | Accepted |
 | [0007](./0007-two-vps-agents.md) | Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/` | Accepted |
 | [0008](./0008-phase1-agent-typescript-node.md) | Phase 1 VPS agent language and Nest contract ownership | Accepted |
+| [0009](./0009-nest-agent-kind-module-split.md) | Nest agent-kind module split (Phase 1 live, monitoring archived) | Accepted |

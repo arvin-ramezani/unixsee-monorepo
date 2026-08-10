@@ -7,7 +7,8 @@
 > **ADRs:**
 > [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md),
 > [`../architecture/decisions/0005-domain-modules-multi-audience-controllers.md`](../architecture/decisions/0005-domain-modules-multi-audience-controllers.md),
-> [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)
+> [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md),
+> [`../architecture/decisions/0009-nest-agent-kind-module-split.md`](../architecture/decisions/0009-nest-agent-kind-module-split.md)
 
 High-level NestJS module and route map for Phase 1. Resource paths are planning
 contracts, not final OpenAPI. Keep authentication as implemented in
@@ -137,9 +138,14 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 Product install uses enrollment, then HMAC. **Source of truth:**
 [`../agent/prd.md`](../agent/prd.md) and
 [`../agent/phase1-api-contract.md`](../agent/phase1-api-contract.md).
-Deployable: [`../../agent/`](../../agent/). Legacy monitor-shaped ingest is
-quarantined (ADR 0008); `monitoring-agent/` resumes later under a follow-up
-contract.
+Deployable: [`../../agent/`](../../agent/). Nest module:
+[`../../backend/src/modules/agent/`](../../backend/src/modules/agent/) (ADR 0009).
+
+Archived monitoring-agent Nest leftovers (batch ingest DTOs/events, not wired
+into `AppModule`) live under
+[`../../backend/src/modules/monitoring-agent/`](../../backend/src/modules/monitoring-agent/).
+When monitoring work returns, resume under `/api/internal/monitoring-agent/v1`
+(ADR 0007 / 0008 / 0009).
 
 ---
 

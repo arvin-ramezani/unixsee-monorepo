@@ -14,7 +14,7 @@ import {
   EnrollAgentDto,
   HeartbeatAgentDto,
   Phase1IngestDto,
-} from './dto/phase1-agent.dto.js';
+} from './dto/agent.dto.js';
 import { AgentService } from './agent.service.js';
 import { Public } from '../auth/decorators/public.decorator.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
