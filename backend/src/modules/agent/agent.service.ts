@@ -144,8 +144,11 @@ export class AgentService {
           select: { id: true, websiteId: true },
         });
         if (!existing) continue;
-        await this.insertVisitorSample(existing.id, existing.websiteId, sample);
-        visitorSamplesInserted += 1;
+        visitorSamplesInserted += await this.insertVisitorSample(
+          existing.id,
+          existing.websiteId,
+          sample,
+        );
         continue;
       }
 
@@ -153,12 +156,11 @@ export class AgentService {
         where: { id: discoveryId },
         select: { websiteId: true },
       });
-      await this.insertVisitorSample(
+      visitorSamplesInserted += await this.insertVisitorSample(
         discoveryId,
         discovery?.websiteId ?? null,
         sample,
       );
-      visitorSamplesInserted += 1;
     }
 
     this.logger.log('agent.ingest.phase1.stored', {
@@ -235,9 +237,9 @@ export class AgentService {
       windowStartedAt: string;
       measuredAt: string;
     },
-  ) {
+  ): Promise<number> {
     const measuredAt = new Date(sample.measuredAt);
-    await this.prisma.websiteActiveVisitorSample.createMany({
+    const result = await this.prisma.websiteActiveVisitorSample.createMany({
       data: [
         {
           recordedAt: measuredAt,
@@ -252,6 +254,7 @@ export class AgentService {
       ],
       skipDuplicates: true,
     });
+    return result.count;
   }
 
   private getHomeDirectory(documentRoot: string): string | null {

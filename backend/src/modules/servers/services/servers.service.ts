@@ -235,33 +235,64 @@ export class ServersService {
     const tokenHash = createHash('sha256').update(plaintextToken).digest('hex');
     const token = await this.prisma.serverEnrollmentToken.findUnique({
       where: { tokenHash },
-      include: { server: true },
+      select: {
+        id: true,
+        serverId: true,
+        status: true,
+        expiresAt: true,
+      },
     });
 
     if (!token || token.status !== EnrollmentTokenStatus.ACTIVE) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
-    if (token.expiresAt && token.expiresAt.getTime() < Date.now()) {
-      await this.prisma.serverEnrollmentToken.update({
-        where: { id: token.id },
-        data: { status: EnrollmentTokenStatus.EXPIRED },
-      });
-      throw new BadRequestException(ERROR_MESSAGES.fa.validation);
-    }
 
     const secretKey = randomBytes(32).toString('hex');
+    const now = new Date();
 
     const result = await this.prisma.$transaction(async (tx) => {
-      const existing = await tx.vpsNode.findUnique({ where: { machineId } });
+      const existing = await tx.vpsNode.findUnique({
+        where: { machineId },
+        select: { id: true, serverId: true },
+      });
+
+      // Same generic 400 as invalid tokens — do not reveal cross-server binding via 409.
+      if (existing && existing.serverId !== token.serverId) {
+        throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+      }
+
+      const consumed = await tx.serverEnrollmentToken.updateMany({
+        where: {
+          id: token.id,
+          status: EnrollmentTokenStatus.ACTIVE,
+          OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+        },
+        data: {
+          status: EnrollmentTokenStatus.USED,
+          usedAt: now,
+        },
+      });
+
+      if (consumed.count !== 1) {
+        if (token.expiresAt && token.expiresAt.getTime() <= now.getTime()) {
+          await tx.serverEnrollmentToken.updateMany({
+            where: {
+              id: token.id,
+              status: EnrollmentTokenStatus.ACTIVE,
+            },
+            data: { status: EnrollmentTokenStatus.EXPIRED },
+          });
+        }
+        throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+      }
 
       const vpsNode = existing
         ? await tx.vpsNode.update({
             where: { machineId },
             data: {
-              serverId: token.serverId,
               secretKey,
-              lastSeenAt: new Date(),
-              lastHeartbeatAt: new Date(),
+              lastSeenAt: now,
+              lastHeartbeatAt: now,
               status: VpsNodeStatus.ONLINE,
               credentialsRevokedAt: null,
               credentialsRevokedReason: null,
@@ -273,19 +304,11 @@ export class ServersService {
               serverId: token.serverId,
               name: `Node ${machineId.substring(0, 8)}`,
               secretKey,
-              lastSeenAt: new Date(),
-              lastHeartbeatAt: new Date(),
+              lastSeenAt: now,
+              lastHeartbeatAt: now,
               status: VpsNodeStatus.ONLINE,
             },
           });
-
-      await tx.serverEnrollmentToken.update({
-        where: { id: token.id },
-        data: {
-          status: EnrollmentTokenStatus.USED,
-          usedAt: new Date(),
-        },
-      });
 
       return vpsNode;
     });

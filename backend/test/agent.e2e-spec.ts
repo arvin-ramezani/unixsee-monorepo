@@ -63,7 +63,7 @@ describe('AgentModule (e2e)', () => {
       ],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication({ rawBody: true });
     app.setGlobalPrefix('api');
     app.useGlobalPipes(
       new ValidationPipe({
@@ -351,6 +351,195 @@ describe('AgentModule (e2e)', () => {
         .set('x-agent-signature', signature)
         .send(body)
         .expect(400);
+    });
+
+    it('rejects ingest with more than 200 discoveries', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: Array.from({ length: 201 }, (_, index) => ({
+          domain: `site-${index}.example.com`,
+          documentRoot: `/home/user/domains/site-${index}.example.com/public_html`,
+          appType: 'static',
+          source: 'openlitespeed',
+        })),
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(400);
+    });
+
+    it('rejects non-HTTPS management URLs', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+            controlPanelUrl: 'javascript:alert(1)',
+            wordpressAdminUrl: 'http://example.com/wp-admin/',
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(400);
+    });
+
+    it('accepts HTTPS management URLs', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        agentVersion: '0.1.0',
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            owner: 'user',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+            controlPanelUrl: 'https://host.example:2222',
+            wordpressAdminUrl: 'https://example.com/wp-admin/',
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(201);
+    });
+
+    it('rejects zero uniqueIpCount without status', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+          },
+        ],
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueIpCount: 0,
+            windowSeconds: 180,
+            windowStartedAt: new Date(Date.now() - 180_000).toISOString(),
+            measuredAt: sentAt,
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(400);
+    });
+
+    it('accepts zero uniqueIpCount with unsupported status', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+          },
+        ],
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueIpCount: 0,
+            windowSeconds: 180,
+            windowStartedAt: new Date(Date.now() - 180_000).toISOString(),
+            measuredAt: sentAt,
+            status: { state: 'unsupported', reason: 'log_missing' },
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(201);
+    });
+
+    it('accepts zero uniqueIpCount with ok status for empty readable windows', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+          },
+        ],
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueIpCount: 0,
+            windowSeconds: 180,
+            windowStartedAt: new Date(Date.now() - 180_000).toISOString(),
+            measuredAt: sentAt,
+            status: { state: 'ok' },
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(201);
     });
   });
 });

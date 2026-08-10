@@ -10,6 +10,10 @@ import {
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import type { AgentRequest } from '#/common/interfaces/agent-request.interface.js';
+import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+
+/** Same length as enrollment secrets (`randomBytes(32).toString('hex')`). */
+const DUMMY_HMAC_SECRET = '0'.repeat(64);
 
 @Injectable()
 export class AgentSignatureGuard implements CanActivate {
@@ -42,9 +46,7 @@ export class AgentSignatureGuard implements CanActivate {
         hasTimestamp: Boolean(timestamp),
         hasSignature: Boolean(incomingSignature),
       });
-      throw new UnauthorizedException(
-        'Missing mandatory cryptographic security headers.',
-      );
+      throw this.authenticationFailed();
     }
 
     const normalizedTimestamp = this.firstHeaderValue(timestamp);
@@ -58,7 +60,15 @@ export class AgentSignatureGuard implements CanActivate {
         ip: request.ip,
         driftMs,
       });
-      throw new UnauthorizedException('Security timestamp drift detected.');
+      throw this.authenticationFailed();
+    }
+
+    if (!request.rawBody || request.rawBody.length === 0) {
+      this.logger.warn('agent.auth.raw_body_missing', {
+        machineId,
+        ip: request.ip,
+      });
+      throw this.authenticationFailed();
     }
 
     const vpsNode = await this.prisma.vpsNode.findUnique({
@@ -66,26 +76,31 @@ export class AgentSignatureGuard implements CanActivate {
       select: { secretKey: true, credentialsRevokedAt: true },
     });
 
-    if (!vpsNode?.secretKey || vpsNode.credentialsRevokedAt) {
-      this.logger.warn('agent.auth.machine_unknown', {
-        machineId,
-        ip: request.ip,
-      });
-      throw new UnauthorizedException('Unrecognized host identity signature.');
-    }
+    const credentialsUsable = Boolean(
+      vpsNode?.secretKey && !vpsNode.credentialsRevokedAt,
+    );
+    const secretKey = credentialsUsable
+      ? vpsNode!.secretKey
+      : DUMMY_HMAC_SECRET;
 
-    const rawPayloadString = JSON.stringify(requestBody);
+    const rawPayloadString = request.rawBody.toString('utf8');
     const dataToSign = `${normalizedTimestamp}.${rawPayloadString}`;
-    const computedSignature = createHmac('sha256', vpsNode.secretKey)
+    const computedSignature = createHmac('sha256', secretKey)
       .update(dataToSign)
       .digest('hex');
+    const signatureValid = this.safeCompareHex(
+      normalizedSignature,
+      computedSignature,
+    );
 
-    if (!this.safeCompareHex(normalizedSignature, computedSignature)) {
-      this.logger.warn('agent.auth.signature_invalid', {
+    if (!credentialsUsable || !signatureValid) {
+      this.logger.warn('agent.auth.rejected', {
         machineId,
         ip: request.ip,
+        credentialsUsable,
+        signatureValid,
       });
-      throw new UnauthorizedException('Invalid cryptographic signature match.');
+      throw this.authenticationFailed();
     }
 
     request.vpsMachineId = machineId;
@@ -95,6 +110,10 @@ export class AgentSignatureGuard implements CanActivate {
       ip: request.ip,
     });
     return true;
+  }
+
+  private authenticationFailed(): UnauthorizedException {
+    return new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
   }
 
   private firstHeaderValue(value: string | string[]): string {

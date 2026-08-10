@@ -8,7 +8,15 @@
 Audience: `/api/internal/agent/v1/*` (not browser-facing). Auth: one-time
 `x-enrollment-token` for enroll; HMAC headers `x-agent-timestamp` +
 `x-agent-signature` for heartbeat/ingest. Signature = HMAC-SHA256 hex over
-`{timestamp}.{rawJsonBody}` using the enrolled secret.
+`{timestamp}.{rawJsonBody}` using the enrolled secret. Nest verifies that
+HMAC against the **raw request body bytes** (not a re-serialized parsed
+object). Enrollment tokens are single-consume (atomic ACTIVE→USED) and
+Enrollment tokens are single-consume (atomic ACTIVE→USED) and may
+re-provision only when `machineId` already belongs to the **same** server;
+cross-server rebind is rejected with the same generic validation error as an
+invalid token (no distinct 409 oracle). Ingest caps `discoveries` and
+`activeVisitors3m` at 200 entries each; optional `controlPanelUrl` /
+`wordpressAdminUrl` must be HTTPS when present.
 
 Legacy monitor batch ingest (`batch[].metrics` host telemetry) is **not** the
 Phase 1 contract. See ADR 0008.
@@ -92,7 +100,8 @@ Missing values use `unknown` / `unsupported` with a reason code inside
 When an access log is missing or unreadable, `activeVisitors3m[].uniqueIpCount`
 may be `0` but **must** include `status: { "state": "unsupported", "reason": "..." }`
 (for example `log_missing` / `log_unreadable`) so Nest/UI do not treat it as
-real zero traffic.
+fabricated traffic. A readable empty window uses `uniqueIpCount: 0` with
+`status: { "state": "ok" }`. Bare zeros without `status` are rejected.
 
 ### Access logs
 

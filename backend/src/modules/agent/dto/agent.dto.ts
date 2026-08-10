@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   Equals,
   IsArray,
   IsIn,
@@ -9,9 +10,15 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
   Min,
   MinLength,
+  Validate,
+  ValidateIf,
   ValidateNested,
+  type ValidationArguments,
+  ValidatorConstraint,
+  type ValidatorConstraintInterface,
 } from 'class-validator';
 
 export class EnrollAgentDto {
@@ -62,6 +69,27 @@ export class FieldStatusDto {
   reason?: string;
 }
 
+@ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
+class ZeroVisitorsRequireStatusConstraint
+  implements ValidatorConstraintInterface
+{
+  validate(uniqueIpCount: unknown, args: ValidationArguments): boolean {
+    if (uniqueIpCount !== 0) {
+      return true;
+    }
+    const sample = args.object as ActiveVisitors3mDto;
+    // Real empty window: status.ok. Missing/unreadable log: status.unsupported.
+    // Bare zeros without status are rejected (never treat as real traffic).
+    return (
+      sample.status?.state === 'ok' || sample.status?.state === 'unsupported'
+    );
+  }
+
+  defaultMessage(): string {
+    return 'activeVisitors3m uniqueIpCount 0 requires status.state ok or unsupported';
+  }
+}
+
 export class Phase1DiscoveryDto {
   @IsString()
   @IsNotEmpty()
@@ -93,11 +121,13 @@ export class Phase1DiscoveryDto {
   backendAddress?: string | null;
 
   @IsOptional()
-  @IsString()
+  @ValidateIf((_, value) => value !== null && value !== undefined)
+  @IsUrl({ protocols: ['https'], require_protocol: true })
   controlPanelUrl?: string | null;
 
   @IsOptional()
-  @IsString()
+  @ValidateIf((_, value) => value !== null && value !== undefined)
+  @IsUrl({ protocols: ['https'], require_protocol: true })
   wordpressAdminUrl?: string | null;
 
   @IsOptional()
@@ -136,6 +166,7 @@ export class ActiveVisitors3mDto {
 
   @IsInt()
   @Min(0)
+  @Validate(ZeroVisitorsRequireStatusConstraint)
   uniqueIpCount!: number;
 
   @IsInt()
@@ -171,12 +202,14 @@ export class Phase1IngestDto {
   sentAt!: string;
 
   @IsArray()
+  @ArrayMaxSize(200)
   @ValidateNested({ each: true })
   @Type(() => Phase1DiscoveryDto)
   discoveries!: Phase1DiscoveryDto[];
 
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(200)
   @ValidateNested({ each: true })
   @Type(() => ActiveVisitors3mDto)
   activeVisitors3m?: ActiveVisitors3mDto[];

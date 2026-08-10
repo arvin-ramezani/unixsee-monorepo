@@ -15,6 +15,7 @@ declare global {
       user?: User;
       requestId?: string;
       vpsMachineId?: string;
+      rawBody?: Buffer;
     }
   }
 }

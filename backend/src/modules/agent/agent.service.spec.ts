@@ -250,6 +250,32 @@ describe('AgentService', () => {
       );
     });
 
+    it('reports visitorSamplesInserted from createMany count (0 on duplicate skip)', async () => {
+      prisma.vpsNode.findUnique.mockResolvedValue({
+        id: 'node-1',
+        serverId: 'server-1',
+        credentialsRevokedAt: null,
+        secretKey: 'secret',
+      });
+      prisma.vpsNode.update.mockResolvedValue({});
+      prisma.websiteDiscovery.upsert.mockResolvedValue({
+        id: 'disc-1',
+        domain: 'example.com',
+      });
+      prisma.websiteDiscovery.findUnique.mockResolvedValue({
+        websiteId: 'site-1',
+      });
+      prisma.websiteActiveVisitorSample.createMany.mockResolvedValue({
+        count: 0,
+      });
+
+      await expect(service.processPhase1Ingest(payload)).resolves.toEqual({
+        vpsNodeId: 'node-1',
+        discoveryCount: 1,
+        visitorSamplesInserted: 0,
+      });
+    });
+
     it('looks up existing discovery for visitor samples not in this batch', async () => {
       const payloadWithExtraVisitor: Phase1IngestDto = {
         ...payload,
