@@ -68,3 +68,4 @@ What becomes easier, harder, or forbidden?
 | [0005](./0005-domain-modules-multi-audience-controllers.md) | Domain modules with multi-audience controllers | Accepted |
 | [0006](./0006-rename-agent-to-monitoring-agent.md) | Rename edge deployable to `monitoring-agent/` | Accepted |
 | [0007](./0007-two-vps-agents.md) | Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/` | Accepted |
+| [0008](./0008-phase1-agent-typescript-node.md) | Phase 1 VPS agent language and Nest contract ownership | Accepted |

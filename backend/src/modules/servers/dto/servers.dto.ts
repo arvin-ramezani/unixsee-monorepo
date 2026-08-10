@@ -1,4 +1,9 @@
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateServerDto {
   @IsString()
@@ -38,4 +43,11 @@ export class CreateEnrollmentTokenDto {
   @IsOptional()
   @IsString()
   expiresAt?: string;
+}
+
+export class RevokeAgentCredentialsDto {
+  @IsString()
+  @MinLength(3)
+  @MaxLength(2000)
+  reason!: string;
 }

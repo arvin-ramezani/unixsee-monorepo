@@ -31,12 +31,13 @@ Details: [`../product/notes/servers-agent-data-flow.md`](../product/notes/server
 
 ## Phase 1 agent (`agent/`)
 
-Build from scratch against [`prd.md`](./prd.md):
+Build from scratch against [`prd.md`](./prd.md) and
+[`phase1-api-contract.md`](./phase1-api-contract.md) (ADR 0008):
 
 - Enroll + heartbeat connectivity
 - Website discovery (OLS + DirectAdmin)
 - Per-site stack/links (DirectAdmin URL, WP admin, WP/PHP/Imagick, update status)
-- Active visitors (3-minute unique IPs)
+- Active visitors (3-minute unique IPs from `/var/log/httpd/domains/{domain}.log`)
 - Does **not** own public uptime/online-down or server location
 
 Install/ops: [`../../agent/README.md`](../../agent/README.md).
@@ -50,8 +51,9 @@ Install/ops: [`../../monitoring-agent/README.md`](../../monitoring-agent/README.
 
 ## Related docs
 
-- Phase 1 agent PRD: [`prd.md`](./prd.md)
+- Phase 1 agent API contract: [`phase1-api-contract.md`](./phase1-api-contract.md)
 - Two-agent ADR: [`../architecture/decisions/0007-two-vps-agents.md`](../architecture/decisions/0007-two-vps-agents.md)
+- Agent language ADR: [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)
 - Rename history: [`../architecture/decisions/0006-rename-agent-to-monitoring-agent.md`](../architecture/decisions/0006-rename-agent-to-monitoring-agent.md)
 - Backend modules/routes: [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)
 - Overview: [`../architecture/overview.md`](../architecture/overview.md)

@@ -1,13 +1,2 @@
-import { IsString, MinLength } from 'class-validator';
-
-export class EnrollAgentDto {
-  @IsString()
-  @MinLength(1)
-  machineId!: string;
-}
-
-export class HeartbeatAgentDto {
-  @IsString()
-  @MinLength(1)
-  machineId!: string;
-}
+/** @deprecated Use `phase1-agent.dto.ts`. Kept for import compatibility. */
+export { EnrollAgentDto, HeartbeatAgentDto } from './phase1-agent.dto.js';

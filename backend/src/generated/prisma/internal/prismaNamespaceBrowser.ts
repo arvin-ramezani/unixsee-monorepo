@@ -59,6 +59,7 @@ export const ModelName = {
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
   WebsiteProbeMetric: 'WebsiteProbeMetric',
@@ -191,6 +192,8 @@ export const VpsNodeScalarFieldEnum = {
   agentVersion: 'agentVersion',
   lastSeenAt: 'lastSeenAt',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  credentialsRevokedAt: 'credentialsRevokedAt',
+  credentialsRevokedReason: 'credentialsRevokedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -232,14 +235,42 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
+  aliases: 'aliases',
+  appType: 'appType',
+  source: 'source',
+  backendAddress: 'backendAddress',
+  controlPanelUrl: 'controlPanelUrl',
+  wordpressAdminUrl: 'wordpressAdminUrl',
+  wordpressVersion: 'wordpressVersion',
+  phpVersion: 'phpVersion',
+  phpVersionScope: 'phpVersionScope',
+  imagickVersion: 'imagickVersion',
+  wordpressUpdateStatus: 'wordpressUpdateStatus',
+  wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
+  fieldStatus: 'fieldStatus',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
+  lastIngestedAt: 'lastIngestedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteActiveVisitorSampleScalarFieldEnum = {
+  recordedAt: 'recordedAt',
+  discoveryId: 'discoveryId',
+  websiteId: 'websiteId',
+  domain: 'domain',
+  uniqueIpCount: 'uniqueIpCount',
+  windowSeconds: 'windowSeconds',
+  windowStartedAt: 'windowStartedAt',
+  measuredAt: 'measuredAt'
+} as const
+
+export type WebsiteActiveVisitorSampleScalarFieldEnum = (typeof WebsiteActiveVisitorSampleScalarFieldEnum)[keyof typeof WebsiteActiveVisitorSampleScalarFieldEnum]
 
 
 export const VpsMetricScalarFieldEnum = {

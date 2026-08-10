@@ -2,11 +2,12 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-09
 >
 > **ADRs:**
 > [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md),
-> [`../architecture/decisions/0005-domain-modules-multi-audience-controllers.md`](../architecture/decisions/0005-domain-modules-multi-audience-controllers.md)
+> [`../architecture/decisions/0005-domain-modules-multi-audience-controllers.md`](../architecture/decisions/0005-domain-modules-multi-audience-controllers.md),
+> [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)
 
 High-level NestJS module and route map for Phase 1. Resource paths are planning
 contracts, not final OpenAPI. Keep authentication as implemented in
@@ -18,7 +19,7 @@ contracts, not final OpenAPI. Keep authentication as implemented in
 /api/v1/public/...          # unauthenticated intake + published catalogs
 /api/v1/...                 # customer (tenant JWT)
 /api/v1/admin/...           # staff JWT + role/capability
-/api/internal/agent/v1/...  # agent plane (monitoring-agent deployable; not browser-facing)
+/api/internal/agent/v1/...  # Phase 1 agent plane (`agent/`; not browser-facing)
 ```
 
 Socket.io: `/realtime` for **customer monitoring** only in Phase 1. Admin
@@ -125,17 +126,20 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 | Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires |
 | Fix stub | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
 
-### Agent plane — keep / extend carefully
+### Agent plane — Phase 1 (`agent/`)
 
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/internal/agent/v1/enroll` | Agent (one-time `x-enrollment-token` → `secretKey`) |
-| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC after enrollment) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness) |
+| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; `schemaVersion: "phase1"` discoveries + `activeVisitors3m`) |
+| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + `agentVersion`) |
 
-Product agent install uses enrollment, then HMAC. Source lives in
-`monitoring-agent/`. See [`../agent/README.md`](../agent/README.md) and
-[`../../monitoring-agent/README.md`](../../monitoring-agent/README.md).
+Product install uses enrollment, then HMAC. **Source of truth:**
+[`../agent/prd.md`](../agent/prd.md) and
+[`../agent/phase1-api-contract.md`](../agent/phase1-api-contract.md).
+Deployable: [`../../agent/`](../../agent/). Legacy monitor-shaped ingest is
+quarantined (ADR 0008); `monitoring-agent/` resumes later under a follow-up
+contract.
 
 ---
 
@@ -194,6 +198,7 @@ user/tenant and at most one active plan per website.
 | GET/PATCH | `/api/v1/admin/servers/:id` | Admin |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens` | Admin (one-time reveal) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
+| POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |
 
 ### Discoveries — add `discoveries`
 

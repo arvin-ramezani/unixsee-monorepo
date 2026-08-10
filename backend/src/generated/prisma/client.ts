@@ -82,6 +82,11 @@ export type Website = Prisma.WebsiteModel
  */
 export type WebsiteDiscovery = Prisma.WebsiteDiscoveryModel
 /**
+ * Model WebsiteActiveVisitorSample
+ * Phase 1 agent 3-minute unique-IP visitor samples (append-only).
+ */
+export type WebsiteActiveVisitorSample = Prisma.WebsiteActiveVisitorSampleModel
+/**
  * Model VpsMetric
  * 
  */

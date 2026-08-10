@@ -34,6 +34,11 @@ export const SERVER_STACK = {
   APPLICATION: "WooCommerce",
 } as const;
 
+/**
+ * Fixture shape aligned with Nest admin server/discovery read models
+ * (`GET /api/v1/admin/servers`, discoveries). Optional Phase 1 fields mirror
+ * `docs/agent/phase1-api-contract.md` for a thin swap when ADR 0003 is lifted.
+ */
 export type WebsiteDiscoveryType = {
   id: string;
   domain: string;
@@ -44,6 +49,20 @@ export type WebsiteDiscoveryType = {
   assignmentStatus: DiscoveryAssignmentStatusType;
   assignedWebsiteId?: string;
   discoveredAt: string;
+  /** Phase 1 agent-sourced fields (optional on fixtures until Nest wiring). */
+  controlPanelUrl?: string;
+  wordpressAdminUrl?: string;
+  wordpressVersion?: string;
+  phpVersion?: string;
+  phpVersionScope?: "site" | "host" | "unknown";
+  imagickVersion?: string;
+  wordpressUpdateStatus?: string;
+  wordpressUpdateCheckedAt?: string;
+  activeVisitors3m?: {
+    uniqueIpCount: number;
+    windowSeconds: number;
+    measuredAt: string;
+  };
 };
 
 export type ServerEnrollmentType = {
@@ -114,6 +133,19 @@ export const SERVERS: ServerType[] = [
         assignmentStatus: DISCOVERY_ASSIGNMENT_STATUS.ASSIGNED,
         assignedWebsiteId: "website-001",
         discoveredAt: "۱۲ اردیبهشت ۱۴۰۳",
+        controlPanelUrl: "https://vps-de-03.example:2222",
+        wordpressAdminUrl: "https://greenario.com/wp-admin/",
+        wordpressVersion: "6.8.1",
+        phpVersion: "8.2.28",
+        phpVersionScope: "host",
+        imagickVersion: "3.7.0",
+        wordpressUpdateStatus: "up_to_date",
+        wordpressUpdateCheckedAt: "2026-08-09T11:55:00.000Z",
+        activeVisitors3m: {
+          uniqueIpCount: 14,
+          windowSeconds: 180,
+          measuredAt: "2026-08-09T12:00:00.000Z",
+        },
       },
     ],
     websiteIds: ["website-001"],
@@ -382,7 +414,7 @@ export function createEnrollmentToken(serverLabel: string) {
 
   return {
     token,
-    installCommand: `curl -fsSL https://agent.unixsee.example/install.sh | bash -s -- --token ${token}`,
+    installCommand: `curl -fsSL https://agent.unixsee.com/install.sh | bash -s -- --token ${token}`,
     issuedAt: "اکنون",
     expiresAt: "۲۴ ساعت دیگر",
   };

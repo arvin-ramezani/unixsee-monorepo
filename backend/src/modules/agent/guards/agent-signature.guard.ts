@@ -6,7 +6,6 @@ import {
   type ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
@@ -16,22 +15,15 @@ import type { AgentRequest } from '#/common/interfaces/agent-request.interface.j
 export class AgentSignatureGuard implements CanActivate {
   private readonly logger = createAppLogger(AgentSignatureGuard.name);
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AgentRequest>();
     const timestamp = request.headers['x-agent-timestamp'];
     const incomingSignature = request.headers['x-agent-signature'];
-    const activationToken = request.headers['x-activation-token'];
 
-    const requestBody = request.body as
-      | { batch?: Array<{ machineId?: string }>; machineId?: string }
-      | undefined;
-    const machineId =
-      requestBody?.batch?.[0]?.machineId ?? requestBody?.machineId;
+    const requestBody = request.body as { machineId?: string } | undefined;
+    const machineId = requestBody?.machineId;
 
     if (!machineId) {
       this.logger.warn('agent.auth.payload_invalid', {
@@ -41,33 +33,6 @@ export class AgentSignatureGuard implements CanActivate {
       throw new BadRequestException(
         'Invalid payload topology or missing machineId.',
       );
-    }
-
-    if (activationToken && !incomingSignature) {
-      const configuredActivationToken = this.configService.get<string>(
-        'AGENT_ACTIVATION_TOKEN',
-      );
-      if (
-        !configuredActivationToken ||
-        activationToken !== configuredActivationToken
-      ) {
-        this.logger.warn('agent.auth.activation_token_invalid', {
-          machineId,
-          ip: request.ip,
-        });
-        throw new UnauthorizedException(
-          'Invalid or expired infrastructure activation token.',
-        );
-      }
-
-      request.vpsMachineId = machineId;
-      request.isFirstProvisioningCycle = true;
-
-      this.logger.log('agent.auth.activation_token_accepted', {
-        machineId,
-        ip: request.ip,
-      });
-      return true;
     }
 
     if (!timestamp || !incomingSignature) {
@@ -98,10 +63,10 @@ export class AgentSignatureGuard implements CanActivate {
 
     const vpsNode = await this.prisma.vpsNode.findUnique({
       where: { machineId },
-      select: { secretKey: true },
+      select: { secretKey: true, credentialsRevokedAt: true },
     });
 
-    if (!vpsNode?.secretKey) {
+    if (!vpsNode?.secretKey || vpsNode.credentialsRevokedAt) {
       this.logger.warn('agent.auth.machine_unknown', {
         machineId,
         ip: request.ip,
@@ -142,6 +107,9 @@ export class AgentSignatureGuard implements CanActivate {
       return false;
     }
 
-    return timingSafeEqual(Buffer.from(incoming, 'hex'), Buffer.from(expected, 'hex'));
+    return timingSafeEqual(
+      Buffer.from(incoming, 'hex'),
+      Buffer.from(expected, 'hex'),
+    );
   }
 }

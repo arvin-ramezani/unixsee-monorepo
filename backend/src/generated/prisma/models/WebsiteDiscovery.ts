@@ -34,8 +34,20 @@ export type WebsiteDiscoveryMinAggregateOutputType = {
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
+  appType: string | null
+  source: string | null
+  backendAddress: string | null
+  controlPanelUrl: string | null
+  wordpressAdminUrl: string | null
+  wordpressVersion: string | null
+  phpVersion: string | null
+  phpVersionScope: string | null
+  imagickVersion: string | null
+  wordpressUpdateStatus: string | null
+  wordpressUpdateCheckedAt: Date | null
   status: $Enums.DiscoveryStatus | null
   assignedAt: Date | null
+  lastIngestedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,8 +62,20 @@ export type WebsiteDiscoveryMaxAggregateOutputType = {
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
+  appType: string | null
+  source: string | null
+  backendAddress: string | null
+  controlPanelUrl: string | null
+  wordpressAdminUrl: string | null
+  wordpressVersion: string | null
+  phpVersion: string | null
+  phpVersionScope: string | null
+  imagickVersion: string | null
+  wordpressUpdateStatus: string | null
+  wordpressUpdateCheckedAt: Date | null
   status: $Enums.DiscoveryStatus | null
   assignedAt: Date | null
+  lastIngestedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,9 +90,23 @@ export type WebsiteDiscoveryCountAggregateOutputType = {
   directAdminUser: number
   homeDirectory: number
   documentRoot: number
+  aliases: number
+  appType: number
+  source: number
+  backendAddress: number
+  controlPanelUrl: number
+  wordpressAdminUrl: number
+  wordpressVersion: number
+  phpVersion: number
+  phpVersionScope: number
+  imagickVersion: number
+  wordpressUpdateStatus: number
+  wordpressUpdateCheckedAt: number
+  fieldStatus: number
   status: number
   rawPayload: number
   assignedAt: number
+  lastIngestedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -85,8 +123,20 @@ export type WebsiteDiscoveryMinAggregateInputType = {
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
+  appType?: true
+  source?: true
+  backendAddress?: true
+  controlPanelUrl?: true
+  wordpressAdminUrl?: true
+  wordpressVersion?: true
+  phpVersion?: true
+  phpVersionScope?: true
+  imagickVersion?: true
+  wordpressUpdateStatus?: true
+  wordpressUpdateCheckedAt?: true
   status?: true
   assignedAt?: true
+  lastIngestedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -101,8 +151,20 @@ export type WebsiteDiscoveryMaxAggregateInputType = {
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
+  appType?: true
+  source?: true
+  backendAddress?: true
+  controlPanelUrl?: true
+  wordpressAdminUrl?: true
+  wordpressVersion?: true
+  phpVersion?: true
+  phpVersionScope?: true
+  imagickVersion?: true
+  wordpressUpdateStatus?: true
+  wordpressUpdateCheckedAt?: true
   status?: true
   assignedAt?: true
+  lastIngestedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,9 +179,23 @@ export type WebsiteDiscoveryCountAggregateInputType = {
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
+  aliases?: true
+  appType?: true
+  source?: true
+  backendAddress?: true
+  controlPanelUrl?: true
+  wordpressAdminUrl?: true
+  wordpressVersion?: true
+  phpVersion?: true
+  phpVersionScope?: true
+  imagickVersion?: true
+  wordpressUpdateStatus?: true
+  wordpressUpdateCheckedAt?: true
+  fieldStatus?: true
   status?: true
   rawPayload?: true
   assignedAt?: true
+  lastIngestedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,9 +283,23 @@ export type WebsiteDiscoveryGroupByOutputType = {
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
+  aliases: string[]
+  appType: string | null
+  source: string | null
+  backendAddress: string | null
+  controlPanelUrl: string | null
+  wordpressAdminUrl: string | null
+  wordpressVersion: string | null
+  phpVersion: string | null
+  phpVersionScope: string | null
+  imagickVersion: string | null
+  wordpressUpdateStatus: string | null
+  wordpressUpdateCheckedAt: Date | null
+  fieldStatus: runtime.JsonValue | null
   status: $Enums.DiscoveryStatus
   rawPayload: runtime.JsonValue | null
   assignedAt: Date | null
+  lastIngestedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: WebsiteDiscoveryCountAggregateOutputType | null
@@ -245,14 +335,29 @@ export type WebsiteDiscoveryWhereInput = {
   directAdminUser?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  aliases?: Prisma.StringNullableListFilter<"WebsiteDiscovery">
+  appType?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  source?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  backendAddress?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  controlPanelUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersionScope?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  imagickVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateStatus?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateCheckedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  fieldStatus?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   status?: Prisma.EnumDiscoveryStatusFilter<"WebsiteDiscovery"> | $Enums.DiscoveryStatus
   rawPayload?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   assignedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  lastIngestedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
   server?: Prisma.XOR<Prisma.ServerScalarRelationFilter, Prisma.ServerWhereInput>
   vpsNode?: Prisma.XOR<Prisma.VpsNodeNullableScalarRelationFilter, Prisma.VpsNodeWhereInput> | null
   website?: Prisma.XOR<Prisma.WebsiteNullableScalarRelationFilter, Prisma.WebsiteWhereInput> | null
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleListRelationFilter
 }
 
 export type WebsiteDiscoveryOrderByWithRelationInput = {
@@ -265,14 +370,29 @@ export type WebsiteDiscoveryOrderByWithRelationInput = {
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
+  aliases?: Prisma.SortOrder
+  appType?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  backendAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  phpVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  phpVersionScope?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagickVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUpdateStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUpdateCheckedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fieldStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rawPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastIngestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   server?: Prisma.ServerOrderByWithRelationInput
   vpsNode?: Prisma.VpsNodeOrderByWithRelationInput
   website?: Prisma.WebsiteOrderByWithRelationInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleOrderByRelationAggregateInput
 }
 
 export type WebsiteDiscoveryWhereUniqueInput = Prisma.AtLeast<{
@@ -289,14 +409,29 @@ export type WebsiteDiscoveryWhereUniqueInput = Prisma.AtLeast<{
   directAdminUser?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  aliases?: Prisma.StringNullableListFilter<"WebsiteDiscovery">
+  appType?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  source?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  backendAddress?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  controlPanelUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersionScope?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  imagickVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateStatus?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateCheckedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  fieldStatus?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   status?: Prisma.EnumDiscoveryStatusFilter<"WebsiteDiscovery"> | $Enums.DiscoveryStatus
   rawPayload?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   assignedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  lastIngestedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
   server?: Prisma.XOR<Prisma.ServerScalarRelationFilter, Prisma.ServerWhereInput>
   vpsNode?: Prisma.XOR<Prisma.VpsNodeNullableScalarRelationFilter, Prisma.VpsNodeWhereInput> | null
   website?: Prisma.XOR<Prisma.WebsiteNullableScalarRelationFilter, Prisma.WebsiteWhereInput> | null
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleListRelationFilter
 }, "id" | "serverId_domain">
 
 export type WebsiteDiscoveryOrderByWithAggregationInput = {
@@ -309,9 +444,23 @@ export type WebsiteDiscoveryOrderByWithAggregationInput = {
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
+  aliases?: Prisma.SortOrder
+  appType?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  backendAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  phpVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  phpVersionScope?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagickVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUpdateStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUpdateCheckedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fieldStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rawPayload?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastIngestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.WebsiteDiscoveryCountOrderByAggregateInput
@@ -332,9 +481,23 @@ export type WebsiteDiscoveryScalarWhereWithAggregatesInput = {
   directAdminUser?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
   homeDirectory?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
   documentRoot?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  aliases?: Prisma.StringNullableListFilter<"WebsiteDiscovery">
+  appType?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  source?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  backendAddress?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  controlPanelUrl?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  wordpressVersion?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  phpVersion?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  phpVersionScope?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  imagickVersion?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateStatus?: Prisma.StringNullableWithAggregatesFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateCheckedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteDiscovery"> | Date | string | null
+  fieldStatus?: Prisma.JsonNullableWithAggregatesFilter<"WebsiteDiscovery">
   status?: Prisma.EnumDiscoveryStatusWithAggregatesFilter<"WebsiteDiscovery"> | $Enums.DiscoveryStatus
   rawPayload?: Prisma.JsonNullableWithAggregatesFilter<"WebsiteDiscovery">
   assignedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteDiscovery"> | Date | string | null
+  lastIngestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteDiscovery"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WebsiteDiscovery"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WebsiteDiscovery"> | Date | string
 }
@@ -346,14 +509,29 @@ export type WebsiteDiscoveryCreateInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutDiscoveriesInput
   vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutDiscoveriesInput
   website?: Prisma.WebsiteCreateNestedOneWithoutDiscoveriesInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryUncheckedCreateInput = {
@@ -366,11 +544,26 @@ export type WebsiteDiscoveryUncheckedCreateInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryUpdateInput = {
@@ -380,14 +573,29 @@ export type WebsiteDiscoveryUpdateInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutDiscoveriesNestedInput
   vpsNode?: Prisma.VpsNodeUpdateOneWithoutDiscoveriesNestedInput
   website?: Prisma.WebsiteUpdateOneWithoutDiscoveriesNestedInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateInput = {
@@ -400,11 +608,26 @@ export type WebsiteDiscoveryUncheckedUpdateInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryCreateManyInput = {
@@ -417,9 +640,23 @@ export type WebsiteDiscoveryCreateManyInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -431,9 +668,23 @@ export type WebsiteDiscoveryUpdateManyMutationInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -448,9 +699,23 @@ export type WebsiteDiscoveryUncheckedUpdateManyInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -463,6 +728,14 @@ export type WebsiteDiscoveryListRelationFilter = {
 
 export type WebsiteDiscoveryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type WebsiteDiscoveryServerIdDomainCompoundUniqueInput = {
@@ -480,9 +753,23 @@ export type WebsiteDiscoveryCountOrderByAggregateInput = {
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
+  aliases?: Prisma.SortOrder
+  appType?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  backendAddress?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
+  wordpressVersion?: Prisma.SortOrder
+  phpVersion?: Prisma.SortOrder
+  phpVersionScope?: Prisma.SortOrder
+  imagickVersion?: Prisma.SortOrder
+  wordpressUpdateStatus?: Prisma.SortOrder
+  wordpressUpdateCheckedAt?: Prisma.SortOrder
+  fieldStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rawPayload?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  lastIngestedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -497,8 +784,20 @@ export type WebsiteDiscoveryMaxOrderByAggregateInput = {
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
+  appType?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  backendAddress?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
+  wordpressVersion?: Prisma.SortOrder
+  phpVersion?: Prisma.SortOrder
+  phpVersionScope?: Prisma.SortOrder
+  imagickVersion?: Prisma.SortOrder
+  wordpressUpdateStatus?: Prisma.SortOrder
+  wordpressUpdateCheckedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  lastIngestedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -513,10 +812,27 @@ export type WebsiteDiscoveryMinOrderByAggregateInput = {
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
+  appType?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  backendAddress?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
+  wordpressVersion?: Prisma.SortOrder
+  phpVersion?: Prisma.SortOrder
+  phpVersionScope?: Prisma.SortOrder
+  imagickVersion?: Prisma.SortOrder
+  wordpressUpdateStatus?: Prisma.SortOrder
+  wordpressUpdateCheckedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  lastIngestedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type WebsiteDiscoveryScalarRelationFilter = {
+  is?: Prisma.WebsiteDiscoveryWhereInput
+  isNot?: Prisma.WebsiteDiscoveryWhereInput
 }
 
 export type WebsiteDiscoveryCreateNestedManyWithoutServerInput = {
@@ -645,8 +961,31 @@ export type WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteNestedInput = {
   deleteMany?: Prisma.WebsiteDiscoveryScalarWhereInput | Prisma.WebsiteDiscoveryScalarWhereInput[]
 }
 
+export type WebsiteDiscoveryCreatealiasesInput = {
+  set: string[]
+}
+
+export type WebsiteDiscoveryUpdatealiasesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type EnumDiscoveryStatusFieldUpdateOperationsInput = {
   set?: $Enums.DiscoveryStatus
+}
+
+export type WebsiteDiscoveryCreateNestedOneWithoutActiveVisitorSamplesInput = {
+  create?: Prisma.XOR<Prisma.WebsiteDiscoveryCreateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedCreateWithoutActiveVisitorSamplesInput>
+  connectOrCreate?: Prisma.WebsiteDiscoveryCreateOrConnectWithoutActiveVisitorSamplesInput
+  connect?: Prisma.WebsiteDiscoveryWhereUniqueInput
+}
+
+export type WebsiteDiscoveryUpdateOneRequiredWithoutActiveVisitorSamplesNestedInput = {
+  create?: Prisma.XOR<Prisma.WebsiteDiscoveryCreateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedCreateWithoutActiveVisitorSamplesInput>
+  connectOrCreate?: Prisma.WebsiteDiscoveryCreateOrConnectWithoutActiveVisitorSamplesInput
+  upsert?: Prisma.WebsiteDiscoveryUpsertWithoutActiveVisitorSamplesInput
+  connect?: Prisma.WebsiteDiscoveryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WebsiteDiscoveryUpdateToOneWithWhereWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUpdateWithoutActiveVisitorSamplesInput>, Prisma.WebsiteDiscoveryUncheckedUpdateWithoutActiveVisitorSamplesInput>
 }
 
 export type WebsiteDiscoveryCreateWithoutServerInput = {
@@ -656,13 +995,28 @@ export type WebsiteDiscoveryCreateWithoutServerInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutDiscoveriesInput
   website?: Prisma.WebsiteCreateNestedOneWithoutDiscoveriesInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryUncheckedCreateWithoutServerInput = {
@@ -674,11 +1028,26 @@ export type WebsiteDiscoveryUncheckedCreateWithoutServerInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryCreateOrConnectWithoutServerInput = {
@@ -720,9 +1089,23 @@ export type WebsiteDiscoveryScalarWhereInput = {
   directAdminUser?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  aliases?: Prisma.StringNullableListFilter<"WebsiteDiscovery">
+  appType?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  source?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  backendAddress?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  controlPanelUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  phpVersionScope?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  imagickVersion?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateStatus?: Prisma.StringNullableFilter<"WebsiteDiscovery"> | string | null
+  wordpressUpdateCheckedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  fieldStatus?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   status?: Prisma.EnumDiscoveryStatusFilter<"WebsiteDiscovery"> | $Enums.DiscoveryStatus
   rawPayload?: Prisma.JsonNullableFilter<"WebsiteDiscovery">
   assignedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
+  lastIngestedAt?: Prisma.DateTimeNullableFilter<"WebsiteDiscovery"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteDiscovery"> | Date | string
 }
@@ -734,13 +1117,28 @@ export type WebsiteDiscoveryCreateWithoutVpsNodeInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutDiscoveriesInput
   website?: Prisma.WebsiteCreateNestedOneWithoutDiscoveriesInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryUncheckedCreateWithoutVpsNodeInput = {
@@ -752,11 +1150,26 @@ export type WebsiteDiscoveryUncheckedCreateWithoutVpsNodeInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryCreateOrConnectWithoutVpsNodeInput = {
@@ -792,13 +1205,28 @@ export type WebsiteDiscoveryCreateWithoutWebsiteInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutDiscoveriesInput
   vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutDiscoveriesInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryUncheckedCreateWithoutWebsiteInput = {
@@ -810,11 +1238,26 @@ export type WebsiteDiscoveryUncheckedCreateWithoutWebsiteInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedCreateNestedManyWithoutDiscoveryInput
 }
 
 export type WebsiteDiscoveryCreateOrConnectWithoutWebsiteInput = {
@@ -843,6 +1286,146 @@ export type WebsiteDiscoveryUpdateManyWithWhereWithoutWebsiteInput = {
   data: Prisma.XOR<Prisma.WebsiteDiscoveryUpdateManyMutationInput, Prisma.WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteInput>
 }
 
+export type WebsiteDiscoveryCreateWithoutActiveVisitorSamplesInput = {
+  id?: string
+  domain: string
+  displayName?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.DiscoveryStatus
+  rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  server: Prisma.ServerCreateNestedOneWithoutDiscoveriesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutDiscoveriesInput
+  website?: Prisma.WebsiteCreateNestedOneWithoutDiscoveriesInput
+}
+
+export type WebsiteDiscoveryUncheckedCreateWithoutActiveVisitorSamplesInput = {
+  id?: string
+  serverId: string
+  vpsNodeId?: string | null
+  websiteId?: string | null
+  domain: string
+  displayName?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.DiscoveryStatus
+  rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WebsiteDiscoveryCreateOrConnectWithoutActiveVisitorSamplesInput = {
+  where: Prisma.WebsiteDiscoveryWhereUniqueInput
+  create: Prisma.XOR<Prisma.WebsiteDiscoveryCreateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedCreateWithoutActiveVisitorSamplesInput>
+}
+
+export type WebsiteDiscoveryUpsertWithoutActiveVisitorSamplesInput = {
+  update: Prisma.XOR<Prisma.WebsiteDiscoveryUpdateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedUpdateWithoutActiveVisitorSamplesInput>
+  create: Prisma.XOR<Prisma.WebsiteDiscoveryCreateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedCreateWithoutActiveVisitorSamplesInput>
+  where?: Prisma.WebsiteDiscoveryWhereInput
+}
+
+export type WebsiteDiscoveryUpdateToOneWithWhereWithoutActiveVisitorSamplesInput = {
+  where?: Prisma.WebsiteDiscoveryWhereInput
+  data: Prisma.XOR<Prisma.WebsiteDiscoveryUpdateWithoutActiveVisitorSamplesInput, Prisma.WebsiteDiscoveryUncheckedUpdateWithoutActiveVisitorSamplesInput>
+}
+
+export type WebsiteDiscoveryUpdateWithoutActiveVisitorSamplesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
+  rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  server?: Prisma.ServerUpdateOneRequiredWithoutDiscoveriesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutDiscoveriesNestedInput
+  website?: Prisma.WebsiteUpdateOneWithoutDiscoveriesNestedInput
+}
+
+export type WebsiteDiscoveryUncheckedUpdateWithoutActiveVisitorSamplesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  serverId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  websiteId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
+  rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type WebsiteDiscoveryCreateManyServerInput = {
   id?: string
   vpsNodeId?: string | null
@@ -852,9 +1435,23 @@ export type WebsiteDiscoveryCreateManyServerInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -866,13 +1463,28 @@ export type WebsiteDiscoveryUpdateWithoutServerInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNode?: Prisma.VpsNodeUpdateOneWithoutDiscoveriesNestedInput
   website?: Prisma.WebsiteUpdateOneWithoutDiscoveriesNestedInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateWithoutServerInput = {
@@ -884,11 +1496,26 @@ export type WebsiteDiscoveryUncheckedUpdateWithoutServerInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateManyWithoutServerInput = {
@@ -900,9 +1527,23 @@ export type WebsiteDiscoveryUncheckedUpdateManyWithoutServerInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -916,9 +1557,23 @@ export type WebsiteDiscoveryCreateManyVpsNodeInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -930,13 +1585,28 @@ export type WebsiteDiscoveryUpdateWithoutVpsNodeInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutDiscoveriesNestedInput
   website?: Prisma.WebsiteUpdateOneWithoutDiscoveriesNestedInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateWithoutVpsNodeInput = {
@@ -948,11 +1618,26 @@ export type WebsiteDiscoveryUncheckedUpdateWithoutVpsNodeInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateManyWithoutVpsNodeInput = {
@@ -964,9 +1649,23 @@ export type WebsiteDiscoveryUncheckedUpdateManyWithoutVpsNodeInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -980,9 +1679,23 @@ export type WebsiteDiscoveryCreateManyWebsiteInput = {
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
+  aliases?: Prisma.WebsiteDiscoveryCreatealiasesInput | string[]
+  appType?: string | null
+  source?: string | null
+  backendAddress?: string | null
+  controlPanelUrl?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressVersion?: string | null
+  phpVersion?: string | null
+  phpVersionScope?: string | null
+  imagickVersion?: string | null
+  wordpressUpdateStatus?: string | null
+  wordpressUpdateCheckedAt?: Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Date | string | null
+  lastIngestedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -994,13 +1707,28 @@ export type WebsiteDiscoveryUpdateWithoutWebsiteInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutDiscoveriesNestedInput
   vpsNode?: Prisma.VpsNodeUpdateOneWithoutDiscoveriesNestedInput
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateWithoutWebsiteInput = {
@@ -1012,11 +1740,26 @@ export type WebsiteDiscoveryUncheckedUpdateWithoutWebsiteInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activeVisitorSamples?: Prisma.WebsiteActiveVisitorSampleUncheckedUpdateManyWithoutDiscoveryNestedInput
 }
 
 export type WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteInput = {
@@ -1028,13 +1771,56 @@ export type WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteInput = {
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aliases?: Prisma.WebsiteDiscoveryUpdatealiasesInput | string[]
+  appType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backendAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phpVersionScope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagickVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressUpdateCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fieldStatus?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumDiscoveryStatusFieldUpdateOperationsInput | $Enums.DiscoveryStatus
   rawPayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastIngestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type WebsiteDiscoveryCountOutputType
+ */
+
+export type WebsiteDiscoveryCountOutputType = {
+  activeVisitorSamples: number
+}
+
+export type WebsiteDiscoveryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  activeVisitorSamples?: boolean | WebsiteDiscoveryCountOutputTypeCountActiveVisitorSamplesArgs
+}
+
+/**
+ * WebsiteDiscoveryCountOutputType without action
+ */
+export type WebsiteDiscoveryCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WebsiteDiscoveryCountOutputType
+   */
+  select?: Prisma.WebsiteDiscoveryCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * WebsiteDiscoveryCountOutputType without action
+ */
+export type WebsiteDiscoveryCountOutputTypeCountActiveVisitorSamplesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WebsiteActiveVisitorSampleWhereInput
+}
 
 
 export type WebsiteDiscoverySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1047,14 +1833,30 @@ export type WebsiteDiscoverySelect<ExtArgs extends runtime.Types.Extensions.Inte
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
+  aliases?: boolean
+  appType?: boolean
+  source?: boolean
+  backendAddress?: boolean
+  controlPanelUrl?: boolean
+  wordpressAdminUrl?: boolean
+  wordpressVersion?: boolean
+  phpVersion?: boolean
+  phpVersionScope?: boolean
+  imagickVersion?: boolean
+  wordpressUpdateStatus?: boolean
+  wordpressUpdateCheckedAt?: boolean
+  fieldStatus?: boolean
   status?: boolean
   rawPayload?: boolean
   assignedAt?: boolean
+  lastIngestedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
   vpsNode?: boolean | Prisma.WebsiteDiscovery$vpsNodeArgs<ExtArgs>
   website?: boolean | Prisma.WebsiteDiscovery$websiteArgs<ExtArgs>
+  activeVisitorSamples?: boolean | Prisma.WebsiteDiscovery$activeVisitorSamplesArgs<ExtArgs>
+  _count?: boolean | Prisma.WebsiteDiscoveryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["websiteDiscovery"]>
 
 export type WebsiteDiscoverySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1067,9 +1869,23 @@ export type WebsiteDiscoverySelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
+  aliases?: boolean
+  appType?: boolean
+  source?: boolean
+  backendAddress?: boolean
+  controlPanelUrl?: boolean
+  wordpressAdminUrl?: boolean
+  wordpressVersion?: boolean
+  phpVersion?: boolean
+  phpVersionScope?: boolean
+  imagickVersion?: boolean
+  wordpressUpdateStatus?: boolean
+  wordpressUpdateCheckedAt?: boolean
+  fieldStatus?: boolean
   status?: boolean
   rawPayload?: boolean
   assignedAt?: boolean
+  lastIngestedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -1087,9 +1903,23 @@ export type WebsiteDiscoverySelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
+  aliases?: boolean
+  appType?: boolean
+  source?: boolean
+  backendAddress?: boolean
+  controlPanelUrl?: boolean
+  wordpressAdminUrl?: boolean
+  wordpressVersion?: boolean
+  phpVersion?: boolean
+  phpVersionScope?: boolean
+  imagickVersion?: boolean
+  wordpressUpdateStatus?: boolean
+  wordpressUpdateCheckedAt?: boolean
+  fieldStatus?: boolean
   status?: boolean
   rawPayload?: boolean
   assignedAt?: boolean
+  lastIngestedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -1107,18 +1937,34 @@ export type WebsiteDiscoverySelectScalar = {
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
+  aliases?: boolean
+  appType?: boolean
+  source?: boolean
+  backendAddress?: boolean
+  controlPanelUrl?: boolean
+  wordpressAdminUrl?: boolean
+  wordpressVersion?: boolean
+  phpVersion?: boolean
+  phpVersionScope?: boolean
+  imagickVersion?: boolean
+  wordpressUpdateStatus?: boolean
+  wordpressUpdateCheckedAt?: boolean
+  fieldStatus?: boolean
   status?: boolean
   rawPayload?: boolean
   assignedAt?: boolean
+  lastIngestedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WebsiteDiscoveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "vpsNodeId" | "websiteId" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "status" | "rawPayload" | "assignedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["websiteDiscovery"]>
+export type WebsiteDiscoveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "vpsNodeId" | "websiteId" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "aliases" | "appType" | "source" | "backendAddress" | "controlPanelUrl" | "wordpressAdminUrl" | "wordpressVersion" | "phpVersion" | "phpVersionScope" | "imagickVersion" | "wordpressUpdateStatus" | "wordpressUpdateCheckedAt" | "fieldStatus" | "status" | "rawPayload" | "assignedAt" | "lastIngestedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["websiteDiscovery"]>
 export type WebsiteDiscoveryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
   vpsNode?: boolean | Prisma.WebsiteDiscovery$vpsNodeArgs<ExtArgs>
   website?: boolean | Prisma.WebsiteDiscovery$websiteArgs<ExtArgs>
+  activeVisitorSamples?: boolean | Prisma.WebsiteDiscovery$activeVisitorSamplesArgs<ExtArgs>
+  _count?: boolean | Prisma.WebsiteDiscoveryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WebsiteDiscoveryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -1137,6 +1983,7 @@ export type $WebsiteDiscoveryPayload<ExtArgs extends runtime.Types.Extensions.In
     server: Prisma.$ServerPayload<ExtArgs>
     vpsNode: Prisma.$VpsNodePayload<ExtArgs> | null
     website: Prisma.$WebsitePayload<ExtArgs> | null
+    activeVisitorSamples: Prisma.$WebsiteActiveVisitorSamplePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1148,9 +1995,23 @@ export type $WebsiteDiscoveryPayload<ExtArgs extends runtime.Types.Extensions.In
     directAdminUser: string | null
     homeDirectory: string | null
     documentRoot: string | null
+    aliases: string[]
+    appType: string | null
+    source: string | null
+    backendAddress: string | null
+    controlPanelUrl: string | null
+    wordpressAdminUrl: string | null
+    wordpressVersion: string | null
+    phpVersion: string | null
+    phpVersionScope: string | null
+    imagickVersion: string | null
+    wordpressUpdateStatus: string | null
+    wordpressUpdateCheckedAt: Date | null
+    fieldStatus: runtime.JsonValue | null
     status: $Enums.DiscoveryStatus
     rawPayload: runtime.JsonValue | null
     assignedAt: Date | null
+    lastIngestedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["websiteDiscovery"]>
@@ -1550,6 +2411,7 @@ export interface Prisma__WebsiteDiscoveryClient<T, Null = never, ExtArgs extends
   server<T extends Prisma.ServerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServerDefaultArgs<ExtArgs>>): Prisma.Prisma__ServerClient<runtime.Types.Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vpsNode<T extends Prisma.WebsiteDiscovery$vpsNodeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WebsiteDiscovery$vpsNodeArgs<ExtArgs>>): Prisma.Prisma__VpsNodeClient<runtime.Types.Result.GetResult<Prisma.$VpsNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   website<T extends Prisma.WebsiteDiscovery$websiteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WebsiteDiscovery$websiteArgs<ExtArgs>>): Prisma.Prisma__WebsiteClient<runtime.Types.Result.GetResult<Prisma.$WebsitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  activeVisitorSamples<T extends Prisma.WebsiteDiscovery$activeVisitorSamplesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WebsiteDiscovery$activeVisitorSamplesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteActiveVisitorSamplePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1588,9 +2450,23 @@ export interface WebsiteDiscoveryFieldRefs {
   readonly directAdminUser: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
   readonly homeDirectory: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
   readonly documentRoot: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly aliases: Prisma.FieldRef<"WebsiteDiscovery", 'String[]'>
+  readonly appType: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly source: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly backendAddress: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly controlPanelUrl: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly wordpressAdminUrl: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly wordpressVersion: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly phpVersion: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly phpVersionScope: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly imagickVersion: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly wordpressUpdateStatus: Prisma.FieldRef<"WebsiteDiscovery", 'String'>
+  readonly wordpressUpdateCheckedAt: Prisma.FieldRef<"WebsiteDiscovery", 'DateTime'>
+  readonly fieldStatus: Prisma.FieldRef<"WebsiteDiscovery", 'Json'>
   readonly status: Prisma.FieldRef<"WebsiteDiscovery", 'DiscoveryStatus'>
   readonly rawPayload: Prisma.FieldRef<"WebsiteDiscovery", 'Json'>
   readonly assignedAt: Prisma.FieldRef<"WebsiteDiscovery", 'DateTime'>
+  readonly lastIngestedAt: Prisma.FieldRef<"WebsiteDiscovery", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"WebsiteDiscovery", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"WebsiteDiscovery", 'DateTime'>
 }
@@ -2029,6 +2905,30 @@ export type WebsiteDiscovery$websiteArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.WebsiteInclude<ExtArgs> | null
   where?: Prisma.WebsiteWhereInput
+}
+
+/**
+ * WebsiteDiscovery.activeVisitorSamples
+ */
+export type WebsiteDiscovery$activeVisitorSamplesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WebsiteActiveVisitorSample
+   */
+  select?: Prisma.WebsiteActiveVisitorSampleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WebsiteActiveVisitorSample
+   */
+  omit?: Prisma.WebsiteActiveVisitorSampleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WebsiteActiveVisitorSampleInclude<ExtArgs> | null
+  where?: Prisma.WebsiteActiveVisitorSampleWhereInput
+  orderBy?: Prisma.WebsiteActiveVisitorSampleOrderByWithRelationInput | Prisma.WebsiteActiveVisitorSampleOrderByWithRelationInput[]
+  cursor?: Prisma.WebsiteActiveVisitorSampleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WebsiteActiveVisitorSampleScalarFieldEnum | Prisma.WebsiteActiveVisitorSampleScalarFieldEnum[]
 }
 
 /**

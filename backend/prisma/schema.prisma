@@ -256,6 +256,8 @@ model VpsNode {
   agentVersion  String?       @map("agent_version")
   lastSeenAt    DateTime?     @map("last_seen_at") @db.Timestamptz(6)
   lastHeartbeatAt DateTime?   @map("last_heartbeat_at") @db.Timestamptz(6)
+  credentialsRevokedAt DateTime? @map("credentials_revoked_at") @db.Timestamptz(6)
+  credentialsRevokedReason String? @map("credentials_revoked_reason")
 
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
   user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -347,13 +349,29 @@ model WebsiteDiscovery {
   directAdminUser String?     @map("direct_admin_user")
   homeDirectory   String?     @map("home_directory")
   documentRoot    String?     @map("document_root")
+  aliases         String[]    @default([])
+  appType         String?     @map("app_type")
+  source          String?
+  backendAddress  String?     @map("backend_address")
+  controlPanelUrl String?     @map("control_panel_url")
+  wordpressAdminUrl String?   @map("wordpress_admin_url")
+  wordpressVersion  String?   @map("wordpress_version")
+  phpVersion        String?   @map("php_version")
+  phpVersionScope   String?   @map("php_version_scope")
+  imagickVersion    String?   @map("imagick_version")
+  wordpressUpdateStatus    String?   @map("wordpress_update_status")
+  wordpressUpdateCheckedAt DateTime? @map("wordpress_update_checked_at") @db.Timestamptz(6)
+  fieldStatus Json?           @map("field_status")
   status      DiscoveryStatus @default(NEW)
   rawPayload  Json?           @map("raw_payload")
   assignedAt  DateTime?       @map("assigned_at") @db.Timestamptz(6)
+  lastIngestedAt DateTime?    @map("last_ingested_at") @db.Timestamptz(6)
 
   server  Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
   vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: SetNull)
   website Website? @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+
+  activeVisitorSamples WebsiteActiveVisitorSample[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -362,6 +380,25 @@ model WebsiteDiscovery {
   @@index([status])
   @@index([vpsNodeId])
   @@map("website_discoveries")
+}
+
+/// Phase 1 agent 3-minute unique-IP visitor samples (append-only).
+model WebsiteActiveVisitorSample {
+  recordedAt DateTime @map("recorded_at") @db.Timestamptz(6)
+  discoveryId String  @map("discovery_id") @db.Uuid
+  websiteId   String? @map("website_id") @db.Uuid
+  domain      String
+  uniqueIpCount Int   @map("unique_ip_count")
+  windowSeconds Int   @map("window_seconds")
+  windowStartedAt DateTime @map("window_started_at") @db.Timestamptz(6)
+  measuredAt DateTime @map("measured_at") @db.Timestamptz(6)
+
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+
+  @@id([recordedAt, discoveryId])
+  @@index([websiteId, measuredAt])
+  @@index([domain, measuredAt])
+  @@map("website_active_visitor_samples")
 }
 
 // -----------------------------------------------------------------------------

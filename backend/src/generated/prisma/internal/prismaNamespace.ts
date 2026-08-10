@@ -392,6 +392,7 @@ export const ModelName = {
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
   WebsiteProbeMetric: 'WebsiteProbeMetric',
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
+    modelProps: "user" | "tenant" | "membership" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1027,6 +1028,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.WebsiteDiscoveryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.WebsiteDiscoveryCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteActiveVisitorSample: {
+      payload: Prisma.$WebsiteActiveVisitorSamplePayload<ExtArgs>
+      fields: Prisma.WebsiteActiveVisitorSampleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteActiveVisitorSampleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteActiveVisitorSampleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteActiveVisitorSampleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteActiveVisitorSampleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteActiveVisitorSampleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteActiveVisitorSampleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        update: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteActiveVisitorSampleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteActiveVisitorSampleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteActiveVisitorSampleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteActiveVisitorSample>
+        }
+        groupBy: {
+          args: Prisma.WebsiteActiveVisitorSampleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteActiveVisitorSampleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteActiveVisitorSampleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteActiveVisitorSampleCountAggregateOutputType> | number
         }
       }
     }
@@ -3154,6 +3229,8 @@ export const VpsNodeScalarFieldEnum = {
   agentVersion: 'agentVersion',
   lastSeenAt: 'lastSeenAt',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  credentialsRevokedAt: 'credentialsRevokedAt',
+  credentialsRevokedReason: 'credentialsRevokedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3195,14 +3272,42 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
+  aliases: 'aliases',
+  appType: 'appType',
+  source: 'source',
+  backendAddress: 'backendAddress',
+  controlPanelUrl: 'controlPanelUrl',
+  wordpressAdminUrl: 'wordpressAdminUrl',
+  wordpressVersion: 'wordpressVersion',
+  phpVersion: 'phpVersion',
+  phpVersionScope: 'phpVersionScope',
+  imagickVersion: 'imagickVersion',
+  wordpressUpdateStatus: 'wordpressUpdateStatus',
+  wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
+  fieldStatus: 'fieldStatus',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
+  lastIngestedAt: 'lastIngestedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteActiveVisitorSampleScalarFieldEnum = {
+  recordedAt: 'recordedAt',
+  discoveryId: 'discoveryId',
+  websiteId: 'websiteId',
+  domain: 'domain',
+  uniqueIpCount: 'uniqueIpCount',
+  windowSeconds: 'windowSeconds',
+  windowStartedAt: 'windowStartedAt',
+  measuredAt: 'measuredAt'
+} as const
+
+export type WebsiteActiveVisitorSampleScalarFieldEnum = (typeof WebsiteActiveVisitorSampleScalarFieldEnum)[keyof typeof WebsiteActiveVisitorSampleScalarFieldEnum]
 
 
 export const VpsMetricScalarFieldEnum = {
@@ -3828,20 +3933,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'DiscoveryStatus'
- */
-export type EnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus'>
-    
-
-
-/**
- * Reference to a field of type 'DiscoveryStatus[]'
- */
-export type ListEnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3852,6 +3943,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscoveryStatus'
+ */
+export type EnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscoveryStatus[]'
+ */
+export type ListEnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus[]'>
     
 
 
@@ -4168,6 +4273,7 @@ export type GlobalOmitConfig = {
   vpsNode?: Prisma.VpsNodeOmit
   website?: Prisma.WebsiteOmit
   websiteDiscovery?: Prisma.WebsiteDiscoveryOmit
+  websiteActiveVisitorSample?: Prisma.WebsiteActiveVisitorSampleOmit
   vpsMetric?: Prisma.VpsMetricOmit
   webMetric?: Prisma.WebMetricOmit
   websiteProbeMetric?: Prisma.WebsiteProbeMetricOmit
