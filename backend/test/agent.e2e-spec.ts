@@ -46,6 +46,7 @@ describe('AgentModule (e2e)', () => {
     websiteActiveVisitorSample: {
       createMany: vi.fn(),
     },
+    $transaction: vi.fn(),
   };
 
   const serversService = {
@@ -78,6 +79,8 @@ describe('AgentModule (e2e)', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    prisma.$transaction.mockImplementation(async (callback) => callback(prisma));
 
     prisma.vpsNode.findUnique.mockResolvedValue({
       id: VPS_NODE_ID,
@@ -154,6 +157,7 @@ describe('AgentModule (e2e)', () => {
       expect(serversService.enrollWithToken).toHaveBeenCalledWith(
         ENROLLMENT_TOKEN,
         MACHINE_ID,
+        '0.1.0',
       );
       expect(response.body).toMatchObject({
         success: true,
@@ -164,12 +168,7 @@ describe('AgentModule (e2e)', () => {
           secretKey: SECRET_KEY,
         },
       });
-      expect(prisma.vpsNode.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: VPS_NODE_ID },
-          data: expect.objectContaining({ agentVersion: '0.1.0' }),
-        }),
-      );
+      expect(prisma.vpsNode.update).not.toHaveBeenCalled();
     });
 
     it('propagates invalid enrollment token failures', async () => {
@@ -391,6 +390,35 @@ describe('AgentModule (e2e)', () => {
             source: 'openlitespeed',
             controlPanelUrl: 'javascript:alert(1)',
             wordpressAdminUrl: 'http://example.com/wp-admin/',
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(400);
+    });
+
+    it('rejects invalid fieldStatus map entries', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        discoveries: [
+          {
+            domain: 'example.com',
+            documentRoot: '/home/user/domains/example.com/public_html',
+            appType: 'wordpress',
+            source: 'openlitespeed',
+            fieldStatus: {
+              wordpressVersion: { state: 'invented' },
+            },
           },
         ],
       };

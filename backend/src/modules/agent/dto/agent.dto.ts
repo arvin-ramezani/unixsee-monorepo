@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   Equals,
@@ -16,6 +16,7 @@ import {
   Validate,
   ValidateIf,
   ValidateNested,
+  validateSync,
   type ValidationArguments,
   ValidatorConstraint,
   type ValidatorConstraintInterface,
@@ -67,6 +68,33 @@ export class FieldStatusDto {
   @IsOptional()
   @IsString()
   reason?: string;
+}
+
+@ValidatorConstraint({ name: 'fieldStatusMap', async: false })
+class FieldStatusMapConstraint implements ValidatorConstraintInterface {
+  validate(value: unknown): boolean {
+    if (value === undefined || value === null) {
+      return true;
+    }
+    if (typeof value !== 'object' || Array.isArray(value)) {
+      return false;
+    }
+
+    for (const entry of Object.values(value as Record<string, unknown>)) {
+      if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+        return false;
+      }
+      const dto = plainToInstance(FieldStatusDto, entry);
+      if (validateSync(dto).length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  defaultMessage(): string {
+    return 'fieldStatus values must include state ok|unknown|unsupported';
+  }
 }
 
 @ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
@@ -156,6 +184,7 @@ export class Phase1DiscoveryDto {
 
   @IsOptional()
   @IsObject()
+  @Validate(FieldStatusMapConstraint)
   fieldStatus?: Record<string, FieldStatusDto>;
 }
 

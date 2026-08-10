@@ -145,4 +145,43 @@ describe('ServersService.enrollWithToken', () => {
     );
     expect(update.mock.calls[0][0].data.serverId).toBeUndefined();
   });
+
+  it('persists agentVersion inside the same enrollment transaction', async () => {
+    prisma.serverEnrollmentToken.findUnique.mockResolvedValue({
+      id: 'token-1',
+      serverId: 'server-1',
+      status: EnrollmentTokenStatus.ACTIVE,
+      expiresAt: null,
+    });
+
+    const create = vi.fn().mockResolvedValue({
+      id: 'node-1',
+      serverId: 'server-1',
+    });
+
+    prisma.$transaction.mockImplementation(async (callback) => {
+      const tx = {
+        serverEnrollmentToken: {
+          updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+        },
+        vpsNode: {
+          findUnique: vi.fn().mockResolvedValue(null),
+          update: vi.fn(),
+          create,
+        },
+      };
+      return callback(tx);
+    });
+
+    await service.enrollWithToken('plain-token', 'machine-1', '0.1.0');
+
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          agentVersion: '0.1.0',
+          machineId: 'machine-1',
+        }),
+      }),
+    );
+  });
 });

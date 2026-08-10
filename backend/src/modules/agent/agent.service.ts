@@ -26,23 +26,14 @@ export class AgentService {
   ) {}
 
   async enroll(plaintextToken: string, machineId: string, agentVersion?: string) {
-    const result = await this.serversService.enrollWithToken(
+    // Token consume + secret + optional agentVersion must be one transaction
+    // (owned by ServersService) so a failed follow-up never leaves a used token
+    // without a secret returned to the agent.
+    return this.serversService.enrollWithToken(
       plaintextToken,
       machineId,
+      agentVersion,
     );
-
-    if (agentVersion) {
-      await this.prisma.vpsNode.update({
-        where: { id: result.vpsNodeId },
-        data: {
-          agentVersion,
-          credentialsRevokedAt: null,
-          credentialsRevokedReason: null,
-        },
-      });
-    }
-
-    return result;
   }
 
   async heartbeat(body: HeartbeatAgentDto) {
@@ -92,93 +83,102 @@ export class AgentService {
 
   async processPhase1Ingest(payload: Phase1IngestDto) {
     const startedAt = Date.now();
-    const vpsNode = await this.prisma.vpsNode.findUnique({
-      where: { machineId: payload.machineId },
-      select: {
-        id: true,
-        serverId: true,
-        credentialsRevokedAt: true,
-        secretKey: true,
-      },
-    });
 
-    if (!vpsNode) {
-      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
-    }
-    if (vpsNode.credentialsRevokedAt || !vpsNode.secretKey) {
-      throw new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
-    }
+    const result = await this.prisma.$transaction(async (tx) => {
+      const vpsNode = await tx.vpsNode.findUnique({
+        where: { machineId: payload.machineId },
+        select: {
+          id: true,
+          serverId: true,
+          credentialsRevokedAt: true,
+          secretKey: true,
+        },
+      });
 
-    const now = new Date();
-    await this.prisma.vpsNode.update({
-      where: { id: vpsNode.id },
-      data: {
-        lastSeenAt: now,
-        ...(payload.agentVersion ? { agentVersion: payload.agentVersion } : {}),
-      },
-    });
-
-    const discoveryIdsByDomain = new Map<string, string>();
-
-    for (const discovery of payload.discoveries) {
-      const saved = await this.upsertDiscovery(
-        vpsNode.serverId,
-        vpsNode.id,
-        discovery,
-        now,
-      );
-      discoveryIdsByDomain.set(saved.domain, saved.id);
-    }
-
-    let visitorSamplesInserted = 0;
-    for (const sample of payload.activeVisitors3m ?? []) {
-      const discoveryId = discoveryIdsByDomain.get(sample.domain);
-      if (!discoveryId) {
-        const existing = await this.prisma.websiteDiscovery.findUnique({
-          where: {
-            serverId_domain: {
-              serverId: vpsNode.serverId,
-              domain: sample.domain,
-            },
-          },
-          select: { id: true, websiteId: true },
-        });
-        if (!existing) continue;
-        visitorSamplesInserted += await this.insertVisitorSample(
-          existing.id,
-          existing.websiteId,
-          sample,
-        );
-        continue;
+      if (!vpsNode) {
+        throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+      }
+      if (vpsNode.credentialsRevokedAt || !vpsNode.secretKey) {
+        throw new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
       }
 
-      const discovery = await this.prisma.websiteDiscovery.findUnique({
-        where: { id: discoveryId },
-        select: { websiteId: true },
+      const now = new Date();
+      await tx.vpsNode.update({
+        where: { id: vpsNode.id },
+        data: {
+          lastSeenAt: now,
+          ...(payload.agentVersion ? { agentVersion: payload.agentVersion } : {}),
+        },
       });
-      visitorSamplesInserted += await this.insertVisitorSample(
-        discoveryId,
-        discovery?.websiteId ?? null,
-        sample,
-      );
-    }
+
+      const discoveryIdsByDomain = new Map<string, string>();
+
+      for (const discovery of payload.discoveries) {
+        const saved = await this.upsertDiscovery(
+          tx,
+          vpsNode.serverId,
+          vpsNode.id,
+          discovery,
+          now,
+        );
+        discoveryIdsByDomain.set(saved.domain, saved.id);
+      }
+
+      let visitorSamplesInserted = 0;
+      for (const sample of payload.activeVisitors3m ?? []) {
+        const discoveryId = discoveryIdsByDomain.get(sample.domain);
+        if (!discoveryId) {
+          const existing = await tx.websiteDiscovery.findUnique({
+            where: {
+              serverId_domain: {
+                serverId: vpsNode.serverId,
+                domain: sample.domain,
+              },
+            },
+            select: { id: true, websiteId: true },
+          });
+          if (!existing) continue;
+          visitorSamplesInserted += await this.insertVisitorSample(
+            tx,
+            existing.id,
+            existing.websiteId,
+            sample,
+          );
+          continue;
+        }
+
+        const discovery = await tx.websiteDiscovery.findUnique({
+          where: { id: discoveryId },
+          select: { websiteId: true },
+        });
+        visitorSamplesInserted += await this.insertVisitorSample(
+          tx,
+          discoveryId,
+          discovery?.websiteId ?? null,
+          sample,
+        );
+      }
+
+      return {
+        vpsNodeId: vpsNode.id,
+        discoveryCount: payload.discoveries.length,
+        visitorSamplesInserted,
+      };
+    });
 
     this.logger.log('agent.ingest.phase1.stored', {
       machineId: payload.machineId,
-      vpsNodeId: vpsNode.id,
-      discoveryCount: payload.discoveries.length,
-      visitorSamplesInserted,
+      vpsNodeId: result.vpsNodeId,
+      discoveryCount: result.discoveryCount,
+      visitorSamplesInserted: result.visitorSamplesInserted,
       durationMs: Date.now() - startedAt,
     });
 
-    return {
-      vpsNodeId: vpsNode.id,
-      discoveryCount: payload.discoveries.length,
-      visitorSamplesInserted,
-    };
+    return result;
   }
 
   private async upsertDiscovery(
+    tx: Prisma.TransactionClient,
     serverId: string,
     vpsNodeId: string,
     discovery: Phase1DiscoveryDto,
@@ -212,7 +212,7 @@ export class AgentService {
       lastIngestedAt: ingestedAt,
     };
 
-    return this.prisma.websiteDiscovery.upsert({
+    return tx.websiteDiscovery.upsert({
       where: {
         serverId_domain: { serverId, domain: discovery.domain },
       },
@@ -228,6 +228,7 @@ export class AgentService {
   }
 
   private async insertVisitorSample(
+    tx: Prisma.TransactionClient,
     discoveryId: string,
     websiteId: string | null,
     sample: {
@@ -239,7 +240,7 @@ export class AgentService {
     },
   ): Promise<number> {
     const measuredAt = new Date(sample.measuredAt);
-    const result = await this.prisma.websiteActiveVisitorSample.createMany({
+    const result = await tx.websiteActiveVisitorSample.createMany({
       data: [
         {
           recordedAt: measuredAt,

@@ -28,6 +28,7 @@ describe('AgentService', () => {
     websiteActiveVisitorSample: {
       createMany: vi.fn(),
     },
+    $transaction: vi.fn(),
   };
 
   const serversService = {
@@ -36,6 +37,8 @@ describe('AgentService', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    prisma.$transaction.mockImplementation(async (callback) => callback(prisma));
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -64,28 +67,25 @@ describe('AgentService', () => {
       expect(serversService.enrollWithToken).toHaveBeenCalledWith(
         'plain-token',
         'machine-1',
+        undefined,
       );
-      expect(prisma.vpsNode.update).not.toHaveBeenCalled();
     });
 
-    it('persists agentVersion and clears revoke fields when provided', async () => {
+    it('passes agentVersion into enrollWithToken for atomic persistence', async () => {
       serversService.enrollWithToken.mockResolvedValue({
         vpsNodeId: 'node-1',
         serverId: 'server-1',
         secretKey: 'secret-hex',
       });
-      prisma.vpsNode.update.mockResolvedValue({});
 
       await service.enroll('plain-token', 'machine-1', '0.1.0');
 
-      expect(prisma.vpsNode.update).toHaveBeenCalledWith({
-        where: { id: 'node-1' },
-        data: {
-          agentVersion: '0.1.0',
-          credentialsRevokedAt: null,
-          credentialsRevokedReason: null,
-        },
-      });
+      expect(serversService.enrollWithToken).toHaveBeenCalledWith(
+        'plain-token',
+        'machine-1',
+        '0.1.0',
+      );
+      expect(prisma.vpsNode.update).not.toHaveBeenCalled();
     });
   });
 

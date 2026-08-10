@@ -227,7 +227,11 @@ export class ServersService {
     };
   }
 
-  async enrollWithToken(plaintextToken: string, machineId: string) {
+  async enrollWithToken(
+    plaintextToken: string,
+    machineId: string,
+    agentVersion?: string,
+  ) {
     if (!plaintextToken?.trim() || !machineId?.trim()) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
@@ -296,6 +300,7 @@ export class ServersService {
               status: VpsNodeStatus.ONLINE,
               credentialsRevokedAt: null,
               credentialsRevokedReason: null,
+              ...(agentVersion ? { agentVersion } : {}),
             },
           })
         : await tx.vpsNode.create({
@@ -307,6 +312,7 @@ export class ServersService {
               lastSeenAt: now,
               lastHeartbeatAt: now,
               status: VpsNodeStatus.ONLINE,
+              ...(agentVersion ? { agentVersion } : {}),
             },
           });
 
