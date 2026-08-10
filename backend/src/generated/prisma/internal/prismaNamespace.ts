@@ -3624,9 +3624,13 @@ export const TicketScalarFieldEnum = {
   websiteId: 'websiteId',
   createdById: 'createdById',
   assigneeId: 'assigneeId',
+  number: 'number',
   subject: 'subject',
+  service: 'service',
   status: 'status',
   priority: 'priority',
+  resolvedAt: 'resolvedAt',
+  autoCloseAt: 'autoCloseAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4083,6 +4087,20 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketServiceCategory'
+ */
+export type EnumTicketServiceCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketServiceCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketServiceCategory[]'
+ */
+export type ListEnumTicketServiceCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketServiceCategory[]'>
     
 
 

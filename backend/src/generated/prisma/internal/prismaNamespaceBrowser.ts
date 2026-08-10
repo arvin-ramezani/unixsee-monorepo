@@ -587,9 +587,13 @@ export const TicketScalarFieldEnum = {
   websiteId: 'websiteId',
   createdById: 'createdById',
   assigneeId: 'assigneeId',
+  number: 'number',
   subject: 'subject',
+  service: 'service',
   status: 'status',
   priority: 'priority',
+  resolvedAt: 'resolvedAt',
+  autoCloseAt: 'autoCloseAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

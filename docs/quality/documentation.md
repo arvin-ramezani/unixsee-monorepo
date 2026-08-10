@@ -17,6 +17,7 @@
 | Short operational clarification | Product note | `docs/product/notes/` |
 | Durable structural / stack decision | ADR | `docs/architecture/decisions/` |
 | Engineering convention | Rule sheet | `docs/frontend/`, `docs/backend/`, `docs/agent/`, `docs/quality/` |
+| Nest request/response + lifecycle wire contract | Backend API contract | `docs/backend/contracts/` (agent plane uses `docs/agent/*-api-contract.md`) |
 | Repo ownership / system map | Architecture doc | `docs/architecture/` |
 
 ## Status vocabulary

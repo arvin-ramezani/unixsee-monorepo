@@ -11,7 +11,7 @@ and engineering conventions.
 | Understand the system | [`architecture/overview.md`](./architecture/overview.md) |
 | Know which folder owns what | [`architecture/monorepo.md`](./architecture/monorepo.md) |
 | Implement admin UI | [`product/README.md`](./product/README.md) → Phase 1 → matching UX flow → [`frontend/README.md`](./frontend/README.md) |
-| Work on NestJS | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) |
+| Work on NestJS | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) → [`backend/contracts/`](./backend/contracts/) |
 | Work on the Phase 1 VPS agent | [`agent/README.md`](./agent/README.md) + [`agent/setup.md`](./agent/setup.md) + [`prd.md`](./agent/prd.md) |
 | Work on monitoring-agent (later) | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) |
 | Change product behavior | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md) |
@@ -24,7 +24,7 @@ and engineering conventions.
 docs/
 ├── architecture/     System overview, monorepo ownership, ADRs, Next.js layout
 ├── frontend/         Conventions for admin-panel and client Next.js apps
-├── backend/          NestJS ownership, modules, and route map
+├── backend/          NestJS ownership, modules, route map, API contracts
 ├── agent/            Edge agent ownership and ops pointers
 ├── product/          Phase 1 features, notes, admin UX flows
 └── quality/          Validation and documentation standards

@@ -688,10 +688,18 @@ Customers can:
 - View status and conversation history.
 - Reply when the state permits.
 - Close a resolved ticket or request reopening under approved rules.
+- If neither close nor reopen happens after resolution, the ticket auto-closes
+  after a grace period (default 7 days; see
+  [`notes/ticket-lifecycle-and-auto-close.md`](./notes/ticket-lifecycle-and-auto-close.md)).
 
 Recommended customer-facing states:
 
 `submitted`, `in_progress`, `waiting_for_customer`, `resolved`, and `closed`
+
+Customer API enum and create/reply/close/reopen shapes:
+[`../backend/contracts/tickets-customer.md`](../backend/contracts/tickets-customer.md).
+Shared ticket service categories:
+[`../backend/contracts/ticket-service-categories.md`](../backend/contracts/ticket-service-categories.md).
 
 ### 15.3 Administrator workflow
 

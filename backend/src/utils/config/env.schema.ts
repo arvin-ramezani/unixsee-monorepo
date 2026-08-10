@@ -86,6 +86,10 @@ export const envSchema = z.object({
     .trim()
     .min(1)
     .default('Unixsee-Uptime-Probe/1.0 (+https://unixsee.com)'),
+
+  TICKET_AUTO_CLOSE_ENABLED: booleanEnv.default(true),
+  TICKET_AUTO_CLOSE_GRACE_DAYS: z.coerce.number().int().min(5).max(7).default(7),
+  TICKET_AUTO_CLOSE_CRON: z.string().trim().min(1).default('0 * * * *'),
 });
 
 export type Env = z.infer<typeof envSchema>;

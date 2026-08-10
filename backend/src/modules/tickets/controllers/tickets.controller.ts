@@ -11,6 +11,10 @@ import {
 
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
+import {
+  TicketServiceCategory,
+  TicketStatus,
+} from '#/generated/prisma/enums.js';
 import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
 import {
   CreateTicketAttachmentDto,
@@ -23,13 +27,24 @@ import { TicketsService } from '../services/tickets.service.js';
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
+  @Get('services')
+  listServices() {
+    return ApiResponseBuilder.ok(this.ticketsService.listServices());
+  }
+
   @Get()
   async list(
     @CurrentUser() user: CurrentUserType,
+    @Query('status') status?: TicketStatus,
+    @Query('service') service?: TicketServiceCategory,
+    @Query('websiteId') websiteId?: string,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ) {
     const data = await this.ticketsService.listForUser(user.id, {
+      status,
+      service,
+      websiteId,
       skip: skip ? Number(skip) : 0,
       take: take ? Number(take) : 50,
     });
@@ -76,5 +91,19 @@ export class TicketsController {
   ) {
     const data = await this.ticketsService.addAttachment(user.id, id, body);
     return ApiResponseBuilder.created(data);
+  }
+
+  @Post(':id/close')
+  @HttpCode(HttpStatus.OK)
+  async close(@CurrentUser() user: CurrentUserType, @Param('id') id: string) {
+    const data = await this.ticketsService.closeForUser(user.id, id);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Post(':id/reopen')
+  @HttpCode(HttpStatus.OK)
+  async reopen(@CurrentUser() user: CurrentUserType, @Param('id') id: string) {
+    const data = await this.ticketsService.reopenForUser(user.id, id);
+    return ApiResponseBuilder.ok(data);
   }
 }

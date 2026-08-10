@@ -68,6 +68,11 @@ const appConfig = registerAs('app', () => {
       ),
       userAgent: env.UPTIME_PROBE_USER_AGENT,
     },
+    tickets: {
+      autoCloseEnabled: env.TICKET_AUTO_CLOSE_ENABLED,
+      autoCloseGraceDays: env.TICKET_AUTO_CLOSE_GRACE_DAYS,
+      autoCloseCronExpression: env.TICKET_AUTO_CLOSE_CRON,
+    },
   };
 });
 

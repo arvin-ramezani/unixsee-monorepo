@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-09
+> **Last verified:** 2026-08-10
 >
 > **ADRs:**
 > [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md),
@@ -234,15 +234,28 @@ Owned with `websites` + `discoveries` services:
 
 ### Tickets — add `tickets`
 
+Customer DTO/lifecycle contract:
+[`contracts/tickets-customer.md`](./contracts/tickets-customer.md).
+Shared service taxonomy:
+[`contracts/ticket-service-categories.md`](./contracts/ticket-service-categories.md).
+
 | Method | Path | Audience |
 |---|---|---|
+| GET | `/api/v1/tickets/services` | Customer (service category catalog) |
 | GET/POST | `/api/v1/tickets` | Customer |
 | GET | `/api/v1/tickets/:id` | Customer |
 | POST | `/api/v1/tickets/:id/messages` | Customer |
 | POST | `/api/v1/tickets/:id/attachments` | Customer |
+| POST | `/api/v1/tickets/:id/close` | Customer (`RESOLVED` → `CLOSED`) |
+| POST | `/api/v1/tickets/:id/reopen` | Customer (`RESOLVED` → `IN_PROGRESS`) |
 | GET | `/api/v1/admin/tickets` | Admin |
 | POST | `/api/v1/admin/tickets/:id/assign` | Admin |
+| POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
 | POST | `/api/v1/admin/tickets/:id/messages` | Admin (incl. internal notes where allowed) |
+
+Create body includes required `service`, conditional `websiteId`, `subject`,
+`description`, and optional `attachments[]`. Default status is `SUBMITTED`
+(customer «ارسال‌شده»). S3 upload provider is deferred; keep `storageKey` shape.
 
 ### Notifications — add `notifications`
 

@@ -35,6 +35,9 @@ and [`../architecture/overview.md`](../architecture/overview.md).
 
 Canonical map: [`modules-and-routes.md`](./modules-and-routes.md).
 
+Audience DTO/lifecycle contracts: [`contracts/`](./contracts/) (start with
+customer tickets).
+
 ADRs:
 
 - [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md)
@@ -52,7 +55,7 @@ notifications, activities, audit, operational-actions, admin overview, and
 proper alerts REST. See the module map for routes and slices.
 
 Do not invent final DTOs in UI apps; implement contracts in Nest and document
-them when endpoints ship.
+them under [`contracts/`](./contracts/) before or with the Nest change.
 
 ## Related docs
 

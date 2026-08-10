@@ -49,6 +49,13 @@ export class AdminTicketsController {
     return ApiResponseBuilder.ok(data);
   }
 
+  @Post(':id/resolve')
+  @HttpCode(HttpStatus.OK)
+  async resolve(@Param('id') id: string) {
+    const data = await this.ticketsService.resolve(id);
+    return ApiResponseBuilder.ok(data);
+  }
+
   @Post(':id/messages')
   @HttpCode(HttpStatus.CREATED)
   async addMessage(

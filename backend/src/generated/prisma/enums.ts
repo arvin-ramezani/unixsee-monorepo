@@ -135,7 +135,7 @@ export type EnrollmentTokenStatus = (typeof EnrollmentTokenStatus)[keyof typeof 
 
 
 export const TicketStatus = {
-  OPEN: 'OPEN',
+  SUBMITTED: 'SUBMITTED',
   IN_PROGRESS: 'IN_PROGRESS',
   WAITING_CUSTOMER: 'WAITING_CUSTOMER',
   RESOLVED: 'RESOLVED',
@@ -143,6 +143,19 @@ export const TicketStatus = {
 } as const
 
 export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketServiceCategory = {
+  MANAGED_SERVER: 'MANAGED_SERVER',
+  MIGRATION_OPTIMIZATION: 'MIGRATION_OPTIMIZATION',
+  WOOCOMMERCE_SUPPORT: 'WOOCOMMERCE_SUPPORT',
+  SEO: 'SEO',
+  GRAPHIC_DESIGN: 'GRAPHIC_DESIGN',
+  PRODUCT_DATA_ENTRY: 'PRODUCT_DATA_ENTRY',
+  SOCIAL_MEDIA_SUPPORT: 'SOCIAL_MEDIA_SUPPORT'
+} as const
+
+export type TicketServiceCategory = (typeof TicketServiceCategory)[keyof typeof TicketServiceCategory]
 
 
 export const TicketPriority = {

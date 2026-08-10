@@ -12,7 +12,9 @@ Before making changes, read in this order as relevant to the task:
 2. [`docs/architecture/monorepo.md`](./docs/architecture/monorepo.md)
 3. Surface docs for the work:
    - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md)
-   - Backend: [`docs/backend/README.md`](./docs/backend/README.md) and [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md)
+   - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
+  [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
+  and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
    - Agent: [`docs/agent/README.md`](./docs/agent/README.md)
 4. Product: [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md)
 5. Matching UX flow under [`docs/product/ux-flows/`](./docs/product/ux-flows/) when doing admin UI
