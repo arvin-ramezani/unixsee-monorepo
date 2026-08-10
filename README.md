@@ -3,10 +3,9 @@
 Unixsee is a premium managed infrastructure and monitoring service for
 WordPress and WooCommerce websites.
 
-This repository contains the NestJS control plane under `backend/`, the VPS
-edge agent under `agent/`, plus product and architecture docs for the
-customer/public app and administrator panel. Next.js apps are not scaffolded
-yet.
+This repository contains the NestJS control plane under `backend/`, two VPS
+edge agents (`agent/` for Phase 1, `monitoring-agent/` later), plus product and
+architecture docs for the customer/public app and administrator panel.
 
 ## Surfaces
 
@@ -15,10 +14,12 @@ yet.
 | `client/` | Public website and customer dashboard (Next.js) |
 | `admin-panel/` | Staff administrator panel (Next.js) |
 | `backend/` | NestJS API, persistence, orchestration, agent control plane |
-| `agent/` | VPS edge agent (outbound HTTPS to NestJS) |
+| `agent/` | Phase 1 VPS agent (new; inventory / site stack / 3m visitors) |
+| `monitoring-agent/` | Monitoring edge agent (existing; develop later) |
 | `docs/` | Canonical documentation |
 
-Layout decision: [`docs/architecture/decisions/0001-flat-monorepo-layout.md`](./docs/architecture/decisions/0001-flat-monorepo-layout.md).
+Layout decision: [`docs/architecture/decisions/0001-flat-monorepo-layout.md`](./docs/architecture/decisions/0001-flat-monorepo-layout.md).  
+Two agents: [`docs/architecture/decisions/0007-two-vps-agents.md`](./docs/architecture/decisions/0007-two-vps-agents.md).
 
 ## Start here
 
@@ -27,7 +28,8 @@ Layout decision: [`docs/architecture/decisions/0001-flat-monorepo-layout.md`](./
 3. [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md) — Phase 1 behavior
 
 For NestJS work: [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md).  
-For agent work: [`docs/agent/README.md`](./docs/agent/README.md) and [`agent/README.md`](./agent/README.md).  
+For Phase 1 agent work: [`docs/agent/prd.md`](./docs/agent/prd.md) and [`agent/README.md`](./agent/README.md).  
+For monitoring-agent (later): [`monitoring-agent/README.md`](./monitoring-agent/README.md).  
 For admin UI work: [`docs/product/README.md`](./docs/product/README.md).
 
 ## Current status
@@ -35,7 +37,8 @@ For admin UI work: [`docs/product/README.md`](./docs/product/README.md).
 - Product Phase 1 and admin UX flows: documented
 - Monorepo architecture and ADRs (including API audience namespaces): documented
 - `backend/`: NestJS control plane present; Phase 1 module gaps documented
-- `agent/`: VPS edge agent present (enrollment, discovery, HMAC ingest/heartbeat)
+- `agent/`: Phase 1 VPS agent scaffold (PRD-owned; implement from scratch)
+- `monitoring-agent/`: existing monitoring agent present; develop later
 - `client/`: public website + customer dashboard Next.js app present
 - `admin-panel/`: staff Next.js app present (UI-first / fixture data)
 - Automated monorepo workspace tests: none yet

@@ -28,7 +28,8 @@ before structural or product changes.
 | Admin UI code | `admin-panel/` (+ app-scoped `admin-panel/docs/` only) |
 | Customer / public UI code | `client/` (+ app-scoped `client/docs/` only) |
 | API / business rules | `backend/` |
-| Edge agent | `agent/` |
+| Phase 1 VPS agent | `agent/` |
+| Monitoring agent (later) | `monitoring-agent/` |
 
 ## Phase boundaries
 

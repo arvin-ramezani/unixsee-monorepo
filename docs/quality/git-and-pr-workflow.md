@@ -64,6 +64,7 @@ main
 Before coding a non-trivial change:
 
 - Identify owning surface: `admin-panel/`, `client/`, `backend/`, `agent/`,
+  `monitoring-agent/`,
   or `docs/` ([`../architecture/monorepo.md`](../architecture/monorepo.md)).
 - Read the relevant product/UX/architecture docs (see [`../README.md`](../README.md)).
 - Write a short plan (GitHub issue, Cursor plan, or PR description draft):
@@ -99,7 +100,7 @@ From the changed surface folder(s), run real scripts, for example:
 npm run lint
 npm run build   # or build:static in client when DB is unavailable
 
-# agent
+# monitoring-agent
 npm run build
 
 # backend (from backend/)
@@ -274,7 +275,7 @@ chore: tighten root gitignore for Next.js
 ## Optional next hardening (later)
 
 When ready, add GitHub Actions that run per changed surface (`admin-panel`,
-`client`, `backend`, `agent`) on pull requests. Until then, local scripts +
+`client`, `backend`, `agent`, `monitoring-agent`) on pull requests. Until then, local scripts +
 explicit AI review + human skim are the gate.
 
 ## Related

@@ -18,7 +18,7 @@ contracts, not final OpenAPI. Keep authentication as implemented in
 /api/v1/public/...          # unauthenticated intake + published catalogs
 /api/v1/...                 # customer (tenant JWT)
 /api/v1/admin/...           # staff JWT + role/capability
-/api/internal/agent/v1/...  # agent plane (not browser-facing)
+/api/internal/agent/v1/...  # agent plane (monitoring-agent deployable; not browser-facing)
 ```
 
 Socket.io: `/realtime` for **customer monitoring** only in Phase 1. Admin
@@ -125,7 +125,7 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 | Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires |
 | Fix stub | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
 
-### Agent — keep / extend carefully
+### Agent plane — keep / extend carefully
 
 | Method | Path | Audience |
 |---|---|---|
@@ -133,8 +133,9 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 | POST | `/api/internal/agent/v1/ingest` | Agent (HMAC after enrollment) |
 | POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness) |
 
-Product agent install uses enrollment, then HMAC. See
-[`../agent/README.md`](../agent/README.md) and [`../../agent/README.md`](../../agent/README.md).
+Product agent install uses enrollment, then HMAC. Source lives in
+`monitoring-agent/`. See [`../agent/README.md`](../agent/README.md) and
+[`../../monitoring-agent/README.md`](../../monitoring-agent/README.md).
 
 ---
 

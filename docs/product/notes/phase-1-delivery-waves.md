@@ -13,7 +13,7 @@ items. Behavioral detail remains in
 | Area | Intent |
 |---|---|
 | Websites | Admin websites inventory and ownership assignment |
-| Servers / agents | Enroll and register agents from admin servers; agents discover websites and update admin websites (and assigned owner dashboards) |
+| Servers / agents | Enroll Phase 1 `agent/` from admin servers; discovery updates websites. `monitoring-agent/` develops later |
 | Users | Created by public signup or admin create; admin-created accounts start unverified; OTP with the recorded phone/email marks verified |
 | Tickets | Customer and staff support workflow |
 | Complementary services | Request, review, activate, deliver |

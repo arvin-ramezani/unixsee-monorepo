@@ -5,14 +5,15 @@ alwaysApply: true
 
 # Unixsee monorepo
 
-Flat deployables at repo root: `admin-panel/`, `client/`, `backend/`, `agent/`, `docs/`.
+Flat deployables at repo root: `admin-panel/`, `client/`, `backend/`, `agent/`, `monitoring-agent/`, `docs/`.
 
 ## Ownership
 
 - `admin-panel/` — staff Next.js UI
 - `client/` — customer / public Next.js UI
 - `backend/` — NestJS control plane
-- `agent/` — VPS edge agent (outbound HTTPS to NestJS only)
+- `agent/` — Phase 1 VPS agent (PRD; build from scratch)
+- `monitoring-agent/` — monitoring edge agent (existing; develop later)
 - `docs/` — canonical documentation
 
 Do not invent `apps/` or `packages/` without an ADR.

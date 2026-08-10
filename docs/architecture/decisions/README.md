@@ -66,3 +66,5 @@ What becomes easier, harder, or forbidden?
 | [0003](./0003-ui-only-phase-boundaries.md) | UI-only phase boundaries | Accepted |
 | [0004](./0004-api-audience-namespaces.md) | API audience namespaces | Accepted |
 | [0005](./0005-domain-modules-multi-audience-controllers.md) | Domain modules with multi-audience controllers | Accepted |
+| [0006](./0006-rename-agent-to-monitoring-agent.md) | Rename edge deployable to `monitoring-agent/` | Accepted |
+| [0007](./0007-two-vps-agents.md) | Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/` | Accepted |

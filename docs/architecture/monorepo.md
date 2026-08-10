@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-09
 >
 > **ADR:** [`decisions/0001-flat-monorepo-layout.md`](./decisions/0001-flat-monorepo-layout.md)
 
@@ -10,11 +10,12 @@
 
 ```text
 unixsee-monorepo/
-├── admin-panel/     # Staff Next.js app (active, UI-first)
-├── client/          # Customer / public Next.js app (active)
-├── backend/         # NestJS API and control plane (active)
-├── agent/           # VPS edge agent (active)
-├── docs/            # Canonical documentation
+├── admin-panel/        # Staff Next.js app (active, UI-first)
+├── client/             # Customer / public Next.js app (active)
+├── backend/            # NestJS API and control plane (active)
+├── agent/              # Phase 1 VPS agent (new; PRD-owned)
+├── monitoring-agent/   # Monitoring edge agent (existing; develop later)
+├── docs/               # Canonical documentation
 ├── README.md
 ├── CONTRIBUTING.md
 └── AGENTS.md
@@ -27,7 +28,8 @@ unixsee-monorepo/
 | `admin-panel/` | Administrator UI | Next.js App Router UI for staff workflows |
 | `client/` | Customer / public UI | Next.js App Router UI for public site and customer dashboard |
 | `backend/` | Platform API | NestJS modules, persistence, auth, orchestration, agent APIs |
-| `agent/` | Edge runtime | Agent process that enrolls with and reports to NestJS |
+| `agent/` | Phase 1 edge runtime | New VPS agent: discovery, site stack, 3m visitors ([`../agent/prd.md`](../agent/prd.md)) |
+| `monitoring-agent/` | Monitoring edge runtime | Existing host/LiteSpeed monitor; later development |
 | `docs/` | Shared truth | Product, architecture, frontend, backend, agent, quality docs |
 
 Do not place application source for one surface inside another surface's folder.
@@ -55,6 +57,8 @@ Default: **no premature shared packages**.
 - `backend/` has its own Nest/pnpm tooling; run scripts from that folder.
 - `agent/` has its own npm tooling; run scripts from that folder (see
   [`../../agent/README.md`](../../agent/README.md)).
+- `monitoring-agent/` has its own npm tooling; run scripts from that folder (see
+  [`../../monitoring-agent/README.md`](../../monitoring-agent/README.md)).
 - `client/` has its own npm tooling; run scripts from that folder (see
   [`../../client/README.md`](../../client/README.md)).
 - `admin-panel/` has its own npm tooling; run scripts from that folder (see
@@ -71,6 +75,6 @@ Default: **no premature shared packages**.
 | Admin UI feature | `admin-panel/` + related `docs/product/ux-flows/` |
 | Customer / public UI | `client/` + product docs |
 | API / business rules | `backend/` per [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md) |
-| Agent behavior | `agent/` + `docs/agent/` and product notes |
+| Agent behavior | `agent/` + `monitoring-agent/` + `docs/agent/` and product notes |
 | Structural decision | ADR under `docs/architecture/decisions/` |
 | Product behavior | `docs/product/` |

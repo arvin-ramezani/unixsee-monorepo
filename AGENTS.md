@@ -26,7 +26,8 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
 - `admin-panel/` — staff Next.js UI
 - `client/` — customer / public Next.js UI
 - `backend/` — NestJS (active control plane)
-- `agent/` — VPS edge agent
+- `agent/` — Phase 1 VPS agent (new; see `docs/agent/prd.md`)
+- `monitoring-agent/` — monitoring edge agent (existing; develop later)
 - `docs/` — canonical documentation
 
 ## Hard boundaries

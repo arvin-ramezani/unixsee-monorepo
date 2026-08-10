@@ -23,7 +23,7 @@ Adopt this stack for Phase 1 implementation:
 | Client state | Zustand with per-request store pattern; React state for local UI |
 | API / control plane | NestJS (`backend/`) |
 | Data store | PostgreSQL |
-| Edge | VPS agent (`agent/`) communicating outbound HTTPS to NestJS |
+| Edge | Phase 1 `agent/` plus deferred `monitoring-agent/` (outbound HTTPS to NestJS) |
 | API style | REST, plus selective realtime where product requires it |
 
 Do not introduce Tailwind v3 config patterns, legacy Next.js middleware for new

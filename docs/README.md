@@ -12,7 +12,8 @@ and engineering conventions.
 | Know which folder owns what | [`architecture/monorepo.md`](./architecture/monorepo.md) |
 | Implement admin UI | [`product/README.md`](./product/README.md) → Phase 1 → matching UX flow → [`frontend/README.md`](./frontend/README.md) |
 | Work on NestJS | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) |
-| Work on the VPS agent | [`agent/README.md`](./agent/README.md) + [`product/notes/servers-agent-data-flow.md`](./product/notes/servers-agent-data-flow.md) |
+| Work on the Phase 1 VPS agent | [`agent/README.md`](./agent/README.md) + [`prd.md`](./agent/prd.md) + [`../agent/README.md`](../agent/README.md) |
+| Work on monitoring-agent (later) | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) |
 | Change product behavior | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md) |
 | Git / PR / Cursor review workflow | [`quality/git-and-pr-workflow.md`](./quality/git-and-pr-workflow.md) |
 | Record a structural decision | [`architecture/decisions/`](./architecture/decisions/) |
@@ -41,6 +42,6 @@ docs/
 
 - Product behavior lives under `product/`.
 - Engineering structure and conventions live under `architecture/`, `frontend/`,
-  `backend/`, and `agent/`.
+  `backend/`, and `agent/` (plus `monitoring-agent/` for the later monitor).
 - Cursor rules and `AGENTS.md` point here; they must not become a second source
   of truth. See [`quality/documentation.md`](./quality/documentation.md).
