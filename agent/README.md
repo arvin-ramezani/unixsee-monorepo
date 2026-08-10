@@ -10,7 +10,14 @@ Outbound-only edge agent for managed DirectAdmin + OpenLiteSpeed WordPress /
 WooCommerce hosts. Reports discovery, site stack/links, and 3-minute active
 visitors to NestJS.
 
-## Setup (local)
+## Setup the agent on a VPS
+
+**Start here:** [`../docs/agent/setup.md`](../docs/agent/setup.md)
+
+That guide covers applying the admin enrollment token, cloning from GitHub,
+`.env`, and running with `npm start` or systemd.
+
+## Local development
 
 ```bash
 cd agent
@@ -48,8 +55,7 @@ sudo setfacl -R -m g:unixsee-agent:r-x /var/log/httpd/domains
 sudo setfacl -m g:unixsee-agent:rx /usr/local/lsws/conf
 ```
 
-Install unit: [`systemd/unixsee-agent.service`](./systemd/unixsee-agent.service).  
-Bootstrap helper: [`install.sh`](./install.sh) (writes `.env` with token; never echoes secrets).
+Install unit: [`systemd/unixsee-agent.service`](./systemd/unixsee-agent.service).
 
 ## Security
 

@@ -40,7 +40,10 @@ Build from scratch against [`prd.md`](./prd.md) and
 - Active visitors (3-minute unique IPs from `/var/log/httpd/domains/{domain}.log`)
 - Does **not** own public uptime/online-down or server location
 
-Install/ops: [`../../agent/README.md`](../../agent/README.md).
+**Setup (token + clone + run):** [`setup.md`](./setup.md) — start here to install
+on a VPS.
+
+Package notes: [`../../agent/README.md`](../../agent/README.md).
 
 ## Monitoring agent (`monitoring-agent/`)
 
@@ -51,6 +54,7 @@ Install/ops: [`../../monitoring-agent/README.md`](../../monitoring-agent/README.
 
 ## Related docs
 
+- **Setup (token + run):** [`setup.md`](./setup.md)
 - Phase 1 agent API contract: [`phase1-api-contract.md`](./phase1-api-contract.md)
 - Two-agent ADR: [`../architecture/decisions/0007-two-vps-agents.md`](../architecture/decisions/0007-two-vps-agents.md)
 - Agent language ADR: [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)

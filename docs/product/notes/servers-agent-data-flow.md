@@ -10,11 +10,13 @@ Commercial plan entitlement is a separate channel: the public site collects a pl
 
 1. Create a server record with a stable ID in the admin panel.
 2. Issue a one-time enrollment token for the agent on that VPS.
-3. The agent connects to NestJS and pushes discovery and monitoring data.
-4. NestJS validates the agent credentials and payload, then stores the data.
-5. The admin panel shows the validated server, agent, and discovery records.
-6. Staff assign each discovered website to a tenant (find existing or inline create when needed) and a plan (prefer the chosen plan from a linked plan request when one is ready/enabled for that context).
-7. The website becomes available with the related data received from the agent after assignment/activation rules pass.
+3. An operator applies the token on the VPS and runs the agent — see
+   [`../../agent/setup.md`](../../agent/setup.md).
+4. The agent connects to NestJS and pushes discovery and monitoring data.
+5. NestJS validates the agent credentials and payload, then stores the data.
+6. The admin panel shows the validated server, agent, and discovery records.
+7. Staff assign each discovered website to a tenant (find existing or inline create when needed) and a plan (prefer the chosen plan from a linked plan request when one is ready/enabled for that context).
+8. The website becomes available with the related data received from the agent after assignment/activation rules pass.
 
 ## Trust boundary
 

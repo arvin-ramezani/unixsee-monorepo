@@ -164,7 +164,8 @@ Recommended behaviour:
 
 - Staff selects a server and chooses “ایجاد توکن اتصال”.
 - NestJS creates a high-entropy token, stores only a hash + metadata, returns plaintext once.
-- Admin shows plaintext in a one-time reveal surface with copy and install guidance.
+- Admin shows plaintext in a one-time reveal surface with copy and install guidance
+  that points operators to [`../../agent/setup.md`](../../agent/setup.md).
 - After dismiss/navigation/refresh, plaintext is no longer retrievable; only status (`unused`, `used`, `expired`, `revoked`) remains.
 - Agent exchanges the enrollment token for long-lived agent credentials over NestJS.
 - Staff can revoke unused enrollment tokens and revoke/re-enroll compromised agents without seeing prior secrets.
