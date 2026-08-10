@@ -106,9 +106,7 @@ export function findCustomerByContact(
     const matchesEmail =
       email.length > 0 && !!user.email && normalizeEmail(user.email) === email;
     const matchesMobile =
-      mobile.length > 0 &&
-      !!user.mobile &&
-      normalizeMobile(user.mobile) === mobile;
+      mobile.length > 0 && normalizeMobile(user.mobile) === mobile;
 
     return matchesEmail || matchesMobile;
   });
@@ -312,7 +310,7 @@ export function filterCustomerQueueRows(
       row.user.displayName,
       row.user.id,
       row.user.email ?? "",
-      row.user.mobile ?? "",
+      row.user.mobile,
       ...row.tenantMemberships.map((item) => item.tenant.name),
     ]
       .join(" ")
@@ -351,10 +349,7 @@ export function getCustomerQueueSummary(
 }
 
 export function formatContactSummary(user: CustomerUserType): string {
-  if (user.email) return maskEmail(user.email);
-  if (user.mobile) return maskMobile(user.mobile);
-
-  return "بدون شناسه تماس";
+  return maskMobile(user.mobile);
 }
 
 export function hasUnverifiedContact(user: CustomerUserType): boolean {

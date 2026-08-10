@@ -105,7 +105,10 @@ function DiscoveryContextCard({
         </span>
         <div className="min-w-0">
           <p className="font-medium">{discovery.title}</p>
-          <p className="mt-1 truncate text-sm text-muted-foreground" dir="ltr">
+          <p
+            className="mt-1 truncate text-sm text-muted-foreground w-fit"
+            dir="ltr"
+          >
             {discovery.domain}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">

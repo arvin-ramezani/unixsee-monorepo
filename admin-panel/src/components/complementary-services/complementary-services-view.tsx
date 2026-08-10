@@ -296,7 +296,10 @@ function RequestDetailsSheet({
                   </span>
                   <div>
                     <p className="font-medium">{request.websiteTitle}</p>
-                    <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
+                    <p
+                      className="mt-1 text-sm text-muted-foreground w-fit"
+                      dir="ltr"
+                    >
                       {request.websiteDomain}
                     </p>
                     <p className="mt-2 text-xs text-muted-foreground">
@@ -353,7 +356,9 @@ function RequestDetailsSheet({
 
               {request.customerNote && (
                 <section className="rounded-xl border border-border p-4">
-                  <h3 className="text-sm font-semibold">یادداشت قابل مشاهده مشتری</h3>
+                  <h3 className="text-sm font-semibold">
+                    یادداشت قابل مشاهده مشتری
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {request.customerNote}
                   </p>
@@ -426,12 +431,7 @@ export function ComplementaryServicesView({
   const filteredRequests = requests.filter((request) => {
     const matchesQuery =
       normalizedQuery.length === 0 ||
-      [
-        request.id,
-        request.title,
-        request.customerName,
-        request.websiteDomain,
-      ]
+      [request.id, request.title, request.customerName, request.websiteDomain]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery);
@@ -442,8 +442,7 @@ export function ComplementaryServicesView({
       (statusFilter === REQUEST_STATUS_FILTER.ACTIONABLE &&
         ACTIONABLE_REQUEST_STATUSES.has(request.status)) ||
       (statusFilter === REQUEST_STATUS_FILTER.WAITING &&
-        (request.status ===
-          SERVICE_REQUEST_STATUS.NEEDS_CUSTOMER_INFORMATION ||
+        (request.status === SERVICE_REQUEST_STATUS.NEEDS_CUSTOMER_INFORMATION ||
           request.status === SERVICE_REQUEST_STATUS.QUOTED)) ||
       (statusFilter === REQUEST_STATUS_FILTER.READY &&
         request.status === SERVICE_REQUEST_STATUS.ACCEPTED);
@@ -623,7 +622,7 @@ export function ComplementaryServicesView({
         />
       </section>
 
-      {successMessage && (
+      {!!successMessage && (
         <div
           className="flex items-start gap-2 rounded-xl border border-accent bg-accent/20 p-4 text-sm text-accent-foreground"
           role="status"
@@ -722,11 +721,21 @@ export function ComplementaryServicesView({
               <Table className="min-w-240">
                 <TableHeader className="bg-muted/30 text-muted-foreground">
                   <TableRow>
-                    <TableHead className="px-4 py-3 text-right">درخواست</TableHead>
-                    <TableHead className="px-4 py-3 text-right">مشتری</TableHead>
-                    <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
-                    <TableHead className="px-4 py-3 text-right">سرویس</TableHead>
-                    <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      درخواست
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      مشتری
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      وب‌سایت
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      سرویس
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      وضعیت
+                    </TableHead>
                     <TableHead className="px-4 py-3 text-right">
                       اقدام بعدی
                     </TableHead>
@@ -829,13 +838,21 @@ export function ComplementaryServicesView({
               <Table className="min-w-220">
                 <TableHeader className="bg-muted/30 text-muted-foreground">
                   <TableRow>
-                    <TableHead className="px-4 py-3 text-right">سرویس</TableHead>
-                    <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
-                    <TableHead className="px-4 py-3 text-right">مسئول</TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      سرویس
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      وب‌سایت
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      مسئول
+                    </TableHead>
                     <TableHead className="px-4 py-3 text-right">
                       مدل همکاری
                     </TableHead>
-                    <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
+                    <TableHead className="px-4 py-3 text-right">
+                      وضعیت
+                    </TableHead>
                     <TableHead className="px-4 py-3 text-right">
                       پیشرفت
                     </TableHead>

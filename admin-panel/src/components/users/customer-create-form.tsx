@@ -72,12 +72,12 @@ function validateCreateValues(
   const email = values.email.trim();
   const mobile = normalizeMobile(values.mobile);
 
-  if (!email && !mobile) {
-    errors.contact = "حداقل یکی از ایمیل یا شماره موبایل لازم است.";
+  if (!mobile) {
+    errors.contact = "شماره موبایل لازم است.";
+  } else if (!MOBILE_PATTERN.test(mobile)) {
+    errors.contact = "شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.";
   } else if (email && !EMAIL_PATTERN.test(email)) {
     errors.contact = "قالب ایمیل معتبر نیست.";
-  } else if (mobile && !MOBILE_PATTERN.test(mobile)) {
-    errors.contact = "شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.";
   }
 
   if (!values.tenantName.trim()) {
@@ -340,22 +340,6 @@ export function CustomerCreateForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="customer-email" className="text-sm font-medium">
-              ایمیل
-            </label>
-            <Input
-              id="customer-email"
-              type="email"
-              dir="ltr"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              aria-invalid={!!errors.contact}
-              aria-describedby={errors.contact ? "customer-contact-error" : undefined}
-              placeholder="name@example.com"
-            />
-          </div>
-
-          <div className="space-y-2">
             <label htmlFor="customer-mobile" className="text-sm font-medium">
               موبایل
             </label>
@@ -365,9 +349,33 @@ export function CustomerCreateForm({
               inputMode="numeric"
               value={mobile}
               onChange={(event) => setMobile(event.target.value)}
+              aria-required="true"
               aria-invalid={!!errors.contact}
-              aria-describedby={errors.contact ? "customer-contact-error" : undefined}
+              aria-describedby={
+                errors.contact ? "customer-contact-error" : undefined
+              }
               placeholder="09121234567"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="customer-email" className="text-sm font-medium">
+              ایمیل
+              <span className="ms-1 font-normal text-muted-foreground">
+                (اختیاری)
+              </span>
+            </label>
+            <Input
+              id="customer-email"
+              type="email"
+              dir="ltr"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              aria-invalid={!!errors.contact}
+              aria-describedby={
+                errors.contact ? "customer-contact-error" : undefined
+              }
+              placeholder="name@example.com"
             />
           </div>
         </div>
@@ -381,7 +389,7 @@ export function CustomerCreateForm({
           }
         >
           {errors.contact ??
-            "شناسه تماس برای بررسی تکراری‌نبودن مشتری و ارسال دعوت‌نامه استفاده می‌شود."}
+            "موبایل برای شناسایی مشتری و ارسال دعوت‌نامه لازم است؛ ایمیل اختیاری است."}
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2">

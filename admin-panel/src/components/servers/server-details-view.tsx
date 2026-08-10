@@ -263,7 +263,9 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
             <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
               <p className="text-xs text-muted-foreground">{field.label}</p>
               <p
-                className="mt-2 text-sm font-medium"
+                className={cn("mt-2 text-sm font-medium", {
+                  "w-fit": "dir" in field,
+                })}
                 dir={"dir" in field ? field.dir : undefined}
               >
                 {field.getValue(server)}
@@ -369,7 +371,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
           </div>
           <div className={cn(mutedSurfaceClassName, "p-4")}>
             <p className="text-sm text-muted-foreground">نسخه Agent</p>
-            <p className="mt-3 text-lg font-semibold" dir="ltr">
+            <p className="mt-3 text-lg font-semibold w-fit" dir="ltr">
               {server.agent.version ?? "—"}
             </p>
           </div>
@@ -436,7 +438,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                   return (
                     <TableRow key={discovery.id}>
                       <TableCell className="px-4 py-3">
-                        <p className="font-medium" dir="ltr">
+                        <p className="font-medium w-fit" dir="ltr">
                           {discovery.domain}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -536,7 +538,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                 )}
               >
                 <div className="min-w-0">
-                  <p className="truncate font-medium" dir="ltr">
+                  <p className="truncate font-medium w-fit" dir="ltr">
                     {item.domain}
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">

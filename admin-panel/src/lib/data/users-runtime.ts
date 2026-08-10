@@ -135,7 +135,7 @@ export function createCustomerAccount(
 ): CreateCustomerResultType {
   const suffix = String(runtimeUsers.length + 1).padStart(3, "0");
   const email = input.email ? normalizeEmail(input.email) : "";
-  const mobile = input.mobile ? normalizeMobile(input.mobile) : "";
+  const mobile = normalizeMobile(input.mobile);
 
   const user: CustomerUserType = {
     id: `user-9${suffix}`,
@@ -144,10 +144,8 @@ export function createCustomerAccount(
     emailVerification: email
       ? CONTACT_VERIFICATION.PENDING
       : CONTACT_VERIFICATION.NOT_PROVIDED,
-    mobile: mobile || null,
-    mobileVerification: mobile
-      ? CONTACT_VERIFICATION.PENDING
-      : CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile,
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: input.locale,
     accountState: ACCOUNT_STATE.PENDING_VERIFICATION,
     origin: ACCOUNT_ORIGIN.ADMIN_CREATE,
@@ -202,7 +200,7 @@ export function createCustomerAccount(
   appendAuditEntry({
     userId: user.id,
     action: AUDIT_ACTION.INVITE_SENT,
-    target: user.email ?? user.mobile ?? "بدون شناسه تماس",
+    target: user.email ?? user.mobile,
     result: AUDIT_RESULT.ACCEPTED,
   });
 

@@ -37,10 +37,7 @@ import {
 } from "@/lib/data/plan-requests-runtime";
 import { websiteHasActivePlan } from "@/lib/data/plans-data";
 import { STAFF_CAPABILITY, type CustomerUserType } from "@/lib/data/users-data";
-import {
-  getRuntimeUser,
-  listRuntimeUsers,
-} from "@/lib/data/users-runtime";
+import { getRuntimeUser, listRuntimeUsers } from "@/lib/data/users-runtime";
 import { listRuntimeWebsitesByTenant } from "@/lib/data/websites-runtime";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
@@ -66,12 +63,9 @@ function matchesUserQuery(user: CustomerUserType, query: string) {
   if (!normalizedQuery) return true;
 
   const compactQuery = normalizedQuery.replace(/[\s-]/g, "");
-  const fields = [
-    user.displayName,
-    user.email ?? "",
-    user.mobile ?? "",
-    user.id,
-  ].map(normalizeSearchText);
+  const fields = [user.displayName, user.email ?? "", user.mobile, user.id].map(
+    normalizeSearchText,
+  );
 
   return fields.some((field) => {
     if (field.includes(normalizedQuery)) return true;
@@ -91,11 +85,13 @@ export function PlanRequestDetailsSheet({
         side="right"
         className="flex w-full flex-col gap-0 sm:max-w-lg"
       >
-        {request ? (
+        {request && (
           <>
             <SheetHeader className="border-b border-border px-4 py-4 pe-12 text-right">
               <SheetTitle className="flex flex-wrap items-center gap-2">
-                <span dir="ltr">{request.chosenPlanName}</span>
+                <span className="w-fit" dir="ltr">
+                  {request.chosenPlanName}
+                </span>
                 <PlanRequestStatusBadge status={request.status} />
               </SheetTitle>
               <SheetDescription>
@@ -110,7 +106,7 @@ export function PlanRequestDetailsSheet({
               onClose={() => onOpenChange(false)}
             />
           </>
-        ) : null}
+        )}
       </SheetContent>
     </Sheet>
   );
@@ -241,10 +237,10 @@ function PlanRequestDetailsBody({
     onClose();
   };
 
-  const contactSummary = request.contactEmail
-    ? maskEmail(request.contactEmail)
-    : request.contactMobile
-      ? maskMobile(request.contactMobile)
+  const contactSummary = request.contactMobile
+    ? maskMobile(request.contactMobile)
+    : request.contactEmail
+      ? maskEmail(request.contactEmail)
       : "—";
 
   const selectedWebsiteLabel = selectedWebsite
@@ -263,7 +259,7 @@ function PlanRequestDetailsBody({
           <dl className="grid gap-3 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-xs text-muted-foreground">پلن انتخاب‌شده</dt>
-              <dd className="mt-1 font-medium" dir="ltr">
+              <dd className="mt-1 font-medium w-fit" dir="ltr">
                 {request.chosenPlanName}
               </dd>
             </div>
@@ -277,14 +273,14 @@ function PlanRequestDetailsBody({
             </div>
             <div>
               <dt className="text-xs text-muted-foreground">شناسه تماس</dt>
-              <dd className="mt-1" dir="ltr">
+              <dd className="mt-1 w-fit" dir="ltr">
                 {contactSummary}
               </dd>
             </div>
             {request.domainHint ? (
               <div>
                 <dt className="text-xs text-muted-foreground">راهنمای دامنه</dt>
-                <dd className="mt-1" dir="ltr">
+                <dd className="mt-1 w-fit" dir="ltr">
                   {request.domainHint}
                 </dd>
               </div>
@@ -296,7 +292,7 @@ function PlanRequestDetailsBody({
           </dl>
         </section>
 
-        {blockers.length > 0 ? (
+        {blockers.length > 0 && (
           <section
             className="space-y-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
             role="status"
@@ -310,7 +306,7 @@ function PlanRequestDetailsBody({
                 <li key={blocker}>{PLAN_REQUEST_BLOCKER_LABELS[blocker]}</li>
               ))}
             </ul>
-            {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) ? (
+            {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) && (
               <p className="text-xs text-destructive/90">
                 اگر حساب وجود ندارد، ابتدا در{" "}
                 <Link href="/users" className="underline underline-offset-2">
@@ -318,24 +314,24 @@ function PlanRequestDetailsBody({
                 </Link>{" "}
                 ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
               </p>
-            ) : null}
+            )}
           </section>
-        ) : null}
+        )}
 
-        {!isTerminal ? (
+        {!isTerminal && (
           <section className="space-y-3 rounded-xl border border-border p-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold">
               <Link2 className="size-4" aria-hidden />
               اتصال کاربر موجود
             </h3>
-            {linkedUser ? (
+            {linkedUser && (
               <p className="rounded-lg bg-muted/40 px-3 py-2 text-sm">
                 متصل: {linkedUser.displayName}
                 <span className="ms-2 text-muted-foreground" dir="ltr">
                   {linkedUser.id}
                 </span>
               </p>
-            ) : null}
+            )}
             <SearchInput
               value={userQuery}
               onChange={(event) => setUserQuery(event.target.value)}
@@ -366,11 +362,12 @@ function PlanRequestDetailsBody({
                           {isLinked ? " (متصل)" : ""}
                         </span>
                         <span
-                          className="text-xs text-muted-foreground"
+                          className="text-xs text-muted-foreground w-fit"
                           dir="ltr"
                         >
-                          {[user.email, user.mobile].filter(Boolean).join(" · ") ||
-                            user.id}
+                          {[user.email, user.mobile]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </span>
                       </button>
                     </li>
@@ -379,9 +376,9 @@ function PlanRequestDetailsBody({
               )}
             </ul>
           </section>
-        ) : null}
+        )}
 
-        {!isTerminal && request.linkedTenantId ? (
+        {!isTerminal && request.linkedTenantId && (
           <section className="space-y-3 rounded-xl border border-border p-4">
             <h3 className="text-sm font-semibold">وب‌سایت هدف</h3>
             {tenantWebsites.length === 0 ? (
@@ -412,7 +409,7 @@ function PlanRequestDetailsBody({
                 </SelectContent>
               </Select>
             )}
-            {selectedWebsite ? (
+            {selectedWebsite && (
               <p
                 className={cn(
                   "text-xs",
@@ -428,16 +425,18 @@ function PlanRequestDetailsBody({
                     : "—"}
                 </span>
               </p>
-            ) : null}
+            )}
           </section>
-        ) : null}
+        )}
 
-        {request.terminalReason ? (
+        {request.terminalReason && (
           <section className="rounded-xl border border-border p-4 text-sm">
             <h3 className="font-semibold">دلیل پایانی</h3>
-            <p className="mt-2 text-muted-foreground">{request.terminalReason}</p>
+            <p className="mt-2 text-muted-foreground">
+              {request.terminalReason}
+            </p>
           </section>
-        ) : null}
+        )}
 
         <section className="space-y-3 rounded-xl border border-border p-4">
           <h3 className="text-sm font-semibold">سابقه</h3>
@@ -451,9 +450,9 @@ function PlanRequestDetailsBody({
                 <p className="text-xs text-muted-foreground">
                   {entry.actorName} · {entry.at}
                 </p>
-                {entry.note ? (
+                {entry.note && (
                   <p className="mt-1 text-muted-foreground">{entry.note}</p>
-                ) : null}
+                )}
               </li>
             ))}
           </ol>
@@ -537,8 +536,8 @@ function PlanRequestDetailsBody({
         ) : null}
         {!isTerminal && blockers.length > 0 ? (
           <p className="w-full text-xs text-muted-foreground">
-            دکمه فعال‌سازی پس از اتصال کاربر موجود و انتخاب وب‌سایت بدون پلن فعال
-            در دسترس قرار می‌گیرد.
+            دکمه فعال‌سازی پس از اتصال کاربر موجود و انتخاب وب‌سایت بدون پلن
+            فعال در دسترس قرار می‌گیرد.
           </p>
         ) : null}
         {confirmEnable && canActivate ? (

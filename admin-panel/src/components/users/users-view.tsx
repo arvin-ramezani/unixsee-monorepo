@@ -150,7 +150,9 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
     navigateToUser();
   };
 
-  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+  const handleRowKeyDown = (
+    event: React.KeyboardEvent<HTMLTableRowElement>,
+  ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
 
     event.preventDefault();
@@ -177,7 +179,10 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
             <Link href={userHref} className="truncate hover:underline">
               {row.user.displayName}
             </Link>
-            <p className="truncate text-xs text-muted-foreground" dir="ltr">
+            <p
+              className="truncate text-xs text-muted-foreground w-fit"
+              dir="ltr"
+            >
               {row.user.id}
             </p>
           </div>

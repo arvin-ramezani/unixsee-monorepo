@@ -67,9 +67,7 @@ function CreateServiceForm({
     request.ownerName ?? COMPLEMENTARY_SERVICE_OWNERS[0],
   );
   const [commercialModel, setCommercialModel] =
-    useState<ServiceCommercialModelType>(
-      SERVICE_COMMERCIAL_MODEL.CUSTOM_QUOTE,
-    );
+    useState<ServiceCommercialModelType>(SERVICE_COMMERCIAL_MODEL.CUSTOM_QUOTE);
   const [startDate, setStartDate] = useState("");
   const [agreedAmount, setAgreedAmount] = useState("");
   const [scope, setScope] = useState(request.description);
@@ -98,7 +96,10 @@ function CreateServiceForm({
             </span>
             <div className="min-w-0">
               <p className="font-medium">{request.websiteTitle}</p>
-              <p className="mt-1 truncate text-sm text-muted-foreground" dir="ltr">
+              <p
+                className="mt-1 truncate text-sm text-muted-foreground w-fit"
+                dir="ltr"
+              >
                 {request.websiteDomain}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -113,10 +114,13 @@ function CreateServiceForm({
             className="flex items-start gap-2 rounded-xl border border-accent bg-accent/20 p-3 text-sm text-accent-foreground"
             role="alert"
           >
-            <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <AlertTriangle
+              className="mt-0.5 size-4 shrink-0"
+              aria-hidden="true"
+            />
             <p>
-              برای این وب‌سایت یک سرویس هم‌نوع وجود دارد. پیش از ثبت، سابقه سرویس
-              را بررسی کنید.
+              برای این وب‌سایت یک سرویس هم‌نوع وجود دارد. پیش از ثبت، سابقه
+              سرویس را بررسی کنید.
             </p>
           </div>
         )}
@@ -243,7 +247,8 @@ function CreateServiceForm({
           />
           <p className="text-muted-foreground">
             با ثبت این فرم، درخواست به یک سرویس زمان‌بندی‌شده برای همین وب‌سایت
-            تبدیل می‌شود. این رفتار فعلاً فقط در داده‌های نمایشی صفحه اعمال می‌شود.
+            تبدیل می‌شود. این رفتار فعلاً فقط در داده‌های نمایشی صفحه اعمال
+            می‌شود.
           </p>
         </div>
       </div>

@@ -79,7 +79,7 @@ const USER_IDENTITY_FIELDS = [
     key: "mobile",
     label: "موبایل",
     dir: "ltr" as const,
-    getValue: (user: CustomerUserType) => user.mobile ?? "ثبت نشده",
+    getValue: (user: CustomerUserType) => user.mobile,
     getHint: (user: CustomerUserType) =>
       CONTACT_VERIFICATION_LABELS[user.mobileVerification],
   },
@@ -98,7 +98,8 @@ const USER_IDENTITY_FIELDS = [
   {
     key: "invite",
     label: "وضعیت دعوت‌نامه",
-    getValue: (user: CustomerUserType) => INVITE_STATUS_LABELS[user.inviteStatus],
+    getValue: (user: CustomerUserType) =>
+      INVITE_STATUS_LABELS[user.inviteStatus],
     getHint: (user: CustomerUserType) =>
       user.inviteStatus === INVITE_STATUS.PENDING
         ? "تا تکمیل دعوت توسط مشتری، دسترسی کامل فعال نمی‌شود."
@@ -259,10 +260,7 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
     );
   };
 
-  const handleSecurityAction = (
-    action: SecurityActionType,
-    reason: string,
-  ) => {
+  const handleSecurityAction = (action: SecurityActionType, reason: string) => {
     const result = applySecurityAction({ userId: user.id, action, reason });
     if (!result) return;
 
@@ -321,7 +319,9 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
               <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
                 <p className="text-xs text-muted-foreground">{field.label}</p>
                 <p
-                  className="mt-2 text-sm font-medium break-all"
+                  className={cn("mt-2 text-sm font-medium break-all", {
+                    "w-fit": "dir" in field,
+                  })}
                   dir={"dir" in field ? field.dir : undefined}
                 >
                   {field.getValue(user)}
@@ -425,7 +425,9 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className={cn(mutedSurfaceClassName, "p-4")}>
-            <p className="text-sm text-muted-foreground">وب‌سایت‌های مستأجرها</p>
+            <p className="text-sm text-muted-foreground">
+              وب‌سایت‌های مستأجرها
+            </p>
             {relatedWebsites.length === 0 ? (
               <p className="mt-3 text-sm">
                 وب‌سایتی به مستأجرهای این مشتری تخصیص نیافته است.

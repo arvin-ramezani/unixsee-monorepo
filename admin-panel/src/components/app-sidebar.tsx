@@ -170,15 +170,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarTrigger
-          className={cn("transition-all duration-100", !open ? "w-8 h-8" : "")}
+          aria-label={open ? "بستن منو" : "باز کردن منو"}
+          className={cn(
+            "transition-[width,padding] hidden xl:flex duration-100",
+            open
+              ? "h-10 w-full justify-center px-2.5"
+              : "size-8 shrink-0 justify-center px-0",
+          )}
         >
           {open ? (
-            <ChevronRightIcon className="size-4" />
+            <ChevronRightIcon className="size-4 shrink-0" />
           ) : (
-            <ChevronLeftIcon className="size-4" />
+            <ChevronLeftIcon className="size-4 shrink-0" />
           )}
-          {/* <ChevronRightIcon className="size-4" /> */}
-          {open && "بستن منو"}
+          {open && (
+            <span className="truncate text-sm font-medium">بستن منو</span>
+          )}
         </SidebarTrigger>
 
         {/* <NavUser user={data.user} /> */}

@@ -106,7 +106,10 @@ export function TenantMembershipsSection({
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <p className="font-medium">{tenant.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground" dir="ltr">
+                    <p
+                      className="mt-1 text-xs text-muted-foreground w-fit"
+                      dir="ltr"
+                    >
                       {tenant.id}
                     </p>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -188,7 +191,11 @@ export function TenantMembershipsSection({
                                 aria-label={`نقش ${member.user.displayName}`}
                               >
                                 <SelectValue>
-                                  {MEMBERSHIP_ROLE_LABELS[member.membership.role]}
+                                  {
+                                    MEMBERSHIP_ROLE_LABELS[
+                                      member.membership.role
+                                    ]
+                                  }
                                 </SelectValue>
                               </SelectTrigger>
                               <SelectContent alignItemWithTrigger={false}>

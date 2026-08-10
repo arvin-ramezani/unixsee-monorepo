@@ -185,7 +185,8 @@ export type CustomerUserType = {
   displayName: string;
   email: string | null;
   emailVerification: ContactVerificationType;
-  mobile: string | null;
+  /** Required contact identifier for every customer account. */
+  mobile: string;
   mobileVerification: ContactVerificationType;
   locale: CustomerLocaleType;
   accountState: AccountStateType;
@@ -304,8 +305,8 @@ export const CUSTOMER_USERS: CustomerUserType[] = [
     displayName: "نگار کریمی",
     email: "negar.karimi@alborzsport.ir",
     emailVerification: CONTACT_VERIFICATION.VERIFIED,
-    mobile: null,
-    mobileVerification: CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile: "09123334455",
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: CUSTOMER_LOCALE.FA_IR,
     accountState: ACCOUNT_STATE.ACTIVE,
     origin: ACCOUNT_ORIGIN.PLAN_REQUEST,
@@ -372,8 +373,8 @@ export const CUSTOMER_USERS: CustomerUserType[] = [
     displayName: "الهام نادری",
     email: "elham.naderi@example.com",
     emailVerification: CONTACT_VERIFICATION.PENDING,
-    mobile: null,
-    mobileVerification: CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile: "09126667788",
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: CUSTOMER_LOCALE.FA_IR,
     accountState: ACCOUNT_STATE.PENDING_VERIFICATION,
     origin: ACCOUNT_ORIGIN.ADMIN_CREATE,

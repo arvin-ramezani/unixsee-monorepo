@@ -263,16 +263,16 @@ function SidebarTrigger({
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="outline"
-      // size="icon-sm"
-      className={cn("text-foreground", className)}
+      className={cn(
+        "gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        className,
+      )}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
       }}
       {...props}
     >
-      {/* <PanelLeftIcon className="cn-rtl-flip" /> */}
-      <span className="sr-only cn-rtl-flip">Toggle Sidebar</span>
       {children}
     </Button>
   );

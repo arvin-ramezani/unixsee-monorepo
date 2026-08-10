@@ -243,7 +243,9 @@ export function PlanRequestsView({
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card hover:bg-muted/30",
                 isSelected && !item.emphasis && "ring-2 ring-primary/30",
-                isSelected && item.emphasis && "ring-2 ring-primary-foreground/40",
+                isSelected &&
+                  item.emphasis &&
+                  "ring-2 ring-primary-foreground/40",
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -288,7 +290,7 @@ export function PlanRequestsView({
         })}
       </section>
 
-      {statusMessage ? (
+      {statusMessage && (
         <p
           className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm"
           role="status"
@@ -296,7 +298,7 @@ export function PlanRequestsView({
         >
           {statusMessage}
         </p>
-      ) : null}
+      )}
 
       <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -330,9 +332,13 @@ export function PlanRequestsView({
               }}
             >
               <SelectTrigger aria-label="فیلتر وضعیت">
-                <SelectValue />
+                <SelectValue>
+                  {STATUS_FILTER_OPTIONS.find(
+                    (option) => option.value === statusFilter,
+                  )?.label ?? "همه وضعیت‌ها"}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent alignItemWithTrigger={false}>
                 {STATUS_FILTER_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -347,9 +353,13 @@ export function PlanRequestsView({
               }}
             >
               <SelectTrigger aria-label="فیلتر پلن">
-                <SelectValue />
+                <SelectValue>
+                  {PLAN_FILTER_OPTIONS.find(
+                    (option) => option.value === planFilter,
+                  )?.label ?? "همه پلن‌ها"}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent alignItemWithTrigger={false}>
                 {PLAN_FILTER_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     <span dir="ltr">{option.label}</span>
@@ -366,10 +376,14 @@ export function PlanRequestsView({
               <TableRow>
                 <TableHead className="px-4 py-3 text-right">پلن</TableHead>
                 <TableHead className="px-4 py-3 text-right">تماس</TableHead>
-                <TableHead className="px-4 py-3 text-right">کاربر / مستأجر</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  کاربر / مستأجر
+                </TableHead>
                 <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
                 <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
-                <TableHead className="px-4 py-3 text-right">اقدام بعدی</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  اقدام بعدی
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -408,24 +422,32 @@ export function PlanRequestsView({
                       }}
                     >
                       <TableCell className="px-4 py-3">
-                        <div className="font-medium" dir="ltr">
+                        <div className="font-medium w-fit" dir="ltr">
                           {request.chosenPlanName}
                         </div>
-                        <div className="text-xs text-muted-foreground" dir="ltr">
+                        <div
+                          className="text-xs text-muted-foreground w-fit"
+                          dir="ltr"
+                        >
                           {request.id}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         <div>{request.contactName}</div>
-                        <div className="text-xs text-muted-foreground" dir="ltr">
+                        <div
+                          className="text-xs text-muted-foreground w-fit"
+                          dir="ltr"
+                        >
                           {request.contactEmail ?? request.contactMobile ?? "—"}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         {user ? user.displayName : "متصل نشده"}
                       </TableCell>
-                      <TableCell className="px-4 py-3" dir="ltr">
-                        {website?.domain ?? request.domainHint ?? "—"}
+                      <TableCell className="px-4 py-3">
+                        <p className="w-fit" dir="ltr">
+                          {website?.domain ?? request.domainHint ?? "—"}
+                        </p>
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         <PlanRequestStatusBadge status={request.status} />
