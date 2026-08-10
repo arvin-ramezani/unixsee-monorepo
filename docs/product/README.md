@@ -28,6 +28,12 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`notes/onboarding-plan-request-user-website.md`](./notes/onboarding-plan-request-user-website.md) | Plan request ↔ user ↔ website linking |
 | [`notes/phase-1-public-entry-channels.md`](./notes/phase-1-public-entry-channels.md) | Public entry channels |
 
+## Diagrams
+
+| File | Topic |
+|---|---|
+| [`diagrams/user-flows.drawio`](./diagrams/user-flows.drawio) | Guest consultant, plan/website request, complementary-service request flows |
+
 ## Admin UX flows
 
 | Doc | Flow |
