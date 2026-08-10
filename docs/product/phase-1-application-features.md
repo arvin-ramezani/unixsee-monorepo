@@ -4,7 +4,7 @@
 >
 > **Owner:** Product and architecture groups
 >
-> **Last verified:** 2026-08-07
+> **Last verified:** 2026-08-09
 
 ## 1. Purpose
 
@@ -46,48 +46,77 @@ to the managed-infrastructure offering.
 
 ## 3. Phase goals
 
-Phase 1 must enable these complete outcomes:
+Phase 1 must enable these complete outcomes across its delivery waves:
 
 - An authorized customer can access only their tenant's account and resources.
 - Staff can receive a plan request, enable the chosen plan on a website for an
   existing customer, and assign managed websites to the correct customer.
-- Customers can see website identity, service state, monitoring status, alerts,
-  usage, and relevant operational history.
-- Authorized users can request safe website operations and see their progress
-  and result.
+- Staff can enroll agents from servers administration; agents discover websites
+  and keep admin inventory (and assigned owner dashboards) up to date.
+- Customers created by admin remain unverified until they sign in with the
+  recorded phone or email and pass OTP; public signup creates customer accounts
+  that follow the same verification rules where applicable.
 - Customers and staff can complete a support-ticket workflow with messages and
   attachments.
 - Customers can request a complementary service; staff can scope, quote,
   activate, deliver, track, renew, complete, or cancel it.
-- Staff can publish customer-facing operational notifications.
-- Customer-visible activities and staff-only audit records provide a reliable
-  history of important events.
+- Later in Phase 1, customers can see website identity, service state,
+  monitoring status, alerts, usage, and relevant operational history.
+- Later in Phase 1, authorized users can request safe website operations and
+  see their progress and result.
+- Later in Phase 1, staff can publish Unixsee News notifications and
+  website-specific اعلان‌ها popups; customer-visible activities (including
+  resolved operational incidents) and staff-only audit records provide history.
 - Customers can manage their profile, verification, password, sessions, and
   optional two-factor authentication.
 - Persian RTL and English LTR experiences support the same workflows.
 
 ## 4. Phase boundaries
 
-### 4.1 Included
+Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
+§4.3 lists work that stays out of Phase 1. Delivery sequencing detail lives in
+[`notes/phase-1-delivery-waves.md`](./notes/phase-1-delivery-waves.md).
 
-- Authentication, sessions, customer tenancy, administrator authorization, and
-  account security.
-- Customer and tenant administration.
-- Plan catalog visibility, plan requests, plan enablement on websites, and
-  service activation.
-- Website, server, service-assignment, and agent-assignment administration.
-- Website monitoring summaries, live status, alerts, and safe operational
-  actions.
-- Customer dashboard aggregation.
+### 4.1 First-wave Phase 1 (first implementation)
+
+- Authentication and OTP-based sign-in for customers.
+- Customer and tenant administration in the admin panel.
+- User origins: public signup from the web app, or admin create. Admin-created
+  accounts start **unverified** until the customer signs in with the
+  admin-entered phone or email and passes OTP, after which the account is
+  marked verified.
+- Plan catalog visibility, plan requests, and staff plan enablement.
+- Website administration in the admin panel.
+- Server administration in the admin panel, including agent enrollment and
+  registration. Running agents discover websites and update website inventory
+  for staff and, after assignment, for the owning customer dashboard.
 - Tickets, conversations, attachments, assignment, and status management.
 - Complementary-service requests, commercial review, assignments, usage,
   progress, and history.
-- Notifications, activities, audit history, and application search.
-- Customer profile and verification workflows.
-- Renewal visibility and staff-managed commercial records needed by active
-  plans and complementary services.
+- Staff-managed commercial records needed by active plans and complementary
+  services.
 
-### 4.2 Deferred
+### 4.2 Later Phase 1 (still in scope, implement after first wave)
+
+- Customer-visible **activities**, including operational incident outcomes that
+  server teams resolve (for example high traffic detected and resolved). This
+  needs a richer incident/event payload from server operations before full
+  delivery.
+- **اعلان‌ها (website notices):** admin-authored popups targeted at a specific
+  website (for example a broken plugin causing slowdown with a required
+  customer action). This is **not** the customer Notifications/News feature.
+- **Notifications (News):** Unixsee news and platform announcements in the
+  customer dashboard.
+- Administrator **Settings**.
+- Broader website monitoring summaries, live status, alerts, and safe
+  operational actions beyond the inventory/assignment path already required in
+  the first wave.
+- Customer dashboard aggregation that depends on later activity and notice
+  feeds.
+- Application search and staff-only audit history surfaces that are not yet
+  required for the first-wave queues.
+
+### 4.3 Deferred beyond Phase 1
 
 - Self-service payment checkout, payment methods, refunds, automated dunning,
   and complete invoice accounting.
@@ -100,8 +129,9 @@ Phase 1 must enable these complete outcomes:
 - Microservice decomposition and infrastructure implementation inside the
   frontend.
 
-Deferred features may appear as unavailable or coming-soon destinations, but
-they must not imply that a transaction or operation is currently supported.
+Later Phase 1 and deferred features may appear as unavailable or coming-soon
+destinations, but they must not imply that a transaction or operation is
+currently supported.
 
 ## 5. Actors and access model
 
@@ -129,9 +159,11 @@ later, but Phase 1 needs permissions covering:
 - Monitoring and operational actions.
 - Ticket support and assignment.
 - Complementary-service commercial review and delivery.
-- Notification publication.
+- News notification publication and website-notice (اعلان‌ها) publication
+  (later Phase 1).
 - Security-sensitive account assistance.
 - Audit review and read-only oversight.
+- Administrator settings (later Phase 1).
 
 The UI may hide or disable unavailable actions for clarity, but NestJS must
 authorize every protected read and mutation. Sensitive actions must never rely
@@ -205,20 +237,23 @@ stale values and recover through refetch or reconnection.
 
 | Capability | Customer experience | Administrator experience | Phase priority |
 | --- | --- | --- | --- |
-| Access and security | Sign in, sessions, verification, 2FA | Account support and access control | Foundation |
-| Dashboard overview | Tenant summary | Cross-customer operational summary | Core |
-| Customers and tenants | Profile and membership visibility | Customer, tenant, and membership management | Foundation |
-| Plans and onboarding | Browse and submit a plan request | Enable chosen plan on a website for an existing customer | Core |
-| Websites | List and detailed service view | Create, assign, configure, suspend, and retire | Core |
-| Monitoring and alerts | Health, traffic, checks, warnings | Fleet monitoring and alert handling | Core |
-| Operational actions | Request allowed actions | Dispatch, observe, retry, and audit | Core |
-| Tickets | Create, converse, and track | Queue, assign, reply, and resolve | Core |
-| Complementary services | Request and track delivery | Scope, quote, activate, deliver, and renew | Core |
-| Activities | Customer-visible timeline | Create permitted manual events and inspect history | Core |
-| Notifications | Read announcements | Compose, target, schedule, and publish | Core |
-| Search | Find tenant resources and destinations | Find operational and business records | Supporting |
-| Profile | Manage identity and preferences | Assist with account state | Core |
-| Billing projection | See renewal and commercial state | Maintain agreed commercial records | Limited |
+| Access and security | Sign in, OTP verification, sessions | Account support and access control | First-wave |
+| Customers and tenants | Profile and membership visibility | Create/find users and tenants; verification state | First-wave |
+| Plans and onboarding | Browse and submit a plan request | Review and enable chosen plan on a website | First-wave |
+| Websites | Owner list/detail after assignment | Create, assign, configure; inventory from discovery | First-wave |
+| Servers and agents | Indirect via owned websites | Enroll agents, review discovery, assign ownership | First-wave |
+| Tickets | Create, converse, and track | Queue, assign, reply, and resolve | First-wave |
+| Complementary services | Request and track delivery | Scope, quote, activate, deliver, and renew | First-wave |
+| Dashboard overview | Tenant summary | Cross-customer operational summary | Later Phase 1 / expands with feeds |
+| Monitoring and alerts | Health, traffic, checks, warnings | Fleet monitoring and alert handling | Later Phase 1 (beyond inventory) |
+| Operational actions | Request allowed actions | Dispatch, observe, retry, and audit | Later Phase 1 |
+| Activities | Customer-visible timeline of ops outcomes | Inspect/create permitted events; log resolved incidents | Later Phase 1 |
+| Website notices (اعلان‌ها) | Website-targeted popup/notice | Compose and target a specific website | Later Phase 1 |
+| Notifications (News) | Unixsee news / platform announcements | Compose, target, schedule, and publish news | Later Phase 1 |
+| Admin settings | — | Staff configuration and panel settings | Later Phase 1 |
+| Search | Find tenant resources and destinations | Find operational and business records | Later Phase 1 / supporting |
+| Profile | Manage identity and preferences | Assist with account state | First-wave (verification); expands later |
+| Billing projection | See renewal and commercial state | Maintain agreed commercial records | Limited / first-wave where needed for plans |
 | Domains | Coming-soon state only | No Phase 1 workflow | Deferred |
 
 ## 8. Access, identity, and sessions
@@ -228,6 +263,7 @@ stale values and recover through refetch or reconnection.
 Customers need to:
 
 - Sign in using the approved identifier and credential method.
+- Complete OTP validation for sign-in and verification challenges.
 - Complete a second-factor challenge when it is enabled.
 - See and revoke active sessions or devices.
 - Sign out from the current session or all sessions.
@@ -237,6 +273,20 @@ Customers need to:
 - Receive understandable, non-enumerating errors for invalid credentials,
   locked accounts, expired challenges, and rate limits.
 
+### 8.1.1 Account origins and verification
+
+Customer accounts enter the system through:
+
+1. **Public signup** on the web app, when that channel is enabled.
+2. **Admin create** in the administrator panel (or inline during discovery
+   assignment), using the contact details staff enter.
+
+Admin-created accounts are **not verified** at create time. Saving a phone or
+email in the admin form does not verify that contact. The customer becomes
+verified after they sign in with the same admin-entered phone or email and
+successfully pass OTP validation. Phase 1 does not require a separate invite
+token for this verification path.
+
 ### 8.2 Administrator behavior
 
 Authorized staff need to:
@@ -244,6 +294,8 @@ Authorized staff need to:
 - Find an account by safe customer identifiers.
 - See whether an account is active, suspended, locked, verified, or protected
   by two-factor authentication.
+- Create a customer with contact details that remain unverified until OTP
+  succeeds.
 - Suspend or restore access with a required reason.
 - Revoke sessions after a security event.
 - Start a controlled verification or two-factor recovery process.
@@ -258,6 +310,8 @@ separate audited security design is approved.
 - A user cannot access protected dashboard data without an authorized session.
 - Session revocation prevents further refresh and protected requests.
 - Expired and reused verification challenges are rejected.
+- Admin create leaves the account unverified until OTP succeeds for the
+  recorded phone or email.
 - Password change revokes the sessions required by the approved security
   policy.
 - Customer and staff security events create audit records.
@@ -293,7 +347,7 @@ Staff need to:
 - Add, invite, change, or remove members.
 - Assign the tenant owner with safeguards against leaving the tenant ownerless.
 - Review the tenant's websites, plan requests, tickets, complementary services,
-  notifications, and activities from one context.
+  News notifications, website notices, and activities from one context.
 - Record internal notes without exposing them to customers.
 - Suspend a tenant while preserving records and audit history.
 - Merge or transfer ownership only through a separately confirmed,
@@ -465,7 +519,7 @@ healthy or zero values.
 
 Staff need to:
 
-- Create a website during onboarding.
+- Create a website during onboarding, or receive it from agent discovery.
 - Assign it to exactly one tenant.
 - Assign a plan, server, and operational agent or integration.
 - Maintain safe metadata and approved management links.
@@ -475,14 +529,22 @@ Staff need to:
 - Transfer a website only through a confirmed and audited process.
 - Retire records without erasing operational history.
 
+Discovered websites update the admin websites inventory. After ownership
+assignment, the owning customer can see the website on their dashboard.
+
 ### 12.4 Server and agent associations
 
 The administrator UI exposes only application-level management:
 
 - Server identity, location, capacity summary, and lifecycle state.
+- Agent enrollment and registration from the servers surface.
 - Agent identity, last communication, version, and health.
+- Website discovery reported by a running agent on a managed server.
 - Website-to-server and website-to-agent assignments.
 - Configuration validation and communication status.
+
+Agents do not grant plan entitlement or customer visibility by themselves.
+Staff assignment remains the gate from discovery to owned customer website.
 
 Secret values and direct database or infrastructure consoles are outside the
 browser application.
@@ -884,17 +946,27 @@ It must clearly label estimated, quoted, agreed, and realized values.
 
 ## 17. Activities and audit records
 
+> **Delivery:** Later Phase 1. First-wave queues do not depend on a complete
+> activities feed. Incident-resolution activities need richer operational data
+> from the server team before full delivery.
+
 ### 17.1 Customer activities
 
-Customer activities form a tenant-visible operational timeline. Examples:
+Customer activities form a tenant-visible operational timeline on the website
+owner dashboard. Examples:
 
 - Website activated.
 - Backup completed or restored.
 - Cache cleared.
 - Important monitoring event resolved.
+- High traffic detected and later resolved by the server team.
 - Ticket resolved.
 - Complementary service activated, renewed, or completed.
 - Approved onboarding milestone reached.
+
+Operational incident outcomes that Unixsee server teams resolve should appear
+as customer-visible activities after resolution, with enough context for the
+owner to understand what happened without exposing internal tooling detail.
 
 Each activity includes a stable ID, title, time, source or actor label, event
 type, optional website/service reference, visibility, and safe metadata.
@@ -921,29 +993,42 @@ permission-controlled.
 - Internal audit metadata never leaks into customer activity payloads.
 - Automated events are idempotent.
 - Manual and automated sources are distinguishable.
+- Resolved operational incidents that are approved for customer visibility
+  appear on the owner timeline without implying open incidents are editable by
+  the customer.
 - Audit records are immutable to ordinary administrator roles.
 
-## 18. Notifications
+## 18. Notifications and website notices
 
-### 18.1 Customer experience
+Phase 1 separates two customer-facing communication products. Do not collapse
+them into one model or one admin queue.
 
-Notifications communicate platform, service, maintenance, security, or
-customer-relevant operational information. Customers need:
+| Product | Persian label (when used) | Purpose | Delivery |
+| --- | --- | --- | --- |
+| Notifications (News) | — / اخبار Unixsee | Platform news and Unixsee announcements in the customer dashboard | Later Phase 1 |
+| Website notices | اعلان‌ها | Admin-authored popup/notice for a **specific website** | Later Phase 1 |
 
-- A notification list and detail view.
+### 18.1 Notifications (News)
+
+Notifications communicate Unixsee news and platform, service, maintenance,
+security, or customer-relevant announcements in the customer dashboard. They
+are **not** the website-specific اعلان‌ها popups described in §18.4.
+
+Customers need:
+
+- A notification list and detail view that behaves like a news feed.
 - Read/unread state that works across authorized devices.
 - Publication time and optional expiry.
 - Severity or category when it changes urgency.
 - Safe links to relevant dashboard destinations.
 
-### 18.2 Administrator experience
+### 18.2 Administrator experience for News
 
 Authorized staff need to:
 
 - Draft and preview Persian and English variants.
 - Select category and importance.
-- Target all customers, selected tenants, affected websites, plans, or other
-  approved segments.
+- Target all customers, selected tenants, plans, or other approved segments.
 - Schedule, publish, expire, or withdraw.
 - Preview the final RTL and LTR rendering.
 - See delivery and read summaries where supported.
@@ -952,7 +1037,7 @@ Target selection must be resolved and authorized by the backend. The editor
 must warn about missing locale variants, empty audiences, invalid links, and
 high-impact broadcasts.
 
-### 18.3 Acceptance criteria
+### 18.3 News acceptance criteria
 
 - Drafts are never visible to customers.
 - Customers outside the resolved audience cannot access a notification by ID.
@@ -960,6 +1045,38 @@ high-impact broadcasts.
 - Read state is user-specific and server-backed when cross-device behavior is
   promised.
 - Publishing, audience changes, and withdrawal are audited.
+- News notifications are not used as substitutes for website-specific اعلان‌ها.
+
+### 18.4 Website notices (اعلان‌ها)
+
+اعلان‌ها are popup or blocking notices created by staff for a **specific
+website**. Example: “Plugin X is broken and is slowing your site. Remove it to
+fix the problem.”
+
+They are operational, website-scoped messages for the website owner dashboard,
+not a general Unixsee news feed.
+
+Staff need to:
+
+- Select exactly one website (and therefore its owning tenant context).
+- Compose Persian and English copy where required.
+- Choose severity and whether the notice is dismissible or must remain visible
+  until resolved/withdrawn.
+- Publish, update, expire, or withdraw the notice.
+- See whether owners have acknowledged or dismissed it when that policy exists.
+
+Customers need to:
+
+- See active notices for websites they are authorized to view.
+- Understand the required action without navigating an unrelated news list.
+- Dismiss only when the notice policy allows dismissal.
+
+### 18.5 Website-notice acceptance criteria
+
+- A notice targeted at website A is never shown for website B.
+- Customers without access to the website cannot open the notice by ID.
+- اعلان‌ها and News remain separately labeled in admin and customer IA.
+- Publish, withdraw, and targeting changes are audited.
 
 ## 19. Search
 
@@ -1070,19 +1187,22 @@ Recommended primary areas:
 - Overview.
 - Customers and tenants.
 - Plan requests and onboarding.
-- Websites and infrastructure assignments.
-- Monitoring and alerts.
-- Operational actions.
+- Websites.
+- Servers, agents, and discovery assignment.
 - Tickets.
 - Complementary-service requests and assignments.
-- Notifications.
-- Activities and audit.
+- Monitoring and alerts (later Phase 1 expansion).
+- Operational actions (later Phase 1).
+- Notifications (News) (later Phase 1).
+- Website notices / اعلان‌ها (later Phase 1).
+- Activities and audit (later Phase 1).
+- Settings (later Phase 1).
 - Staff access, when the role design is approved.
 
 Each entity detail should provide contextual links to related records. For
 example, a tenant detail should connect to websites, requests, tickets, and
-services; a website detail should connect to alerts, actions, activities, and
-tickets.
+services; a website detail should connect to alerts, actions, activities,
+اعلان‌ها, and tickets.
 
 Administrative mutations need:
 
@@ -1155,6 +1275,12 @@ Phase 1 is functionally complete only when:
 - The complete plan-request-to-active-website workflow works for the correct
   tenant.
 - Tickets and complementary services work end to end for customers and staff.
+- First-wave admin surfaces for websites, servers/agents, users, plan requests,
+  tickets, and complementary services can produce and maintain the records
+  those flows require.
+- Later Phase 1 surfaces (activities, اعلان‌ها, News notifications, admin
+  Settings) remain honestly unavailable until delivered and do not falsely
+  appear operational.
 - Live status and action updates recover safely from disconnects.
 - No customer can access another tenant's records by changing IDs, search
   terms, attachment URLs, or realtime subscriptions.
@@ -1176,7 +1302,10 @@ The following choices must be approved in feature follow-ups or ADRs:
 - Complementary-service quotation acceptance and commercial-record policy.
 - Billing and payment integration, including whether any Phase 1 payment action
   exists.
-- Notification audience rules and read-receipt requirements.
+- Notification audience rules and read-receipt requirements for News.
+- Website-notice (اعلان‌ها) severity, dismissibility, and acknowledgement
+  policy.
+- Activity payload contract for server-team incident resolutions.
 - Alert severities, visibility rules, and service-level targets.
 - Attachment storage, scanning, retention, and download policy.
 - Metrics retention and aggregation.

@@ -133,7 +133,7 @@ No staff interviews, support tickets, or analytics were available. E-001–E-004
 | A-001 | Phase 1 admin “user” work primarily means **customer user accounts** and their **tenant memberships**, not staff RBAC configuration | Phase 1 §9 and nav label “کاربران” | Medium if staff-user admin is also expected here | Scope of `/users` | Product IA decision | Unvalidated |
 | A-002 | Creating a missing owner during discovery assignment creates both a customer user and a tenant with that user as owner when no eligible tenant exists | Inference from E-003 and onboarding needs | High if orgs already exist without users or vice versa | Inline create shape | Ops/product walkthrough | Unvalidated |
 | A-003 | Minimum create fields for continuing assignment are display name, primary contact identifier, locale preference, and tenant display name | Inference from Phase 1 profile/tenant fields | Medium | Inline create form | Prototype with ops | Unvalidated |
-| A-004 | Staff-created accounts start in a controlled unverified/pending-verification state rather than fully verified | Inference from §8 and §20 verification rules | High if wrong | Post-create security state | Security decision | Unvalidated |
+| A-004 | Staff-created accounts start unverified; the customer becomes verified after signing in with the admin-entered phone or email and passing OTP (no invite token required for this Phase 1 path) | Phase 1 §8.1.1 (2026-08-09) | Low once implemented | Post-create security state | Auth/product confirmation | Accepted for this phase |
 | A-005 | Search across email/mobile/name/tenant name is capability-scoped and non-enumerating beyond authorized results | §8.2 / §19.2 | Medium | Find-or-create UX | Security review | Unvalidated |
 | A-006 | Current fixture conflation of user IDs as tenants is a prototype shortcut, not the target domain model | E-010 + E-003 | High if retained | Data model and labels | Architecture/product | Unvalidated |
 | A-007 | Public signup, when enabled, creates a customer user (and possibly tenant) that admin must be able to find during plan-request linking and website assignment | E-012 | High if signup creates only a lead with no account | Find-before-create | Auth/product decision | Unvalidated |
@@ -146,7 +146,7 @@ No staff interviews, support tickets, or analytics were available. E-001–E-004
 | U-002 | Whether staff may create a fully usable credentialed account in-panel, or only invite/bootstrap with customer-set password | Create vs invite UX and notification | Inline create completion | Security/product | Critical |
 | U-003 | Required unique identifiers for duplicate detection (email, mobile, national id, external CRM id) | Duplicate customers and failed create | Find-or-create rules | Product/security | Critical |
 | U-004 | Whether a personal customer is always 1 user = 1 tenant in Phase 1, or multi-member tenants are common at create time | Inline create complexity | Create tenant defaults | Ops research | High |
-| U-005 | Verification bootstrap after staff create (send email/SMS challenge now, later, or never automatically) | Account security and customer readiness | Post-create notifications | Security/ops | High |
+| U-005 | ~~Verification bootstrap after staff create~~ **Resolved for Phase 1 thin path:** no invite token; customer signs in with admin-entered phone/email and passes OTP to become verified | Was blocking create UX | Closed by Phase 1 §8.1.1 | Done | Closed |
 | U-006 | Concurrent create of the same contact by two staff members | Duplicate ownership risk | Idempotency/conflict UX | Backend design | High |
 | U-007 | Retention and expiry of abandoned inline-create drafts inside assignment | Lost work vs stale PII | Save/resume policy | Product/security | Medium |
 | U-008 | Whether discovery-assignment inline create is the only create-customer contract besides standalone `/users` create | Duplication or inconsistent rules | Shared create design | Product/engineering | Medium |
@@ -393,9 +393,9 @@ flowchart TD
 
 | Condition/result | Case 1 | Case 2 | Case 3 |
 |---|---:|---:|---|
-| Policy allows immediate credentialed create | Yes | No | Yes |
+| Phase 1 thin path | Yes | Legacy invite path (out of thin path) | Duplicate contact |
 | Contact identifier unique | Yes | Yes | No |
-| Result | Create pending/unverified account per A-004/U-002 | Create invite/bootstrap record and wait for customer completion before full access | Block create; open existing authorized match |
+| Result | Create unverified account; customer verifies later via OTP on admin-entered phone/email (A-004 / Phase 1 §8.1.1) | Invite/bootstrap only if a later policy reintroduces it | Block create; open existing authorized match |
 
 ### Business-rule register
 
@@ -403,7 +403,7 @@ flowchart TD
 - **BR-002 — Distinguish user and tenant:** Admin must not treat login identity and owning organization as the same object, even if Phase 1 often creates them together. Source: E-003, A-006. Status: Proposed correction to current fixtures.
 - **BR-003 — Minimum create completeness:** Create requires the approved minimum identity and tenant/owner fields before the record can be used for website ownership. Source: A-003, E-004. Status: Proposed.
 - **BR-004 — Duplicate prevention:** Create must check approved unique identifiers and surface authorized existing matches before a second customer is created. Source: U-003. Status: Proposed.
-- **BR-005 — Verification honesty:** Staff create does not mark contacts verified merely because the admin form saved. Source: Phase 1 §20. Status: Confirmed.
+- **BR-005 — Verification honesty:** Staff create does not mark contacts verified merely because the admin form saved. Verification happens when the customer signs in with that phone/email and passes OTP. Source: Phase 1 §8.1.1 / §20. Status: Confirmed.
 - **BR-006 — Membership access:** Users receive website access through tenant membership, not by website id alone. Source: E-003. Status: Confirmed.
 - **BR-007 — Final-owner safeguard:** The last owner cannot be removed without assigning another owner or an approved close process. Source: E-001. Status: Confirmed.
 - **BR-008 — Reasoned security actions:** Suspend/restore and equivalent high-impact account actions require a reason and audit. Source: E-002. Status: Confirmed.
@@ -611,7 +611,7 @@ Exclude raw contact values, free-text notes, and secrets unless separately appro
 | ID | Dependency | Type | Owner | Required by | Failure effect | Fallback |
 |---|---|---|---|---|---|---|
 | D-001 | Capability bundles for user/tenant/assignment | Policy | Security/product | Permission UX | Unsafe or blocked flows | Prototype with capability placeholders |
-| D-002 | Create vs invite/bootstrap policy | Policy | Security/product | Create completion | Incorrect account security | Disable credential create; use invite-only stub |
+| D-002 | Create completion / verification path | Policy | Security/product | Create completion | Incorrect account security | Phase 1 thin path: unverified create + OTP verify; no invite token |
 | D-003 | Unique-identifier and duplicate policy | Policy | Product/security | Find-or-create | Duplicate tenants/users | Manual ops review queue |
 | D-004 | NestJS user/tenant/membership APIs | System | Backend | Real integration | UI remains fixture-only | Static prototype states |
 | D-005 | Shared create contract between `/users` and discovery-assignment inline create | Design | Product/engineering | Consistency | Divergent create paths | Document one shared component intent |

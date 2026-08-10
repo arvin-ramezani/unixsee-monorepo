@@ -27,6 +27,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`notes/onboarding-paths-and-handoffs.md`](./notes/onboarding-paths-and-handoffs.md) | Onboarding path handoffs |
 | [`notes/onboarding-plan-request-user-website.md`](./notes/onboarding-plan-request-user-website.md) | Plan request ↔ user ↔ website linking |
 | [`notes/phase-1-public-entry-channels.md`](./notes/phase-1-public-entry-channels.md) | Public entry channels |
+| [`notes/phase-1-delivery-waves.md`](./notes/phase-1-delivery-waves.md) | First-wave vs later Phase 1 delivery |
 
 ## Diagrams
 
