@@ -42,5 +42,6 @@ dependency.
 
 ## Related
 
+- Git / PR workflow: [`git-and-pr-workflow.md`](./git-and-pr-workflow.md)
 - Documentation standards: [`documentation.md`](./documentation.md)
 - UI-only phase: [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)

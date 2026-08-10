@@ -2,15 +2,20 @@
 
 ## Current workflow
 
-This monorepo is documentation-first. Prefer improving canonical docs before
-scaffolding application code unless you are explicitly starting an app.
+Use the Git/GitHub workflow in
+[`docs/quality/git-and-pr-workflow.md`](./docs/quality/git-and-pr-workflow.md):
 
-1. Read [`docs/README.md`](./docs/README.md) and the architecture overview.
-2. Find the owning folder in [`docs/architecture/monorepo.md`](./docs/architecture/monorepo.md).
-3. Update or add the correct doc type (see
-   [`docs/quality/documentation.md`](./docs/quality/documentation.md)).
-4. Keep Cursor rules and `AGENTS.md` as thin pointers — do not duplicate long
-   product/UX text there.
+1. Branch from `main` (`feat/…`, `fix/…`, `docs/…`, …).
+2. Plan the change against monorepo docs and owning surface.
+3. Commit locally after build, debug, and test steps.
+4. Run in-editor `/review-bugbot` (and `/review-security` when relevant).
+5. Push and open a PR, then **explicitly** trigger GitHub Bugbot with
+   `bugbot run` or `@cursor review` (it does not run on PR open/push).
+6. Fix findings, re-trigger Bugbot if the diff changed, then short human review.
+7. Squash-merge to `main`.
+
+Also read [`docs/README.md`](./docs/README.md) and the architecture overview
+before structural or product changes.
 
 ## Where changes go
 
@@ -20,8 +25,8 @@ scaffolding application code unless you are explicitly starting an app.
 | Admin UX journey | `docs/product/ux-flows/` |
 | Structural / stack decision | ADR under `docs/architecture/decisions/` |
 | Frontend conventions | `docs/frontend/` |
-| Admin UI code (when scaffolded) | `admin-panel/` |
-| Customer / public UI code | `client/` |
+| Admin UI code | `admin-panel/` (+ app-scoped `admin-panel/docs/` only) |
+| Customer / public UI code | `client/` (+ app-scoped `client/docs/` only) |
 | API / business rules | `backend/` |
 | Edge agent | `agent/` |
 
@@ -41,11 +46,13 @@ calls from admin or client apps. See
 ## Dependencies
 
 Do not add dependencies unless required. Prefer existing dependencies and
-native platform capabilities once apps are scaffolded.
+native platform capabilities.
 
 ## Documentation quality
 
 - Prefer relative links within `docs/`.
-- Mark stubs and unimplemented surfaces clearly.
-- Preserve document-control tables and confidence summaries in UX flow specs.
+- Keep Cursor rules and `AGENTS.md` as thin pointers — do not duplicate long
+  product/UX text there.
+- Put lasting product/architecture detail in monorepo `docs/`, not only inside
+  an app folder.
 - Use ADRs for durable structural decisions, not for routine features.

@@ -14,6 +14,7 @@ and engineering conventions.
 | Work on NestJS | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) |
 | Work on the VPS agent | [`agent/README.md`](./agent/README.md) + [`product/notes/servers-agent-data-flow.md`](./product/notes/servers-agent-data-flow.md) |
 | Change product behavior | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md) |
+| Git / PR / Cursor review workflow | [`quality/git-and-pr-workflow.md`](./quality/git-and-pr-workflow.md) |
 | Record a structural decision | [`architecture/decisions/`](./architecture/decisions/) |
 
 ## Map
