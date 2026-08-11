@@ -127,7 +127,7 @@ export function ProblemSectionCard({
           {/* <div className="relative h-full w-full lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]"> */}
           <div className="relative aspect-video h-full w-full lg:m-auto lg:h-auto lg:w-full">
             <video
-              src="/videos/unixsee-team/unixsee-team-1.mp4"
+              src="/videos/unixsee-team/new/2.mp4"
               className="absolute inset-0 h-full w-full object-contain"
               playsInline
               autoPlay
