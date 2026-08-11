@@ -478,6 +478,9 @@ Do not log raw phone, email, OTP, passwords, or tokens.
 ## Related
 
 - UI specification: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md)
+- Planned Nest session + data fetching (design only; ADR 0003 still blocks wiring):
+  [`../../frontend/client-data-fetching.md`](../../frontend/client-data-fetching.md) and
+  [`../../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
 - Phase 1: [`../phase-1-application-features.md`](../phase-1-application-features.md) §8
 - Admin consumer: [`admin-users.md`](./admin-users.md)
 - UI-only phase: [`../../architecture/decisions/0003-ui-only-phase-boundaries.md`](../../architecture/decisions/0003-ui-only-phase-boundaries.md)

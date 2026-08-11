@@ -44,6 +44,9 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 - Set explicit caching behavior rather than relying on accidental framework defaults.
 - Use parallel data loading when requests are independent and streaming when it materially improves the experience.
 - Provide stable loading, empty, permission-denied, unavailable, and error states.
+- Planned hybrid auth session + Nest fetch conventions (blocked by ADR 0003 until superseded):
+  [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md) and
+  [`../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md).
 
 ## Mutations and Forms
 
@@ -72,5 +75,6 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 ## Related
 
 - Shared monorepo Next.js rules: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md)
+- Client data fetching (planned): [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md)
 - Agent skills: [`.agents/skills/nextjs-app-router`](../../.agents/skills/nextjs-app-router/SKILL.md),
   [`.agents/skills/react-19`](../../.agents/skills/react-19/SKILL.md)

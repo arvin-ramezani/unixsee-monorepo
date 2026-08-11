@@ -14,6 +14,9 @@ Before making changes, read in this order as relevant to the task:
    - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md) and
      [`docs/frontend/nextjs.md`](./docs/frontend/nextjs.md) (version-matched
      Next.js docs under each app’s `node_modules/next/dist/docs/`)
+   - Client auth session / Nest data fetching (planned; ADR 0003 blocks live
+     wiring): [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
+     and ADR [`docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
   and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs

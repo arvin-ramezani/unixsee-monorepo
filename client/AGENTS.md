@@ -45,6 +45,7 @@ Use the existing stack unless the user explicitly approves a change.
 | Product behavior | [`../docs/product/phase-1-application-features.md`](../docs/product/phase-1-application-features.md) |
 | Monorepo ownership | [`../docs/architecture/monorepo.md`](../docs/architecture/monorepo.md) |
 | Shared frontend conventions | [`../docs/frontend/README.md`](../docs/frontend/README.md) |
+| Auth session / Nest data fetching (planned; ADR 0003 blocks wiring) | [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md) + ADR [`../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) |
 | File placement in this app | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md) |
 | App Router / data / i18n | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md) |
 | UI / RTL / a11y | [`docs/engineering/ui.md`](docs/engineering/ui.md) |

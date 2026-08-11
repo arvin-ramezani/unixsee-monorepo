@@ -17,7 +17,8 @@ both unless a doc says otherwise.
 4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first,
    logical insets (`inset-s-*` not `start-*`)
 5. [`client-auth-ui.md`](./client-auth-ui.md) — public customer auth UI shell (when building auth)
-6. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
+6. [`client-data-fetching.md`](./client-data-fetching.md) — planned hybrid auth session + Nest data fetching (blocked by ADR 0003)
+7. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
 
 ## Stack (summary)
 
@@ -38,4 +39,5 @@ UI-only until integration is explicitly allowed:
 - Admin: [`../product/README.md`](../product/README.md)
 - Customer auth flow: [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
 - Customer auth UI: [`client-auth-ui.md`](./client-auth-ui.md)
+- Customer Nest session / data fetching (planned): [`client-data-fetching.md`](./client-data-fetching.md)
 - Other customer / public behaviour: Phase 1 until additional client UX flows exist

@@ -46,6 +46,14 @@ The installed Next.js documentation is authoritative over model knowledge.
   implementing them.
 - Do not guess when framework behavior is uncertain.
 
+## Authenticated data fetching (`client/`)
+
+Planned hybrid session + Nest fetch conventions (design only while ADR 0003
+holds):
+
+- [`client-data-fetching.md`](./client-data-fetching.md)
+- ADR: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+
 ## Tailwind
 
 Use Tailwind CSS v4 conventions.
