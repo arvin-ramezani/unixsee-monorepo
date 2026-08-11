@@ -626,6 +626,66 @@ describe('TicketsService', () => {
   });
 
   describe('assign / resolve / addAdminMessage', () => {
+    it('getAdmin returns ticket with internal messages', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({
+          tenant: {
+            id: TENANT_A,
+            name: 'tenant-a',
+            displayName: 'Tenant A',
+            status: 'ACTIVE',
+          },
+          assignee: null,
+          createdBy: { id: USER_ID, fullName: 'Customer' },
+          messages: [
+            {
+              id: 'msg-1',
+              ticketId: TICKET_ID,
+              authorId: USER_ID,
+              body: 'Customer visible',
+              isInternal: false,
+              createdAt: new Date('2026-07-18T08:14:00.000Z'),
+              author: {
+                id: USER_ID,
+                fullName: 'Customer',
+                role: Role.USER,
+              },
+            },
+            {
+              id: 'msg-2',
+              ticketId: TICKET_ID,
+              authorId: 'admin-1',
+              body: 'Internal note',
+              isInternal: true,
+              createdAt: new Date('2026-07-18T09:00:00.000Z'),
+              author: {
+                id: 'admin-1',
+                fullName: 'Staff',
+                role: Role.ADMIN,
+              },
+            },
+          ],
+        }),
+      );
+
+      const result = await service.getAdmin(TICKET_ID);
+
+      expect(result.id).toBe(TICKET_ID);
+      expect(result.messages).toHaveLength(2);
+      expect(result.messages[1]).toMatchObject({
+        body: 'Internal note',
+        isInternal: true,
+        sender: 'SUPPORT',
+      });
+    });
+
+    it('getAdmin throws NotFound when ticket is missing', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(null);
+      await expect(service.getAdmin(TICKET_ID)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
     it('assign moves SUBMITTED to IN_PROGRESS', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({ status: TicketStatus.SUBMITTED }),

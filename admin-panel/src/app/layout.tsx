@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-
-import Header from "@/components/layout/header";
+import { AuthStoreProvider } from "@/components/providers/auth-store-provider";
 import { YekanBakhFont } from "@/fonts";
 
 import "./globals.css";
@@ -14,25 +11,19 @@ export const metadata: Metadata = {
     "مدیریت وب‌سایت‌ها، کاربران، تیکت‌ها و زیرساخت‌های تحت مدیریت یونیکسی.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="fa"
       dir="rtl"
       className={`${YekanBakhFont.variable} h-full antialiased app-scrollbar`}
     >
-      <body className="min-h-full flex flex-col">
-        <SidebarProvider>
-          <AppSidebar />
-
-          <SidebarInset>
-            <Header />
-
-            <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              {children}
-            </main>
-          </SidebarInset>
-        </SidebarProvider>
+      <body className="flex min-h-full flex-col">
+        <AuthStoreProvider>{children}</AuthStoreProvider>
       </body>
     </html>
   );

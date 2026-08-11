@@ -3,6 +3,8 @@ import type {
   Ticket,
   TicketAttachment,
   TicketMessage,
+  Tenant,
+  User,
   Website,
 } from '#/generated/prisma/client.js';
 
@@ -19,6 +21,18 @@ type TicketListRecord = Ticket & {
 
 type TicketDetailRecord = Ticket & {
   website: TicketWebsite | null;
+  messages: TicketMessageWithAuthor[];
+  attachments: TicketAttachment[];
+};
+
+type AdminTicketListRecord = Ticket & {
+  website: TicketWebsite | null;
+  tenant: Pick<Tenant, 'id' | 'name' | 'displayName' | 'status'>;
+  assignee: Pick<User, 'id' | 'fullName'> | null;
+  createdBy: Pick<User, 'id' | 'fullName'>;
+};
+
+type AdminTicketDetailRecord = AdminTicketListRecord & {
   messages: TicketMessageWithAuthor[];
   attachments: TicketAttachment[];
 };
@@ -64,6 +78,14 @@ function mapMessage(message: TicketMessageWithAuthor) {
       fullName: message.author.fullName,
     },
     createdAt: message.createdAt.toISOString(),
+  };
+}
+
+function mapAdminMessage(message: TicketMessageWithAuthor) {
+  return {
+    ...mapMessage(message),
+    isInternal: message.isInternal,
+    attachments: [] as ReturnType<typeof mapAttachment>[],
   };
 }
 
@@ -115,6 +137,45 @@ export function mapTicketDetail(ticket: TicketDetailRecord) {
       ...mapMessage(message),
       attachments: [],
     })),
+    attachments: ticket.attachments.map(mapAttachment),
+  };
+}
+
+export function mapAdminTicketListItem(ticket: AdminTicketListRecord) {
+  return {
+    id: ticket.id,
+    number: ticket.number,
+    subject: ticket.subject,
+    service: ticket.service,
+    status: ticket.status,
+    priority: ticket.priority,
+    tenant: {
+      id: ticket.tenant.id,
+      name: ticket.tenant.displayName?.trim() || ticket.tenant.name,
+      status: ticket.tenant.status,
+    },
+    website: mapWebsite(ticket.website),
+    assignee: ticket.assignee
+      ? {
+          id: ticket.assignee.id,
+          fullName: ticket.assignee.fullName,
+        }
+      : null,
+    createdBy: {
+      id: ticket.createdBy.id,
+      fullName: ticket.createdBy.fullName,
+    },
+    resolvedAt: ticket.resolvedAt?.toISOString() ?? null,
+    autoCloseAt: ticket.autoCloseAt?.toISOString() ?? null,
+    createdAt: ticket.createdAt.toISOString(),
+    updatedAt: ticket.updatedAt.toISOString(),
+  };
+}
+
+export function mapAdminTicketDetail(ticket: AdminTicketDetailRecord) {
+  return {
+    ...mapAdminTicketListItem(ticket),
+    messages: ticket.messages.map(mapAdminMessage),
     attachments: ticket.attachments.map(mapAttachment),
   };
 }

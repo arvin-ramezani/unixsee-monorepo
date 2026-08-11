@@ -19,7 +19,7 @@ import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import type { AppConfigType } from '#/utils/config/app.config.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { isWebsiteRequiredForService, TICKET_SERVICE_CATALOG } from '../ticket-service-catalog.js';
-import { mapTicketDetail, mapTicketListItem } from '../ticket.mapper.js';
+import { mapTicketDetail, mapTicketListItem, mapAdminTicketDetail, mapAdminTicketListItem } from '../ticket.mapper.js';
 import { TicketNumberService } from './ticket-number.service.js';
 
 const websiteSelect = {
@@ -382,7 +382,31 @@ export class TicketsService {
       }),
       this.prisma.ticket.count({ where }),
     ]);
-    return { items, total };
+    return {
+      items: items.map((ticket) => mapAdminTicketListItem(ticket)),
+      total,
+    };
+  }
+
+  async getAdmin(id: string) {
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id },
+      include: {
+        tenant: true,
+        website: { select: websiteSelect },
+        assignee: { select: { id: true, fullName: true } },
+        createdBy: { select: { id: true, fullName: true } },
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          include: { author: { select: messageAuthorSelect } },
+        },
+        attachments: true,
+      },
+    });
+    if (!ticket) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    return mapAdminTicketDetail(ticket);
   }
 
   async assign(ticketId: string, assigneeId: string) {

@@ -128,7 +128,8 @@ const SECTION_PREVIEW_LIMIT = 5;
 
 function isTicketSlaRisk(ticket: TicketType, now: Date) {
   if (ticket.status === TICKET_STATUS.RESOLVED) return false;
-  if (ticket.status === TICKET_STATUS.NEW) return false;
+  if (ticket.status === TICKET_STATUS.CLOSED) return false;
+  if (ticket.status === TICKET_STATUS.SUBMITTED) return false;
 
   const updatedAt = new Date(ticket.updatedAt).getTime();
   if (Number.isNaN(updatedAt)) return false;
@@ -141,10 +142,14 @@ function buildTicketItems(
   now: Date,
 ): OverviewAttentionItemType[] {
   return tickets
-    .filter((ticket) => ticket.status !== TICKET_STATUS.RESOLVED)
+    .filter(
+      (ticket) =>
+        ticket.status !== TICKET_STATUS.RESOLVED &&
+        ticket.status !== TICKET_STATUS.CLOSED,
+    )
     .map((ticket) => {
       const slaRisk = isTicketSlaRisk(ticket, now);
-      const isUnassigned = ticket.status === TICKET_STATUS.NEW;
+      const isUnassigned = ticket.status === TICKET_STATUS.SUBMITTED;
 
       return {
         id: `ticket-${ticket.id}`,
@@ -250,7 +255,7 @@ export function buildOverviewSnapshot(options?: {
       label: "تیکت نیازمند اقدام",
       count: ticketAttentionCount,
       hint: "ریسک SLA یا تخصیص‌نشده",
-      href: "/tickets?status=NEW",
+      href: "/tickets?status=SUBMITTED",
       emphasis: ticketAttentionCount > 0,
     },
     {
@@ -276,7 +281,7 @@ export function buildOverviewSnapshot(options?: {
       id: OVERVIEW_SECTION_ID.TICKETS,
       title: OVERVIEW_SECTION_TITLES[OVERVIEW_SECTION_ID.TICKETS],
       items: takePreview(ticketItems),
-      viewAllHref: "/tickets?status=NEW",
+      viewAllHref: "/tickets?status=SUBMITTED",
       loadState: sectionState(ticketItems),
       errorMessage: null,
     },

@@ -2,7 +2,8 @@
 
 ## Purpose
 
-Unixsee Admin Panel built with Next.js App Router. Current phase focuses on reusable UI components and pages with dummy data.
+Unixsee Admin Panel built with Next.js App Router. Staff Nest auth (ADR 0012)
+and wired admin domains use hybrid JWT fetch; remaining panes stay on fixtures.
 
 The repository, specifications, architecture documents, and existing implementation are the source of truth. Do not invent requirements or architecture.
 
@@ -23,7 +24,14 @@ Source code is under `src/`.
 
 ## Current Scope
 
-Build UI with static data only. Do not introduce API calls, authentication, authorization, database access, or backend integration unless explicitly requested.
+Nest staff auth and admin JWT fetching are allowed under monorepo ADR 0012.
+Implement against
+[`../docs/frontend/admin-data-fetching.md`](../docs/frontend/admin-data-fetching.md)
+and
+[`../docs/frontend/admin-domain-data-fetching.md`](../docs/frontend/admin-domain-data-fetching.md).
+
+Until a surface is wired, keep static fixtures under `src/lib/data/`. Do not
+talk to agents or VPS hosts. Do not invent Nest routes/DTOs.
 
 ## Project Rules
 
@@ -32,9 +40,12 @@ The following documents are part of the repository's development rules. Read the
 - [Project Architecture](docs/architecture/project.md)
 - [Next.js](docs/frontend/nextjs.md)
 - [Components](docs/development/components.md)
-- [Data](docs/development/data.md)
+- [Data](docs/development/data.md) (fixtures for unwired panes; Nest via monorepo admin fetch docs)
 - [Styling](docs/frontend/styling.md)
 - [State](docs/frontend/state.md)
+- Monorepo admin Nest fetch: [`../docs/frontend/admin-data-fetching.md`](../docs/frontend/admin-data-fetching.md)
+- Monorepo admin Nest domain fetch: [`../docs/frontend/admin-domain-data-fetching.md`](../docs/frontend/admin-domain-data-fetching.md)
+- ADR 0012: [`../docs/architecture/decisions/0012-admin-nest-auth-integration.md`](../docs/architecture/decisions/0012-admin-nest-auth-integration.md)
 - [Workflow](docs/development/workflow.md)
 - [Validation](docs/quality/validation.md)
 

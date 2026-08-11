@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   ChevronDown,
@@ -11,6 +12,12 @@ import {
 } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 
+import {
+  addTicketMessageAction,
+  assignTicketToMeAction,
+  requestTicketInfoAction,
+  resolveTicketAction,
+} from "@/actions/tickets/ticket-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,18 +25,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   TICKET_STATUS,
-  TICKET_STATUS_LABELS,
   type TicketServiceType,
-  type TicketStatusType,
   type TicketType,
 } from "@/lib/data/tickets-data";
 import {
@@ -39,9 +39,7 @@ import {
   toPersianDigits,
 } from "@/lib/tickets-utils";
 import { cn } from "@/lib/utils";
-import { Textarea } from "../ui/textarea";
 import { TicketStatusBadge } from "./ticket-status-badge";
-import { Input } from "../ui/input";
 
 const ticketSectionLabels: Record<TicketServiceType, string> = {
   MANAGED_SERVER: "سرور مدیریت شده",
@@ -94,7 +92,7 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
         <div className="flex items-center gap-3">
           <Avatar size="lg">
             <AvatarImage
-              src={ticket.userImage.url}
+              src={ticket.userImage.url || undefined}
               alt={ticket.userImage.alt}
             />
             <AvatarFallback>{getInitials(ticket.fullName)}</AvatarFallback>
@@ -161,16 +159,21 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
 }
 
 export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
-  const [status, setStatus] = useState<TicketStatusType>(ticket.status);
+  const router = useRouter();
   const [detailsOpen, setDetailsOpen] = useState(true);
   const [messageText, setMessageText] = useState("");
+  const [isInternal, setIsInternal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const hasPendingChanges =
-    messageText.trim().length > 0 ||
-    selectedFiles.length > 0 ||
-    status !== ticket.status;
+  const canAssign = ticket.status === TICKET_STATUS.SUBMITTED || !ticket.assigneeId;
+  const canRequestInfo = ticket.status === TICKET_STATUS.IN_PROGRESS;
+  const canResolve =
+    ticket.status !== TICKET_STATUS.RESOLVED &&
+    ticket.status !== TICKET_STATUS.CLOSED;
+  const canReply = ticket.status !== TICKET_STATUS.CLOSED;
 
   const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -182,15 +185,40 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
     event.target.value = "";
   };
 
-  const handleSend = () => {
-    if (!hasPendingChanges) {
+  async function runAction(
+    key: string,
+    action: () => Promise<{ ok: true } | { ok: false; message: string }>,
+  ) {
+    setActionError(null);
+    setPendingAction(key);
+    const result = await action();
+    setPendingAction(null);
+
+    if (!result.ok) {
+      setActionError(result.message);
       return;
     }
 
+    router.refresh();
+  }
+
+  async function handleSend() {
+    if (!messageText.trim() || !canReply) {
+      return;
+    }
+
+    await runAction("message", () =>
+      addTicketMessageAction({
+        ticketId: ticket.id,
+        body: messageText,
+        isInternal,
+      }),
+    );
+
     setMessageText("");
     setSelectedFiles([]);
-    setStatus(ticket.status);
-  };
+    setIsInternal(false);
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-4 pt-4">
@@ -211,7 +239,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                   dir="ltr"
                   className="text-sm font-semibold text-foreground"
                 >
-                  {formatTicketNumber(ticket.id)}
+                  {formatTicketNumber(ticket.id, ticket.number)}
                 </span>
                 <span className="hidden text-muted-foreground sm:inline">
                   •
@@ -223,29 +251,57 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
             </div>
           </div>
 
-          <Select
-            value={status}
-            onValueChange={(value) => setStatus(value as TicketStatusType)}
-          >
-            <SelectTrigger className="w-45" aria-label="تغییر وضعیت تیکت">
-              <SelectValue>{TICKET_STATUS_LABELS[status]}</SelectValue>
-            </SelectTrigger>
-            <SelectContent alignItemWithTrigger={false}>
-              <SelectItem value={TICKET_STATUS.WAITING_FOR_USER}>
-                {TICKET_STATUS_CONFIG[TICKET_STATUS.WAITING_FOR_USER].label}
-              </SelectItem>
-              <SelectItem value={TICKET_STATUS.IN_PROGRESS}>
-                {TICKET_STATUS_CONFIG[TICKET_STATUS.IN_PROGRESS].label}
-              </SelectItem>
-              <SelectItem value={TICKET_STATUS.NEW}>
-                {TICKET_STATUS_CONFIG[TICKET_STATUS.NEW].label}
-              </SelectItem>
-              <SelectItem value={TICKET_STATUS.RESOLVED}>
-                {TICKET_STATUS_CONFIG[TICKET_STATUS.RESOLVED].label}
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap items-center gap-2">
+            <TicketStatusBadge status={ticket.status} />
+            {canAssign ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={pendingAction !== null}
+                onClick={() =>
+                  void runAction("assign", () =>
+                    assignTicketToMeAction(ticket.id),
+                  )
+                }
+              >
+                تخصیص به من
+              </Button>
+            ) : null}
+            {canRequestInfo ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={pendingAction !== null}
+                onClick={() =>
+                  void runAction("request-info", () =>
+                    requestTicketInfoAction(ticket.id),
+                  )
+                }
+              >
+                درخواست اطلاعات
+              </Button>
+            ) : null}
+            {canResolve ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={pendingAction !== null}
+                onClick={() =>
+                  void runAction("resolve", () => resolveTicketAction(ticket.id))
+                }
+              >
+                حل‌شده
+              </Button>
+            ) : null}
+          </div>
         </div>
+        {actionError ? (
+          <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {actionError}
+          </p>
+        ) : null}
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -280,13 +336,14 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                     {ticket.messages.length.toLocaleString("fa-IR")} پیام
                   </p>
                 </div>
-                <TicketStatusBadge status={status} />
+                <TicketStatusBadge status={ticket.status} />
               </div>
             </div>
 
             <div className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(15,23,42,0.03),transparent_55%)] p-4">
               {ticket.messages.map((message) => {
                 const isUser = message.sender === "USER";
+                const isInternalNote = message.isInternal === true;
 
                 return (
                   <div
@@ -299,15 +356,19 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                     <div
                       className={cn(
                         "max-w-[90%] rounded-2xl border px-4 py-3 shadow-sm sm:max-w-[78%]",
-                        isUser
-                          ? "border-border bg-background"
-                          : "border-primary/15 bg-primary text-primary-foreground",
+                        isInternalNote
+                          ? "border-amber-500/30 bg-amber-500/10"
+                          : isUser
+                            ? "border-border bg-background"
+                            : "border-primary/15 bg-primary text-primary-foreground",
                       )}
                     >
                       <div className="flex items-center gap-2">
                         <Avatar size="sm">
                           <AvatarImage
-                            src={isUser ? ticket.userImage.url : undefined}
+                            src={
+                              isUser ? ticket.userImage.url || undefined : undefined
+                            }
                             alt={isUser ? ticket.userImage.alt : "ادمین"}
                           />
                           <AvatarFallback>
@@ -316,12 +377,16 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                         </Avatar>
                         <div>
                           <p className="text-sm font-semibold">
-                            {isUser ? ticket.fullName : "ادمین"}
+                            {isInternalNote
+                              ? "یادداشت داخلی"
+                              : isUser
+                                ? ticket.fullName
+                                : "ادمین"}
                           </p>
                           <p
                             className={cn(
                               "text-xs",
-                              isUser
+                              isUser || isInternalNote
                                 ? "text-muted-foreground"
                                 : "text-primary-foreground/80",
                             )}
@@ -343,16 +408,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                                 ? `${toPersianDigits(message.files.length)} فایل ضمیمه`
                                 : "فایل ضمیمه"}
                             </p>
-                            {message.files.length > 1 ? (
-                              <a
-                                href={message.files[0].url}
-                                download
-                                className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-                              >
-                                <Download className="size-3.5" />
-                                دانلود همه
-                              </a>
-                            ) : null}
                           </div>
 
                           {message.files.map((file, index) => {
@@ -380,14 +435,10 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                                   </div>
                                 </div>
 
-                                <a
-                                  href={file.url}
-                                  download
-                                  className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
-                                >
+                                <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
                                   <Download className="size-3.5" />
-                                  دانلود
-                                </a>
+                                  به‌زودی
+                                </span>
                               </div>
                             );
                           })}
@@ -404,14 +455,19 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                 <Textarea
                   value={messageText}
                   onChange={(event) => setMessageText(event.target.value)}
-                  placeholder="یک پاسخ بنویسید..."
-                  className="w-full resize-none border-0 bg-transparent max-h-34 text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                  placeholder={
+                    canReply
+                      ? "یک پاسخ بنویسید..."
+                      : "تیکت بسته‌شده است و امکان پاسخ وجود ندارد."
+                  }
+                  disabled={!canReply || pendingAction !== null}
+                  className="max-h-34 w-full resize-none border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
 
                 {selectedFiles.length > 0 && (
                   <div className="mt-3 space-y-2 rounded-xl border border-border/60 bg-muted/20 p-3">
                     <p className="text-xs font-medium text-muted-foreground">
-                      فایل‌های انتخاب‌شده
+                      آپلود فایل در این نسخه فعال نیست
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {selectedFiles.map((file) => (
@@ -421,9 +477,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                         >
                           <div className="min-w-0">
                             <p className="truncate">{file.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {file.type || "فایل"}
-                            </p>
                           </div>
                           <Button
                             size="icon-xs"
@@ -448,7 +501,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                 )}
 
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-3">
                     <Input
                       ref={fileInputRef}
                       type="file"
@@ -460,17 +513,35 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => fileInputRef.current?.click()}
+                      disabled
+                      title="آپلود پیوست هنوز به Nest وصل نشده است"
                     >
                       <Paperclip className="size-4" />
                       افزودن فایل
                     </Button>
+                    <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        checked={isInternal}
+                        disabled={!canReply || pendingAction !== null}
+                        onChange={(event) =>
+                          setIsInternal(event.target.checked)
+                        }
+                      />
+                      یادداشت داخلی
+                    </label>
                   </div>
 
                   <Button
                     type="button"
-                    onClick={handleSend}
-                    disabled={!hasPendingChanges}
+                    onClick={() => {
+                      void handleSend();
+                    }}
+                    disabled={
+                      !canReply ||
+                      !messageText.trim() ||
+                      pendingAction !== null
+                    }
                   >
                     <Send className="size-4" />
                     ارسال

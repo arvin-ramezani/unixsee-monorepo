@@ -19,7 +19,8 @@ must not invent competing enums.
 docs/backend/contracts/
 ├── README.md
 ├── ticket-service-categories.md   # shared ticket service taxonomy
-└── tickets-customer.md            # customer dashboard ticket API
+├── tickets-customer.md            # customer dashboard ticket API
+└── tickets-admin.md               # staff queue ticket API
 ```
 
 ## Index
@@ -28,6 +29,7 @@ docs/backend/contracts/
 |---|---|---|
 | [`ticket-service-categories.md`](./ticket-service-categories.md) | Shared | Canonical ticket service enum for client, admin, and Nest |
 | [`tickets-customer.md`](./tickets-customer.md) | `/api/v1/tickets/*` | Customer create, list, detail, reply, attach, close, reopen |
+| [`tickets-admin.md`](./tickets-admin.md) | `/api/v1/admin/tickets/*` | Staff list, detail (incl. internal notes), assign, request-info, resolve, messages |
 
 ## Writing rules
 

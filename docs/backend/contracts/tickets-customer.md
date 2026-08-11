@@ -66,7 +66,8 @@ Customer-initiated actions only:
 | `RESOLVED` | auto-close job (no action) | `CLOSED` after grace period |
 
 Staff-driven transitions (`SUBMITTED` → `IN_PROGRESS`, request info →
-`WAITING_CUSTOMER`, mark `RESOLVED`) belong to the admin contract (later).
+`WAITING_CUSTOMER`, mark `RESOLVED`) belong to
+[`tickets-admin.md`](./tickets-admin.md).
 Customer reply while `WAITING_CUSTOMER` moves the ticket to `IN_PROGRESS`.
 
 Replies are allowed when status is not `CLOSED`.

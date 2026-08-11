@@ -75,7 +75,7 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
   const router = useRouter();
 
   const ticketHref = `/tickets/${ticket.id}`;
-  const ticketLabel = `مشاهده تیکت ${formatTicketNumber(ticket.id)}`;
+  const ticketLabel = `مشاهده تیکت ${formatTicketNumber(ticket.id, ticket.number)}`;
 
   const navigateToTicket = () => {
     router.push(ticketHref);
@@ -115,7 +115,7 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
     >
       <TableCell className="px-4 py-3">
         <span dir="ltr" className="font-medium text-foreground">
-          {formatTicketNumber(ticket.id)}
+          {formatTicketNumber(ticket.id, ticket.number)}
         </span>
       </TableCell>
       <TableCell className="px-4 py-3">
@@ -151,7 +151,7 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
     >
       <div className="flex items-start justify-between gap-3">
         <span dir="ltr" className="font-medium">
-          {formatTicketNumber(ticket.id)}
+          {formatTicketNumber(ticket.id, ticket.number)}
         </span>
         <TicketStatusBadge status={ticket.status} />
       </div>

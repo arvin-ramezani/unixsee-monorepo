@@ -249,10 +249,14 @@ Shared service taxonomy:
 | POST | `/api/v1/tickets/:id/close` | Customer (`RESOLVED` → `CLOSED`) |
 | POST | `/api/v1/tickets/:id/reopen` | Customer (`RESOLVED` → `IN_PROGRESS`) |
 | GET | `/api/v1/admin/tickets` | Admin |
+| GET | `/api/v1/admin/tickets/:id` | Admin (incl. internal notes) |
 | POST | `/api/v1/admin/tickets/:id/assign` | Admin |
 | POST | `/api/v1/admin/tickets/:id/request-info` | Admin (`IN_PROGRESS` → `WAITING_CUSTOMER`) |
 | POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
 | POST | `/api/v1/admin/tickets/:id/messages` | Admin (incl. internal notes where allowed) |
+
+Staff shapes:
+[`contracts/tickets-admin.md`](./contracts/tickets-admin.md).
 
 Create body includes required `service`, conditional `websiteId`, `subject`,
 `description`, and optional `attachments[]`. Default status is `SUBMITTED`

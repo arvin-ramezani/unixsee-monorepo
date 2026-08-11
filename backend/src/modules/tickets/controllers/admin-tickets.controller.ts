@@ -42,6 +42,12 @@ export class AdminTicketsController {
     return ApiResponseBuilder.ok(data);
   }
 
+  @Get(':id')
+  async get(@Param('id') id: string) {
+    const data = await this.ticketsService.getAdmin(id);
+    return ApiResponseBuilder.ok(data);
+  }
+
   @Post(':id/assign')
   @HttpCode(HttpStatus.OK)
   async assign(@Param('id') id: string, @Body() body: AssignTicketDto) {

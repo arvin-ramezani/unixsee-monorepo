@@ -230,14 +230,7 @@ export class AuthenticationService {
       userId: userToSignIn.id,
     });
 
-    const updateRtHashPromise = this.userService.updateRtHash({
-      userId: userToSignIn.id,
-      rt: tokens.refreshToken,
-    });
-
-    const removeOtpPromise = this.otpService.remove(otp);
-
-    await Promise.all([updateRtHashPromise, removeOtpPromise]);
+    await this.otpService.remove(otp);
 
     RequestContext.setUserId(userToSignIn.id);
     this.logger.log('auth.otp.validation_completed', {
@@ -379,6 +372,8 @@ export class AuthenticationService {
       accessTokenPromise,
       refreshTokenPromise,
     ]);
+
+    await this.userService.updateRtHash({ userId, rt: refreshToken });
 
     const serverTimeInSeconds = Math.floor(Date.now() / 1000);
 

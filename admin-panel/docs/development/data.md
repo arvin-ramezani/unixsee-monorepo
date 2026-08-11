@@ -1,20 +1,33 @@
-## Dummy Data
+## Data sources
 
-Current phase uses static data only.
+### Nest-wired (live)
 
-Store feature data under:
+| Surface | Transport | Notes |
+|---|---|---|
+| Staff login / session | Server Actions + `unixsee_admin_*` cookies + refresh BFF | ADR 0012 Layer 1 |
+| `/tickets`, `/tickets/[id]` | RSC `server-fetch` + ticket Server Actions | Admin contract [`tickets-admin.md`](../../../docs/backend/contracts/tickets-admin.md) |
+
+### Fixture-backed (not yet wired)
+
+Surfaces that are **not yet Nest-wired** use static data under:
 
 ```text
 src/lib/data/
 ```
 
-Examples:
+Examples still fixture-driven:
 
 ```text
-tickets-data.ts
+overview-data.ts   # ticket attention strip still uses tickets-data fixtures
 websites-data.ts
 users-data.ts
+servers-data.ts
+plan-requests-data.ts
+complementary-services-data.ts
 ```
+
+`tickets-data.ts` remains for overview fixtures and shared status/service enums;
+list/detail pages read Nest, not `TICKETS`.
 
 Prefer named constants:
 
@@ -22,9 +35,14 @@ Prefer named constants:
 export const WEBSITES = [...]
 ```
 
-Do not create fake API clients or unnecessary service layers.
+Do not create fake API clients that pretend to be Nest. When a domain is
+wired, use the hybrid fetch helpers documented in monorepo
+[`docs/frontend/admin-data-fetching.md`](../../../docs/frontend/admin-data-fetching.md)
+and
+[`docs/frontend/admin-domain-data-fetching.md`](../../../docs/frontend/admin-domain-data-fetching.md)
+(ADR 0012). Keep fixtures only for unwired panes and honest empty/error demos.
 
-Dummy data should cover realistic states such as:
+Dummy data for unwired UI should still cover realistic states such as:
 
 - empty values
 - long content
