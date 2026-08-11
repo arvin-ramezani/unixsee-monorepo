@@ -121,7 +121,8 @@ Before wiring a Nest domain into `client/`:
 6. Map errors with `map-api-error` + i18n keys.
 7. Add loading / empty / denied / error UI states.
 8. Keep mocks honest for any surface still unwired.
-9. Do not add admin Nest wiring here—needs a separate ADR for `admin-panel/`.
+9. Do not add admin Nest wiring here—use
+   [`admin-domain-data-fetching.md`](./admin-domain-data-fetching.md) and ADR 0012.
 
 ## Related
 

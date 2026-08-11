@@ -45,17 +45,18 @@ Do not place feature-specific components in `components/ui/`.
 
 ## Boundaries
 
-Until a later ADR supersedes it, UI work remains UI-only. See
-[`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md).
+Nest integration in Next.js apps is allowed only where ADRs say so:
 
-Do not add inside Next.js apps:
+- `client/`: [0011](./decisions/0011-client-nest-auth-integration.md)
+- `admin-panel/`: [0012](./decisions/0012-admin-nest-auth-integration.md)
+- Hybrid transport: [0010](./decisions/0010-client-hybrid-auth-data-fetching.md)
 
-- API integration against NestJS (until allowed)
+Still forbidden inside Next.js apps:
+
 - Database access
-- Authentication or authorization implementation
-- Backend services or agent communication
-
-Future backend integration must follow project architecture decisions.
+- Talking to agents or VPS hosts
+- Inventing Nest routes/DTOs that conflict with
+  [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)
 
 ## Related docs
 

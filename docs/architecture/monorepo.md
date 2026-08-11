@@ -10,7 +10,7 @@
 
 ```text
 unixsee-monorepo/
-├── admin-panel/        # Staff Next.js app (active, UI-first)
+├── admin-panel/        # Staff Next.js app (Nest auth allowed under ADR 0012)
 ├── client/             # Customer / public Next.js app (active)
 ├── backend/            # NestJS API and control plane (active)
 ├── agent/              # Phase 1 VPS agent (new; PRD-owned)

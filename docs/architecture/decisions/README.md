@@ -63,7 +63,7 @@ What becomes easier, harder, or forbidden?
 |---|---|---|
 | [0001](./0001-flat-monorepo-layout.md) | Flat monorepo layout | Accepted |
 | [0002](./0002-stack-choices.md) | Stack choices | Accepted |
-| [0003](./0003-ui-only-phase-boundaries.md) | UI-only phase boundaries | Superseded by [0011](./0011-client-nest-auth-integration.md) |
+| [0003](./0003-ui-only-phase-boundaries.md) | UI-only phase boundaries | Superseded by [0011](./0011-client-nest-auth-integration.md) / [0012](./0012-admin-nest-auth-integration.md) |
 | [0004](./0004-api-audience-namespaces.md) | API audience namespaces | Accepted |
 | [0005](./0005-domain-modules-multi-audience-controllers.md) | Domain modules with multi-audience controllers | Accepted |
 | [0006](./0006-rename-agent-to-monitoring-agent.md) | Rename edge deployable to `monitoring-agent/` | Accepted |
@@ -72,3 +72,4 @@ What becomes easier, harder, or forbidden?
 | [0009](./0009-nest-agent-kind-module-split.md) | Nest agent-kind module split (Phase 1 live, monitoring archived) | Accepted |
 | [0010](./0010-client-hybrid-auth-data-fetching.md) | Client hybrid auth and data fetching | Accepted |
 | [0011](./0011-client-nest-auth-integration.md) | Client Nest auth integration | Accepted |
+| [0012](./0012-admin-nest-auth-integration.md) | Admin Nest auth integration | Accepted |

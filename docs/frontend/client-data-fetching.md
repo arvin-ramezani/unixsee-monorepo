@@ -9,8 +9,9 @@
 
 Live Nest wiring is **allowed in `client/`** for auth and customer JWT fetches
 (ADR 0011). First live slice: **phone OTP** sign-in. Email OTP, password login,
-Google, and TanStack Query dashboard panes remain deferred. `admin-panel/` stays
-UI-only.
+Google, and TanStack Query dashboard panes remain deferred. Staff Nest wiring
+lives in `admin-panel/` under ADR 0012 / [`admin-data-fetching.md`](./admin-data-fetching.md)
+(same hybrid transport, different UX and cookies).
 
 ## Purpose
 
@@ -165,7 +166,8 @@ login/register wiring, Google, forgot/reset.
 - Inventing Nest DTOs beyond backend docs.
 - Treating external monitoring-app code as canonical Unixsee (inspiration only;
   not a monorepo source of truth).
-- Nest wiring in `admin-panel/` without its own ADR.
+- Nest wiring details for `admin-panel/` — see
+  [`admin-data-fetching.md`](./admin-data-fetching.md) and ADR 0012.
 
 ## Related
 

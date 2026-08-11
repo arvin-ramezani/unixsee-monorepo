@@ -86,7 +86,9 @@ Convention detail:
 
 - Design is binding for `client/` Nest auth/data-fetch work.
 - Live Nest wiring in `client/` is authorized by
-  [0011](./0011-client-nest-auth-integration.md) (`admin-panel/` remains UI-only).
+  [0011](./0011-client-nest-auth-integration.md). The same hybrid **transport**
+  is reused by `admin-panel/` under
+  [0012](./0012-admin-nest-auth-integration.md) (separate cookies; staff UX).
 - Cookie-only BFF (Model B) is rejected for `client/` unless a new ADR replaces
   this decision.
 - Implement against this ADR and

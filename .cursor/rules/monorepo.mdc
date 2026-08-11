@@ -28,9 +28,10 @@ Do not invent `apps/` or `packages/` without an ADR.
 
 - `backend/` is an active NestJS control plane; follow
   `docs/backend/modules-and-routes.md` and ADRs 0004–0005.
-- Next.js apps stay UI-only until integration is allowed:
-  `docs/architecture/decisions/0011-client-nest-auth-integration.md`
-  (`client/` Nest auth; `admin-panel/` remains UI-only).
+- Next.js Nest integration:
+  `docs/architecture/decisions/0011-client-nest-auth-integration.md` (`client/`),
+  `docs/architecture/decisions/0012-admin-nest-auth-integration.md`
+  (`admin-panel/`). Shared hybrid transport: ADR 0010.
 
 ## Docs over invention
 

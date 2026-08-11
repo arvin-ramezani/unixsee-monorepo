@@ -20,6 +20,11 @@ Before making changes, read in this order as relevant to the task:
      [`docs/frontend/client-domain-data-fetching.md`](./docs/frontend/client-domain-data-fetching.md)
      (Layer 2), plus ADRs [`0010`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
      [`0011`](./docs/architecture/decisions/0011-client-nest-auth-integration.md)
+   - Admin auth session / Nest data fetching:
+     [`docs/frontend/admin-data-fetching.md`](./docs/frontend/admin-data-fetching.md)
+     (Layer 1) and
+     [`docs/frontend/admin-domain-data-fetching.md`](./docs/frontend/admin-domain-data-fetching.md)
+     (Layer 2), plus ADR [`0012`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
   and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
@@ -27,7 +32,7 @@ Before making changes, read in this order as relevant to the task:
 4. Product: [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md)
 5. Matching UX flow under [`docs/product/ux-flows/`](./docs/product/ux-flows/) when doing admin UI
 
-Also respect [`docs/architecture/decisions/0011-client-nest-auth-integration.md`](./docs/architecture/decisions/0011-client-nest-auth-integration.md) for `client/` Nest auth/data-fetch (supersedes ADR 0003), and backend ADRs [`0004`](./docs/architecture/decisions/0004-api-audience-namespaces.md) / [`0005`](./docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md) when changing Nest routes or modules. `admin-panel/` remains UI-only until its own ADR.
+Also respect [`docs/architecture/decisions/0011-client-nest-auth-integration.md`](./docs/architecture/decisions/0011-client-nest-auth-integration.md) for `client/` Nest auth/data-fetch (supersedes ADR 0003 for customer), and [`docs/architecture/decisions/0012-admin-nest-auth-integration.md`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md) for `admin-panel/` Nest auth/data-fetch. Backend ADRs [`0004`](./docs/architecture/decisions/0004-api-audience-namespaces.md) / [`0005`](./docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md) apply when changing Nest routes or modules.
 
 ## Repository layout
 
@@ -46,8 +51,8 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md).
 - Do not redesign authentication; extend role/capability checks on `/admin` instead.
 - Do not add API, database, auth, or backend services inside Next.js apps except
-  where an Accepted ADR allows it (`client/` Nest auth/JWT fetch: ADR 0011).
-  `admin-panel/` remains UI-only until its own ADR.
+  where an Accepted ADR allows it (`client/` Nest auth/JWT fetch: ADR 0011;
+  `admin-panel/` Nest auth/admin JWT fetch: ADR 0012).
 - Admin and client never talk to agents or VPS hosts; NestJS is the control
   plane.
 - Do not invent unavailable npm/pnpm scripts or claim lint/build/tests passed

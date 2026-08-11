@@ -44,5 +44,6 @@ dependency.
 
 - Git / PR workflow: [`git-and-pr-workflow.md`](./git-and-pr-workflow.md)
 - Documentation standards: [`documentation.md`](./documentation.md)
-- UI-only phase (superseded for `client/`): [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)
+- UI-only phase (superseded): [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)
 - Client Nest auth integration: [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
+- Admin Nest auth integration: [`../architecture/decisions/0012-admin-nest-auth-integration.md`](../architecture/decisions/0012-admin-nest-auth-integration.md)

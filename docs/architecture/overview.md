@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-09
+> **Last verified:** 2026-08-10
 
 ## Product
 
@@ -54,14 +54,17 @@ Persian and RTL-first; see [`docs/frontend/styling.md`](../frontend/styling.md).
   [`../agent/prd.md`](../agent/prd.md).
 - `monitoring-agent/` holds the existing monitoring codebase for later
   development. See [`../../monitoring-agent/README.md`](../../monitoring-agent/README.md).
-- `client/` is an active public + customer Next.js app (UI-first until Nest
-  integration is allowed). App-scoped docs live under `client/docs/`; product
+- `client/` is an active public + customer Next.js app (Nest auth/JWT fetch
+  allowed under ADR 0011). App-scoped docs live under `client/docs/`; product
   and architecture truth stay in monorepo `docs/`.
-- `admin-panel/` is an active staff Next.js app (UI-first / fixtures). App-scoped
-  docs live under `admin-panel/docs/`; product UX flows stay in monorepo
-  `docs/product/`.
-- Follow [`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
-  for Next.js apps until a superseding integration ADR lands.
+- `admin-panel/` is an active staff Next.js app (Nest auth/admin JWT fetch
+  allowed under ADR 0012; domains migrate from fixtures per Layer 2).
+  App-scoped docs live under `admin-panel/docs/`; product UX flows stay in
+  monorepo `docs/product/`.
+- Next.js Nest integration ADRs:
+  [`decisions/0011-client-nest-auth-integration.md`](./decisions/0011-client-nest-auth-integration.md),
+  [`decisions/0012-admin-nest-auth-integration.md`](./decisions/0012-admin-nest-auth-integration.md)
+  (ADR 0003 superseded).
 - API audience namespaces:
   [`decisions/0004-api-audience-namespaces.md`](./decisions/0004-api-audience-namespaces.md).
 

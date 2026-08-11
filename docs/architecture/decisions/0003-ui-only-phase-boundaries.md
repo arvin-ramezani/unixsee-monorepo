@@ -39,6 +39,7 @@ Until a superseding ADR or explicit integration specification lands:
 
 ## Supersession
 
-Replaced by [0011](./0011-client-nest-auth-integration.md): `client/` may wire
-Nest auth and customer JWT fetches; `admin-panel/` remains UI-only until its own
-ADR; UIs still never talk to agents or VPS hosts.
+Replaced by [0011](./0011-client-nest-auth-integration.md) for `client/` Nest
+auth/JWT fetch, and by [0012](./0012-admin-nest-auth-integration.md) for
+`admin-panel/` Nest auth/admin JWT fetch. UIs still never talk to agents or VPS
+hosts.
