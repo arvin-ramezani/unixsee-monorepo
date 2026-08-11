@@ -143,6 +143,12 @@ No staff interviews, support tickets, or analytics were available. E-001–E-004
 | ID | Unknown | Impact | Decision blocked | Resolution | Priority |
 |---|---|---|---|---|---|
 | U-001 | Final administrator capability bundles for create user, create tenant, change owner, suspend, and security recovery | Unauthorized or blocked admin actions | Permission matrix | Security/product decision | Critical |
+
+Staff hierarchy / specialty OPERATORs (main ADMIN → sub-admin → operators) are
+proposed in
+[`../notes/admin-staff-roles-and-capabilities.md`](../notes/admin-staff-roles-and-capabilities.md)
+and intended as the last Phase 1 step; that note should feed the U-001 matrix
+before Staff access UI ships.
 | U-002 | Whether staff may create a fully usable credentialed account in-panel, or only invite/bootstrap with customer-set password | Create vs invite UX and notification | Inline create completion | Security/product | Critical |
 | U-003 | Required unique identifiers for duplicate detection (email, mobile, national id, external CRM id) | Duplicate customers and failed create | Find-or-create rules | Product/security | Critical |
 | U-004 | Whether a personal customer is always 1 user = 1 tenant in Phase 1, or multi-member tenants are common at create time | Inline create complexity | Create tenant defaults | Ops research | High |

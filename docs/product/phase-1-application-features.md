@@ -164,6 +164,9 @@ later, but Phase 1 needs permissions covering:
 - Security-sensitive account assistance.
 - Audit review and read-only oversight.
 - Administrator settings (later Phase 1).
+- Staff hierarchy and operator specialties (Phase 1 **last step**) — proposed
+  model in
+  [`notes/admin-staff-roles-and-capabilities.md`](./notes/admin-staff-roles-and-capabilities.md).
 
 The UI may hide or disable unavailable actions for clarity, but NestJS must
 authorize every protected read and mutation. Sensitive actions must never rely
@@ -1205,7 +1208,9 @@ Recommended primary areas:
 - Website notices / اعلان‌ها (later Phase 1).
 - Activities and audit (later Phase 1).
 - Settings (later Phase 1).
-- Staff access, when the role design is approved.
+- Staff access, when the role design is approved (proposed:
+  [`notes/admin-staff-roles-and-capabilities.md`](./notes/admin-staff-roles-and-capabilities.md);
+  last Phase 1 delivery step).
 
 Each entity detail should provide contextual links to related records. For
 example, a tenant detail should connect to websites, requests, tickets, and
@@ -1304,7 +1309,9 @@ The following choices must be approved in feature follow-ups or ADRs:
 
 - Authentication provider and credential flow.
 - Access-token, refresh-token, and session storage design.
-- Final customer roles and administrator capability bundles.
+- Final customer roles and administrator capability bundles (staff hierarchy
+  proposal:
+  [`notes/admin-staff-roles-and-capabilities.md`](./notes/admin-staff-roles-and-capabilities.md)).
 - Definitive plan names, scope, availability, and pricing presentation.
 - Plan-request acceptance and customer agreement method.
 - Complementary-service quotation acceptance and commercial-record policy.

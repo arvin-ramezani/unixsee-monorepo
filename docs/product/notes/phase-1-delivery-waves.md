@@ -27,6 +27,7 @@ items. Behavioral detail remains in
 | Website notices (اعلان‌ها) | Admin popups/notices for a **specific website** (for example a harmful plugin). Not the News notifications feature |
 | Notifications (News) | Unixsee news / platform announcements in the customer dashboard |
 | Admin Settings | Administrator panel settings |
+| Staff access / roles | Main ADMIN, sub-admins, specialty OPERATORs — see [`admin-staff-roles-and-capabilities.md`](./admin-staff-roles-and-capabilities.md). **Last Phase 1 step** after first-wave ops surfaces |
 
 ## Hard separation
 
