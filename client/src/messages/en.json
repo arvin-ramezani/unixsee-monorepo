@@ -3397,20 +3397,29 @@
     "notApplicable": "Not applicable",
     "viewTicket": "View ticket",
     "services": {
-      "managed_server": "Managed Server",
-      "migration_optimization": "Migration and Optimization",
-      "woocommerce_support": "Specialized WooCommerce Support",
-      "seo": "SEO",
-      "graphic_design": "Graphic Design",
-      "product_data_entry": "Product Data Entry",
-      "social_media_support": "Social Media Support"
+      "MANAGED_SERVER": "Managed Server",
+      "MIGRATION_OPTIMIZATION": "Migration and Optimization",
+      "WOOCOMMERCE_SUPPORT": "Specialized WooCommerce Support",
+      "SEO": "SEO",
+      "GRAPHIC_DESIGN": "Graphic Design",
+      "PRODUCT_DATA_ENTRY": "Product Data Entry",
+      "SOCIAL_MEDIA_SUPPORT": "Social Media Support"
     },
     "statuses": {
-      "submitted": "Submitted",
-      "in_progress": "In progress",
-      "waiting_for_user": "Waiting for you",
-      "resolved": "Resolved",
-      "closed": "Closed"
+      "SUBMITTED": "Submitted",
+      "IN_PROGRESS": "In progress",
+      "WAITING_CUSTOMER": "Waiting for you",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "unavailable": "The tickets service is temporarily unavailable.",
+      "unauthorized": "Please sign in again to continue.",
+      "forbidden": "You do not have access to this ticket.",
+      "notFound": "This ticket could not be found.",
+      "rateLimited": "Too many requests. Please wait and try again.",
+      "validation": "Please check the form and try again."
     },
     "tabs": {
       "label": "Ticket status",
@@ -3434,13 +3443,13 @@
       "mobile": "More filters"
     },
     "activity": {
-      "support": "Unixsee replied",
-      "user": "You replied"
+      "SUPPORT": "Unixsee replied",
+      "USER": "You replied"
     },
     "states": {
       "loading": "Loading tickets",
       "errorTitle": "Tickets could not be displayed",
-      "errorDescription": "The ticket list is temporarily unavailable. Try loading the local view again.",
+      "errorDescription": "The ticket list is temporarily unavailable. Please try again.",
       "retry": "Try again",
       "emptyTitle": "No tickets yet",
       "emptyDescription": "Tickets help you request work and follow conversations with the Unixsee team.",
@@ -3514,6 +3523,8 @@
       "attachments": {
         "label": "Attachments",
         "hint": "Optional screenshots or documents.",
+        "unavailable": "File upload coming soon",
+        "unavailableHint": "Attachments will be available after Nest-owned S3 upload is enabled.",
         "choose": "Choose files",
         "remove": "Remove {name}"
       },
@@ -3523,6 +3534,8 @@
         "subject": "Enter a subject.",
         "description": "Enter at least 20 characters."
       },
+      "loadErrorTitle": "New ticket form unavailable",
+      "loadErrorDescription": "Service categories could not be loaded. Please try again later.",
       "submitting": "Submitting...",
       "submit": "Submit ticket",
       "cancel": "Cancel"
@@ -3540,15 +3553,16 @@
       "reopen": "Reopen ticket",
       "close": "Close ticket",
       "resolvedTitle": "This ticket is resolved",
-      "resolvedDescription": "If the issue continues, reopen the ticket and add the latest details."
+      "resolvedDescription": "If the issue continues, reopen the ticket and add the latest details.",
+      "resolvedDescriptionWithAutoClose": "If the issue continues, reopen the ticket and add the latest details. Otherwise it will close automatically on {date}."
     },
     "conversation": {
       "title": "Conversation",
       "description": "Messages are shown in chronological order.",
-      "empty": "No conversation messages are available for this fixture.",
+      "empty": "No conversation messages yet.",
       "roles": {
-        "user": "User",
-        "support": "Unixsee Support"
+        "USER": "User",
+        "SUPPORT": "Unixsee Support"
       },
       "attachmentSize": "{size, number} KB"
     },
@@ -3560,6 +3574,7 @@
       "placeholder": "Write your reply...",
       "required": "Enter a reply before sending.",
       "attach": "Attach files",
+      "attachmentsUnavailable": "File attachments are not available yet.",
       "remove": "Remove {name}",
       "sending": "Sending...",
       "send": "Send reply"

@@ -5,9 +5,14 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { NewTicketForm } from "@/components/tickets/new-ticket-form";
 import type { Locale } from "@/i18n/routing";
 import {
-  ticketServices,
-  ticketWebsites,
-} from "@/lib/data/tickets/ticket-records";
+  fetchTicketServices,
+  fetchTicketWebsites,
+} from "@/lib/tickets/tickets-api";
+
+interface NewTicketPageProps {
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ website?: string | string[] }>;
+}
 
 export async function generateMetadata({
   params,
@@ -22,12 +27,26 @@ export async function generateMetadata({
 
 export default async function NewTicketPage({
   params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
+  searchParams,
+}: NewTicketPageProps) {
   const { locale } = await params;
+  const websiteParam = (await searchParams).website;
   setRequestLocale(locale);
   const t = await getTranslations("Tickets");
+
+  const [servicesResult, websitesResult] = await Promise.all([
+    fetchTicketServices(),
+    fetchTicketWebsites(),
+  ]);
+
+  const initialWebsiteId = Array.isArray(websiteParam)
+    ? websiteParam[0]
+    : websiteParam;
+  const websites = websitesResult.ok ? websitesResult.data : [];
+  const resolvedWebsiteId =
+    initialWebsiteId && websites.some((website) => website.id === initialWebsiteId)
+      ? initialWebsiteId
+      : undefined;
 
   return (
     <DashboardShell
@@ -47,7 +66,16 @@ export default async function NewTicketPage({
         </p>
       </section>
 
-      <NewTicketForm services={ticketServices} websites={ticketWebsites} />
+      <NewTicketForm
+        services={servicesResult.ok ? servicesResult.data : []}
+        websites={websites}
+        initialWebsiteId={resolvedWebsiteId}
+        loadError={
+          !servicesResult.ok || !websitesResult.ok
+            ? "unavailable"
+            : undefined
+        }
+      />
     </DashboardShell>
   );
 }

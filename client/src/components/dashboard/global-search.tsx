@@ -188,6 +188,14 @@ function itemStatusTone(source: GlobalSearchSource) {
   return "default" as const;
 }
 
+const fixtureTicketStatusKey = {
+  submitted: "SUBMITTED",
+  in_progress: "IN_PROGRESS",
+  waiting_for_user: "WAITING_CUSTOMER",
+  resolved: "RESOLVED",
+  closed: "CLOSED",
+} as const;
+
 function useLocalizedGlobalSearchItems() {
   const t = useTranslations("Header.globalSearch");
   const websites = useTranslations("Websites");
@@ -212,7 +220,9 @@ function useLocalizedGlobalSearchItems() {
 
     if (source.group === "tickets") {
       const label = tickets(`fixtures.subjects.${source.subjectKey}`);
-      const meta = tickets(`statuses.${source.status}`);
+      const meta = tickets(
+        `statuses.${fixtureTicketStatusKey[source.status]}`,
+      );
       const websiteContext = source.websiteName
         ? ` · ${source.websiteName}`
         : "";

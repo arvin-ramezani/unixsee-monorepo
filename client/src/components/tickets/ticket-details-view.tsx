@@ -8,71 +8,102 @@ import {
   MessageSquareReply,
   RotateCcw,
   Send,
-  X,
-  ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 
-import { Panel } from "@/components/dashboard/panel";
-import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Link } from "@/i18n/navigation";
-import type {
-  TicketMessage,
-  TicketRecord,
-  TicketStatus,
-} from "@/lib/data/tickets/ticket-records";
-import { cn } from "@/lib/utils";
+import { addTicketMessageAction } from "@/actions/tickets/add-ticket-message";
+import { closeTicketAction } from "@/actions/tickets/close-ticket";
+import { reopenTicketAction } from "@/actions/tickets/reopen-ticket";
 import {
   DashboardButton,
   DashboardButtonLink,
 } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
+import { Panel } from "@/components/dashboard/panel";
+import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Link, useRouter } from "@/i18n/navigation";
+import type {
+  TicketDetail,
+  TicketMessage,
+  TicketStatus,
+} from "@/lib/tickets/types";
+import { cn } from "@/lib/utils";
 
-export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
+export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
   const t = useTranslations("Tickets");
+  const errorsT = useTranslations("Tickets.errors");
   const format = useFormatter();
-  const prefersReducedMotion = useReducedMotion();
+  const router = useRouter();
   const [status, setStatus] = useState<TicketStatus>(ticket.status);
   const [messages, setMessages] = useState(ticket.messages);
+  const [autoCloseAt, setAutoCloseAt] = useState(ticket.autoCloseAt);
   const [draft, setDraft] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
   const [sending, setSending] = useState(false);
+  const [mutating, setMutating] = useState(false);
   const [replyError, setReplyError] = useState(false);
-  const repliesAllowed = status !== "closed";
+  const [actionError, setActionError] = useState<string | null>(null);
+  const repliesAllowed = status !== "CLOSED";
 
-  function sendReply(event: FormEvent<HTMLFormElement>) {
+  async function sendReply(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!draft.trim()) {
       setReplyError(true);
       return;
     }
     setSending(true);
-    window.setTimeout(() => {
-      const message: TicketMessage = {
-        id: `local-${messages.length + 1}`,
-        sender: "user",
-        senderName: t("detail.you"),
-        occurredAt: "2026-07-19T15:40:00Z",
-        content: draft.trim(),
-        attachments: attachments.map((file, index) => ({
-          id: `local-att-${index}`,
-          name: file.name,
-          sizeKb: Math.max(1, Math.round(file.size / 1024)),
-        })),
-      };
-      setMessages((current) => [...current, message]);
-      setDraft("");
-      setAttachments([]);
-      setReplyError(false);
+    setActionError(null);
+
+    const result = await addTicketMessageAction({
+      ticketId: ticket.id,
+      body: draft,
+      idempotencyKey: crypto.randomUUID(),
+    });
+
+    if (!result.ok) {
+      setActionError(errorsT(result.error.key));
       setSending(false);
-      if (status === "waiting_for_user") setStatus("in_progress");
-    }, 500);
+      return;
+    }
+
+    setMessages((current) => [...current, result.data]);
+    setDraft("");
+    setReplyError(false);
+    setSending(false);
+    if (status === "WAITING_CUSTOMER") setStatus("IN_PROGRESS");
+    router.refresh();
+  }
+
+  async function handleReopen() {
+    setMutating(true);
+    setActionError(null);
+    const result = await reopenTicketAction(ticket.id);
+    if (!result.ok) {
+      setActionError(errorsT(result.error.key));
+      setMutating(false);
+      return;
+    }
+    setStatus(result.data.status);
+    setAutoCloseAt(result.data.autoCloseAt);
+    setMutating(false);
+    router.refresh();
+  }
+
+  async function handleClose() {
+    setMutating(true);
+    setActionError(null);
+    const result = await closeTicketAction(ticket.id);
+    if (!result.ok) {
+      setActionError(errorsT(result.error.key));
+      setMutating(false);
+      return;
+    }
+    setStatus(result.data.status);
+    setAutoCloseAt(result.data.autoCloseAt);
+    setMutating(false);
+    router.refresh();
   }
 
   return (
@@ -88,7 +119,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight">
-              {t(`fixtures.subjects.${ticket.subjectKey}`)}
+              {ticket.subject}
             </h1>
             <TicketStatusBadge status={status} />
           </div>
@@ -113,10 +144,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
             />
             <Meta
               label={t("detail.updated")}
-              value={format.dateTime(
-                new Date(ticket.lastActivityAt),
-                "shortDate",
-              )}
+              value={format.dateTime(new Date(ticket.updatedAt), "shortDate")}
             />
           </dl>
         </div>
@@ -131,36 +159,36 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
                 {t("detail.reply")}
               </DashboardButtonLink>
             )}
-            {status === "resolved" && (
-              <DashboardButton
-                type="button"
-                variant="outline"
-                revealClassName="dark:bg-accent bg-muted"
-                // size="plain"
-                onClick={() => setStatus("in_progress")}
-                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
-              >
-                <RotateCcw aria-hidden="true" className="size-4" />
-                {t("detail.reopen")}
-              </DashboardButton>
-            )}
-            {status !== "closed" && (
-              <DashboardButton
-                type="button"
-                variant="outline"
-                revealClassName="dark:bg-accent bg-muted"
-                // size="plain"
-                onClick={() => setStatus("closed")}
-                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
-              >
-                {t("detail.close")}
-              </DashboardButton>
+            {status === "RESOLVED" && (
+              <>
+                <DashboardButton
+                  type="button"
+                  variant="outline"
+                  revealClassName="dark:bg-accent bg-muted"
+                  disabled={mutating}
+                  onClick={handleReopen}
+                  className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
+                >
+                  <RotateCcw aria-hidden="true" className="size-4" />
+                  {t("detail.reopen")}
+                </DashboardButton>
+                <DashboardButton
+                  type="button"
+                  variant="outline"
+                  revealClassName="dark:bg-accent bg-muted"
+                  disabled={mutating}
+                  onClick={handleClose}
+                  className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
+                >
+                  {t("detail.close")}
+                </DashboardButton>
+              </>
             )}
           </div>
         </div>
       </header>
 
-      {status === "resolved" && (
+      {status === "RESOLVED" && (
         <Alert className="border-success/25 bg-success/10 dark:text-success text-success-foreground mt-6 flex items-start gap-3 rounded-xl p-4">
           <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
           <div>
@@ -168,11 +196,21 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
               {t("detail.resolvedTitle")}
             </AlertTitle>
             <AlertDescription className="mt-1 text-sm leading-6 text-current">
-              {t("detail.resolvedDescription")}
+              {autoCloseAt
+                ? t("detail.resolvedDescriptionWithAutoClose", {
+                    date: format.dateTime(new Date(autoCloseAt), "shortDate"),
+                  })
+                : t("detail.resolvedDescription")}
             </AlertDescription>
           </div>
         </Alert>
       )}
+
+      {actionError ? (
+        <p role="alert" className="text-destructive mt-4 text-sm">
+          {actionError}
+        </p>
+      ) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <Panel className="overflow-hidden">
@@ -250,90 +288,13 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
                 {t("reply.required")}
               </p>
             )}
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
-              <div>
-                <Label className="border-border dark:hover:border-link/12 dark:hover:bg-accent dark:hover:text-accent-foreground hover:bg-muted focus-within:ring-ring inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 text-sm font-medium focus-within:ring-2">
-                  <Paperclip aria-hidden="true" className="size-4" />
-                  {t("reply.attach")}
-                  <Input
-                    type="file"
-                    multiple
-                    className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
-                    onChange={(event) =>
-                      setAttachments(Array.from(event.target.files ?? []))
-                    }
-                  />
-                </Label>
-                <ul
-                  className={cn(
-                    "flex flex-wrap gap-2",
-                    attachments.length > 0 && "mt-2",
-                  )}
-                >
-                  <AnimatePresence initial={false} mode="popLayout">
-                    {attachments.map((file, index) => (
-                      <motion.li
-                        key={`${file.name}-${file.size}`}
-                        layout={!prefersReducedMotion}
-                        initial={
-                          prefersReducedMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, y: 6, scale: 0.9 }
-                        }
-                        animate={
-                          prefersReducedMotion
-                            ? { opacity: 1 }
-                            : { opacity: 1, y: 0, scale: 1 }
-                        }
-                        exit={
-                          prefersReducedMotion
-                            ? { opacity: 0, transition: { duration: 0.12 } }
-                            : {
-                                opacity: 0,
-                                scale: 0.85,
-                                y: -4,
-                                transition: { duration: 0.15, ease: "easeOut" },
-                              }
-                        }
-                        transition={
-                          prefersReducedMotion
-                            ? { duration: 0.15 }
-                            : {
-                                duration: 0.28,
-                                ease: [0.22, 1, 0.36, 1],
-                                delay: index * 0.05,
-                                layout: {
-                                  duration: 0.25,
-                                  ease: [0.22, 1, 0.36, 1],
-                                },
-                              }
-                        }
-                        className="bg-muted inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs"
-                      >
-                        <span className="max-w-48 truncate" dir="auto">
-                          {file.name}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() =>
-                            setAttachments((files) =>
-                              files.filter((item) => item !== file),
-                            )
-                          }
-                          aria-label={t("reply.remove", { name: file.name })}
-                        >
-                          <X aria-hidden="true" className="size-3.5" />
-                        </Button>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </ul>
-              </div>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <p className="text-muted-foreground flex items-center gap-2 text-xs">
+                <Paperclip aria-hidden="true" className="size-3.5" />
+                {t("reply.attachmentsUnavailable")}
+              </p>
               <DashboardButton
                 type="submit"
-                // size="plain"
                 disabled={sending}
                 className="bg-primary text-primary-foreground focus-visible:ring-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-medium focus-visible:ring-2 disabled:opacity-60 sm:w-fit"
               >
@@ -370,54 +331,34 @@ function Meta({ label, value }: { label: string; value: string }) {
 function TicketMessageBlock({ message }: { message: TicketMessage }) {
   const t = useTranslations("Tickets");
   const format = useFormatter();
+  const senderName =
+    message.sender === "USER"
+      ? (message.author.fullName?.trim() || t("detail.you"))
+      : (message.author.fullName?.trim() || t("conversation.roles.SUPPORT"));
 
   return (
     <article
       className={cn(
         "px-5 py-5 sm:px-6",
-        message.sender === "support" && "bg-muted/30",
+        message.sender === "SUPPORT" && "bg-muted/30",
       )}
     >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold">{message.senderName}</h3>
+          <h3 className="font-semibold">{senderName}</h3>
           <p className="text-muted-foreground mt-1 text-xs">
             {t(`conversation.roles.${message.sender}`)}
           </p>
         </div>
         <time
-          dateTime={message.occurredAt}
+          dateTime={message.createdAt}
           className="text-muted-foreground text-xs tabular-nums"
         >
-          {format.dateTime(new Date(message.occurredAt), "shortDate")} ·{" "}
-          {format.dateTime(new Date(message.occurredAt), "shortTime")}
+          {format.dateTime(new Date(message.createdAt), "shortDate")} ·{" "}
+          {format.dateTime(new Date(message.createdAt), "shortTime")}
         </time>
       </header>
-      <p className="mt-4 text-sm leading-7 whitespace-pre-line">
-        {message.content ??
-          (message.contentKey && t(`fixtures.messages.${message.contentKey}`))}
-      </p>
-      {message.attachments.length && (
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {message.attachments.map((attachment) => (
-            <li
-              key={attachment.id}
-              className="border-border bg-background inline-flex min-h-9 items-center gap-2 rounded-lg border px-3 text-xs"
-            >
-              <Paperclip
-                aria-hidden="true"
-                className="text-muted-foreground size-3.5"
-              />
-              <span dir="ltr">{attachment.name}</span>
-              <span className="text-muted-foreground">
-                {t("conversation.attachmentSize", {
-                  size: attachment.sizeKb,
-                })}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <p className="mt-4 text-sm leading-7 whitespace-pre-line">{message.body}</p>
     </article>
   );
 }

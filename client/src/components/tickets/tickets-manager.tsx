@@ -9,7 +9,12 @@ import {
   Search,
 } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useReducedMotion, motion } from "framer-motion";
 
+import {
+  DashboardButton,
+  DashboardButtonLink,
+} from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 import { MobileFilterDisclosure } from "@/components/common/mobile-filter-disclosure";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
@@ -40,34 +45,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatRelativeValue } from "@/i18n/formats";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import type {
-  TicketRecord,
-  TicketService,
-  TicketStatus,
-} from "@/lib/data/tickets/ticket-records";
-import { cn } from "@/lib/utils";
+import { formatTicketRelativeActivity } from "@/lib/tickets/relative-activity";
 import {
-  DashboardButton,
-  DashboardButtonLink,
-} from "@/app/[locale]/(dashboard)/dashboard/_components/common";
-import { useReducedMotion, motion } from "framer-motion";
+  TICKET_STATUSES,
+  type TicketListItem,
+  type TicketServiceCategory,
+  type TicketStatus,
+} from "@/lib/tickets/types";
+import { cn } from "@/lib/utils";
 
 type TicketTab = "all" | "needs_reply" | "active" | "resolved";
 type TicketsState = "ready" | "empty" | "error";
 
 const tabs: TicketTab[] = ["all", "needs_reply", "active", "resolved"];
-const statuses: TicketStatus[] = [
-  "submitted",
-  "in_progress",
-  "waiting_for_user",
-  "resolved",
-  "closed",
-];
 const pageSize = 5;
-const fixtureNow = new Date("2026-07-19T15:40:00Z");
 
 function SelectControl({
   label,
@@ -101,16 +94,16 @@ export function TicketsManager({
   tickets,
   initialState = "ready",
 }: {
-  tickets: TicketRecord[];
+  tickets: TicketListItem[];
   initialState?: TicketsState;
 }) {
   const t = useTranslations("Tickets");
   const format = useFormatter();
   const locale = useLocale() as Locale;
-  const [state, setState] = useState(initialState);
+  const [state] = useState(initialState);
   const [tab, setTab] = useState<TicketTab>("all");
   const [query, setQuery] = useState("");
-  const [service, setService] = useState<"all" | TicketService>("all");
+  const [service, setService] = useState<"all" | TicketServiceCategory>("all");
   const [website, setWebsite] = useState("all");
   const [status, setStatus] = useState<"all" | TicketStatus>("all");
   const [sort, setSort] = useState<"latest" | "oldest">("latest");
@@ -129,18 +122,16 @@ export function TicketsManager({
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const filteredTickets = tickets
     .filter((ticket) => {
-      const subject = t(
-        `fixtures.subjects.${ticket.subjectKey}`,
-      ).toLocaleLowerCase();
       const tabMatches =
         tab === "all" ||
-        (tab === "needs_reply" && ticket.status === "waiting_for_user") ||
+        (tab === "needs_reply" && ticket.status === "WAITING_CUSTOMER") ||
         (tab === "active" &&
-          ["submitted", "in_progress"].includes(ticket.status)) ||
-        (tab === "resolved" && ["resolved", "closed"].includes(ticket.status));
+          (ticket.status === "SUBMITTED" || ticket.status === "IN_PROGRESS")) ||
+        (tab === "resolved" &&
+          (ticket.status === "RESOLVED" || ticket.status === "CLOSED"));
       const queryMatches =
         !normalizedQuery ||
-        `${subject} ${ticket.number}`
+        `${ticket.subject} ${ticket.number}`
           .toLocaleLowerCase()
           .includes(normalizedQuery);
 
@@ -166,10 +157,10 @@ export function TicketsManager({
   );
   const hasFilters = Boolean(
     normalizedQuery ||
-    tab !== "all" ||
-    service !== "all" ||
-    website !== "all" ||
-    status !== "all",
+      tab !== "all" ||
+      service !== "all" ||
+      website !== "all" ||
+      status !== "all",
   );
 
   function resetFilters() {
@@ -182,26 +173,13 @@ export function TicketsManager({
     setPage(1);
   }
 
-  function relativeActivity(ticket: TicketRecord) {
-    const diffMinutes = Math.round(
-      (new Date(ticket.lastActivityAt).getTime() - fixtureNow.getTime()) /
-        60000,
-    );
-    if (Math.abs(diffMinutes) < 60)
-      return formatRelativeValue(locale, diffMinutes, "minute");
-    const diffHours = Math.round(diffMinutes / 60);
-    if (Math.abs(diffHours) < 24)
-      return formatRelativeValue(locale, diffHours, "hour");
-    return formatRelativeValue(locale, Math.round(diffHours / 24), "day");
-  }
-
   const filters = (
     <>
       <SelectControl
         label={t("filters.serviceLabel")}
         value={service}
         onChange={(value) => {
-          setService(value as "all" | TicketService);
+          setService(value as "all" | TicketServiceCategory);
           setPage(1);
         }}
         options={[
@@ -233,7 +211,7 @@ export function TicketsManager({
         }}
         options={[
           { value: "all", label: t("filters.allStatuses") },
-          ...statuses.map((value) => ({
+          ...TICKET_STATUSES.map((value) => ({
             value,
             label: t(`statuses.${value}`),
           })),
@@ -267,14 +245,13 @@ export function TicketsManager({
           <p className="text-muted-foreground mt-2 text-sm leading-6">
             {t("states.errorDescription")}
           </p>
-          <DashboardButton
-            type="button"
-            onClick={() => setState("ready")}
+          <DashboardButtonLink
+            href="/dashboard/tickets"
             variant="outline"
             className="mt-5 min-h-10"
           >
             {t("states.retry")}
-          </DashboardButton>
+          </DashboardButtonLink>
         </div>
       </Panel>
     );
@@ -318,7 +295,6 @@ export function TicketsManager({
             setTab(value as TicketTab);
             setPage(1);
           }}
-          // className="min-w-max"
         >
           <TabsList
             data-lenis-prevent
@@ -471,7 +447,7 @@ export function TicketsManager({
                             href={`/dashboard/tickets/${ticket.id}`}
                             className="hover:text-link focus-visible:ring-ring block truncate font-semibold focus-visible:ring-2"
                           >
-                            {t(`fixtures.subjects.${ticket.subjectKey}`)}
+                            {ticket.subject}
                           </Link>
                           <span className="text-muted-foreground mt-1 block text-start text-xs font-normal">
                             #{ticket.number}
@@ -487,7 +463,12 @@ export function TicketsManager({
                       <TicketStatusBadge status={ticket.status} />
                     </TableCell>
                     <TableCell className="pe-3 text-xs leading-5">
-                      <span className="block">{relativeActivity(ticket)}</span>
+                      <span className="block">
+                        {formatTicketRelativeActivity(
+                          ticket.lastActivityAt,
+                          locale,
+                        )}
+                      </span>
                       <span className="text-muted-foreground block">
                         {t(`activity.${ticket.lastActor}`)}
                       </span>
@@ -526,7 +507,7 @@ export function TicketsManager({
                         />
                       ) : null}
                       <h3 className="truncate font-semibold">
-                        {t(`fixtures.subjects.${ticket.subjectKey}`)}
+                        {ticket.subject}
                       </h3>
                     </div>
                     <p
@@ -558,7 +539,7 @@ export function TicketsManager({
                 </dl>
                 <div className="mt-4 flex items-center justify-between gap-4">
                   <p className="text-muted-foreground text-xs leading-5">
-                    {relativeActivity(ticket)}
+                    {formatTicketRelativeActivity(ticket.lastActivityAt, locale)}
                     <br />
                     {t(`activity.${ticket.lastActor}`)}
                   </p>
