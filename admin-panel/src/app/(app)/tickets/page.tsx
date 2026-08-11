@@ -1,4 +1,8 @@
 import { TicketsView } from "@/components/tickets/tickets-view";
+import {
+  mapApiError,
+  STAFF_API_ERROR_MESSAGES,
+} from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
 import type { TicketType } from "@/lib/data/tickets-data";
 import { TICKET_STATUS } from "@/lib/data/tickets-data";
@@ -8,37 +12,69 @@ import {
 } from "@/lib/tickets/map-admin-ticket";
 import { readEnumParam } from "@/lib/url-search-params";
 
+const PAGE_SIZE = 50;
+
 const TICKET_STATUS_FILTER_VALUES = [
   "ALL",
   ...Object.values(TICKET_STATUS),
 ] as const;
 
 export type TicketsPageProps = {
-  searchParams: Promise<{ status?: string | string[] }>;
+  searchParams: Promise<{
+    status?: string | string[];
+    page?: string | string[];
+  }>;
 };
+
+function readPageParam(value: string | string[] | undefined): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const parsed = Number.parseInt(raw ?? "1", 10);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1;
+  }
+  return parsed;
+}
 
 export default async function TicketsPage({ searchParams }: TicketsPageProps) {
   const params = await searchParams;
-  const initialStatus =
+  const status =
     readEnumParam(params.status, TICKET_STATUS_FILTER_VALUES) ?? "ALL";
+  const page = readPageParam(params.page);
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const query = new URLSearchParams({
+    skip: String(skip),
+    take: String(PAGE_SIZE),
+  });
+  if (status !== "ALL") {
+    query.set("status", status);
+  }
 
   let tickets: TicketType[] = [];
+  let total = 0;
   let loadError: string | null = null;
 
   try {
     const response = await serverFetch<AdminTicketListResponse>(
-      "/admin/tickets?skip=0&take=50",
+      `/admin/tickets?${query.toString()}`,
       { method: "GET" },
     );
 
     if (!response.success || !response.data) {
-      loadError = "بارگذاری تیکت‌ها ممکن نیست.";
+      const mapped = mapApiError(response);
+      loadError = mapped
+        ? STAFF_API_ERROR_MESSAGES[mapped.key]
+        : STAFF_API_ERROR_MESSAGES.generic;
     } else {
       tickets = mapAdminTicketListToUi(response.data);
+      total = response.data.total;
     }
   } catch {
-    loadError = "سرویس تیکت در دسترس نیست.";
+    loadError = STAFF_API_ERROR_MESSAGES.unavailable;
   }
+
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
 
   return (
     <div className="flex flex-1 flex-col gap-6 pt-4">
@@ -54,7 +90,13 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
           {loadError}
         </div>
       ) : (
-        <TicketsView tickets={tickets} initialStatus={initialStatus} />
+        <TicketsView
+          tickets={tickets}
+          initialStatus={status}
+          total={total}
+          page={safePage}
+          pageSize={PAGE_SIZE}
+        />
       )}
     </div>
   );

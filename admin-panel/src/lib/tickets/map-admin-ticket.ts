@@ -1,8 +1,10 @@
 import type {
+  TicketPriorityType,
   TicketServiceType,
   TicketStatusType,
   TicketType,
 } from "@/lib/data/tickets-data";
+import { TICKET_PRIORITY } from "@/lib/data/tickets-data";
 
 export type AdminTicketListItemDto = {
   id: string;
@@ -10,7 +12,7 @@ export type AdminTicketListItemDto = {
   subject: string;
   service: TicketServiceType;
   status: TicketStatusType;
-  priority: string;
+  priority: TicketPriorityType | string;
   tenant: {
     id: string;
     name: string;
@@ -34,6 +36,11 @@ export type AdminTicketListItemDto = {
   createdAt: string;
   updatedAt: string;
 };
+
+function mapPriority(value: string): TicketPriorityType | undefined {
+  const priorities = Object.values(TICKET_PRIORITY) as string[];
+  return priorities.includes(value) ? (value as TicketPriorityType) : undefined;
+}
 
 export type AdminTicketMessageDto = {
   id: string;
@@ -74,6 +81,7 @@ export type AdminTicketListResponse = {
 
 function mapListItemToTicket(item: AdminTicketListItemDto): TicketType {
   const fullName = item.createdBy.fullName?.trim() || "مشتری";
+  const assigneeName = item.assignee?.fullName?.trim() || null;
 
   return {
     id: item.id,
@@ -95,7 +103,15 @@ function mapListItemToTicket(item: AdminTicketListItemDto): TicketType {
     },
     messages: [],
     status: item.status,
+    priority: mapPriority(item.priority),
+    tenant: {
+      id: item.tenant.id,
+      name: item.tenant.name,
+    },
     assigneeId: item.assignee?.id ?? null,
+    assigneeName,
+    resolvedAt: item.resolvedAt,
+    autoCloseAt: item.autoCloseAt,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   };

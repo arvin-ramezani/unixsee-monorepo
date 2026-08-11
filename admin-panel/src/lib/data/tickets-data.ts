@@ -9,6 +9,16 @@ export const TICKET_STATUS = {
 export type TicketStatusType =
   (typeof TICKET_STATUS)[keyof typeof TICKET_STATUS];
 
+export const TICKET_PRIORITY = {
+  LOW: "LOW",
+  NORMAL: "NORMAL",
+  HIGH: "HIGH",
+  URGENT: "URGENT",
+} as const;
+
+export type TicketPriorityType =
+  (typeof TICKET_PRIORITY)[keyof typeof TICKET_PRIORITY];
+
 export type TicketType = {
   id: string;
   number?: string;
@@ -38,7 +48,15 @@ export type TicketType = {
     createdAt: string;
   }[];
   status: TicketStatusType;
+  priority?: TicketPriorityType;
+  tenant?: {
+    id: string;
+    name: string;
+  };
   assigneeId?: string | null;
+  assigneeName?: string | null;
+  resolvedAt?: string | null;
+  autoCloseAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };

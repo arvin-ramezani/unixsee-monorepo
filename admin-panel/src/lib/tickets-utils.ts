@@ -1,5 +1,7 @@
 import {
+  TICKET_PRIORITY,
   TICKET_STATUS,
+  type TicketPriorityType,
   type TicketStatusType,
   type TicketType,
 } from "@/lib/data/tickets-data";
@@ -33,6 +35,13 @@ export const TICKET_STATUS_CONFIG: Record<
     emoji: "⚫",
     className: "bg-muted text-muted-foreground",
   },
+};
+
+export const TICKET_PRIORITY_LABELS: Record<TicketPriorityType, string> = {
+  [TICKET_PRIORITY.LOW]: "کم",
+  [TICKET_PRIORITY.NORMAL]: "عادی",
+  [TICKET_PRIORITY.HIGH]: "بالا",
+  [TICKET_PRIORITY.URGENT]: "فوری",
 };
 
 export function toPersianDigits(value: string | number): string {
@@ -135,10 +144,15 @@ export function filterTickets(
     if (!normalizedQuery) return true;
 
     const lastMessage = getLastMessage(ticket)?.text ?? "";
+    const tenantName = ticket.tenant?.name ?? "";
+    const assigneeName = ticket.assigneeName ?? "";
 
     return (
       ticket.id.toLowerCase().includes(normalizedQuery) ||
       ticket.fullName.toLowerCase().includes(normalizedQuery) ||
+      ticket.subject.toLowerCase().includes(normalizedQuery) ||
+      tenantName.toLowerCase().includes(normalizedQuery) ||
+      assigneeName.toLowerCase().includes(normalizedQuery) ||
       lastMessage.toLowerCase().includes(normalizedQuery) ||
       formatTicketNumber(ticket.id, ticket.number)
         .toLowerCase()

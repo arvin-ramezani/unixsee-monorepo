@@ -35,6 +35,7 @@ import {
 import {
   formatTicketNumber,
   getInitials,
+  TICKET_PRIORITY_LABELS,
   TICKET_STATUS_CONFIG,
   toPersianDigits,
 } from "@/lib/tickets-utils";
@@ -140,6 +141,26 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {TICKET_STATUS_CONFIG[ticket.status].label}
             </span>
           </div>
+          {ticket.priority ? (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">اولویت</span>
+              <span className="font-medium">
+                {TICKET_PRIORITY_LABELS[ticket.priority]}
+              </span>
+            </div>
+          ) : null}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">مسئول</span>
+            <span className="font-medium">
+              {ticket.assigneeName?.trim() || "بدون مسئول"}
+            </span>
+          </div>
+          {ticket.tenant?.name ? (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">مستأجر</span>
+              <span className="font-medium">{ticket.tenant.name}</span>
+            </div>
+          ) : null}
           <div className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">ایجاد شد</span>
             <span className="font-medium">
@@ -152,6 +173,22 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {formatPersianDate(ticket.updatedAt)}
             </span>
           </div>
+          {ticket.resolvedAt ? (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">زمان حل</span>
+              <span className="font-medium">
+                {formatPersianDateTime(ticket.resolvedAt)}
+              </span>
+            </div>
+          ) : null}
+          {ticket.status === TICKET_STATUS.RESOLVED && ticket.autoCloseAt ? (
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">بستن خودکار</span>
+              <span className="font-medium">
+                {formatPersianDateTime(ticket.autoCloseAt)}
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

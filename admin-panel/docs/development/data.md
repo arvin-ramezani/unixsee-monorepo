@@ -5,7 +5,7 @@
 | Surface | Transport | Notes |
 |---|---|---|
 | Staff login / session | Server Actions + `unixsee_admin_*` cookies + refresh BFF | ADR 0012 Layer 1 |
-| `/tickets`, `/tickets/[id]` | RSC `server-fetch` + ticket Server Actions | Admin contract [`tickets-admin.md`](../../../docs/backend/contracts/tickets-admin.md) |
+| `/tickets`, `/tickets/[id]` | RSC `server-fetch` + ticket Server Actions | Nest `status` / `skip` / `take` from URL; contract [`tickets-admin.md`](../../../docs/backend/contracts/tickets-admin.md) |
 
 ### Fixture-backed (not yet wired)
 
