@@ -4,7 +4,8 @@
 >
 > **Date:** 2026-08-10
 >
-> **Does not supersede:** [0003](./0003-ui-only-phase-boundaries.md)
+> **Related:** Implementation authorized by [0011](./0011-client-nest-auth-integration.md)
+> (which supersedes [0003](./0003-ui-only-phase-boundaries.md))
 
 ## Context
 
@@ -83,15 +84,15 @@ Convention detail:
 
 ## Consequences
 
-- Design is binding for future `client/` Nest auth/data-fetch work.
-- **Live Nest/auth/API wiring in Next.js apps remains forbidden** until a later
-  ADR supersedes or amends [0003](./0003-ui-only-phase-boundaries.md).
+- Design is binding for `client/` Nest auth/data-fetch work.
+- Live Nest wiring in `client/` is authorized by
+  [0011](./0011-client-nest-auth-integration.md) (`admin-panel/` remains UI-only).
 - Cookie-only BFF (Model B) is rejected for `client/` unless a new ADR replaces
   this decision.
-- When 0003 is lifted, implement against this ADR and
+- Implement against this ADR and
   [`../../frontend/client-data-fetching.md`](../../frontend/client-data-fetching.md)—not
   ad-hoc blog patterns.
 - XSS can still read a live in-memory access token; mitigate with short access
   TTL, refresh rotation on Nest, and never exposing refresh to JS.
-- TanStack Query and `jose` are expected dependencies at implementation time;
-  do not add them under the UI-only phase.
+- `jose` is required for expiry buffers; TanStack Query lands when interactive
+  dashboard panes need it (not required for the phone OTP auth slice).

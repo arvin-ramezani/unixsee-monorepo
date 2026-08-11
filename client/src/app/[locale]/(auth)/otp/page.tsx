@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { OtpForm } from "@/components/auth/otp-form";
+import { redirect } from "@/i18n/navigation";
 import type { IdentifierMode } from "@/lib/zod-schemas/auth-schemas";
 import type { LocaleType } from "@/types/intl.types";
 
@@ -11,6 +12,7 @@ type Props = {
     mode?: string;
     identifier?: string;
     display?: string;
+    returnTo?: string;
   }>;
 };
 
@@ -29,10 +31,17 @@ export default async function OtpPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
   const query = await searchParams;
   const mode = resolveMode(query.mode);
+
+  if (mode === "email") {
+    redirect({ href: "/sign-in", locale });
+  }
+
   const display =
     query.display?.trim() ||
     query.identifier?.trim() ||
-    (mode === "phone" ? "+98 ***" : "***@***");
+    "+98 ***";
 
-  return <OtpForm mode={mode} display={display} />;
+  return (
+    <OtpForm display={display} returnTo={query.returnTo} />
+  );
 }

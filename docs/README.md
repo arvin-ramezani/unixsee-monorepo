@@ -11,7 +11,7 @@ and engineering conventions.
 | Understand the system | [`architecture/overview.md`](./architecture/overview.md) |
 | Know which folder owns what | [`architecture/monorepo.md`](./architecture/monorepo.md) |
 | Implement admin UI | [`product/README.md`](./product/README.md) → Phase 1 → matching UX flow → [`frontend/README.md`](./frontend/README.md) |
-| Plan client Nest auth / data fetching | [`frontend/client-data-fetching.md`](./frontend/client-data-fetching.md) + ADR [`architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](./architecture/decisions/0010-client-hybrid-auth-data-fetching.md) (blocked by ADR 0003) |
+| Plan client Nest auth / data fetching | [`frontend/client-data-fetching.md`](./frontend/client-data-fetching.md) + ADRs [`architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](./architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0011`](./architecture/decisions/0011-client-nest-auth-integration.md) |
 | Work on NestJS | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) → [`backend/contracts/`](./backend/contracts/) |
 | Work on the Phase 1 VPS agent | [`agent/README.md`](./agent/README.md) + [`agent/setup.md`](./agent/setup.md) + [`prd.md`](./agent/prd.md) |
 | Work on monitoring-agent (later) | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) |
@@ -35,7 +35,7 @@ docs/
 
 1. [`architecture/overview.md`](./architecture/overview.md)
 2. [`architecture/monorepo.md`](./architecture/monorepo.md)
-3. [`architecture/decisions/0003-ui-only-phase-boundaries.md`](./architecture/decisions/0003-ui-only-phase-boundaries.md)
+3. [`architecture/decisions/0011-client-nest-auth-integration.md`](./architecture/decisions/0011-client-nest-auth-integration.md) (`client/` Nest auth; supersedes 0003)
 4. [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) (as needed)
 5. Surface-specific docs for the work you are doing
 

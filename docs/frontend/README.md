@@ -17,7 +17,7 @@ both unless a doc says otherwise.
 4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first,
    logical insets (`inset-s-*` not `start-*`)
 5. [`client-auth-ui.md`](./client-auth-ui.md) — public customer auth UI shell (when building auth)
-6. [`client-data-fetching.md`](./client-data-fetching.md) — planned hybrid auth session + Nest data fetching (blocked by ADR 0003)
+6. [`client-data-fetching.md`](./client-data-fetching.md) — hybrid auth session + Nest data fetching (phone OTP live)
 7. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
 
 ## Stack (summary)
@@ -31,8 +31,9 @@ See [`../architecture/decisions/0002-stack-choices.md`](../architecture/decision
 
 ## Phase boundaries
 
-UI-only until integration is explicitly allowed:
-[`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md).
+`client/` Nest auth + JWT fetch: ADR
+[`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
+(supersedes 0003). `admin-panel/` remains UI-only until its own ADR.
 
 ## Product entry points
 

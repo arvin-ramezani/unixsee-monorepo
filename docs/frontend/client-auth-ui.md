@@ -324,9 +324,10 @@ Replace stub `(website)/register` when implementing.
 ## Related
 
 - Flow: [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
-- Planned Nest session + data fetching (blocked by ADR 0003):
-  [`client-data-fetching.md`](./client-data-fetching.md) and
-  [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+- Planned Nest session + data fetching:
+  [`client-data-fetching.md`](./client-data-fetching.md) and ADRs
+  [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
+  [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 - Styling: [`styling.md`](./styling.md)
 - Next.js: [`nextjs.md`](./nextjs.md)
 - Client UI engineering: [`../../client/docs/engineering/ui.md`](../../client/docs/engineering/ui.md)

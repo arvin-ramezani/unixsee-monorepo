@@ -1,8 +1,10 @@
 # 0003. UI-only phase boundaries
 
-> **Status:** Accepted
+> **Status:** Superseded
 >
 > **Date:** 2026-08-08
+>
+> **Superseded by:** [0011](./0011-client-nest-auth-integration.md)
 
 ## Context
 
@@ -34,3 +36,9 @@ Until a superseding ADR or explicit integration specification lands:
   claim they are approved.
 - When integration begins, supersede or amend this ADR and update
   [`../../quality/validation.md`](../../quality/validation.md).
+
+## Supersession
+
+Replaced by [0011](./0011-client-nest-auth-integration.md): `client/` may wire
+Nest auth and customer JWT fetches; `admin-panel/` remains UI-only until its own
+ADR; UIs still never talk to agents or VPS hosts.

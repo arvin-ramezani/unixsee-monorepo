@@ -7,6 +7,8 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 
+import { resendLoginOtp } from "@/actions/auth/request-login-otp";
+import { verifyLoginOtp } from "@/actions/auth/verify-login-otp";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import {
   AuthCrossLinks,
@@ -14,39 +16,34 @@ import {
 } from "@/components/auth/auth-cross-links";
 import { AuthPageHeader } from "@/components/auth/auth-page-header";
 import { AuthSubmitButton } from "@/components/auth/auth-submit-button";
-import {
-  AUTH_MOCK_DELAY_MS,
-  translateFormError,
-  wait,
-} from "@/components/auth/auth-utils";
+import { translateFormError } from "@/components/auth/auth-utils";
+import { useAuthStore } from "@/components/providers/auth-store-provider";
 import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation";
+import { isSafeReturnToPath } from "@/lib/auth/auth-utils";
 import type { FormErrorKey } from "@/lib/form-errors";
-import {
-  MOCK_OTP_FAIL_CODE,
-  otpSchema,
-  type IdentifierMode,
-  type OtpSchemaType,
-} from "@/lib/zod-schemas/auth-schemas";
+import { otpSchema, type OtpSchemaType } from "@/lib/zod-schemas/auth-schemas";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
 export type OtpFormProps = {
-  mode: IdentifierMode;
   display: string;
+  returnTo?: string;
 };
 
-export function OtpForm({ mode, display }: OtpFormProps) {
+export function OtpForm({ display, returnTo }: OtpFormProps) {
   const t = useTranslations("Auth.otp");
   const tCommon = useTranslations("Auth.common");
   const tErrors = useTranslations("FormErrors");
+  const tAuthErrors = useTranslations("Auth.errors");
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
   const [success, setSuccess] = useState(false);
+  const login = useAuthStore((state) => state.login);
 
   const form = useForm<OtpSchemaType>({
     resolver: zodResolver(otpSchema),
@@ -76,30 +73,51 @@ export function OtpForm({ mode, display }: OtpFormProps) {
 
   async function onSubmit(data: OtpSchemaType) {
     setFormError(null);
-    await wait(AUTH_MOCK_DELAY_MS);
 
-    if (data.code === MOCK_OTP_FAIL_CODE) {
-      setFormError(t("wrongCode"));
+    const result = await verifyLoginOtp({ code: data.code });
+
+    if (!result.ok) {
+      if (result.errorKey === "wrongCode") {
+        setFormError(t("wrongCode"));
+      } else if (result.errorKey === "expiredSession") {
+        setFormError(tAuthErrors("expiredSession"));
+      } else {
+        setFormError(tAuthErrors(result.errorKey));
+      }
       form.setValue("code", "");
       return;
     }
 
+    login({
+      accessToken: result.accessToken,
+      serverClockOffsetInSeconds: result.serverClockOffsetInSeconds,
+      user: result.user,
+    });
+
     setSuccess(true);
-    await wait(reduceMotion ? 120 : 380);
-    router.push("/dashboard");
+    await new Promise((resolve) =>
+      window.setTimeout(resolve, reduceMotion ? 120 : 380),
+    );
+
+    const destination = isSafeReturnToPath(returnTo) ? returnTo! : "/dashboard";
+    router.push(destination);
   }
 
-  function handleResend() {
+  async function handleResend() {
     if (cooldown > 0 || pending) return;
     setFormError(null);
     form.setValue("code", "");
+
+    const result = await resendLoginOtp();
+    if (!result.ok) {
+      setFormError(tAuthErrors(result.errorKey));
+      return;
+    }
+
     setCooldown(RESEND_COOLDOWN_SECONDS);
   }
 
-  const maskedMessage =
-    mode === "phone"
-      ? tCommon("maskedPhone", { identifier: display })
-      : tCommon("maskedEmail", { identifier: display });
+  const maskedMessage = tCommon("maskedPhone", { identifier: display });
 
   return (
     <div>
@@ -171,7 +189,9 @@ export function OtpForm({ mode, display }: OtpFormProps) {
           variant="link"
           size="plain"
           disabled={cooldown > 0 || pending}
-          onClick={handleResend}
+          onClick={() => {
+            void handleResend();
+          }}
           className="text-link min-h-11 px-0 text-sm font-medium"
         >
           {cooldown > 0

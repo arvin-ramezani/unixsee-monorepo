@@ -1,16 +1,16 @@
 # Client data fetching (hybrid auth)
 
-> **Status:** Draft  
+> **Status:** Accepted  
 > **Owner:** Frontend  
 > **Last verified:** 2026-08-10  
-> **Applies to:** `client/` (planned)  
-> **ADR:** [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+> **Applies to:** `client/`  
+> **ADR:** [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)  
+> **Integration:** [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 
-**Planned architecture only.** Live Nest/auth wiring in Next.js apps is
-**blocked** by
-[`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md).
-Paths below are target layout when a later ADR lifts UI-only—not a claim that
-modules already exist in `client/`.
+Live Nest wiring is **allowed in `client/`** for auth and customer JWT fetches
+(ADR 0011). First live slice: **phone OTP** sign-in. Email OTP, password login,
+Google, and TanStack Query dashboard panes remain deferred. `admin-panel/` stays
+UI-only.
 
 ## Purpose
 
@@ -36,7 +36,9 @@ redesign OTP, refresh, or invent DTOs here.
 Never persist access or refresh in `localStorage` / `sessionStorage`. Refresh
 must never appear in browser JSON responses from the refresh Route Handler.
 
-## Planned module map
+## Module map
+
+Paths under `client/src/` (phone OTP slice implemented; Query provider deferred):
 
 ```text
 client/src/
@@ -70,17 +72,16 @@ sequenceDiagram
   participant Browser as Browser
   participant Store as ZustandAuthStore
 
-  UI->>SA: submit email auth
-  SA->>Nest: publicFetch auth endpoint
+  UI->>SA: submit phone OTP request
+  SA->>Nest: publicFetch auth/otp
   Nest-->>SA: access + refresh + serverTime
   SA->>SA: set HTTP-only cookies
   SA-->>UI: success + access for seed
   UI->>Store: setAccessToken memory only
 ```
 
-Exact Nest email path (password vs OTP-email) is product/backend open until
-contracts confirm it. Prefer Server Actions + `useActionState` for credential
-exchange when implementation starts.
+Exact Nest email OTP path is unsupported today; phone OTP is the live slice.
+Prefer Server Actions for credential/OTP exchange.
 
 ### Server Component fetch
 
@@ -107,7 +108,7 @@ flowchart LR
 ```
 
 Auth logic stays in `lib/auth/*`. React Query must not decode JWTs or call
-refresh itself.
+refresh itself (Query deferred for this slice).
 
 ### Proxy gate
 
@@ -134,18 +135,20 @@ privileged data helper. Do not claim Proxy “protects” Server Actions.
   React Query is introduced so the client does not duplicate the first fetch
   unnecessarily.
 
-## Email-first implementation order (after ADR 0003 is lifted)
+## Implementation status
 
-1. Public email auth Server Action via `public-fetch` → Nest.
-2. Set HTTP-only access + refresh (+ clock offset) cookies.
-3. Seed Zustand access token for the client store.
-4. `proxy.ts` gate for locale-aware `/dashboard/*`.
-5. RSC `server-fetch` for `/users/me` (or equivalent) shell.
-6. Add TanStack Query + `client-fetch` for interactive dashboard panes.
-7. Prefetch → dehydrate → hydrate only after auth helpers are stable.
+**Live (this slice):** phone OTP request/verify, hybrid cookies + Zustand access
+seed, refresh Route Handler, proxy dashboard gate, `GET /users/me` via
+`server-fetch`.
 
-OTP phone flows and Google remain product surfaces; wire them with the same
-token and fetch boundaries—do not invent a second session model.
+**Deferred:** email OTP (Nest phone-only DTOs), password login/register wiring,
+Google, forgot/reset, TanStack Query panes.
+
+## Implementation order (remaining)
+
+1. Email OTP only after Nest supports it—do not invent DTOs.
+2. Add TanStack Query + `client-fetch` for interactive dashboard panes.
+3. Prefetch → dehydrate → hydrate once Query is introduced.
 
 ## Non-goals
 
@@ -154,12 +157,13 @@ token and fetch boundaries—do not invent a second session model.
 - Inventing Nest DTOs beyond backend docs.
 - Treating external monitoring-app code as canonical Unixsee (inspiration only;
   not a monorepo source of truth).
-- Installing `jose` / TanStack Query or adding `lib/auth` while ADR 0003 holds.
+- Nest wiring in `admin-panel/` without its own ADR.
 
 ## Related
 
 - Design ADR: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
-- UI-only phase: [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)
+- Integration ADR: [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
+- Superseded UI-only: [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)
 - Auth UI: [`client-auth-ui.md`](./client-auth-ui.md)
 - Auth UX: [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
 - Nest routes: [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)

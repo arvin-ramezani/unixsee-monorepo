@@ -14,9 +14,10 @@ Before making changes, read in this order as relevant to the task:
    - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md) and
      [`docs/frontend/nextjs.md`](./docs/frontend/nextjs.md) (version-matched
      Next.js docs under each app’s `node_modules/next/dist/docs/`)
-   - Client auth session / Nest data fetching (planned; ADR 0003 blocks live
-     wiring): [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
-     and ADR [`docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+   - Client auth session / Nest data fetching:
+     [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
+     and ADRs [`0010`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
+     [`0011`](./docs/architecture/decisions/0011-client-nest-auth-integration.md)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
   and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
@@ -24,7 +25,7 @@ Before making changes, read in this order as relevant to the task:
 4. Product: [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md)
 5. Matching UX flow under [`docs/product/ux-flows/`](./docs/product/ux-flows/) when doing admin UI
 
-Also respect [`docs/architecture/decisions/0003-ui-only-phase-boundaries.md`](./docs/architecture/decisions/0003-ui-only-phase-boundaries.md) for Next.js apps, and backend ADRs [`0004`](./docs/architecture/decisions/0004-api-audience-namespaces.md) / [`0005`](./docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md) when changing Nest routes or modules.
+Also respect [`docs/architecture/decisions/0011-client-nest-auth-integration.md`](./docs/architecture/decisions/0011-client-nest-auth-integration.md) for `client/` Nest auth/data-fetch (supersedes ADR 0003), and backend ADRs [`0004`](./docs/architecture/decisions/0004-api-audience-namespaces.md) / [`0005`](./docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md) when changing Nest routes or modules. `admin-panel/` remains UI-only until its own ADR.
 
 ## Repository layout
 
@@ -42,8 +43,9 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
 - Do not invent NestJS routes or DTOs that conflict with
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md).
 - Do not redesign authentication; extend role/capability checks on `/admin` instead.
-- Do not add API, database, auth, or backend services inside Next.js apps while
-  the UI-only phase is in force.
+- Do not add API, database, auth, or backend services inside Next.js apps except
+  where an Accepted ADR allows it (`client/` Nest auth/JWT fetch: ADR 0011).
+  `admin-panel/` remains UI-only until its own ADR.
 - Admin and client never talk to agents or VPS hosts; NestJS is the control
   plane.
 - Do not invent unavailable npm/pnpm scripts or claim lint/build/tests passed

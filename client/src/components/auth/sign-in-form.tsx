@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
 
+import { requestLoginOtp } from "@/actions/auth/request-login-otp";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import {
   AuthCrossLinks,
@@ -13,11 +14,7 @@ import {
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthPageHeader } from "@/components/auth/auth-page-header";
 import { AuthSubmitButton } from "@/components/auth/auth-submit-button";
-import {
-  AUTH_MOCK_DELAY_MS,
-  translateFormError,
-  wait,
-} from "@/components/auth/auth-utils";
+import { translateFormError } from "@/components/auth/auth-utils";
 import { EmailField } from "@/components/auth/email-field";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { IdentifierModeToggle } from "@/components/auth/identifier-mode-toggle";
@@ -61,17 +58,23 @@ export function SignInForm() {
 
   async function onSubmit(data: SignInSchemaType) {
     setFormError(null);
-    await wait(AUTH_MOCK_DELAY_MS);
 
-    const identifier =
-      data.mode === "phone"
-        ? normalizeNationalPhone(data.phone)
-        : data.email.trim();
+    if (data.mode === "email") {
+      setFormError(tAuthErrors("emailOtpComingSoon"));
+      return;
+    }
+
+    const identifier = normalizeNationalPhone(data.phone);
+    const result = await requestLoginOtp({ phone: identifier });
+
+    if (!result.ok) {
+      setFormError(tAuthErrors(result.errorKey));
+      return;
+    }
 
     const params = new URLSearchParams({
-      mode: data.mode,
-      identifier,
-      display: maskIdentifier(data.mode, identifier),
+      mode: "phone",
+      display: maskIdentifier("phone", identifier),
     });
 
     router.push(`/otp?${params.toString()}`);
@@ -79,7 +82,9 @@ export function SignInForm() {
 
   function switchMode(next: IdentifierMode) {
     form.setValue("mode", next);
-    setFormError(null);
+    setFormError(
+      next === "email" ? tAuthErrors("emailOtpComingSoon") : null,
+    );
     form.clearErrors();
   }
 
@@ -123,7 +128,7 @@ export function SignInForm() {
                 <EmailField
                   value={field.value ?? ""}
                   onChange={field.onChange}
-                  disabled={pending}
+                  disabled
                   error={translateError(fieldState.error?.message)}
                 />
               )}
@@ -139,6 +144,7 @@ export function SignInForm() {
           className="mt-6"
           loading={pending}
           pendingLabel={tCommon("sending")}
+          disabled={mode === "email"}
         >
           {tCommon("sendCode")}
         </AuthSubmitButton>
@@ -155,7 +161,9 @@ export function SignInForm() {
             {t("signUpLink")}
           </AuthTextLink>
         </p>
-        <p className="text-muted-foreground text-xs">{tCommon("prototypeNote")}</p>
+        <p className="text-muted-foreground text-xs">
+          {tCommon("phoneOtpLiveNote")}
+        </p>
       </AuthCrossLinks>
     </div>
   );

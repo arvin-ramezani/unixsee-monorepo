@@ -32,8 +32,9 @@ Use the existing stack unless the user explicitly approves a change.
 - This app is presentation-only for managed-service data: NestJS owns auth,
   persistence, orchestration, and agent control.
 - Do not talk to VPS agents or infrastructure hosts from the browser.
-- Follow UI-only phase boundaries until a superseding ADR allows Nest
-  integration: [`../docs/architecture/decisions/0003-ui-only-phase-boundaries.md`](../docs/architecture/decisions/0003-ui-only-phase-boundaries.md).
+- Follow Nest integration rules for this app:
+  [`../docs/architecture/decisions/0011-client-nest-auth-integration.md`](../docs/architecture/decisions/0011-client-nest-auth-integration.md)
+  (supersedes UI-only ADR 0003 for `client/`).
 - WordPress and WooCommerce are customer workloads, not Unixsee CMS/control-plane dependencies.
 - Do not implement Nest modules, edge agents, or staff admin shell here.
   Staff UI belongs in `admin-panel/`.
@@ -45,7 +46,7 @@ Use the existing stack unless the user explicitly approves a change.
 | Product behavior | [`../docs/product/phase-1-application-features.md`](../docs/product/phase-1-application-features.md) |
 | Monorepo ownership | [`../docs/architecture/monorepo.md`](../docs/architecture/monorepo.md) |
 | Shared frontend conventions | [`../docs/frontend/README.md`](../docs/frontend/README.md) |
-| Auth session / Nest data fetching (planned; ADR 0003 blocks wiring) | [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md) + ADR [`../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) |
+| Auth session / Nest data fetching | [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md) + ADRs [`0010`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0011`](../docs/architecture/decisions/0011-client-nest-auth-integration.md) |
 | File placement in this app | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md) |
 | App Router / data / i18n | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md) |
 | UI / RTL / a11y | [`docs/engineering/ui.md`](docs/engineering/ui.md) |

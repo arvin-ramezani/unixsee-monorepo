@@ -22,7 +22,8 @@ Applies to `admin-panel/` and `client/`.
 - Prefer Server Components; Client Components only when required.
 - Use `proxy.ts` for Next.js 16 request interception; do not add `middleware.ts` for new work.
 - Feature components under `src/components/<domain>/`; primitives under `src/components/ui/`.
-- Respect UI-only phase: no NestJS/DB/auth/agent integration until ADRs allow it.
+- Respect Nest integration ADRs: `client/` may wire Nest auth/JWT fetch (ADR
+  0011); `admin-panel/` stays UI-only until its own ADR.
 - For version-sensitive Next.js behavior (fetch, cache, Server Actions, Cache Components, etc.), read that app’s `node_modules/next/dist/docs/` — installed docs beat model memory. Details: `docs/frontend/nextjs.md`.
 
 ## Canonical docs

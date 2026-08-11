@@ -60,7 +60,8 @@
       "otpHint": "Enter the 6-digit code we sent",
       "maskedPhone": "Code sent to {identifier}",
       "maskedEmail": "Code sent to {identifier}",
-      "prototypeNote": "UI prototype — authentication is not connected yet."
+      "prototypeNote": "UI prototype — authentication is not connected yet.",
+      "phoneOtpLiveNote": "Phone OTP sign-in is connected to the API. Email OTP is coming soon."
     },
     "signIn": {
       "title": "Sign in",
@@ -114,7 +115,10 @@
     "errors": {
       "generic": "Something went wrong. Please try again.",
       "unavailable": "Authentication is temporarily unavailable. Please try again later.",
-      "validation": "Please review the highlighted fields."
+      "validation": "Please review the highlighted fields.",
+      "rateLimited": "Too many attempts. Please wait and try again.",
+      "emailOtpComingSoon": "Email OTP is coming soon. Sign in with your phone for now.",
+      "expiredSession": "Your verification session expired. Start again from sign in."
     }
   },
   "ServerActionMessages": {

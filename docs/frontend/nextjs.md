@@ -48,11 +48,11 @@ The installed Next.js documentation is authoritative over model knowledge.
 
 ## Authenticated data fetching (`client/`)
 
-Planned hybrid session + Nest fetch conventions (design only while ADR 0003
-holds):
+Hybrid session + Nest fetch conventions (phone OTP live under ADR 0011):
 
 - [`client-data-fetching.md`](./client-data-fetching.md)
-- ADR: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+- ADRs: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md),
+  [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 
 ## Tailwind
 
