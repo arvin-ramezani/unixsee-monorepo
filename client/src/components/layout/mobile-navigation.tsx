@@ -125,8 +125,8 @@ export default function MobileNavigation({
 
       <div className="flex flex-col gap-3">
         <Button asChild variant="outline" className="h-12 w-full">
-          <Link href="/dashboard" onClick={() => setOpen(false)}>
-            {tDashboardNavigation("dashboard")}
+          <Link href="/sign-in" onClick={() => setOpen(false)}>
+            {tDashboardNavigation("signIn")}
           </Link>
         </Button>
 

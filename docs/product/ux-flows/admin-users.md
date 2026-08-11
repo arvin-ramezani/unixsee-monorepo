@@ -75,7 +75,7 @@ Unixsee can onboard customers and activate managed websites consistently while p
 
 #### Out of scope
 
-- Designing the public-site auth/signup, password, verification-challenge, or session journey. Public signup may be a real account origin, but that customer journey belongs in a future public/customer auth UX document.
+- Designing the public-site auth/signup, password, verification-challenge, or session journey in this admin doc. Public signup may be a real account origin; the customer journey is specified in [`client-auth.md`](./client-auth.md) (UI companion: [`../../frontend/client-auth-ui.md`](../../frontend/client-auth-ui.md)).
 - Customer self-service profile editing in the customer dashboard beyond what admin must display as state.
 - Designing the public plan-request form; admin consumes resulting requests via `admin-plan-requests.md`.
 - Staff impersonation of customers.
@@ -693,7 +693,7 @@ This flow supports:
 | Assign tenant/plan | If tenant missing → inline create user/tenant/owner → resume assign; prefer chosen plan from a linked plan request when present |
 | Managed website active/provisioning | Still requires explicit assignment/activation prerequisites |
 
-Recommended follow-up: keep public auth/signup UX in a separate future document; consume only account-origin outcomes here.
+Recommended follow-up: consume public auth/signup only as account-origin outcomes here; customer journey lives in [`client-auth.md`](./client-auth.md).
 
 ## Appendix B — Minimum inline create information architecture
 

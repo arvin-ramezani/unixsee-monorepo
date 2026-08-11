@@ -23,6 +23,7 @@ export default function Logo({ className, mode = "default" }: LogoProps) {
         alt="Unixsee"
         fill
         unoptimized
+        loading="eager"
       />
       <Image
         className={cn("hidden dark:inline-block", {

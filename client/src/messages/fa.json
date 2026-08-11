@@ -15,7 +15,107 @@
     "phoneInvalid": "لطفاً یک شماره تلفن معتبر وارد کنید",
     "messageTooShort": "پیام باید حداقل ۲۰ کاراکتر باشد",
     "messageRequired": "محتوای پیام الزامی است",
-    "websiteInvalid": "آدرس وبسایت معتبر نیست"
+    "websiteInvalid": "آدرس وبسایت معتبر نیست",
+    "passwordRequired": "رمز عبور الزامی است",
+    "passwordTooShort": "رمز عبور باید حداقل ۸ کاراکتر باشد",
+    "passwordMismatch": "رمزهای عبور یکسان نیستند",
+    "otpRequired": "کد تأیید را وارد کنید",
+    "otpInvalid": "یک کد ۶ رقمی معتبر وارد کنید"
+  },
+  "Auth": {
+    "common": {
+      "or": "یا",
+      "continue": "ادامه",
+      "continuing": "در حال ادامه…",
+      "verify": "تأیید",
+      "verifying": "در حال تأیید…",
+      "submit": "ارسال",
+      "submitting": "در حال ارسال…",
+      "sending": "در حال ارسال…",
+      "sendCode": "ارسال کد",
+      "setPassword": "تنظیم رمز عبور",
+      "settingPassword": "در حال ذخیره…",
+      "requestNewLink": "درخواست لینک جدید",
+      "backToSignIn": "بازگشت به ورود",
+      "editIdentifier": "ویرایش",
+      "resendCode": "ارسال مجدد کد",
+      "resendIn": "ارسال مجدد تا {seconds} ثانیه",
+      "google": "ادامه با گوگل",
+      "googleComingSoon": "ورود با گوگل به‌زودی فعال می‌شود",
+      "showPassword": "نمایش رمز عبور",
+      "hidePassword": "مخفی کردن رمز عبور",
+      "countryCode": "کد کشور",
+      "phoneLabel": "شماره موبایل",
+      "phonePlaceholder": "۹۱۲ ۰۰۰ ۰۰۰۰",
+      "emailLabel": "ایمیل",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "رمز عبور",
+      "confirmPasswordLabel": "تکرار رمز عبور",
+      "fullNameLabel": "نام و نام خانوادگی",
+      "fullNamePlaceholder": "نام کامل شما",
+      "modePhone": "موبایل",
+      "modeEmail": "ایمیل",
+      "identifierMode": "روش ورود",
+      "otpLabel": "کد تأیید",
+      "otpHint": "کد ۶ رقمی ارسال‌شده را وارد کنید",
+      "maskedPhone": "کد به {identifier} ارسال شد",
+      "maskedEmail": "کد به {identifier} ارسال شد",
+      "prototypeNote": "نمونه رابط کاربری — احراز هویت هنوز متصل نشده است."
+    },
+    "signIn": {
+      "title": "ورود",
+      "description": "با موبایل یا ایمیل یک کد یک‌بارمصرف دریافت کنید.",
+      "forgotPassword": "رمز عبور را فراموش کرده‌اید؟",
+      "noAccount": "حساب کاربری ندارید؟",
+      "signUpLink": "ثبت‌نام"
+    },
+    "signUp": {
+      "title": "ایجاد حساب",
+      "description": "چند اطلاعات کوتاه؛ سپس تماس شما را تأیید می‌کنیم.",
+      "haveAccount": "قبلاً حساب دارید؟",
+      "signInLink": "ورود",
+      "alreadyExistsTitle": "این حساب از قبل وجود دارد",
+      "alreadyExistsDescription": "با این مشخصات نمی‌توان حساب جدید ساخت. برای ادامه وارد شوید.",
+      "goToSignIn": "ورود"
+    },
+    "otp": {
+      "title": "کد تأیید را وارد کنید",
+      "description": "یک کد یک‌بارمصرف ارسال شد. ممکن است کمی طول بکشد.",
+      "wrongCode": "این کد معتبر نیست. دوباره تلاش کنید یا کد را مجدداً بفرستید.",
+      "rateLimited": "تلاش‌های زیادی انجام شده. کمی صبر کنید.",
+      "success": "تأیید شد"
+    },
+    "verifyEmail": {
+      "pendingTitle": "ایمیل خود را بررسی کنید",
+      "pendingDescription": "لینک تأیید ارسال شد. برای ادامه آن را باز کنید.",
+      "resend": "ارسال مجدد ایمیل تأیید",
+      "successTitle": "ایمیل تأیید شد",
+      "successDescription": "همه‌چیز آماده است. به داشبورد بروید.",
+      "continue": "ادامه به داشبورد",
+      "expiredTitle": "لینک منقضی شده",
+      "expiredDescription": "این لینک تأیید دیگر معتبر نیست. لینک جدید درخواست کنید.",
+      "changeEmail": "استفاده از ایمیل دیگر"
+    },
+    "forgotPassword": {
+      "title": "فراموشی رمز عبور",
+      "description": "ایمیل خود را وارد کنید؛ اگر حسابی وجود داشته باشد، راهنمای بازنشانی ارسال می‌شود.",
+      "submit": "ارسال لینک بازنشانی",
+      "sentTitle": "ایمیل خود را بررسی کنید",
+      "sentDescription": "اگر حسابی با این ایمیل وجود داشته باشد، راهنمای بازنشانی رمز ارسال شده است.",
+      "openEmail": "صندوق ورودی را باز کنید، سپس برای ورود بازگردید."
+    },
+    "resetPassword": {
+      "title": "رمز عبور جدید",
+      "description": "رمزی قوی انتخاب کنید که قبلاً اینجا استفاده نکرده‌اید.",
+      "deadTitle": "لینک منقضی یا نامعتبر",
+      "deadDescription": "این لینک بازنشانی قابل استفاده نیست. برای ادامه لینک جدید درخواست کنید.",
+      "successRedirect": "رمز به‌روز شد. برای ادامه وارد شوید."
+    },
+    "errors": {
+      "generic": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+      "unavailable": "احراز هویت موقتاً در دسترس نیست. بعداً تلاش کنید.",
+      "validation": "لطفاً فیلدهای مشخص‌شده را بررسی کنید."
+    }
   },
   "ServerActionMessages": {
     "requestAssessment": {
@@ -1732,6 +1832,7 @@
     "open": "باز کردن پیمایش",
     "close": "بستن پیمایش",
     "dashboard": "داشبورد",
+    "signIn": "ورود",
     "activities": "فعالیت‌های یونیکسی",
     "domains": "دامنه‌ها",
     "websites": "وب‌سایت‌ها",

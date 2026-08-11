@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { useRadialReveal } from "./use-radial-reveal";
 
-type RadialRevealButtonProps = Omit<ShadcnButtonProps, "asChild"> & {
+export type RadialRevealButtonProps = Omit<ShadcnButtonProps, "asChild"> & {
   revealColor?: string;
   revealClassName?: string;
   rippleColor?: string;

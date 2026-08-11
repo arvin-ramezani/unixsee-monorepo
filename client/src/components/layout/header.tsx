@@ -57,6 +57,7 @@ export default function Header() {
   return (
     <>
       <motion.header
+        data-app-header="true"
         animate={show ? { y: "0" } : { y: "-100%" }}
         transition={show ? { duration: 0.2 } : { duration: 0.1 }}
         // className={cn(
@@ -113,9 +114,7 @@ export default function Header() {
                 variant="outline"
                 className="hidden h-10 text-xs lg:inline-flex"
               >
-                <Link href="/dashboard">
-                  {tDashboardNavigation("dashboard")}
-                </Link>
+                <Link href="/sign-in">{tDashboardNavigation("signIn")}</Link>
               </Button>
 
               <div className="hidden lg:block">

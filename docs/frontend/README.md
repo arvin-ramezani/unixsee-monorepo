@@ -14,8 +14,10 @@ both unless a doc says otherwise.
 2. [`nextjs.md`](./nextjs.md) — Next.js 16.3 / App Router rules, including
    **version-matched docs** under each app’s `node_modules/next/dist/docs/`
 3. [`state.md`](./state.md) — Zustand and local state
-4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first
-5. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
+4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first,
+   logical insets (`inset-s-*` not `start-*`)
+5. [`client-auth-ui.md`](./client-auth-ui.md) — public customer auth UI shell (when building auth)
+6. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
 
 ## Stack (summary)
 
@@ -34,4 +36,6 @@ UI-only until integration is explicitly allowed:
 ## Product entry points
 
 - Admin: [`../product/README.md`](../product/README.md)
-- Customer / public: Phase 1 until dedicated client UX flows exist
+- Customer auth flow: [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
+- Customer auth UI: [`client-auth-ui.md`](./client-auth-ui.md)
+- Other customer / public behaviour: Phase 1 until additional client UX flows exist

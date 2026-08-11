@@ -68,7 +68,10 @@ export default function Footer() {
   );
 
   return (
-    <footer className="bg-background relative z-10 -mt-10 overflow-hidden pt-10 lg:-mt-14 lg:pt-14">
+    <footer
+      data-app-footer="true"
+      className="bg-background relative z-10 -mt-10 overflow-hidden pt-10 lg:-mt-14 lg:pt-14"
+    >
       <div className="relative rounded-t-3xl border-t border-[#dcecfb] bg-white pb-20 [box-shadow:inset_0_1px_0_rgba(255,255,255,.95),0_-1px_0_rgba(142,170,204,.12),0_-10px_24px_rgba(198,222,252,.28)] lg:rounded-t-[52px] lg:bg-[radial-gradient(35%_80%_at_20%_0%,#eaf5ff_0%,transparent_70%)] lg:py-16 lg:[box-shadow:inset_0_1px_0_rgba(255,255,255,.95),0_-1px_0_rgba(142,170,204,.14),0_-12px_28px_rgba(198,222,252,.30)] 2xl:bg-[radial-gradient(35%_80%_at_30%_0%,#eaf5ff_0%,transparent_70%)] dark:border-[#8eaacc24] dark:bg-[#101b29] dark:[box-shadow:inset_0_1px_0_rgba(255,255,255,.035),0_-1px_0_rgba(142,170,204,.10)] dark:lg:bg-[radial-gradient(35%_80%_at_20%_0%,#17273b_10%,transparent)] dark:2xl:bg-[radial-gradient(35%_80%_at_30%_0%,#17273b_10%,transparent)]">
         <div className="container mx-auto flex flex-col items-center rounded-t-3xl lg:rounded-[52px] xl:w-[80%]">
           <Logo className="hidden w-36 lg:block lg:w-40 lg:self-start" />

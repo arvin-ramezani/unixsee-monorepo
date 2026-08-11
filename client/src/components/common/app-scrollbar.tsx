@@ -68,8 +68,8 @@ interface AppScrollbarProps {
 }
 
 export function AppScrollbar({
-  headerSelector = "header",
-  footerSelector = "footer",
+  headerSelector = "header[data-app-header=true]",
+  footerSelector = "footer[data-app-footer=true]",
 }: AppScrollbarProps) {
   const [fontsReady, setFontsReady] = useState(false);
   const pathname = usePathname();
@@ -195,67 +195,3 @@ export function AppScrollbar({
 
   return null;
 }
-
-// "use client";
-
-// import { useEffect } from "react";
-// import { OverlayScrollbars } from "overlayscrollbars";
-// import useCssVarFromElementHeight from "@/hooks/use-css-var-from-element-height";
-
-// interface AppScrollbarProps {
-//   headerSelector?: string;
-//   footerSelector?: string;
-// }
-
-// export function AppScrollbar({
-//   headerSelector = "header[data-app-header=true]",
-//   footerSelector = "footer[data-app-footer=true]",
-// }: AppScrollbarProps) {
-//   useCssVarFromElementHeight(headerSelector, "--os-header-height");
-//   useCssVarFromElementHeight(footerSelector, "--os-footer-height");
-
-//   useEffect(() => {
-//     const instance = OverlayScrollbars(document.body, {
-//       scrollbars: {
-//         theme: "os-theme-app",
-//         visibility: "auto",
-//         autoHide: "never",
-//         autoHideSuspend: true,
-//         dragScroll: true,
-//         clickScroll: true,
-//       },
-//     });
-
-//     return () => {
-//       instance.destroy();
-//     };
-//   }, []);
-
-//   return null;
-// }
-
-// "use client";
-
-// import { useEffect } from "react";
-// import { OverlayScrollbars } from "overlayscrollbars";
-
-// export function AppScrollbar() {
-//   useEffect(() => {
-//     const instance = OverlayScrollbars(document.body, {
-//       scrollbars: {
-//         theme: "os-theme-app",
-//         visibility: "auto",
-//         autoHide: "never",
-//         autoHideSuspend: true,
-//         dragScroll: true,
-//         clickScroll: true,
-//       },
-//     });
-
-//     return () => {
-//       instance.destroy();
-//     };
-//   }, []);
-
-//   return null;
-// }

@@ -1,12 +1,11 @@
-import { Input } from "@/components/ui/input";
+import { redirect } from "@/i18n/navigation";
+import type { LocaleType } from "@/types/intl.types";
 
-export default function RegisterPage({}) {
-  return (
-    <main className="container h-dvh">
-      <form className="mx-auto flex max-w-sm flex-col gap-4 py-50">
-        <Input placeholder="نام کاربری" />
-        <Input type="password" placeholder="رمز عبور" />
-      </form>
-    </main>
-  );
+type Props = {
+  params: Promise<{ locale: LocaleType }>;
+};
+
+export default async function RegisterRedirectPage({ params }: Props) {
+  const { locale } = await params;
+  redirect({ href: "/sign-up", locale });
 }

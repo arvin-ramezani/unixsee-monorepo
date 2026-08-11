@@ -8,8 +8,9 @@ Product behavior and UX specifications for Unixsee Phase 1.
 2. Relevant note under [`notes/`](./notes/) for onboarding or data-flow context
 3. Matching UX flow under [`ux-flows/`](./ux-flows/)
 
-Customer and public-site UX flows are not fully specified in this tree yet.
-Until they are, Phase 1 remains the behavioral source of truth for `client/`.
+Customer and public-site UX flows are being added under [`ux-flows/`](./ux-flows/).
+Phase 1 remains the behavioral source of truth where a client UX flow does not
+yet exist.
 
 ## Phase 1
 
@@ -35,6 +36,13 @@ Operational clarifications that support Phase 1 and UX flows:
 | File | Topic |
 |---|---|
 | [`diagrams/user-flows.drawio`](./diagrams/user-flows.drawio) | Guest consultant, plan/website request, complementary-service request flows |
+
+## Customer / public UX flows
+
+| Doc | Flow |
+|---|---|
+| [`ux-flows/client-auth.md`](./ux-flows/client-auth.md) | Public customer sign-in, sign-up, verification, password recovery |
+| UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md) | Auth shell, tokens, inputs, RTL, motion |
 
 ## Admin UX flows
 

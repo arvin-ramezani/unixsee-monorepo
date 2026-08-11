@@ -33,3 +33,8 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 Use Tailwind CSS v4 conventions.
 
 Do not introduce Tailwind v3 configuration patterns into the project.
+
+For logical positioning utilities (`inset-s-*` / `inset-e-*`, not `start-*` /
+`end-*`), follow
+[`styling.md`](./styling.md) and the monorepo canonical
+[`../../docs/frontend/styling.md`](../../docs/frontend/styling.md#tailwind-css-v4-logical-utilities).

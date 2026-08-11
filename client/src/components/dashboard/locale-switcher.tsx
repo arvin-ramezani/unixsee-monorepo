@@ -33,7 +33,7 @@ export function LocaleSwitcher() {
       onClick={switchLocale}
       aria-label={t("changeLanguage", { language: destination })}
       dir="ltr"
-      className="border-border bg-background hover:bg-muted dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-link/12 focus-visible:ring-ring focus-visible:ring-offset-background inline-flex h-9.75 w-22 shrink-0 items-center justify-center gap-1 rounded-lg border p-1 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+      className="border-border bg-background hover:bg-muted dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-link/12 focus-visible:ring-ring focus-visible:ring-offset-background inline-flex h-9.75 w-22 min-w-22.5 shrink-0 items-center justify-center gap-1 rounded-lg border p-1 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
     >
       <span
         lang="fa"

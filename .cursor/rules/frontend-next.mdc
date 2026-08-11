@@ -14,6 +14,8 @@ Applies to `admin-panel/` and `client/`.
 - Tailwind CSS v4 (not v3 patterns)
 - Zustand with per-request store pattern; React state for local UI
 - Persian RTL-first; prefer logical CSS properties
+- Tailwind v4 logical insets: `inset-s-*` / `inset-e-*` (not `start-*` /
+  `end-*`); see `docs/frontend/styling.md`
 
 ## Rules
 

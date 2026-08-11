@@ -13,6 +13,11 @@ export const FORM_ERROR_KEYS = [
   "emailRequired",
   "emailInvalid",
   "websiteInvalid",
+  "passwordRequired",
+  "passwordTooShort",
+  "passwordMismatch",
+  "otpRequired",
+  "otpInvalid",
 ] as const;
 
 export type FormErrorKey = (typeof FORM_ERROR_KEYS)[number];

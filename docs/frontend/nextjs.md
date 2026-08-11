@@ -52,6 +52,10 @@ Use Tailwind CSS v4 conventions.
 
 Do not introduce Tailwind v3 configuration patterns into either Next.js app.
 
+For logical positioning and RTL-aware utilities (for example `inset-s-1/2`
+instead of `start-1/2`), follow
+[`styling.md`](./styling.md#tailwind-css-v4-logical-utilities).
+
 ## Related
 
 - App layout: [`../architecture/project.md`](../architecture/project.md)

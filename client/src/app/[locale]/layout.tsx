@@ -99,7 +99,7 @@ export default async function RootLayout({
       <body
         // data-overlayscrollbars-initialize
         suppressHydrationWarning
-        className="flex min-h-full flex-col lg:pb-12"
+        className="flex min-h-full flex-col"
       >
         <Providers>
           <DirectionProvider dir={direction} direction={direction}>
