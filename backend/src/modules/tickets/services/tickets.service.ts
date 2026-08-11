@@ -183,7 +183,18 @@ export class TicketsService {
     return mapTicketDetail(ticket);
   }
 
-  async addCustomerMessage(userId: string, ticketId: string, body: string) {
+  async addCustomerMessage(
+    userId: string,
+    ticketId: string,
+    bodyOrInput: string | { body: string; idempotencyKey?: string },
+  ) {
+    const input =
+      typeof bodyOrInput === 'string'
+        ? { body: bodyOrInput }
+        : bodyOrInput;
+    // idempotencyKey is accepted for contract compatibility; reconciliation TBD.
+    void input.idempotencyKey;
+
     const ticket = await this.loadCustomerTicket(ticketId);
     await this.tenantAccess.requireMembership(userId, ticket.tenantId);
 
@@ -196,7 +207,7 @@ export class TicketsService {
         data: {
           ticketId: ticket.id,
           authorId: userId,
-          body: body.trim(),
+          body: input.body.trim(),
           isInternal: false,
         },
         include: { author: { select: messageAuthorSelect } },

@@ -74,11 +74,10 @@ export class TicketsController {
     @Param('id') id: string,
     @Body() body: CreateTicketMessageDto,
   ) {
-    const data = await this.ticketsService.addCustomerMessage(
-      user.id,
-      id,
-      body.body,
-    );
+    const data = await this.ticketsService.addCustomerMessage(user.id, id, {
+      body: body.body,
+      idempotencyKey: body.idempotencyKey,
+    });
     return ApiResponseBuilder.created(data);
   }
 
