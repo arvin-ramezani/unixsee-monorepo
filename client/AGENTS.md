@@ -51,6 +51,18 @@ Use the existing stack unless the user explicitly approves a change.
 | Review / validation | [`docs/engineering/quality-and-review.md`](docs/engineering/quality-and-review.md) |
 | Local ops | [`docs/runbooks/`](docs/runbooks/) |
 
+## Agent skills
+
+Framework skills live under [`.agents/skills/`](.agents/skills/) (parity with `admin-panel/`):
+
+| Skill | Use for |
+| --- | --- |
+| [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
+| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 APIs with React Compiler enabled |
+| [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
+
+Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain authoritative over skill defaults.
+
 ## Engineering rules
 
 - Default to Server Components. Add `"use client"` only when required.
@@ -60,6 +72,22 @@ Use the existing stack unless the user explicitly approves a change.
 - Keep business mapping out of low-level UI primitives.
 - Avoid unrelated refactors and premature abstractions.
 - Keep code, comments, file names, and technical docs in English.
+
+## Next.js version-matched documentation
+
+For Next.js-specific implementation, do not rely on model memory.
+
+Before implementing or modifying version-sensitive behavior such as data
+fetching, caching, revalidation, Server Components, Server Actions / Server
+Functions, Route Handlers, Cache Components, or Suspense / streaming:
+
+1. Inspect the installed Next.js version and cache configuration in this app.
+2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from
+   this directory; the package may not be visible from the monorepo root).
+
+The installed Next.js documentation is authoritative over model knowledge.
+App conventions: [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md).
+Shared monorepo rules: [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md).
 
 ## Security
 

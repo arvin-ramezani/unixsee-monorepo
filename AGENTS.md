@@ -11,7 +11,9 @@ Before making changes, read in this order as relevant to the task:
 1. [`docs/architecture/overview.md`](./docs/architecture/overview.md)
 2. [`docs/architecture/monorepo.md`](./docs/architecture/monorepo.md)
 3. Surface docs for the work:
-   - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md)
+   - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md) and
+     [`docs/frontend/nextjs.md`](./docs/frontend/nextjs.md) (version-matched
+     Next.js docs under each app’s `node_modules/next/dist/docs/`)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
   and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs

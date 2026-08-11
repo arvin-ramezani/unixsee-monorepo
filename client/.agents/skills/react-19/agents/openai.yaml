@@ -1,0 +1,12 @@
+interface:
+  display_name: React 19 Compiler-Aware
+  short_description: Build modern React 19 with Compiler rules
+  default_prompt: Use $react-19 to build or review React 19 code with React Compiler-aware
+    patterns.
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

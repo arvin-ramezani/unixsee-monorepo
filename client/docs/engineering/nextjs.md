@@ -4,7 +4,20 @@
 >
 > **Owner:** Frontend team
 >
-> **Last verified:** 2026-08-04
+> **Last verified:** 2026-08-10
+
+## Version-matched documentation
+
+For Next.js-specific implementation, do **not** rely on model memory.
+
+Before implementing or modifying data fetching, caching, revalidation, Server Components, Server Actions / Server Functions, Route Handlers, Cache Components (`"use cache"` and related), or Suspense / streaming:
+
+1. Inspect the installed Next.js version and cache / Cache Components configuration in this app (`client/package.json` and Next config).
+2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from `client/`; the package may not be visible from the monorepo root).
+
+The installed Next.js documentation is authoritative over model knowledge.
+
+Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md).
 
 ## Component Boundaries
 
@@ -24,6 +37,7 @@
 
 ## Data Loading
 
+- Before adding or changing fetch / cache / revalidate / Cache Components behavior, read the installed docs under `node_modules/next/dist/docs/` for this Next.js version.
 - Public static content should be imported from repository-owned modules or messages and rendered on the server.
 - Dashboard and admin application data should be requested through typed NestJS clients.
 - Keep credentials and privileged calls server-only.
@@ -54,3 +68,9 @@
 - Avoid sequential fetch waterfalls and unbounded client subscriptions.
 - Use framework image and font optimizations where appropriate.
 - Measure before introducing caching layers, global state, memoization, or virtualization.
+
+## Related
+
+- Shared monorepo Next.js rules: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md)
+- Agent skills: [`.agents/skills/nextjs-app-router`](../../.agents/skills/nextjs-app-router/SKILL.md),
+  [`.agents/skills/react-19`](../../.agents/skills/react-19/SKILL.md)

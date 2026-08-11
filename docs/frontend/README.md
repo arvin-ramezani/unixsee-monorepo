@@ -11,7 +11,8 @@ both unless a doc says otherwise.
 ## Read order
 
 1. [`../architecture/project.md`](../architecture/project.md) — internal app layout
-2. [`nextjs.md`](./nextjs.md) — Next.js 16.3 / App Router rules
+2. [`nextjs.md`](./nextjs.md) — Next.js 16.3 / App Router rules, including
+   **version-matched docs** under each app’s `node_modules/next/dist/docs/`
 3. [`state.md`](./state.md) — Zustand and local state
 4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first
 5. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work

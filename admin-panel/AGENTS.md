@@ -38,6 +38,20 @@ The following documents are part of the repository's development rules. Read the
 - [Workflow](docs/development/workflow.md)
 - [Validation](docs/quality/validation.md)
 
+## Agent skills
+
+Framework skills live under [`.agents/skills/`](.agents/skills/) (shared with `client/` for Next/React):
+
+| Skill | Use for |
+| --- | --- |
+| [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
+| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 APIs with React Compiler enabled |
+| [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
+| [`clean-code`](.agents/skills/clean-code/SKILL.md) | Readability and maintainability without drive-by refactors |
+| [`ux-flow-designer`](.agents/skills/ux-flow-designer/SKILL.md) | End-to-end UX flow design and review |
+
+Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain authoritative over skill defaults.
+
 ## Before Coding
 
 1. Read relevant instructions and documentation.
@@ -54,6 +68,22 @@ The following documents are part of the repository's development rules. Read the
 - Do not make unrelated changes.
 - Do not use outdated framework patterns.
 - Do not add unnecessary dependencies.
+
+## Next.js version-matched documentation
+
+For Next.js-specific implementation, do not rely on model memory.
+
+Before implementing or modifying version-sensitive behavior such as data
+fetching, caching, revalidation, Server Components, Server Actions / Server
+Functions, Route Handlers, Cache Components, or Suspense / streaming:
+
+1. Inspect the installed Next.js version and cache configuration in this app.
+2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from
+   this directory; the package may not be visible from the monorepo root).
+
+The installed Next.js documentation is authoritative over model knowledge.
+App conventions: [Next.js](docs/frontend/nextjs.md). Shared monorepo rules:
+[`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md).
 
 ## Completion
 
