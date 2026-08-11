@@ -1,16 +1,19 @@
 import { createServerClockOffsetInSeconds } from "@/lib/auth/auth-utils";
 import { executeRefreshOperation } from "@/lib/auth/refresh-manager";
 import { shouldRefreshToken } from "@/lib/auth/jwt";
-import { getAuthStoreApi } from "@/stores/auth-store-accessor";
+import {
+  getAuthStoreApi,
+  type AuthStoreApi,
+} from "@/stores/auth-store-accessor";
 
 type RefreshAccessTokenResponse = {
   accessToken: string | null;
   serverTimeInSeconds: number | null;
 };
 
-export async function refreshAccessToken(): Promise<string | null> {
-  const authStore = getAuthStoreApi();
-
+export async function refreshAccessToken(
+  storeApi: AuthStoreApi = getAuthStoreApi(),
+): Promise<string | null> {
   try {
     const response = await fetch("/api/auth/refresh", {
       method: "POST",
@@ -19,18 +22,18 @@ export async function refreshAccessToken(): Promise<string | null> {
     });
 
     if (!response.ok) {
-      authStore.getState().logout();
+      storeApi.getState().logout();
       return null;
     }
 
     const data = (await response.json()) as RefreshAccessTokenResponse;
 
     if (!data.accessToken || data.serverTimeInSeconds == null) {
-      authStore.getState().logout();
+      storeApi.getState().logout();
       return null;
     }
 
-    authStore
+    storeApi
       .getState()
       .setAccessToken(
         data.accessToken,
@@ -39,7 +42,7 @@ export async function refreshAccessToken(): Promise<string | null> {
 
     return data.accessToken;
   } catch {
-    authStore.getState().logout();
+    storeApi.getState().logout();
     return null;
   }
 }
@@ -49,12 +52,12 @@ export async function getValidAccessToken() {
   const { accessToken, serverClockOffsetInSeconds } = authStore.getState();
 
   if (!accessToken || serverClockOffsetInSeconds === null) {
-    return executeRefreshOperation(refreshAccessToken);
+    return executeRefreshOperation(() => refreshAccessToken(authStore));
   }
 
   if (!shouldRefreshToken(accessToken, serverClockOffsetInSeconds)) {
     return accessToken;
   }
 
-  return executeRefreshOperation(refreshAccessToken);
+  return executeRefreshOperation(() => refreshAccessToken(authStore));
 }

@@ -9,15 +9,19 @@ import {
 } from "react";
 import { useStore } from "zustand";
 
+import { refreshAccessToken } from "@/lib/auth/client-auth";
 import {
   createAuthStore,
   defaultAuthState,
   type AuthState,
   type AuthStore,
 } from "@/stores/auth-store";
-import { setAuthStoreApi } from "@/stores/auth-store-accessor";
+import {
+  setAuthStoreApi,
+  type AuthStoreApi,
+} from "@/stores/auth-store-accessor";
 
-export type AuthStoreApi = ReturnType<typeof createAuthStore>;
+export type { AuthStoreApi };
 
 export const AuthStoreContext = createContext<AuthStoreApi | undefined>(
   undefined,
@@ -41,6 +45,11 @@ export function AuthStoreProvider({
 
   useEffect(() => {
     setAuthStoreApi(store);
+
+    if (!store.getState().accessToken) {
+      void refreshAccessToken(store);
+    }
+
     return () => {
       setAuthStoreApi(undefined);
     };

@@ -55,10 +55,13 @@ client/src/
 │   ├── public-fetch.ts               # unauthenticated Nest auth calls
 │   ├── client-fetch.ts               # Bearer from client-auth → Nest
 │   ├── server-fetch.ts               # cookie access → Nest (no Zustand)
-│   └── server-action-fetch.ts        # Action-scoped authenticated Nest calls
+│   ├── server-action-fetch.ts        # Action-scoped authenticated Nest calls
+│   └── map-api-error.ts              # Nest ApiResponse → UI error keys
 ├── stores/auth-store.ts              # access token + user DTO; per-request provider
-└── components/providers/             # AuthStoreProvider; future QueryClientProvider
+└── components/providers/             # AuthStoreProvider (+ boot reseed); future QueryClientProvider
 ```
+
+Domain conventions (Layer 2): [`client-domain-data-fetching.md`](./client-domain-data-fetching.md).
 
 ## Flows
 
@@ -137,18 +140,23 @@ privileged data helper. Do not claim Proxy “protects” Server Actions.
 
 ## Implementation status
 
-**Live (this slice):** phone OTP request/verify, hybrid cookies + Zustand access
+**Layer 1 (session):** phone OTP request/verify, hybrid cookies + Zustand access
 seed, refresh Route Handler, proxy dashboard gate, `GET /users/me` via
-`server-fetch`.
+`server-fetch`, boot reseed of memory access token via `/api/auth/refresh`.
 
-**Deferred:** email OTP (Nest phone-only DTOs), password login/register wiring,
-Google, forgot/reset, TanStack Query panes.
+**Layer 2 (domain):** conventions in
+[`client-domain-data-fetching.md`](./client-domain-data-fetching.md) — transport
+table, `ApiResponse` errors, Query keys/dehydrate, feature checklist. TanStack
+Query package still deferred until the first interactive pane needs it.
+
+**Deferred auth surfaces:** email OTP (Nest phone-only DTOs), password
+login/register wiring, Google, forgot/reset.
 
 ## Implementation order (remaining)
 
-1. Email OTP only after Nest supports it—do not invent DTOs.
-2. Add TanStack Query + `client-fetch` for interactive dashboard panes.
-3. Prefetch → dehydrate → hydrate once Query is introduced.
+1. Follow Layer 2 checklist when wiring each Nest domain (start with tickets).
+2. Add TanStack Query when an interactive pane needs client cache/refetch.
+3. Email OTP only after Nest supports it—do not invent DTOs.
 
 ## Non-goals
 
@@ -161,6 +169,7 @@ Google, forgot/reset, TanStack Query panes.
 
 ## Related
 
+- Layer 2 domain fetching: [`client-domain-data-fetching.md`](./client-domain-data-fetching.md)
 - Design ADR: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
 - Integration ADR: [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 - Superseded UI-only: [`../architecture/decisions/0003-ui-only-phase-boundaries.md`](../architecture/decisions/0003-ui-only-phase-boundaries.md)

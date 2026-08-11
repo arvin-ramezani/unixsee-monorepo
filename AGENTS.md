@@ -16,7 +16,9 @@ Before making changes, read in this order as relevant to the task:
      Next.js docs under each app’s `node_modules/next/dist/docs/`)
    - Client auth session / Nest data fetching:
      [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
-     and ADRs [`0010`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
+     (Layer 1) and
+     [`docs/frontend/client-domain-data-fetching.md`](./docs/frontend/client-domain-data-fetching.md)
+     (Layer 2), plus ADRs [`0010`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
      [`0011`](./docs/architecture/decisions/0011-client-nest-auth-integration.md)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),

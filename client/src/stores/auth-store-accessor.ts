@@ -1,4 +1,6 @@
-import type { AuthStoreApi } from "@/components/providers/auth-store-provider";
+import { createAuthStore } from "@/stores/auth-store";
+
+export type AuthStoreApi = ReturnType<typeof createAuthStore>;
 
 let authStoreApi: AuthStoreApi | undefined;
 

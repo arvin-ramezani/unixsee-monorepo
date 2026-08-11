@@ -50,7 +50,8 @@ The installed Next.js documentation is authoritative over model knowledge.
 
 Hybrid session + Nest fetch conventions (phone OTP live under ADR 0011):
 
-- [`client-data-fetching.md`](./client-data-fetching.md)
+- Layer 1: [`client-data-fetching.md`](./client-data-fetching.md)
+- Layer 2 (domain): [`client-domain-data-fetching.md`](./client-domain-data-fetching.md)
 - ADRs: [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md),
   [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 

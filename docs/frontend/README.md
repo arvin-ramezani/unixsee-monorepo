@@ -17,8 +17,9 @@ both unless a doc says otherwise.
 4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first,
    logical insets (`inset-s-*` not `start-*`)
 5. [`client-auth-ui.md`](./client-auth-ui.md) — public customer auth UI shell (when building auth)
-6. [`client-data-fetching.md`](./client-data-fetching.md) — hybrid auth session + Nest data fetching (phone OTP live)
-7. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
+6. [`client-data-fetching.md`](./client-data-fetching.md) — Layer 1 hybrid session + Nest transport (phone OTP live)
+7. [`client-domain-data-fetching.md`](./client-domain-data-fetching.md) — Layer 2 domain fetch conventions (before tickets/etc.)
+8. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
 
 ## Stack (summary)
 
@@ -40,5 +41,6 @@ See [`../architecture/decisions/0002-stack-choices.md`](../architecture/decision
 - Admin: [`../product/README.md`](../product/README.md)
 - Customer auth flow: [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
 - Customer auth UI: [`client-auth-ui.md`](./client-auth-ui.md)
-- Customer Nest session / data fetching (planned): [`client-data-fetching.md`](./client-data-fetching.md)
+- Customer Nest session / data fetching: [`client-data-fetching.md`](./client-data-fetching.md)
+- Customer domain Nest fetching (tickets, …): [`client-domain-data-fetching.md`](./client-domain-data-fetching.md)
 - Other customer / public behaviour: Phase 1 until additional client UX flows exist

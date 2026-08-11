@@ -76,6 +76,7 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 ## Related
 
 - Shared monorepo Next.js rules: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md)
-- Client data fetching (planned): [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md)
+- Client data fetching Layer 1: [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md)
+- Client domain fetching Layer 2: [`../../../docs/frontend/client-domain-data-fetching.md`](../../../docs/frontend/client-domain-data-fetching.md)
 - Agent skills: [`.agents/skills/nextjs-app-router`](../../.agents/skills/nextjs-app-router/SKILL.md),
   [`.agents/skills/react-19`](../../.agents/skills/react-19/SKILL.md)
