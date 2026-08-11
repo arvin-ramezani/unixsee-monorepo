@@ -149,7 +149,7 @@ Body mirrors the customer new-ticket form:
 | Field | Required | Rules |
 |---|---|---|
 | `service` | Yes | `TicketServiceCategory` |
-| `websiteId` | Conditional | Required per service rules; must be tenant-accessible |
+| `websiteId` | Conditional | Required per service rules; must belong to the ticket tenant and be accessible to the caller |
 | `subject` | Yes | 1–300 chars, trimmed non-empty |
 | `description` | Yes | 20–10000 chars (matches client validation) |
 | `attachments` | No | 0–N; see Attachments |
@@ -214,7 +214,9 @@ leak staff role enums beyond that).
 ```
 
 Rejected when status is `CLOSED`. When status is `WAITING_CUSTOMER`, transition
-to `IN_PROGRESS` after a successful customer message.
+to `IN_PROGRESS` after a successful customer message. When `idempotencyKey` is
+present, retries with the same ticket + key return the original message and do
+not create a duplicate row.
 
 ### Attachments
 

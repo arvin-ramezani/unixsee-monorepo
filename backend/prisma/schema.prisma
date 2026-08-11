@@ -899,11 +899,12 @@ model Ticket {
 }
 
 model TicketMessage {
-  id         String  @id @default(uuid()) @db.Uuid
-  ticketId   String  @map("ticket_id") @db.Uuid
-  authorId   String  @map("author_id") @db.Uuid
-  body       String
-  isInternal Boolean @default(false) @map("is_internal")
+  id             String  @id @default(uuid()) @db.Uuid
+  ticketId       String  @map("ticket_id") @db.Uuid
+  authorId       String  @map("author_id") @db.Uuid
+  body           String
+  isInternal     Boolean @default(false) @map("is_internal")
+  idempotencyKey String? @map("idempotency_key")
 
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   author User   @relation(fields: [authorId], references: [id], onDelete: Restrict)
@@ -911,6 +912,7 @@ model TicketMessage {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  @@unique([ticketId, idempotencyKey])
   @@index([ticketId, createdAt])
   @@map("ticket_messages")
 }

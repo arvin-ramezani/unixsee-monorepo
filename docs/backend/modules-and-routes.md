@@ -250,6 +250,7 @@ Shared service taxonomy:
 | POST | `/api/v1/tickets/:id/reopen` | Customer (`RESOLVED` → `IN_PROGRESS`) |
 | GET | `/api/v1/admin/tickets` | Admin |
 | POST | `/api/v1/admin/tickets/:id/assign` | Admin |
+| POST | `/api/v1/admin/tickets/:id/request-info` | Admin (`IN_PROGRESS` → `WAITING_CUSTOMER`) |
 | POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
 | POST | `/api/v1/admin/tickets/:id/messages` | Admin (incl. internal notes where allowed) |
 

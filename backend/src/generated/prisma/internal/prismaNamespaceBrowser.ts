@@ -607,6 +607,7 @@ export const TicketMessageScalarFieldEnum = {
   authorId: 'authorId',
   body: 'body',
   isInternal: 'isInternal',
+  idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

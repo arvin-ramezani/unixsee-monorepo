@@ -154,6 +154,10 @@ describe('TicketsService', () => {
     it('creates SUBMITTED ticket with trimmed subject/description as first customer message', async () => {
       tenantAccess.resolvePrimaryTenantId.mockResolvedValue(TENANT_A);
       tenantAccess.requireMembership.mockResolvedValue({});
+      tenantAccess.assertWebsiteAccess.mockResolvedValue({
+        id: WEBSITE_A,
+        tenantId: TENANT_A,
+      });
       ticketNumbers.allocate.mockResolvedValue('TCK-1052');
       prisma.ticket.create.mockResolvedValue(
         baseTicket({

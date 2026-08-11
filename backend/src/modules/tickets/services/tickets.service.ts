@@ -128,7 +128,13 @@ export class TicketsService {
     }
 
     if (input.websiteId) {
-      await this.tenantAccess.assertWebsiteAccess(userId, input.websiteId);
+      const website = await this.tenantAccess.assertWebsiteAccess(
+        userId,
+        input.websiteId,
+      );
+      if (website.tenantId !== tenantId) {
+        throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+      }
     }
 
     const number = await this.ticketNumbers.allocate();
@@ -192,8 +198,7 @@ export class TicketsService {
       typeof bodyOrInput === 'string'
         ? { body: bodyOrInput }
         : bodyOrInput;
-    // idempotencyKey is accepted for contract compatibility; reconciliation TBD.
-    void input.idempotencyKey;
+    const idempotencyKey = input.idempotencyKey?.trim() || undefined;
 
     const ticket = await this.loadCustomerTicket(ticketId);
     await this.tenantAccess.requireMembership(userId, ticket.tenantId);
@@ -203,12 +208,26 @@ export class TicketsService {
     }
 
     const message = await this.prisma.$transaction(async (tx) => {
+      if (idempotencyKey) {
+        const existing = await tx.ticketMessage.findFirst({
+          where: {
+            ticketId: ticket.id,
+            idempotencyKey,
+          },
+          include: { author: { select: messageAuthorSelect } },
+        });
+        if (existing) {
+          return { message: existing, created: false as const };
+        }
+      }
+
       const created = await tx.ticketMessage.create({
         data: {
           ticketId: ticket.id,
           authorId: userId,
           body: input.body.trim(),
           isInternal: false,
+          ...(idempotencyKey ? { idempotencyKey } : {}),
         },
         include: { author: { select: messageAuthorSelect } },
       });
@@ -225,25 +244,27 @@ export class TicketsService {
         });
       }
 
-      return created;
+      return { message: created, created: true as const };
     });
 
-    this.logger.log('ticket.message.created', {
-      ticketId,
-      messageId: message.id,
-      isInternal: false,
-    });
+    if (message.created) {
+      this.logger.log('ticket.message.created', {
+        ticketId,
+        messageId: message.message.id,
+        isInternal: false,
+      });
+    }
 
     return {
-      id: message.id,
-      body: message.body,
+      id: message.message.id,
+      body: message.message.body,
       sender: 'USER' as const,
       author: {
-        id: message.author.id,
-        fullName: message.author.fullName,
+        id: message.message.author.id,
+        fullName: message.message.author.fullName,
       },
       attachments: [],
-      createdAt: message.createdAt.toISOString(),
+      createdAt: message.message.createdAt.toISOString(),
     };
   }
 
@@ -390,6 +411,27 @@ export class TicketsService {
     });
 
     this.logger.log('ticket.assigned', { ticketId, assigneeId });
+    return updated;
+  }
+
+  async requestCustomerInfo(ticketId: string) {
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+    if (!ticket) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (ticket.status !== TicketStatus.IN_PROGRESS) {
+      throw new ConflictException(ERROR_MESSAGES.fa.invalidTicketTransition);
+    }
+
+    const updated = await this.prisma.ticket.update({
+      where: { id: ticketId },
+      data: { status: TicketStatus.WAITING_CUSTOMER },
+    });
+
+    this.logger.log('ticket.request_customer_info', { ticketId });
     return updated;
   }
 
