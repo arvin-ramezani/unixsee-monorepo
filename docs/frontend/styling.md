@@ -23,6 +23,12 @@ Prefer CSS logical properties where appropriate.
 Do not assume physical `left` and `right` represent the intended visual
 direction.
 
+**Bidirectional (bidi) isolates:** Phone numbers, emails, OTP digit groups, and
+similar Latin/digit identifiers inside Persian copy must stay LTR. Prefer
+`dir="ltr"` on the value node (or `<bdi dir="ltr">`) so surrounding RTL text
+does not reorder `+98…` / `@`. See auth detail in
+[`client-auth-ui.md`](./client-auth-ui.md#fa-rtl--en-ltr) (open todo UI-OTP-001).
+
 ## Tailwind CSS v4 (logical utilities)
 
 Both apps use **Tailwind CSS v4**. Prefer current logical utilities over older

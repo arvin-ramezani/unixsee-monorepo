@@ -337,7 +337,7 @@ flowchart TD
 | AX-004 | OTP | Each cell labelled; group labelled; keyboard operable | 3 |
 | AX-005 | Password visibility | Toggle has accessible name; does not trap focus | 2 |
 | AX-006 | Status | Loading/success/rate-limit announced | 3 |
-| AX-007 | Direction | FA RTL / EN LTR; phone/OTP direction tested both ways | 3 |
+| AX-007 | Direction | FA RTL / EN LTR; phone/email values always LTR-isolated in FA copy and inputs; OTP digit order tested | 3 |
 | AX-008 | Targets | Primary controls ≥ 44×44 CSS px on touch | 2 |
 
 ## Heuristic review (summary)
@@ -420,7 +420,12 @@ Do not log raw phone, email, OTP, passwords, or tokens.
 
 ### AC-012 — RTL / LTR
 
-**Given** FA or EN locale, **when** any auth surface renders, **then** layout, reading order, and controls follow that direction without broken phone/OTP entry.
+**Given** FA or EN locale, **when** any auth surface renders, **then** layout,
+reading order, and controls follow that direction, **and** phone/email
+identifier **values** (inputs and masked OTP confirmation text such as
+`کد به {identifier} ارسال شد`) always display left-to-right via an LTR isolate
+so digits and `+` country codes are not reordered by the surrounding RTL
+sentence.
 
 ## Questions requiring user research
 

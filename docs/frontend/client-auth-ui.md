@@ -2,7 +2,7 @@
 
 > **Status:** Draft  
 > **Owner:** Frontend / design  
-> **Last verified:** 2026-08-10  
+> **Last verified:** 2026-08-11  
 > **Applies to:** `client/` public authentication surfaces  
 > **Flow source:** [`../product/ux-flows/client-auth.md`](../product/ux-flows/client-auth.md)
 
@@ -156,7 +156,9 @@ Applies to phone, email, password, and OTP.
 - Visible label (e.g. “Phone number”).
 - Country code control default `+98` (Proposed; see flow A-001).
 - National number field: `type="tel"`, `inputMode="numeric"` (or `tel`), `autoComplete="tel"`.
-- Direction: use logical layout; test FA RTL so code + number remain usable.
+- **Always LTR for the phone value** (inputs and display): wrap with
+  `dir="ltr"` (or `<bdi dir="ltr">`) in both FA and EN so `+98…` never reverses
+  inside RTL copy. Same rule as email inputs below.
 
 ### Email mode
 
@@ -178,6 +180,11 @@ Applies to phone, email, password, and OTP.
 - Fixed length (value TBD with Nest; UI assumes a short fixed digit count).
 - Paste fills all cells; focus moves forward; Backspace moves back.
 - Error clears or highlights the group without trapping focus.
+- **Masked-phone confirmation line** (e.g. FA
+  `کد به {identifier} ارسال شد`): keep surrounding sentence RTL, but render
+  `{identifier}` inside an LTR isolate (`dir="ltr"` / `<bdi>`). Do **not**
+  interpolate the raw E.164 string as plain text into RTL markup—browsers
+  reorder `+98 936***86` and produce broken reading order.
 
 **Note:** No `InputOTP` primitive exists in `client` yet—add shadcn OTP or compose from `Input` + `Field` when implementing.
 
@@ -209,8 +216,20 @@ Verify 375 / 768 / 1024 widths. Prefer CSS over JS media queries.
 - Positioning: Tailwind v4 `inset-s-*` / `inset-e-*` (not `start-*` / `end-*`);
   see [`styling.md`](./styling.md#tailwind-css-v4-logical-utilities).
 - Do not mirror brand mark incorrectly; flip only directional chevrons that mean “back”.
-- Phone: keep digits readable; avoid broken direction hacks without testing both locales.
-- OTP: define digit order explicitly for RTL (recommend visual left-to-right digit entry for codes—document in implementation notes and test with users).
+- Phone and email **values** are always LTR isolates in FA and EN (inputs and
+  inline display). Surrounding Persian/English sentence stays locale direction.
+- OTP digit entry: visual left-to-right order for codes (document in
+  implementation notes and test with users).
+
+## Open UI todos
+
+| ID | Surface | Issue | Required fix |
+|---|---|---|---|
+| UI-OTP-001 | `/(auth)/otp` masked-phone line (`OtpForm`) | In FA, copy like `کد به +98 936***86 ارسال شد` shows the phone with wrong bidirectional order when `{identifier}` is plain text | Wrap the phone/email identifier in `dir="ltr"` (prefer `<bdi dir="ltr">`) inside the message; keep the FA sentence RTL. Same for `maskedEmail` if shown in FA. |
+
+**Evidence:** Observed in live FA OTP verify UI; implementation today interpolates
+`maskedPhone` as a single string in
+[`client/src/components/auth/otp-form.tsx`](../../client/src/components/auth/otp-form.tsx).
 
 ## Mobile keyboard behaviour
 
@@ -316,6 +335,7 @@ Replace stub `(website)/register` when implementing.
 - [ ] Errors announced, not color-only
 - [ ] `inputMode` / types correct on mobile
 - [ ] FA RTL and EN LTR checked
+- [ ] OTP / auth messages: phone and email identifiers render LTR in FA (UI-OTP-001)
 - [ ] `prefers-reduced-motion` respected
 - [ ] Responsive 375 / 768 / 1024
 - [ ] Google not faking live OAuth
