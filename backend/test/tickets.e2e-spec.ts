@@ -281,20 +281,28 @@ describe('TicketsModule (e2e)', () => {
       expect(prisma.ticket.update).toHaveBeenCalled();
     });
 
-    it('POST /api/v1/admin/tickets/:id/request-info returns success path', async () => {
+    it('POST /api/v1/admin/tickets/:id/reopen reaches service', async () => {
       currentTestUser = { id: ADMIN_ID, role: Role.ADMIN };
       prisma.ticket.findUnique.mockResolvedValue(
-        baseTicket({ status: TicketStatus.IN_PROGRESS }),
+        baseTicket({
+          status: TicketStatus.RESOLVED,
+          resolvedAt: new Date('2026-07-17T10:28:00.000Z'),
+          autoCloseAt: new Date('2026-07-24T10:28:00.000Z'),
+        }),
       );
       prisma.ticket.update.mockResolvedValue(
-        baseTicket({ status: TicketStatus.WAITING_CUSTOMER }),
+        baseTicket({
+          status: TicketStatus.IN_PROGRESS,
+          resolvedAt: null,
+          autoCloseAt: null,
+        }),
       );
 
       const res = await request(app.getHttpServer())
-        .post(`/api/v1/admin/tickets/${TICKET_ID}/request-info`)
+        .post(`/api/v1/admin/tickets/${TICKET_ID}/reopen`)
         .expect(200);
 
-      expect(res.body.data.status).toBe(TicketStatus.WAITING_CUSTOMER);
+      expect(res.body.data.status).toBe(TicketStatus.IN_PROGRESS);
     });
   });
 });

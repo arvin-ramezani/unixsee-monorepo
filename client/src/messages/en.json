@@ -3555,8 +3555,10 @@
       "reopen": "Reopen ticket",
       "close": "Close ticket",
       "resolvedTitle": "This ticket is resolved",
-      "resolvedDescription": "If the issue continues, reopen the ticket and add the latest details.",
-      "resolvedDescriptionWithAutoClose": "If the issue continues, reopen the ticket and add the latest details. Otherwise it will close automatically on {date}."
+      "resolvedDescription": "If the issue continues, reply with the latest details. Close the ticket when you are satisfied.",
+      "resolvedDescriptionWithAutoClose": "If the issue continues, reply with the latest details. Close the ticket when you are satisfied, or it will close automatically on {date}.",
+      "closedTitle": "This ticket is closed",
+      "closedDescription": "Reopen the ticket if you need more help, then add the latest details."
     },
     "conversation": {
       "title": "Conversation",

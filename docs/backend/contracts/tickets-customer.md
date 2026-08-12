@@ -29,9 +29,9 @@ Persist as Prisma `TicketStatus`. Customer API returns the same enum strings.
 |---|---|---|
 | `SUBMITTED` | ارسال‌شده | Newly created; awaiting staff pickup |
 | `IN_PROGRESS` | در حال انجام | Staff is working the ticket |
-| `WAITING_CUSTOMER` | منتظر پاسخ شما | Staff asked the customer for input |
-| `RESOLVED` | حل‌شده | Staff marked resolved; customer may reopen or close |
-| `CLOSED` | بسته‌شده | Terminal; no further customer replies |
+| `WAITING_CUSTOMER` | منتظر پاسخ شما | Legacy / retained status; no staff action sets it in Phase 1 |
+| `RESOLVED` | حل‌شده | Staff marked resolved; customer may close (or auto-close) |
+| `CLOSED` | بسته‌شده | Terminal until customer reopens; no replies while closed |
 
 ### Default on create
 
@@ -50,25 +50,27 @@ Do not expose admin fixture `NEW` on the customer API.
 ### Customer transitions
 
 ```text
-SUBMITTED ──► IN_PROGRESS ──► WAITING_CUSTOMER ──► IN_PROGRESS
-                │                    │
-                └──────────► RESOLVED ──► CLOSED
-                                │
-                                └── reopen ──► IN_PROGRESS
+SUBMITTED ──► IN_PROGRESS ──► RESOLVED ──► CLOSED
+                                │              │
+                                │              └── reopen ──► IN_PROGRESS
+                                └── (customer close or auto-close)
 ```
+
+`WAITING_CUSTOMER` may still appear on existing rows. A customer reply while
+`WAITING_CUSTOMER` moves the ticket to `IN_PROGRESS`. There is **no** staff
+`request-info` action in Phase 1.
 
 Customer-initiated actions only:
 
 | From | Action | To |
 |---|---|---|
-| `RESOLVED` | `POST .../reopen` | `IN_PROGRESS` |
 | `RESOLVED` | `POST .../close` | `CLOSED` |
 | `RESOLVED` | auto-close job (no action) | `CLOSED` after grace period |
+| `CLOSED` | `POST .../reopen` | `IN_PROGRESS` |
 
-Staff-driven transitions (`SUBMITTED` → `IN_PROGRESS`, request info →
-`WAITING_CUSTOMER`, mark `RESOLVED`) belong to
+Staff-driven transitions (`SUBMITTED` → `IN_PROGRESS` on assign, mark
+`RESOLVED`, staff reopen from `RESOLVED`) belong to
 [`tickets-admin.md`](./tickets-admin.md).
-Customer reply while `WAITING_CUSTOMER` moves the ticket to `IN_PROGRESS`.
 
 Replies are allowed when status is not `CLOSED`.
 
@@ -253,16 +255,17 @@ Allowed only from `RESOLVED` → `CLOSED`. Clears pending auto-close.
 
 `POST /api/v1/tickets/:id/reopen` → `200`
 
-Allowed only from `RESOLVED` → `IN_PROGRESS`. Clears `autoCloseAt`. Customer
-should add a follow-up message with latest details (UI copy); the reopen action
-itself does not require a body in Phase 1, but clients may immediately call
-`POST .../messages`.
+Allowed only from `CLOSED` → `IN_PROGRESS`. Clears `resolvedAt` /
+`autoCloseAt`. Customer should add a follow-up message with latest details (UI
+copy); the reopen action itself does not require a body in Phase 1, but clients
+may immediately call `POST .../messages`.
 
 ### Auto-close
 
 When staff sets `RESOLVED`, Nest records `resolvedAt` and schedules auto-close
-after **7 days** (configurable grace; product range 5–7). If the customer
-neither closes nor reopens, a scheduled job sets `CLOSED`.
+after **7 days** (configurable grace; product range 5–7). If the customer does
+not close first, a scheduled job sets `CLOSED`. After close (manual or auto),
+the customer may reopen.
 
 Details:
 [`../../product/notes/ticket-lifecycle-and-auto-close.md`](../../product/notes/ticket-lifecycle-and-auto-close.md).

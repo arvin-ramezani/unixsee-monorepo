@@ -30,7 +30,7 @@ Same Prisma `TicketStatus` strings as the customer API:
 |---|---|---|
 | `SUBMITTED` | جدید | Newly created; awaiting staff pickup |
 | `IN_PROGRESS` | در حال بررسی | Staff is working the ticket |
-| `WAITING_CUSTOMER` | در انتظار کاربر | Staff asked the customer for input |
+| `WAITING_CUSTOMER` | در انتظار کاربر | Legacy / retained; no staff action sets it in Phase 1 |
 | `RESOLVED` | حل شده | Staff marked resolved; auto-close pending |
 | `CLOSED` | بسته‌شده | Terminal |
 
@@ -122,12 +122,6 @@ Messages include **internal notes** (`isInternal: true`). `sender` is `USER` |
 
 When status is `SUBMITTED`, Nest also moves the ticket to `IN_PROGRESS`.
 
-### Request customer info
-
-`POST /api/v1/admin/tickets/:id/request-info`
-
-Allowed from `IN_PROGRESS` only → `WAITING_CUSTOMER`. Otherwise `409`.
-
 ### Resolve
 
 `POST /api/v1/admin/tickets/:id/resolve`
@@ -135,9 +129,21 @@ Allowed from `IN_PROGRESS` only → `WAITING_CUSTOMER`. Otherwise `409`.
 Sets `RESOLVED`, `resolvedAt`, and `autoCloseAt` (grace from Nest config).
 Rejected when already `RESOLVED` or `CLOSED`.
 
+### Reopen
+
+`POST /api/v1/admin/tickets/:id/reopen`
+
+`RESOLVED` → `IN_PROGRESS`; clears `resolvedAt` and `autoCloseAt`. Rejected
+when status is not `RESOLVED` (`409`).
+
 ### Add message
 
 `POST /api/v1/admin/tickets/:id/messages` → `201`
+
+Allowed only while status is **not** `RESOLVED` or `CLOSED`. Staff must
+**reopen** before composing further replies/notes after resolve. Admin UI locks
+the composer on those statuses. See
+[`../../product/notes/ticket-lifecycle-and-auto-close.md`](../../product/notes/ticket-lifecycle-and-auto-close.md).
 
 ```json
 { "body": "…", "isInternal": false, "idempotencyKey": "optional" }

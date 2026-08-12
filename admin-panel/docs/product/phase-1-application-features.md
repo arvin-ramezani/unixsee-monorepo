@@ -640,7 +640,6 @@ Staff can:
 - Assign or transfer a ticket.
 - Send a customer-visible reply.
 - Add an internal note.
-- Request customer information.
 - Change status according to valid transitions.
 - Link relevant operational records.
 - Resolve or close with a resolution summary.

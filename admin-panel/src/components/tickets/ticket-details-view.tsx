@@ -15,7 +15,7 @@ import { useRef, useState, type ChangeEvent } from "react";
 import {
   addTicketMessageAction,
   assignTicketToMeAction,
-  requestTicketInfoAction,
+  reopenTicketAction,
   resolveTicketAction,
 } from "@/actions/tickets/ticket-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -206,11 +206,20 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const canAssign = ticket.status === TICKET_STATUS.SUBMITTED || !ticket.assigneeId;
-  const canRequestInfo = ticket.status === TICKET_STATUS.IN_PROGRESS;
   const canResolve =
     ticket.status !== TICKET_STATUS.RESOLVED &&
     ticket.status !== TICKET_STATUS.CLOSED;
-  const canReply = ticket.status !== TICKET_STATUS.CLOSED;
+  const canReopen = ticket.status === TICKET_STATUS.RESOLVED;
+  // Staff must reopen before composing after resolve; CLOSED remains terminal.
+  const canReply =
+    ticket.status !== TICKET_STATUS.RESOLVED &&
+    ticket.status !== TICKET_STATUS.CLOSED;
+  const composerPlaceholder =
+    ticket.status === TICKET_STATUS.CLOSED
+      ? "تیکت بسته‌شده است و امکان پاسخ وجود ندارد."
+      : ticket.status === TICKET_STATUS.RESOLVED
+        ? "برای ارسال پاسخ یا یادداشت داخلی، ابتدا تیکت را بازگشایی کنید."
+        : "یک پاسخ بنویسید...";
 
   const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -305,21 +314,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                 تخصیص به من
               </Button>
             ) : null}
-            {canRequestInfo ? (
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                disabled={pendingAction !== null}
-                onClick={() =>
-                  void runAction("request-info", () =>
-                    requestTicketInfoAction(ticket.id),
-                  )
-                }
-              >
-                درخواست اطلاعات
-              </Button>
-            ) : null}
             {canResolve ? (
               <Button
                 type="button"
@@ -330,6 +324,18 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                 }
               >
                 حل‌شده
+              </Button>
+            ) : null}
+            {canReopen ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={pendingAction !== null}
+                onClick={() =>
+                  void runAction("reopen", () => reopenTicketAction(ticket.id))
+                }
+              >
+                بازگشایی
               </Button>
             ) : null}
           </div>
@@ -492,11 +498,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                 <Textarea
                   value={messageText}
                   onChange={(event) => setMessageText(event.target.value)}
-                  placeholder={
-                    canReply
-                      ? "یک پاسخ بنویسید..."
-                      : "تیکت بسته‌شده است و امکان پاسخ وجود ندارد."
-                  }
+                  placeholder={composerPlaceholder}
                   disabled={!canReply || pendingAction !== null}
                   className="max-h-34 w-full resize-none border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />

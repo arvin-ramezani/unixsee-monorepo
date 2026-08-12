@@ -690,8 +690,8 @@ Customers can:
 - Add approved attachments.
 - View status and conversation history.
 - Reply when the state permits.
-- Close a resolved ticket or request reopening under approved rules.
-- If neither close nor reopen happens after resolution, the ticket auto-closes
+- Close a resolved ticket; reopen a **closed** ticket under approved rules.
+- If the customer does not close after resolution, the ticket auto-closes
   after a grace period (default 7 days; see
   [`notes/ticket-lifecycle-and-auto-close.md`](./notes/ticket-lifecycle-and-auto-close.md)).
 
@@ -713,10 +713,12 @@ Staff can:
 - Assign or transfer a ticket.
 - Send a customer-visible reply.
 - Add an internal note.
-- Request customer information.
 - Change status according to valid transitions.
 - Link relevant operational records.
-- Resolve or close with a resolution summary.
+- Resolve with a resolution summary; reopen a resolved ticket to continue work
+  before the customer closes or auto-close runs.
+- Compose replies/notes only while the ticket is not `RESOLVED`/`CLOSED`
+  (reopen first after resolve).
 
 ### 15.4 Attachments
 

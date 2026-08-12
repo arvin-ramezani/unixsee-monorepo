@@ -62,10 +62,10 @@ export class AdminTicketsController {
     return ApiResponseBuilder.ok(data);
   }
 
-  @Post(':id/request-info')
+  @Post(':id/reopen')
   @HttpCode(HttpStatus.OK)
-  async requestInfo(@Param('id') id: string) {
-    const data = await this.ticketsService.requestCustomerInfo(id);
+  async reopen(@Param('id') id: string) {
+    const data = await this.ticketsService.reopen(id);
     return ApiResponseBuilder.ok(data);
   }
 

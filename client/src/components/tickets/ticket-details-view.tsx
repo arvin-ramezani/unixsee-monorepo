@@ -160,29 +160,29 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
               </DashboardButtonLink>
             )}
             {status === "RESOLVED" && (
-              <>
-                <DashboardButton
-                  type="button"
-                  variant="outline"
-                  revealClassName="dark:bg-accent bg-muted"
-                  disabled={mutating}
-                  onClick={handleReopen}
-                  className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
-                >
-                  <RotateCcw aria-hidden="true" className="size-4" />
-                  {t("detail.reopen")}
-                </DashboardButton>
-                <DashboardButton
-                  type="button"
-                  variant="outline"
-                  revealClassName="dark:bg-accent bg-muted"
-                  disabled={mutating}
-                  onClick={handleClose}
-                  className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
-                >
-                  {t("detail.close")}
-                </DashboardButton>
-              </>
+              <DashboardButton
+                type="button"
+                variant="outline"
+                revealClassName="dark:bg-accent bg-muted"
+                disabled={mutating}
+                onClick={handleClose}
+                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
+              >
+                {t("detail.close")}
+              </DashboardButton>
+            )}
+            {status === "CLOSED" && (
+              <DashboardButton
+                type="button"
+                variant="outline"
+                revealClassName="dark:bg-accent bg-muted"
+                disabled={mutating}
+                onClick={handleReopen}
+                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
+              >
+                <RotateCcw aria-hidden="true" className="size-4" />
+                {t("detail.reopen")}
+              </DashboardButton>
             )}
           </div>
         </div>
@@ -201,6 +201,20 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
                     date: format.dateTime(new Date(autoCloseAt), "shortDate"),
                   })
                 : t("detail.resolvedDescription")}
+            </AlertDescription>
+          </div>
+        </Alert>
+      )}
+
+      {status === "CLOSED" && (
+        <Alert className="border-border bg-muted/40 text-foreground mt-6 flex items-start gap-3 rounded-xl p-4">
+          <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+          <div>
+            <AlertTitle className="font-semibold">
+              {t("detail.closedTitle")}
+            </AlertTitle>
+            <AlertDescription className="mt-1 text-sm leading-6 text-current">
+              {t("detail.closedDescription")}
             </AlertDescription>
           </div>
         </Alert>

@@ -58,6 +58,7 @@ export function StaffLoginForm() {
   return (
     <form
       className="flex flex-col gap-4"
+      method="post"
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
     >

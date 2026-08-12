@@ -51,11 +51,16 @@ export async function staffLoginAction(input: {
   const username = input.username.trim();
   const password = input.password;
 
-  if (!username || password.length < 8) {
+  if (!username || !password) {
     return { ok: false, errorKey: "invalidCredentials" };
   }
 
   try {
+    const apiBase = getServerCoreApiBaseUrl();
+    console.info("[staff-login] POST", `${apiBase}/auth/login`, {
+      username,
+    });
+
     const loginResponse = await publicFetch<AuthTokens>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ username, password }),
@@ -66,10 +71,15 @@ export async function staffLoginAction(input: {
       !loginResponse.data?.accessToken ||
       !loginResponse.data.refreshToken
     ) {
+      console.warn("[staff-login] Nest login rejected", {
+        statusCode: loginResponse.statusCode,
+        message: loginResponse.message,
+        error: loginResponse.error,
+      });
       return { ok: false, errorKey: "invalidCredentials" };
     }
 
-    const meResponse = await fetch(`${getServerCoreApiBaseUrl()}/users/me`, {
+    const meResponse = await fetch(`${apiBase}/users/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${loginResponse.data.accessToken}`,
@@ -87,6 +97,10 @@ export async function staffLoginAction(input: {
       !meJson.data?.id ||
       !isStaffRole(meJson.data.role)
     ) {
+      console.warn("[staff-login] /users/me staff gate failed", {
+        httpStatus: meResponse.status,
+        role: meJson?.data?.role ?? null,
+      });
       await clearAuthSessionCookies();
       return { ok: false, errorKey: "invalidCredentials" };
     }
@@ -105,7 +119,8 @@ export async function staffLoginAction(input: {
       ),
       user: toSafeUser(meJson.data),
     };
-  } catch {
+  } catch (error) {
+    console.error("[staff-login] failed before/during Nest call", error);
     return { ok: false, errorKey: "unavailable" };
   }
 }

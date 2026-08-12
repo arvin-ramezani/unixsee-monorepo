@@ -140,8 +140,8 @@ presence. Not a substitute for auth checks in Server Actions or data helpers.
 cookies, fetch helpers, refresh BFF, proxy gate, AuthStoreProvider, `/users/me`
 shell gate.
 
-**Domain wiring:** `/tickets` list + detail + assign / request-info / resolve /
-messages (see Layer 2). Other panes still use fixtures under `src/lib/data/`.
+**Domain wiring:** `/tickets` list + detail + assign / resolve /
+reopen / messages (see Layer 2). Other panes still use fixtures under `src/lib/data/`.
 
 ## Implementation order
 

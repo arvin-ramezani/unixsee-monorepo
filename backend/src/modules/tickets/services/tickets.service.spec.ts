@@ -22,12 +22,6 @@ import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { TicketNumberService } from './ticket-number.service.js';
 import { TicketsService } from './tickets.service.js';
 
-type RequestCustomerInfoCapable = TicketsService & {
-  requestCustomerInfo(
-    ticketId: string,
-  ): Promise<{ id: string; status: TicketStatus }>;
-};
-
 const USER_ID = 'user-1';
 const TENANT_A = 'tenant-a';
 const TENANT_B = 'tenant-b';
@@ -591,12 +585,12 @@ describe('TicketsService', () => {
       );
     });
 
-    it('reopens RESOLVED to IN_PROGRESS and clears resolvedAt/autoCloseAt', async () => {
+    it('reopens CLOSED to IN_PROGRESS and clears resolvedAt/autoCloseAt', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({
-          status: TicketStatus.RESOLVED,
+          status: TicketStatus.CLOSED,
           resolvedAt: new Date('2026-07-17T10:28:00.000Z'),
-          autoCloseAt: new Date('2026-07-24T10:28:00.000Z'),
+          autoCloseAt: null,
         }),
       );
       tenantAccess.requireMembership.mockResolvedValue({});
@@ -621,7 +615,7 @@ describe('TicketsService', () => {
       );
     });
 
-    it('rejects close/reopen when status is not RESOLVED', async () => {
+    it('rejects close when status is not RESOLVED and reopen when not CLOSED', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({ status: TicketStatus.IN_PROGRESS }),
       );
@@ -630,6 +624,13 @@ describe('TicketsService', () => {
       await expect(
         service.closeForUser(USER_ID, TICKET_ID),
       ).rejects.toBeInstanceOf(ConflictException);
+      await expect(
+        service.reopenForUser(USER_ID, TICKET_ID),
+      ).rejects.toBeInstanceOf(ConflictException);
+
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.RESOLVED }),
+      );
       await expect(
         service.reopenForUser(USER_ID, TICKET_ID),
       ).rejects.toBeInstanceOf(ConflictException);
@@ -767,6 +768,60 @@ describe('TicketsService', () => {
       );
     });
 
+    it('reopen moves RESOLVED to IN_PROGRESS and clears resolvedAt/autoCloseAt', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({
+          status: TicketStatus.RESOLVED,
+          resolvedAt: new Date('2026-07-17T10:28:00.000Z'),
+          autoCloseAt: new Date('2026-07-24T10:28:00.000Z'),
+        }),
+      );
+      prisma.ticket.update.mockResolvedValue(
+        baseTicket({
+          status: TicketStatus.IN_PROGRESS,
+          resolvedAt: null,
+          autoCloseAt: null,
+        }),
+      );
+
+      const result = await service.reopen(TICKET_ID);
+      expect(result.status).toBe(TicketStatus.IN_PROGRESS);
+      expect(prisma.ticket.update).toHaveBeenCalledWith({
+        where: { id: TICKET_ID },
+        data: {
+          status: TicketStatus.IN_PROGRESS,
+          resolvedAt: null,
+          autoCloseAt: null,
+        },
+      });
+    });
+
+    it('rejects reopen when status is not RESOLVED', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.CLOSED }),
+      );
+      await expect(service.reopen(TICKET_ID)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+    });
+
+    it('rejects addAdminMessage when RESOLVED or CLOSED', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.RESOLVED }),
+      );
+      await expect(
+        service.addAdminMessage('admin-1', TICKET_ID, { body: 'follow-up' }),
+      ).rejects.toBeInstanceOf(ConflictException);
+
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.CLOSED }),
+      );
+      await expect(
+        service.addAdminMessage('admin-1', TICKET_ID, { body: 'follow-up' }),
+      ).rejects.toBeInstanceOf(ConflictException);
+      expect(prisma.ticketMessage.create).not.toHaveBeenCalled();
+    });
+
     it('addAdminMessage can create isInternal true without leaking via customer get', async () => {
       prisma.ticket.findUnique
         .mockResolvedValueOnce(baseTicket({ status: TicketStatus.IN_PROGRESS }))
@@ -819,43 +874,6 @@ describe('TicketsService', () => {
           }),
         }),
       );
-    });
-  });
-
-  describe('requestCustomerInfo', () => {
-    it('moves IN_PROGRESS to WAITING_CUSTOMER', async () => {
-      const contractService = service as RequestCustomerInfoCapable;
-      expect(typeof contractService.requestCustomerInfo).toBe('function');
-
-      prisma.ticket.findUnique.mockResolvedValue(
-        baseTicket({ status: TicketStatus.IN_PROGRESS }),
-      );
-      prisma.ticket.update.mockResolvedValue(
-        baseTicket({ status: TicketStatus.WAITING_CUSTOMER }),
-      );
-
-      const result = await contractService.requestCustomerInfo(TICKET_ID);
-      expect(result.status).toBe(TicketStatus.WAITING_CUSTOMER);
-    });
-
-    it('rejects when status cannot enter WAITING_CUSTOMER (e.g. CLOSED, RESOLVED)', async () => {
-      const contractService = service as RequestCustomerInfoCapable;
-      expect(typeof contractService.requestCustomerInfo).toBe('function');
-
-      prisma.ticket.findUnique.mockResolvedValue(
-        baseTicket({ status: TicketStatus.CLOSED }),
-      );
-
-      await expect(
-        contractService.requestCustomerInfo(TICKET_ID),
-      ).rejects.toBeInstanceOf(ConflictException);
-
-      prisma.ticket.findUnique.mockResolvedValue(
-        baseTicket({ status: TicketStatus.RESOLVED }),
-      );
-      await expect(
-        contractService.requestCustomerInfo(TICKET_ID),
-      ).rejects.toBeInstanceOf(ConflictException);
     });
   });
 

@@ -341,7 +341,7 @@ export class TicketsService {
     const ticket = await this.loadCustomerTicket(ticketId);
     await this.tenantAccess.requireMembership(userId, ticket.tenantId);
 
-    if (ticket.status !== TicketStatus.RESOLVED) {
+    if (ticket.status !== TicketStatus.CLOSED) {
       throw new ConflictException(ERROR_MESSAGES.fa.invalidTicketTransition);
     }
 
@@ -444,27 +444,6 @@ export class TicketsService {
     return updated;
   }
 
-  async requestCustomerInfo(ticketId: string) {
-    const ticket = await this.prisma.ticket.findUnique({
-      where: { id: ticketId },
-    });
-    if (!ticket) {
-      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
-    }
-
-    if (ticket.status !== TicketStatus.IN_PROGRESS) {
-      throw new ConflictException(ERROR_MESSAGES.fa.invalidTicketTransition);
-    }
-
-    const updated = await this.prisma.ticket.update({
-      where: { id: ticketId },
-      data: { status: TicketStatus.WAITING_CUSTOMER },
-    });
-
-    this.logger.log('ticket.request_customer_info', { ticketId });
-    return updated;
-  }
-
   async resolve(ticketId: string) {
     const ticket = await this.prisma.ticket.findUnique({
       where: { id: ticketId },
@@ -506,6 +485,31 @@ export class TicketsService {
     return updated;
   }
 
+  async reopen(ticketId: string) {
+    const ticket = await this.prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+    if (!ticket) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (ticket.status !== TicketStatus.RESOLVED) {
+      throw new ConflictException(ERROR_MESSAGES.fa.invalidTicketTransition);
+    }
+
+    const updated = await this.prisma.ticket.update({
+      where: { id: ticketId },
+      data: {
+        status: TicketStatus.IN_PROGRESS,
+        resolvedAt: null,
+        autoCloseAt: null,
+      },
+    });
+
+    this.logger.log('ticket.reopened', { ticketId, by: 'staff' });
+    return updated;
+  }
+
   async addAdminMessage(
     authorId: string,
     ticketId: string,
@@ -516,6 +520,17 @@ export class TicketsService {
     });
     if (!ticket) {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (
+      ticket.status === TicketStatus.RESOLVED ||
+      ticket.status === TicketStatus.CLOSED
+    ) {
+      throw new ConflictException(
+        ticket.status === TicketStatus.CLOSED
+          ? ERROR_MESSAGES.fa.ticketClosed
+          : ERROR_MESSAGES.fa.invalidTicketTransition,
+      );
     }
 
     const message = await this.prisma.ticketMessage.create({

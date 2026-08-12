@@ -69,18 +69,18 @@ export async function assignTicketToMeAction(
   });
 }
 
-export async function requestTicketInfoAction(
-  ticketId: string,
-): Promise<TicketMutationResult> {
-  return mutateTicket(ticketId, `/admin/tickets/${ticketId}/request-info`, {
-    method: "POST",
-  });
-}
-
 export async function resolveTicketAction(
   ticketId: string,
 ): Promise<TicketMutationResult> {
   return mutateTicket(ticketId, `/admin/tickets/${ticketId}/resolve`, {
+    method: "POST",
+  });
+}
+
+export async function reopenTicketAction(
+  ticketId: string,
+): Promise<TicketMutationResult> {
+  return mutateTicket(ticketId, `/admin/tickets/${ticketId}/reopen`, {
     method: "POST",
   });
 }
