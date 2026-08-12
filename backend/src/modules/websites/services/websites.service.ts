@@ -55,10 +55,28 @@ export class WebsitesService {
     skip?: number;
     take?: number;
     tenantId?: string;
+    userId?: string;
     search?: string;
   }) {
+    let tenantFilter:
+      | { tenantId: string }
+      | { tenantId: { in: string[] } }
+      | undefined;
+
+    if (params?.userId) {
+      const tenantIds = await this.tenantAccess.getAccessibleTenantIds(
+        params.userId,
+      );
+      if (tenantIds.length === 0) {
+        return { items: [], total: 0 };
+      }
+      tenantFilter = { tenantId: { in: tenantIds } };
+    } else if (params?.tenantId) {
+      tenantFilter = { tenantId: params.tenantId };
+    }
+
     const where = {
-      ...(params?.tenantId ? { tenantId: params.tenantId } : {}),
+      ...tenantFilter,
       ...(params?.search
         ? {
             OR: [

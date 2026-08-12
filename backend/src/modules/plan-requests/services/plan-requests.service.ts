@@ -30,12 +30,7 @@ export class PlanRequestsService {
     websiteDomain?: string;
     notes?: string;
   }) {
-    const plan = await this.prisma.plan.findFirst({
-      where: { id: input.planId, isPublished: true },
-    });
-    if (!plan) {
-      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
-    }
+    await this.requirePublishedPlan(input.planId);
 
     const request = await this.prisma.planRequest.create({
       data: {
@@ -55,6 +50,57 @@ export class PlanRequestsService {
       planId: request.planId,
     });
     return request;
+  }
+
+  async createForUser(
+    userId: string,
+    input: {
+      planId: string;
+      contactName: string;
+      contactPhone: string;
+      contactEmail?: string;
+      websiteDomain?: string;
+      notes?: string;
+    },
+  ) {
+    await this.requirePublishedPlan(input.planId);
+
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
+    const tenantId = tenantIds[0] ?? null;
+
+    const request = await this.prisma.planRequest.create({
+      data: {
+        planId: input.planId,
+        contactName: input.contactName,
+        contactPhone: input.contactPhone,
+        contactEmail: input.contactEmail,
+        websiteDomain: input.websiteDomain,
+        notes: input.notes,
+        createdByUserId: userId,
+        linkedUserId: userId,
+        ...(tenantId ? { tenantId } : {}),
+        status: PlanRequestStatus.SUBMITTED,
+      },
+      include: { plan: true },
+    });
+
+    this.logger.log('plan_request.created_for_user', {
+      planRequestId: request.id,
+      planId: request.planId,
+      userId,
+      tenantId,
+    });
+    return request;
+  }
+
+  private async requirePublishedPlan(planId: string) {
+    const plan = await this.prisma.plan.findFirst({
+      where: { id: planId, isPublished: true },
+    });
+    if (!plan) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    return plan;
   }
 
   async listForUser(userId: string, params?: { skip?: number; take?: number }) {
@@ -96,7 +142,12 @@ export class PlanRequestsService {
     const [items, total] = await this.prisma.$transaction([
       this.prisma.planRequest.findMany({
         where,
-        include: { plan: true, tenant: true, website: true },
+        include: {
+          plan: true,
+          tenant: true,
+          website: true,
+          linkedUser: true,
+        },
         orderBy: { createdAt: 'desc' },
         skip: params?.skip ?? 0,
         take: params?.take ?? 50,
@@ -153,7 +204,12 @@ export class PlanRequestsService {
         websiteId: input.websiteId,
         status: PlanRequestStatus.LINKED,
       },
-      include: { plan: true, tenant: true, website: true },
+      include: {
+        plan: true,
+        tenant: true,
+        website: true,
+        linkedUser: true,
+      },
     });
 
     this.logger.log('plan_request.linked', {
@@ -209,7 +265,7 @@ export class PlanRequestsService {
             enabledAt: new Date(),
             ...(idempotencyKey ? { idempotencyKey } : {}),
           },
-          include: { plan: true, tenant: true, website: true },
+          include: { plan: true, tenant: true, website: true, linkedUser: true },
         });
       });
 
@@ -250,7 +306,12 @@ export class PlanRequestsService {
         declinedAt: new Date(),
         declineReason: reason ?? null,
       },
-      include: { plan: true },
+      include: {
+        plan: true,
+        tenant: true,
+        website: true,
+        linkedUser: true,
+      },
     });
 
     this.logger.log('plan_request.declined', { planRequestId: id });

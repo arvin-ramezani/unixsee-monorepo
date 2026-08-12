@@ -1727,12 +1727,12 @@
       "description": "Pick the plan that fits your new website before you add it."
     },
     "checkout": {
-      "title": "Checkout | Unixsee",
-      "description": "Confirm your plan and complete your purchase."
+      "title": "Plan request | Unixsee",
+      "description": "Review your plan and submit a request. This is not a payment."
     },
     "plansSuccess": {
-      "title": "Purchase complete | Unixsee",
-      "description": "Your purchase is complete. Our team will call you shortly."
+      "title": "Request submitted | Unixsee",
+      "description": "Your plan request was submitted. Our team will contact you shortly."
     },
     "helpCenter": {
       "title": "Help Center | Unixsee",
@@ -2164,14 +2164,16 @@
     "perMonth": "/mo",
     "select": "Choose {plan}",
     "featuresLabel": "What's included",
-    "empty": "Plans will be available here soon."
+    "empty": "Plans will be available here soon.",
+    "loadError": "We could not load plans right now. Please try again later."
   },
   "Checkout": {
-    "title": "Complete your purchase",
-    "description": "Review your plan and confirm. No payment is taken in this demo.",
+    "title": "Submit a plan request",
+    "description": "Review your chosen plan and send a request. This is not a payment.",
     "back": "Back to plans",
-    "summaryTitle": "Order summary",
+    "summaryTitle": "Request summary",
     "planLabel": "Plan",
+    "detailsLabel": "Details",
     "billingLabel": "Billing",
     "billingValue": "Monthly",
     "totalLabel": "Total due today",
@@ -2184,18 +2186,27 @@
     "phonePlaceholder": "+1 555 000 1234",
     "nameError": "Please enter your name.",
     "phoneError": "Please enter a phone number.",
-    "pay": "Complete purchase",
-    "processing": "Processing...",
-    "reassurance": "By completing your purchase, our team will contact you to finish setup."
+    "submit": "Submit request",
+    "processing": "Submitting...",
+    "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup.",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "unavailable": "Plan requests are temporarily unavailable.",
+      "unauthorized": "Please sign in again to continue.",
+      "forbidden": "You do not have permission to submit this request.",
+      "notFound": "That plan is no longer available.",
+      "rateLimited": "Too many attempts. Please wait and try again.",
+      "validation": "Please check your details and try again."
+    }
   },
   "PlansSuccess": {
-    "title": "Your purchase is complete!",
-    "description": "Thank you for your order. Our team will call you as soon as possible to finish setting up your plan.",
-    "planLabel": "Purchased plan",
+    "title": "Your request was submitted",
+    "description": "Thank you. Our team will review your plan request and contact you to continue setup.",
+    "planLabel": "Requested plan",
     "nextTitle": "What happens next",
-    "step1": "Our team reviews your order.",
-    "step2": "We call you to confirm setup details.",
-    "step3": "Your plan goes live and your website is ready.",
+    "step1": "Our team reviews your request.",
+    "step2": "We contact you to confirm setup details.",
+    "step3": "After staff enablement, your plan goes live on your website.",
     "backToWebsites": "Go to websites",
     "viewPlans": "View plans"
   },

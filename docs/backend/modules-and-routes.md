@@ -167,6 +167,7 @@ Consultant requests are modeled as **complementary-service** public intake
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/v1/public/plan-requests` | Public |
+| POST | `/api/v1/plan-requests` | Customer (logged-in create) |
 | GET | `/api/v1/plan-requests` | Customer (own) |
 | GET | `/api/v1/plan-requests/:id` | Customer (own) |
 | GET | `/api/v1/admin/plan-requests` | Admin |

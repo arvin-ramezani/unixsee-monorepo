@@ -1,0 +1,196 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import {
+  mapApiError,
+  STAFF_API_ERROR_MESSAGES,
+} from "@/lib/api/map-api-error";
+import { serverActionFetch } from "@/lib/api/server-action-fetch";
+import type { PlanRequestType } from "@/lib/data/plan-requests-data";
+import {
+  mapAdminPlanRequestToUi,
+  type AdminPlanRequestDto,
+} from "@/lib/plan-requests/map-admin-plan-request";
+import type { ApiResponse } from "@/types/auth.types";
+
+export type PlanRequestMutationResult =
+  | { ok: true; request: PlanRequestType }
+  | { ok: false; message: string };
+
+export type PlanRequestWebsiteOption = {
+  id: string;
+  domain: string;
+  displayName: string | null;
+  tenantId: string;
+  tenantName: string;
+  hasActivePlan: boolean;
+  activePlanLabel: string | null;
+};
+
+export type ListPlanRequestWebsitesResult =
+  | { ok: true; websites: PlanRequestWebsiteOption[] }
+  | { ok: false; message: string };
+
+type AdminWebsiteListItem = {
+  id: string;
+  domain: string;
+  displayName: string | null;
+  tenantId: string;
+  planId: string | null;
+  tenant?: { id: string; name: string } | null;
+  plan?: { id: string; code: string; nameEn: string } | null;
+};
+
+type AdminWebsiteListResponse = {
+  items: AdminWebsiteListItem[];
+  total: number;
+};
+
+function staffErrorMessage(response: ApiResponse<unknown>): string {
+  const mapped = mapApiError(response);
+  return mapped
+    ? STAFF_API_ERROR_MESSAGES[mapped.key]
+    : STAFF_API_ERROR_MESSAGES.generic;
+}
+
+async function mutatePlanRequest(
+  endpoint: string,
+  init?: RequestInit,
+): Promise<PlanRequestMutationResult> {
+  try {
+    const response = await serverActionFetch<AdminPlanRequestDto>(
+      endpoint,
+      init,
+    );
+
+    if (!response.success || !response.data) {
+      return { ok: false, message: staffErrorMessage(response) };
+    }
+
+    revalidatePath("/plan-requests");
+    return { ok: true, request: mapAdminPlanRequestToUi(response.data) };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+function mapWebsiteOption(item: AdminWebsiteListItem): PlanRequestWebsiteOption {
+  return {
+    id: item.id,
+    domain: item.domain,
+    displayName: item.displayName,
+    tenantId: item.tenantId,
+    tenantName: item.tenant?.name?.trim() || "—",
+    hasActivePlan: Boolean(item.planId),
+    activePlanLabel: item.plan?.nameEn ?? item.plan?.code ?? null,
+  };
+}
+
+export async function listWebsitesForPlanRequestAction(input: {
+  linkedUserId?: string | null;
+  linkedTenantId?: string | null;
+  search?: string;
+}): Promise<ListPlanRequestWebsitesResult> {
+  if (!input.linkedUserId && !input.linkedTenantId) {
+    return { ok: true, websites: [] };
+  }
+
+  try {
+    const query = new URLSearchParams({
+      skip: "0",
+      take: "100",
+    });
+
+    // Prefer user scope so staff see websites across the linked user's tenants.
+    if (input.linkedUserId) {
+      query.set("userId", input.linkedUserId);
+    } else if (input.linkedTenantId) {
+      query.set("tenantId", input.linkedTenantId);
+    }
+
+    if (input.search?.trim()) {
+      query.set("search", input.search.trim());
+    }
+
+    const response = await serverActionFetch<AdminWebsiteListResponse>(
+      `/admin/websites?${query.toString()}`,
+      { method: "GET" },
+    );
+
+    if (!response.success || !response.data) {
+      return { ok: false, message: staffErrorMessage(response) };
+    }
+
+    return {
+      ok: true,
+      websites: response.data.items.map(mapWebsiteOption),
+    };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+export async function linkPlanRequestWebsiteAction(input: {
+  requestId: string;
+  tenantId: string;
+  websiteId: string;
+  linkedUserId?: string | null;
+}): Promise<PlanRequestMutationResult> {
+  return mutatePlanRequest(
+    `/admin/plan-requests/${input.requestId}/link`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        tenantId: input.tenantId,
+        websiteId: input.websiteId,
+        ...(input.linkedUserId ? { linkedUserId: input.linkedUserId } : {}),
+      }),
+    },
+  );
+}
+
+export async function enablePlanRequestAction(input: {
+  requestId: string;
+  websiteId: string;
+  tenantId?: string | null;
+}): Promise<PlanRequestMutationResult> {
+  return mutatePlanRequest(
+    `/admin/plan-requests/${input.requestId}/enable`,
+    {
+      method: "POST",
+      headers: {
+        "Idempotency-Key": `plan-request-enable-${input.requestId}-${input.websiteId}`,
+      },
+      body: JSON.stringify({
+        websiteId: input.websiteId,
+        ...(input.tenantId ? { tenantId: input.tenantId } : {}),
+      }),
+    },
+  );
+}
+
+export async function declinePlanRequestAction(input: {
+  requestId: string;
+  reason: string;
+  kind?: "declined" | "cancelled";
+}): Promise<PlanRequestMutationResult> {
+  const trimmedReason = input.reason.trim();
+  if (!trimmedReason) {
+    return { ok: false, message: "دلیل الزامی است." };
+  }
+
+  // Nest only has DECLINED; UI "cancel" is the same terminal action with a labeled reason.
+  const reason =
+    input.kind === "cancelled"
+      ? `لغو درخواست: ${trimmedReason}`
+      : trimmedReason;
+
+  return mutatePlanRequest(
+    `/admin/plan-requests/${input.requestId}/decline`,
+    {
+      method: "POST",
+      body: JSON.stringify({ reason }),
+    },
+  );
+}

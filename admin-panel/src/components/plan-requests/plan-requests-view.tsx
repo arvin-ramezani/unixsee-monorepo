@@ -33,12 +33,6 @@ import {
   type PlanRequestStatusType,
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
-import {
-  derivePlanRequestStatus,
-  listRuntimePlanRequests,
-} from "@/lib/data/plan-requests-runtime";
-import { getRuntimeWebsite } from "@/lib/data/websites-runtime";
-import { getRuntimeUser } from "@/lib/data/users-runtime";
 import { cn } from "@/lib/utils";
 import { PlanRequestDetailsSheet } from "./plan-request-details-sheet";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
@@ -53,7 +47,7 @@ export type StatusFilterType =
   (typeof STATUS_FILTER)[keyof typeof STATUS_FILTER];
 
 const PLAN_FILTER_ALL = "ALL";
-type PlanFilterType = typeof PLAN_FILTER_ALL | PlanIdType;
+type PlanFilterType = typeof PLAN_FILTER_ALL | PlanIdType | string;
 
 const STATUS_FILTER_OPTIONS: { value: StatusFilterType; label: string }[] = [
   { value: STATUS_FILTER.ALL, label: "همه وضعیت‌ها" },
@@ -90,14 +84,31 @@ const ACTIONABLE_STATUSES = new Set<PlanRequestStatusType>([
   PLAN_REQUEST_STATUS.READY_TO_ENABLE,
 ]);
 
+function resolveUserLabel(request: PlanRequestType): string {
+  if (request.linkedUserName) return request.linkedUserName;
+  if (request.linkedTenantName) return request.linkedTenantName;
+  if (request.linkedUserId) return "کاربر متصل";
+  return "متصل نشده";
+}
+
+function resolveWebsiteLabel(request: PlanRequestType): string {
+  return (
+    request.targetWebsiteDomain ?? request.domainHint ?? "—"
+  );
+}
+
 type PlanRequestsViewProps = {
   initialStatus?: StatusFilterType;
+  initialRequests?: PlanRequestType[];
+  loadError?: string | null;
 };
 
 export function PlanRequestsView({
   initialStatus = STATUS_FILTER.ACTIONABLE,
+  initialRequests = [],
+  loadError = null,
 }: PlanRequestsViewProps = {}) {
-  const [revision, setRevision] = useState(0);
+  const [requests, setRequests] = useState(initialRequests);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
     useState<StatusFilterType>(initialStatus);
@@ -106,14 +117,6 @@ export function PlanRequestsView({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-
-  const requests = useMemo(() => {
-    void revision;
-    return listRuntimePlanRequests().map((request) => ({
-      ...request,
-      status: derivePlanRequestStatus(request),
-    }));
-  }, [revision]);
 
   const summary = useMemo(() => {
     return {
@@ -183,12 +186,6 @@ export function PlanRequestsView({
       if (!statusOk || !planOk) return false;
       if (!q) return true;
 
-      const user = request.linkedUserId
-        ? getRuntimeUser(request.linkedUserId)
-        : null;
-      const website = request.targetWebsiteId
-        ? getRuntimeWebsite(request.targetWebsiteId)
-        : null;
       const haystack = [
         request.id,
         request.chosenPlanName,
@@ -196,8 +193,9 @@ export function PlanRequestsView({
         request.contactEmail ?? "",
         request.contactMobile ?? "",
         request.domainHint ?? "",
-        user?.displayName ?? "",
-        website?.domain ?? "",
+        request.linkedUserName ?? "",
+        request.linkedTenantName ?? "",
+        request.targetWebsiteDomain ?? "",
         request.nextAction,
       ]
         .join(" ")
@@ -218,11 +216,22 @@ export function PlanRequestsView({
   const handleRequestChanged = (request: PlanRequestType, message: string) => {
     setSelectedId(request.id);
     setStatusMessage(message);
-    setRevision((value) => value + 1);
+    setRequests((prev) =>
+      prev.map((item) => (item.id === request.id ? request : item)),
+    );
   };
 
   return (
     <div className="space-y-6">
+      {loadError ? (
+        <p
+          className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
+          {loadError}
+        </p>
+      ) : null}
+
       <section
         className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
         aria-label="خلاصه درخواست‌های پلن"
@@ -395,69 +404,62 @@ export function PlanRequestsView({
                   >
                     <div className="inline-flex items-center gap-2">
                       <SearchX className="size-4" aria-hidden />
-                      درخواستی با این فیلترها پیدا نشد.
+                      {loadError
+                        ? "بارگذاری درخواست‌ها ناموفق بود."
+                        : "درخواستی با این فیلترها پیدا نشد."}
                     </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((request) => {
-                  const user = request.linkedUserId
-                    ? getRuntimeUser(request.linkedUserId)
-                    : null;
-                  const website = request.targetWebsiteId
-                    ? getRuntimeWebsite(request.targetWebsiteId)
-                    : null;
-
-                  return (
-                    <TableRow
-                      key={request.id}
-                      className="cursor-pointer"
-                      tabIndex={0}
-                      onClick={() => openRequest(request.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          openRequest(request.id);
-                        }
-                      }}
-                    >
-                      <TableCell className="px-4 py-3">
-                        <div className="font-medium w-fit" dir="ltr">
-                          {request.chosenPlanName}
-                        </div>
-                        <div
-                          className="text-xs text-muted-foreground w-fit"
-                          dir="ltr"
-                        >
-                          {request.id}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <div>{request.contactName}</div>
-                        <div
-                          className="text-xs text-muted-foreground w-fit"
-                          dir="ltr"
-                        >
-                          {request.contactEmail ?? request.contactMobile ?? "—"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        {user ? user.displayName : "متصل نشده"}
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <p className="w-fit" dir="ltr">
-                          {website?.domain ?? request.domainHint ?? "—"}
-                        </p>
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <PlanRequestStatusBadge status={request.status} />
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-                        {request.nextAction}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                filtered.map((request) => (
+                  <TableRow
+                    key={request.id}
+                    className="cursor-pointer"
+                    tabIndex={0}
+                    onClick={() => openRequest(request.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openRequest(request.id);
+                      }
+                    }}
+                  >
+                    <TableCell className="px-4 py-3">
+                      <div className="font-medium w-fit" dir="ltr">
+                        {request.chosenPlanName}
+                      </div>
+                      <div
+                        className="text-xs text-muted-foreground w-fit"
+                        dir="ltr"
+                      >
+                        {request.id}
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div>{request.contactName}</div>
+                      <div
+                        className="text-xs text-muted-foreground w-fit"
+                        dir="ltr"
+                      >
+                        {request.contactEmail ?? request.contactMobile ?? "—"}
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      {resolveUserLabel(request)}
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <p className="w-fit" dir="ltr">
+                        {resolveWebsiteLabel(request)}
+                      </p>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <PlanRequestStatusBadge status={request.status} />
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-sm text-muted-foreground">
+                      {request.nextAction}
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
@@ -466,54 +468,45 @@ export function PlanRequestsView({
         <div className="grid gap-3 md:hidden">
           {filtered.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              درخواستی با این فیلترها پیدا نشد.
+              {loadError
+                ? "بارگذاری درخواست‌ها ناموفق بود."
+                : "درخواستی با این فیلترها پیدا نشد."}
             </p>
           ) : (
-            filtered.map((request) => {
-              const user = request.linkedUserId
-                ? getRuntimeUser(request.linkedUserId)
-                : null;
-              const website = request.targetWebsiteId
-                ? getRuntimeWebsite(request.targetWebsiteId)
-                : null;
-
-              return (
-                <button
-                  key={request.id}
-                  type="button"
-                  className="rounded-xl border border-border bg-background p-4 text-right shadow-sm"
-                  onClick={() => openRequest(request.id)}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold" dir="ltr">
-                        {request.chosenPlanName}
-                      </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {request.contactName}
-                      </p>
-                    </div>
-                    <PlanRequestStatusBadge status={request.status} />
+            filtered.map((request) => (
+              <button
+                key={request.id}
+                type="button"
+                className="rounded-xl border border-border bg-background p-4 text-right shadow-sm"
+                onClick={() => openRequest(request.id)}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold" dir="ltr">
+                      {request.chosenPlanName}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {request.contactName}
+                    </p>
                   </div>
-                  <dl className="mt-3 grid gap-2 text-xs text-muted-foreground">
-                    <div className="flex justify-between gap-3">
-                      <dt>کاربر</dt>
-                      <dd>{user?.displayName ?? "متصل نشده"}</dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>وب‌سایت</dt>
-                      <dd dir="ltr">
-                        {website?.domain ?? request.domainHint ?? "—"}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>اقدام بعدی</dt>
-                      <dd>{request.nextAction}</dd>
-                    </div>
-                  </dl>
-                </button>
-              );
-            })
+                  <PlanRequestStatusBadge status={request.status} />
+                </div>
+                <dl className="mt-3 grid gap-2 text-xs text-muted-foreground">
+                  <div className="flex justify-between gap-3">
+                    <dt>کاربر</dt>
+                    <dd>{resolveUserLabel(request)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt>وب‌سایت</dt>
+                    <dd dir="ltr">{resolveWebsiteLabel(request)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt>اقدام بعدی</dt>
+                    <dd>{request.nextAction}</dd>
+                  </div>
+                </dl>
+              </button>
+            ))
           )}
         </div>
       </div>

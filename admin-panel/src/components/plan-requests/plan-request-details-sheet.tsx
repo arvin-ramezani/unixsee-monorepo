@@ -1,18 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
-import { AlertTriangle, CheckCircle2, Link2, XCircle } from "lucide-react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Globe2,
+  LoaderCircle,
+  XCircle,
+} from "lucide-react";
 
+import {
+  declinePlanRequestAction,
+  enablePlanRequestAction,
+  linkPlanRequestWebsiteAction,
+  listWebsitesForPlanRequestAction,
+  type PlanRequestWebsiteOption,
+} from "@/actions/plan-requests/plan-request-actions";
 import SearchInput from "@/components/common/search-input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Sheet,
   SheetContent,
@@ -25,20 +38,10 @@ import {
   PLAN_REQUEST_BLOCKER,
   PLAN_REQUEST_BLOCKER_LABELS,
   PLAN_REQUEST_STATUS,
+  type PlanRequestBlockerType,
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
-import {
-  enablePlanRequest,
-  getPlanRequestBlockers,
-  getRuntimePlanRequest,
-  linkExistingUserToPlanRequest,
-  refusePlanRequest,
-  selectWebsiteForPlanRequest,
-} from "@/lib/data/plan-requests-runtime";
-import { websiteHasActivePlan } from "@/lib/data/plans-data";
-import { STAFF_CAPABILITY, type CustomerUserType } from "@/lib/data/users-data";
-import { getRuntimeUser, listRuntimeUsers } from "@/lib/data/users-runtime";
-import { listRuntimeWebsitesByTenant } from "@/lib/data/websites-runtime";
+import { STAFF_CAPABILITY } from "@/lib/data/users-data";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
@@ -50,27 +53,39 @@ type PlanRequestDetailsSheetProps = {
   onRequestChanged: (request: PlanRequestType, message: string) => void;
 };
 
-function normalizeSearchText(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[۰-۹]/g, (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
-    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
+const WEBSITE_ROW_HEIGHT = 72;
+
+function isTerminalPlanRequestStatus(status: PlanRequestType["status"]) {
+  return (
+    status === PLAN_REQUEST_STATUS.ENABLED ||
+    status === PLAN_REQUEST_STATUS.DECLINED ||
+    status === PLAN_REQUEST_STATUS.CANCELLED
+  );
 }
 
-function matchesUserQuery(user: CustomerUserType, query: string) {
-  const normalizedQuery = normalizeSearchText(query);
-  if (!normalizedQuery) return true;
+function resolveEnablementBlockers(
+  request: PlanRequestType,
+  selectedWebsite: PlanRequestWebsiteOption | null,
+): PlanRequestBlockerType[] {
+  if (isTerminalPlanRequestStatus(request.status)) {
+    return [];
+  }
 
-  const compactQuery = normalizedQuery.replace(/[\s-]/g, "");
-  const fields = [user.displayName, user.email ?? "", user.mobile, user.id].map(
-    normalizeSearchText,
-  );
+  const blockers: PlanRequestBlockerType[] = [];
 
-  return fields.some((field) => {
-    if (field.includes(normalizedQuery)) return true;
-    return field.replace(/[\s-]/g, "").includes(compactQuery);
-  });
+  if (!request.linkedUserId || !request.linkedTenantId) {
+    blockers.push(PLAN_REQUEST_BLOCKER.MISSING_USER);
+  }
+
+  if (!request.targetWebsiteId && !selectedWebsite) {
+    blockers.push(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE);
+  }
+
+  if (selectedWebsite?.hasActivePlan) {
+    blockers.push(PLAN_REQUEST_BLOCKER.ACTIVE_PLAN_CONFLICT);
+  }
+
+  return blockers;
 }
 
 export function PlanRequestDetailsSheet({
@@ -95,7 +110,7 @@ export function PlanRequestDetailsSheet({
                 <PlanRequestStatusBadge status={request.status} />
               </SheetTitle>
               <SheetDescription>
-                اتصال کاربر موجود، انتخاب وب‌سایت و فعال‌سازی پلن درخواست‌شده
+                انتخاب وب‌سایت کاربر متصل، فعال‌سازی یا رد درخواست
               </SheetDescription>
             </SheetHeader>
 
@@ -112,6 +127,81 @@ export function PlanRequestDetailsSheet({
   );
 }
 
+function PlanRequestSummary({ request }: { request: PlanRequestType }) {
+  const contactSummary = request.contactMobile
+    ? maskMobile(request.contactMobile)
+    : request.contactEmail
+      ? maskEmail(request.contactEmail)
+      : "—";
+
+  return (
+    <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+      <h3 className="text-sm font-semibold">خلاصه درخواست</h3>
+      <dl className="grid gap-3 text-sm sm:grid-cols-2">
+        <div>
+          <dt className="text-xs text-muted-foreground">پلن انتخاب‌شده</dt>
+          <dd className="mt-1 w-fit font-medium" dir="ltr">
+            {request.chosenPlanName}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">اقدام بعدی</dt>
+          <dd className="mt-1">{request.nextAction}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">نام تماس</dt>
+          <dd className="mt-1">{request.contactName}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">شناسه تماس</dt>
+          <dd className="mt-1 w-fit" dir="ltr">
+            {contactSummary}
+          </dd>
+        </div>
+        {request.domainHint ? (
+          <div>
+            <dt className="text-xs text-muted-foreground">راهنمای دامنه</dt>
+            <dd className="mt-1 w-fit" dir="ltr">
+              {request.domainHint}
+            </dd>
+          </div>
+        ) : null}
+        <div>
+          <dt className="text-xs text-muted-foreground">ثبت</dt>
+          <dd className="mt-1">{request.submittedAt}</dd>
+        </div>
+        {request.linkedUserName || request.linkedUserId ? (
+          <div className="sm:col-span-2">
+            <dt className="text-xs text-muted-foreground">کاربر متصل</dt>
+            <dd className="mt-1">
+              {request.linkedUserName ?? "کاربر متصل"}
+              {request.linkedUserId ? (
+                <span className="ms-2 text-muted-foreground" dir="ltr">
+                  {request.linkedUserId}
+                </span>
+              ) : null}
+            </dd>
+          </div>
+        ) : null}
+        {request.linkedTenantName ? (
+          <div>
+            <dt className="text-xs text-muted-foreground">مستأجر</dt>
+            <dd className="mt-1">{request.linkedTenantName}</dd>
+          </div>
+        ) : null}
+        {request.targetWebsiteDomain ? (
+          <div>
+            <dt className="text-xs text-muted-foreground">وب‌سایت هدف</dt>
+            <dd className="mt-1 w-fit" dir="ltr">
+              {request.targetWebsiteDomain}
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+    </section>
+  );
+}
+
 function PlanRequestDetailsBody({
   request: initialRequest,
   onRequestChanged,
@@ -123,389 +213,447 @@ function PlanRequestDetailsBody({
 }) {
   const canEnable = hasCapability(STAFF_CAPABILITY.ENABLE_PLAN_REQUEST);
   const [request, setRequest] = useState(initialRequest);
-  const [userQuery, setUserQuery] = useState("");
+  const [websiteQuery, setWebsiteQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [websites, setWebsites] = useState<PlanRequestWebsiteOption[]>([]);
+  const [websitesLoading, setWebsitesLoading] = useState(false);
+  const [websitesError, setWebsitesError] = useState<string | null>(null);
+  const [pendingWebsiteId, setPendingWebsiteId] = useState<string | null>(null);
   const [refuseKind, setRefuseKind] = useState<"declined" | "cancelled">(
     "declined",
   );
   const [refuseReason, setRefuseReason] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmEnable, setConfirmEnable] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const websiteListRef = useRef<HTMLDivElement>(null);
 
-  const blockers = getPlanRequestBlockers(request);
-  const isTerminal =
-    request.status === PLAN_REQUEST_STATUS.ENABLED ||
-    request.status === PLAN_REQUEST_STATUS.DECLINED ||
-    request.status === PLAN_REQUEST_STATUS.CANCELLED;
-  const canActivate = canEnable && blockers.length === 0 && !isTerminal;
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedQuery(websiteQuery), 250);
+    return () => window.clearTimeout(timer);
+  }, [websiteQuery]);
 
-  const linkedUser = request.linkedUserId
-    ? getRuntimeUser(request.linkedUserId)
-    : null;
-  const tenantWebsites = request.linkedTenantId
-    ? listRuntimeWebsitesByTenant(request.linkedTenantId)
-    : [];
-  const selectedWebsite = request.targetWebsiteId
-    ? tenantWebsites.find((website) => website.id === request.targetWebsiteId)
-    : undefined;
+  useEffect(() => {
+    let cancelled = false;
 
-  const userCandidates = useMemo(() => {
-    const users = listRuntimeUsers();
-    const filtered = users.filter((user) => matchesUserQuery(user, userQuery));
-    return filtered.slice(0, userQuery.trim() ? 12 : 8);
-  }, [userQuery]);
+    async function loadWebsites() {
+      if (!request.linkedUserId && !request.linkedTenantId) {
+        setWebsites([]);
+        setWebsitesError(null);
+        setWebsitesLoading(false);
+        return;
+      }
+
+      setWebsitesLoading(true);
+      setWebsitesError(null);
+
+      try {
+        const result = await listWebsitesForPlanRequestAction({
+          linkedUserId: request.linkedUserId,
+          linkedTenantId: request.linkedTenantId,
+          search: debouncedQuery,
+        });
+        if (cancelled) return;
+
+        if (!result.ok) {
+          setWebsites([]);
+          setWebsitesError(result.message);
+          return;
+        }
+
+        setWebsites(result.websites);
+      } finally {
+        if (!cancelled) {
+          setWebsitesLoading(false);
+        }
+      }
+    }
+
+    void loadWebsites();
+    return () => {
+      cancelled = true;
+    };
+  }, [request.linkedUserId, request.linkedTenantId, debouncedQuery]);
+
+  const selectedWebsite =
+    websites.find((website) => website.id === request.targetWebsiteId) ??
+    websites.find((website) => website.id === pendingWebsiteId) ??
+    null;
+
+  const blockers = resolveEnablementBlockers(request, selectedWebsite);
+  const isTerminal = isTerminalPlanRequestStatus(request.status);
+  const canActivate =
+    canEnable &&
+    blockers.length === 0 &&
+    !isTerminal &&
+    Boolean(request.targetWebsiteId || selectedWebsite);
+
+  const rowVirtualizer = useVirtualizer({
+    count: websites.length,
+    getScrollElement: () => websiteListRef.current,
+    estimateSize: () => WEBSITE_ROW_HEIGHT,
+    overscan: 6,
+  });
 
   const syncRequest = (next: PlanRequestType, message: string) => {
-    const fresh = getRuntimePlanRequest(next.id) ?? next;
-    setRequest(fresh);
+    setRequest(next);
     setConfirmEnable(false);
-    onRequestChanged(fresh, message);
+    setPendingWebsiteId(null);
+    onRequestChanged(next, message);
   };
 
-  const handleLinkUser = (userId: string) => {
+  const handleSelectWebsite = async (website: PlanRequestWebsiteOption) => {
     setFormError(null);
-    const result = linkExistingUserToPlanRequest(request.id, userId);
-    if (!result.ok) {
-      setFormError(result.message);
+    if (!request.linkedUserId && !request.linkedTenantId) {
+      setFormError("ابتدا کاربر/مستأجر باید به درخواست متصل باشد.");
       return;
     }
 
-    setUserQuery("");
-    syncRequest(
-      result.request,
-      `کاربر «${result.user.displayName}» به درخواست متصل شد.`,
-    );
-  };
+    setSubmitting(true);
+    setPendingWebsiteId(website.id);
 
-  const handleSelectWebsite = (websiteId: string | null) => {
-    if (!websiteId) return;
-    setFormError(null);
+    try {
+      const result = await linkPlanRequestWebsiteAction({
+        requestId: request.id,
+        tenantId: website.tenantId,
+        websiteId: website.id,
+        linkedUserId: request.linkedUserId,
+      });
 
-    const result = selectWebsiteForPlanRequest(request.id, websiteId);
-    if (!result.ok) {
-      setFormError(result.message);
-      return;
+      if (!result.ok) {
+        setFormError(result.message);
+        setPendingWebsiteId(null);
+        return;
+      }
+
+      syncRequest(
+        result.request,
+        "وب‌سایت هدف انتخاب شد و به درخواست متصل شد.",
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    syncRequest(result.request, "وب‌سایت هدف برای فعال‌سازی ثبت شد.");
   };
 
-  const handleEnable = () => {
+  const handleEnable = async () => {
     setFormError(null);
+
     if (!canEnable) {
       setFormError(
         "فعال‌سازی پلن برای نقش فعلی فعال نیست و باید به همکار دارای این دسترسی ارجاع شود.",
       );
       return;
     }
+
     if (blockers.length > 0) {
       setFormError("ابتدا موانع فعال‌سازی را برطرف کنید.");
       return;
     }
+
+    const websiteId = request.targetWebsiteId ?? selectedWebsite?.id;
+    if (!websiteId) {
+      setFormError("وب‌سایت هدف مشخص نیست.");
+      return;
+    }
+
     if (!confirmEnable) {
       setConfirmEnable(true);
       return;
     }
 
-    const result = enablePlanRequest(request.id);
-    if (!result.ok) {
-      setFormError(result.message);
-      setConfirmEnable(false);
-      return;
-    }
+    setSubmitting(true);
+    try {
+      const result = await enablePlanRequestAction({
+        requestId: request.id,
+        websiteId,
+        tenantId: request.linkedTenantId ?? selectedWebsite?.tenantId,
+      });
 
-    syncRequest(
-      result.request,
-      `پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`,
-    );
-    onClose();
+      if (!result.ok) {
+        setFormError(result.message);
+        setConfirmEnable(false);
+        return;
+      }
+
+      syncRequest(
+        result.request,
+        `پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`,
+      );
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleRefuse = (event: FormEvent<HTMLFormElement>) => {
+  const handleRefuse = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormError(null);
+    setSubmitting(true);
 
-    const result = refusePlanRequest(request.id, refuseKind, refuseReason);
-    if (!result.ok) {
-      setFormError(result.message);
-      return;
+    try {
+      const result = await declinePlanRequestAction({
+        requestId: request.id,
+        reason: refuseReason,
+        kind: refuseKind,
+      });
+
+      if (!result.ok) {
+        setFormError(result.message);
+        return;
+      }
+
+      syncRequest(
+        result.request,
+        refuseKind === "declined" ? "درخواست رد شد." : "درخواست لغو شد.",
+      );
+      onClose();
+    } finally {
+      setSubmitting(false);
     }
-
-    syncRequest(
-      result.request,
-      refuseKind === "declined" ? "درخواست رد شد." : "درخواست لغو شد.",
-    );
-    onClose();
   };
 
-  const contactSummary = request.contactMobile
-    ? maskMobile(request.contactMobile)
-    : request.contactEmail
-      ? maskEmail(request.contactEmail)
-      : "—";
-
-  const selectedWebsiteLabel = selectedWebsite
-    ? `${selectedWebsite.domain}${
-        websiteHasActivePlan(selectedWebsite.service.plan)
-          ? " — دارای پلن فعال"
-          : " — بدون پلن"
-      }`
-    : "وب‌سایت را انتخاب کنید";
+  // Website list can load from linked user alone; enablement still needs tenant + user.
+  const canBrowseWebsites = Boolean(
+    request.linkedUserId || request.linkedTenantId,
+  );
 
   return (
     <>
-      <div className="app-scrollbar flex-1 space-y-6 overflow-y-auto px-4 py-5">
-        <section className="space-y-3 rounded-xl border border-border p-4">
-          <h3 className="text-sm font-semibold">خلاصه درخواست</h3>
-          <dl className="grid gap-3 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-xs text-muted-foreground">پلن انتخاب‌شده</dt>
-              <dd className="mt-1 font-medium w-fit" dir="ltr">
-                {request.chosenPlanName}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">اقدام بعدی</dt>
-              <dd className="mt-1">{request.nextAction}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">نام تماس</dt>
-              <dd className="mt-1">{request.contactName}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">شناسه تماس</dt>
-              <dd className="mt-1 w-fit" dir="ltr">
-                {contactSummary}
-              </dd>
-            </div>
-            {request.domainHint ? (
-              <div>
-                <dt className="text-xs text-muted-foreground">راهنمای دامنه</dt>
-                <dd className="mt-1 w-fit" dir="ltr">
-                  {request.domainHint}
-                </dd>
-              </div>
-            ) : null}
-            <div>
-              <dt className="text-xs text-muted-foreground">ثبت</dt>
-              <dd className="mt-1">{request.submittedAt}</dd>
-            </div>
-          </dl>
-        </section>
+      <div className="app-scrollbar flex-1 overflow-y-auto px-4 py-5">
+        <div className="flex flex-col gap-6">
+          <PlanRequestSummary request={request} />
 
-        {blockers.length > 0 && (
-          <section
-            className="space-y-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
-            role="status"
-          >
-            <p className="flex items-center gap-2 font-medium">
-              <AlertTriangle className="size-4" aria-hidden />
-              موانع فعال‌سازی
-            </p>
-            <ul className="list-disc space-y-1 pr-5">
-              {blockers.map((blocker) => (
-                <li key={blocker}>{PLAN_REQUEST_BLOCKER_LABELS[blocker]}</li>
-              ))}
-            </ul>
-            {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) && (
-              <p className="text-xs text-destructive/90">
-                اگر حساب وجود ندارد، ابتدا در{" "}
-                <Link href="/users" className="underline underline-offset-2">
-                  کاربران
-                </Link>{" "}
-                ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
-              </p>
-            )}
-          </section>
-        )}
-
-        {!isTerminal && (
-          <section className="space-y-3 rounded-xl border border-border p-4">
-            <h3 className="flex items-center gap-2 text-sm font-semibold">
-              <Link2 className="size-4" aria-hidden />
-              اتصال کاربر موجود
-            </h3>
-            {linkedUser && (
-              <p className="rounded-lg bg-muted/40 px-3 py-2 text-sm">
-                متصل: {linkedUser.displayName}
-                <span className="ms-2 text-muted-foreground" dir="ltr">
-                  {linkedUser.id}
-                </span>
-              </p>
-            )}
-            <SearchInput
-              value={userQuery}
-              onChange={(event) => setUserQuery(event.target.value)}
-              placeholder="جستجوی نام، ایمیل یا موبایل…"
-              aria-label="جستجوی کاربر موجود"
-              autoComplete="off"
-            />
-            <ul className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border p-1">
-              {userCandidates.length === 0 ? (
-                <li className="px-3 py-2 text-sm text-muted-foreground">
-                  کاربری با این جستجو پیدا نشد.
-                </li>
-              ) : (
-                userCandidates.map((user) => {
-                  const isLinked = user.id === request.linkedUserId;
-                  return (
-                    <li key={user.id}>
-                      <button
-                        type="button"
-                        onClick={() => handleLinkUser(user.id)}
-                        className={cn(
-                          "flex w-full flex-col rounded-md px-3 py-2 text-start transition-colors hover:bg-muted/60",
-                          isLinked && "bg-primary/10 text-primary",
-                        )}
-                      >
-                        <span className="text-sm font-medium">
-                          {user.displayName}
-                          {isLinked ? " (متصل)" : ""}
-                        </span>
-                        <span
-                          className="text-xs text-muted-foreground w-fit"
-                          dir="ltr"
-                        >
-                          {[user.email, user.mobile]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })
-              )}
-            </ul>
-          </section>
-        )}
-
-        {!isTerminal && request.linkedTenantId && (
-          <section className="space-y-3 rounded-xl border border-border p-4">
-            <h3 className="text-sm font-semibold">وب‌سایت هدف</h3>
-            {tenantWebsites.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                برای این مستأجر وب‌سایتی ثبت نشده است. ابتدا در سرورها /
-                وب‌سایت‌ها آماده شود.
-              </p>
-            ) : (
-              <Select
-                value={request.targetWebsiteId ?? undefined}
-                onValueChange={handleSelectWebsite}
-              >
-                <SelectTrigger aria-label="انتخاب وب‌سایت هدف">
-                  <SelectValue placeholder="وب‌سایت را انتخاب کنید">
-                    {selectedWebsiteLabel}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent alignItemWithTrigger={false}>
-                  {tenantWebsites.map((website) => {
-                    const hasPlan = websiteHasActivePlan(website.service.plan);
-                    return (
-                      <SelectItem key={website.id} value={website.id}>
-                        <span dir="ltr">{website.domain}</span>
-                        {hasPlan ? " — دارای پلن فعال" : " — بدون پلن"}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            )}
-            {selectedWebsite && (
-              <p
-                className={cn(
-                  "text-xs",
-                  websiteHasActivePlan(selectedWebsite.service.plan)
-                    ? "text-destructive"
-                    : "text-muted-foreground",
-                )}
-              >
-                پلن فعلی:{" "}
-                <span dir="ltr">
-                  {websiteHasActivePlan(selectedWebsite.service.plan)
-                    ? selectedWebsite.service.plan
-                    : "—"}
-                </span>
-              </p>
-            )}
-          </section>
-        )}
-
-        {request.terminalReason && (
-          <section className="rounded-xl border border-border p-4 text-sm">
-            <h3 className="font-semibold">دلیل پایانی</h3>
-            <p className="mt-2 text-muted-foreground">
-              {request.terminalReason}
-            </p>
-          </section>
-        )}
-
-        <section className="space-y-3 rounded-xl border border-border p-4">
-          <h3 className="text-sm font-semibold">سابقه</h3>
-          <ol className="space-y-3">
-            {request.history.map((entry) => (
-              <li
-                key={entry.id}
-                className="border-r-2 border-border pr-3 text-sm"
-              >
-                <p className="font-medium">{entry.action}</p>
-                <p className="text-xs text-muted-foreground">
-                  {entry.actorName} · {entry.at}
-                </p>
-                {entry.note && (
-                  <p className="mt-1 text-muted-foreground">{entry.note}</p>
-                )}
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {!isTerminal ? (
-          <form
-            className="space-y-3 rounded-xl border border-border p-4"
-            onSubmit={handleRefuse}
-          >
-            <h3 className="flex items-center gap-2 text-sm font-semibold">
-              <XCircle className="size-4" aria-hidden />
-              رد یا لغو
-            </h3>
-            <Select
-              value={refuseKind}
-              onValueChange={(value) => {
-                if (value === "declined" || value === "cancelled") {
-                  setRefuseKind(value);
-                }
-              }}
+          {blockers.length > 0 && (
+            <section
+              className="flex flex-col gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
+              role="status"
             >
-              <SelectTrigger aria-label="نوع انصراف">
-                <SelectValue>
-                  {refuseKind === "declined" ? "رد درخواست" : "لغو درخواست"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent alignItemWithTrigger={false}>
-                <SelectItem value="declined">رد درخواست</SelectItem>
-                <SelectItem value="cancelled">لغو درخواست</SelectItem>
-              </SelectContent>
-            </Select>
-            <label className="block space-y-1.5 text-sm">
-              <span>دلیل</span>
-              <textarea
-                value={refuseReason}
-                onChange={(event) => setRefuseReason(event.target.value)}
-                rows={3}
-                className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                aria-required
-              />
-            </label>
-            <Button type="submit" variant="outline">
-              ثبت رد / لغو
-            </Button>
-          </form>
-        ) : null}
+              <p className="flex items-center gap-2 font-medium">
+                <AlertTriangle className="size-4" aria-hidden />
+                موانع فعال‌سازی
+              </p>
+              <ul className="list-disc pr-5">
+                {blockers.map((blocker) => (
+                  <li key={blocker}>{PLAN_REQUEST_BLOCKER_LABELS[blocker]}</li>
+                ))}
+              </ul>
+              {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) && (
+                <p className="text-xs text-destructive/90">
+                  اگر حساب مالک وب‌سایت وجود ندارد، ابتدا در{" "}
+                  <Link href="/users" className="underline underline-offset-2">
+                    کاربران
+                  </Link>{" "}
+                  ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
+                </p>
+              )}
+            </section>
+          )}
 
-        {formError ? (
-          <p className="text-sm text-destructive" role="alert">
-            {formError}
-          </p>
-        ) : null}
+          {!isTerminal && (
+            <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <Globe2 className="size-4" aria-hidden />
+                وب‌سایت‌های کاربر متصل
+              </h3>
+
+              {canBrowseWebsites ? (
+                <>
+                  {selectedWebsite || request.targetWebsiteDomain ? (
+                    <p className="rounded-lg bg-muted/40 px-3 py-2 text-sm">
+                      انتخاب‌شده:{" "}
+                      <span dir="ltr" className="font-medium">
+                        {selectedWebsite?.domain ?? request.targetWebsiteDomain}
+                      </span>
+                      {selectedWebsite ? (
+                        <span className="ms-2 text-muted-foreground">
+                          {selectedWebsite.hasActivePlan
+                            ? "— دارای پلن فعال"
+                            : "— بدون پلن"}
+                        </span>
+                      ) : null}
+                    </p>
+                  ) : null}
+
+                  <SearchInput
+                    value={websiteQuery}
+                    onChange={(event) => setWebsiteQuery(event.target.value)}
+                    placeholder="جستجوی دامنه یا عنوان…"
+                    aria-label="جستجوی وب‌سایت کاربر"
+                    autoComplete="off"
+                  />
+
+                  {websitesError ? (
+                    <p className="text-sm text-destructive" role="alert">
+                      {websitesError}
+                    </p>
+                  ) : null}
+
+                  <div
+                    ref={websiteListRef}
+                    className="app-scrollbar h-64 overflow-y-auto rounded-lg border border-border"
+                    role="listbox"
+                    aria-label="فهرست وب‌سایت‌های کاربر"
+                  >
+                    {websitesLoading ? (
+                      <p className="flex items-center justify-center gap-2 px-3 py-6 text-sm text-muted-foreground">
+                        <LoaderCircle className="size-4 animate-spin" />
+                        در حال بارگذاری وب‌سایت‌ها…
+                      </p>
+                    ) : websites.length === 0 ? (
+                      <p className="px-3 py-6 text-center text-sm text-muted-foreground">
+                        وب‌سایتی برای این کاربر پیدا نشد.
+                      </p>
+                    ) : (
+                      <div
+                        className="relative w-full"
+                        style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+                      >
+                        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                          const website = websites[virtualRow.index];
+                          const isSelected =
+                            website.id === request.targetWebsiteId ||
+                            website.id === pendingWebsiteId;
+
+                          return (
+                            <div
+                              key={website.id}
+                              role="option"
+                              aria-selected={isSelected}
+                              className="absolute start-0 top-0 w-full px-1"
+                              style={{
+                                height: `${virtualRow.size}px`,
+                                transform: `translateY(${virtualRow.start}px)`,
+                              }}
+                            >
+                              <button
+                                type="button"
+                                disabled={submitting}
+                                onClick={() => void handleSelectWebsite(website)}
+                                className={cn(
+                                  "flex h-[calc(100%-0.25rem)] w-full flex-col justify-center rounded-md px-3 py-2 text-start transition-colors hover:bg-muted/60 disabled:opacity-60",
+                                  isSelected && "bg-primary/10 text-primary",
+                                )}
+                              >
+                                <span
+                                  className="truncate text-sm font-medium"
+                                  dir="ltr"
+                                >
+                                  {website.domain}
+                                  {isSelected ? " (انتخاب‌شده)" : ""}
+                                </span>
+                                <span className="truncate text-xs text-muted-foreground">
+                                  {website.tenantName}
+                                  {" · "}
+                                  {website.hasActivePlan
+                                    ? `دارای پلن فعال${website.activePlanLabel ? ` (${website.activePlanLabel})` : ""}`
+                                    : "بدون پلن"}
+                                </span>
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  برای نمایش وب‌سایت‌ها، درخواست باید به کاربر یا مستأجر متصل
+                  باشد.
+                </p>
+              )}
+            </section>
+          )}
+
+          {request.terminalReason && (
+            <section className="rounded-xl border border-border p-4 text-sm">
+              <h3 className="font-semibold">دلیل پایانی</h3>
+              <p className="mt-2 text-muted-foreground">
+                {request.terminalReason}
+              </p>
+            </section>
+          )}
+
+          {!isTerminal ? (
+            <form
+              className="flex flex-col gap-3 rounded-xl border border-border p-4"
+              onSubmit={(event) => void handleRefuse(event)}
+            >
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <XCircle className="size-4" aria-hidden />
+                رد یا لغو
+              </h3>
+              <RadioGroup
+                value={refuseKind}
+                onValueChange={(value) => {
+                  if (value === "declined" || value === "cancelled") {
+                    setRefuseKind(value);
+                  }
+                }}
+                aria-label="نوع انصراف"
+                className="gap-2"
+              >
+                <label
+                  className={cn(
+                    "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/80 p-3 transition-colors hover:bg-muted/40",
+                    refuseKind === "declined" &&
+                      "border-primary/40 bg-primary/5",
+                  )}
+                >
+                  <RadioGroupItem
+                    value="declined"
+                    className="mt-0.5"
+                    aria-label="رد درخواست"
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="text-sm font-medium">رد درخواست</span>
+                    <span className="text-xs leading-5 text-muted-foreground">
+                      درخواست نامناسب است یا شرایط فعال‌سازی فراهم نیست.
+                    </span>
+                  </span>
+                </label>
+                <label
+                  className={cn(
+                    "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/80 p-3 transition-colors hover:bg-muted/40",
+                    refuseKind === "cancelled" &&
+                      "border-primary/40 bg-primary/5",
+                  )}
+                >
+                  <RadioGroupItem
+                    value="cancelled"
+                    className="mt-0.5"
+                    aria-label="لغو درخواست"
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="text-sm font-medium">لغو درخواست</span>
+                    <span className="text-xs leading-5 text-muted-foreground">
+                      مشتری منصرف شده یا دیگر نیازی به پیگیری نیست.
+                    </span>
+                  </span>
+                </label>
+              </RadioGroup>
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span>دلیل</span>
+                <textarea
+                  value={refuseReason}
+                  onChange={(event) => setRefuseReason(event.target.value)}
+                  rows={3}
+                  className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                  aria-required
+                />
+              </label>
+              <Button type="submit" variant="outline" disabled={submitting}>
+                {submitting ? "در حال ثبت…" : "ثبت رد / لغو"}
+              </Button>
+            </form>
+          ) : null}
+
+          {formError ? (
+            <p className="text-sm text-destructive" role="alert">
+              {formError}
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <SheetFooter className="border-t border-border px-4 py-4">
@@ -516,8 +664,8 @@ function PlanRequestDetailsBody({
             </Button>
             <Button
               type="button"
-              disabled={!canActivate}
-              onClick={handleEnable}
+              disabled={!canActivate || submitting}
+              onClick={() => void handleEnable()}
             >
               <CheckCircle2 className="size-4" aria-hidden />
               {confirmEnable ? "تأیید فعال‌سازی" : "فعال‌سازی پلن"}
@@ -530,14 +678,13 @@ function PlanRequestDetailsBody({
         )}
         {!canEnable && !isTerminal ? (
           <p className="w-full text-xs text-muted-foreground">
-            فعال‌سازی برای نقش فعلی در دسترس نیست (نمونه دسترسی UI، نه مجوز
-            واقعی).
+            فعال‌سازی برای نقش فعلی در دسترس نیست.
           </p>
         ) : null}
         {!isTerminal && blockers.length > 0 ? (
           <p className="w-full text-xs text-muted-foreground">
-            دکمه فعال‌سازی پس از اتصال کاربر موجود و انتخاب وب‌سایت بدون پلن
-            فعال در دسترس قرار می‌گیرد.
+            دکمه فعال‌سازی پس از انتخاب وب‌سایت بدون پلن فعال در دسترس قرار
+            می‌گیرد.
           </p>
         ) : null}
         {confirmEnable && canActivate ? (

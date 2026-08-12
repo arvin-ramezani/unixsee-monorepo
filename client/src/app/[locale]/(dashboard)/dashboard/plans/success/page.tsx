@@ -7,7 +7,7 @@ import { Panel } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { planRecords } from "@/lib/data/plans/plan-records";
+import { fetchPublishedPlanById } from "@/lib/plans/plans-api";
 
 export async function generateMetadata({
   params,
@@ -25,17 +25,16 @@ export default async function PlansSuccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: string; request?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const { plan: planId } = await searchParams;
 
-  const plan = planRecords.find((record) => record.id === planId);
+  const plan = planId ? await fetchPublishedPlanById(planId, locale) : null;
   const t = await getTranslations("PlansSuccess");
   const plans = await getTranslations("Plans");
   const navigation = await getTranslations("Navigation");
-  const common = await getTranslations("Common");
   const steps = [t("step1"), t("step2"), t("step3")];
 
   return (
@@ -60,7 +59,7 @@ export default async function PlansSuccessPage({
         {plan && (
           <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-4 py-1.5 text-sm">
             <span className="text-muted-foreground">{t("planLabel")}:</span>
-            <span className="font-medium">{common(`plans.${plan.nameKey}`)}</span>
+            <span className="font-medium">{plan.name}</span>
           </p>
         )}
 

@@ -1,4 +1,4 @@
-import { PLAN_ID, type PlanIdType } from "@/lib/data/plans-data";
+import { PLAN_ID } from "@/lib/data/plans-data";
 
 export const PLAN_REQUEST_STATUS = {
   PENDING: "pending",
@@ -51,15 +51,19 @@ export type PlanRequestHistoryEntryType = {
 
 export type PlanRequestType = {
   id: string;
-  chosenPlanId: PlanIdType;
+  /** Nest plan code (preferred) or plan UUID when code is missing. */
+  chosenPlanId: string;
   chosenPlanName: string;
   contactName: string;
   contactEmail: string | null;
   contactMobile: string | null;
   domainHint: string | null;
   linkedUserId: string | null;
+  linkedUserName: string | null;
   linkedTenantId: string | null;
+  linkedTenantName: string | null;
   targetWebsiteId: string | null;
+  targetWebsiteDomain: string | null;
   status: PlanRequestStatusType;
   nextAction: string;
   submittedAt: string;
@@ -78,8 +82,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09120001122",
     domainHint: "nima-store.ir",
     linkedUserId: null,
+    linkedUserName: null,
     linkedTenantId: null,
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
     nextAction: "اتصال کاربر موجود",
     submittedAt: "۱۶ مرداد ۱۴۰۵",
@@ -104,8 +111,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09121234567",
     domainHint: "ali-studio.ir",
     linkedUserId: "user-101",
+    linkedUserName: null,
     linkedTenantId: "tenant-501",
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
     nextAction: "انتخاب وب‌سایت هدف",
     submittedAt: "۱۵ مرداد ۱۴۰۵",
@@ -136,8 +146,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09125551212",
     domainHint: "habibeh.ir",
     linkedUserId: "user-106",
+    linkedUserName: null,
     linkedTenantId: "tenant-504",
+    linkedTenantName: null,
     targetWebsiteId: "website-006",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.READY_TO_ENABLE,
     nextAction: "فعال‌سازی پلن روی وب‌سایت",
     submittedAt: "۱۴ مرداد ۱۴۰۵",
@@ -168,8 +181,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09121234567",
     domainHint: "greenario.com",
     linkedUserId: "user-101",
+    linkedUserName: null,
     linkedTenantId: "tenant-501",
+    linkedTenantName: null,
     targetWebsiteId: "website-001",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
     nextAction: "رفع تداخل پلن فعال",
     submittedAt: "۱۳ مرداد ۱۴۰۵",
@@ -200,8 +216,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09123334455",
     domainHint: "parsmod.com",
     linkedUserId: "user-102",
+    linkedUserName: null,
     linkedTenantId: "tenant-502",
+    linkedTenantName: null,
     targetWebsiteId: "website-004",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.ENABLED,
     nextAction: "مشاهده وب‌سایت فعال",
     submittedAt: "۱۰ مرداد ۱۴۰۵",
@@ -232,8 +251,11 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactMobile: "09351234567",
     domainHint: null,
     linkedUserId: null,
+    linkedUserName: null,
     linkedTenantId: null,
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.DECLINED,
     nextAction: "بایگانی",
     submittedAt: "۸ مرداد ۱۴۰۵",

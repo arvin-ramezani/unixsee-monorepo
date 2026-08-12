@@ -124,7 +124,7 @@ function nextActionFor(request: PlanRequestType): string {
 
   const blockers = getPlanRequestBlockers(request);
   if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER)) {
-    return "اتصال کاربر موجود";
+    return "انتخاب وب‌سایت هدف";
   }
   if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE)) {
     return "انتخاب وب‌سایت هدف";
@@ -224,9 +224,6 @@ export function selectWebsiteForPlanRequest(
   if (!request) {
     return { ok: false, message: "درخواست پیدا نشد." };
   }
-  if (!request.linkedTenantId) {
-    return { ok: false, message: "ابتدا کاربر موجود را متصل کنید." };
-  }
   if (
     request.status === PLAN_REQUEST_STATUS.ENABLED ||
     request.status === PLAN_REQUEST_STATUS.DECLINED ||
@@ -236,20 +233,44 @@ export function selectWebsiteForPlanRequest(
   }
 
   const website = getRuntimeWebsite(websiteId);
-  if (!website || website.tenantId !== request.linkedTenantId) {
+  if (!website) {
+    return { ok: false, message: "وب‌سایت پیدا نشد." };
+  }
+
+  const tenant = listRuntimeTenants().find(
+    (item) => item.id === website.tenantId,
+  );
+  if (!tenant) {
+    return { ok: false, message: "مستأجر مرتبط با وب‌سایت پیدا نشد." };
+  }
+
+  const memberships = listRuntimeMemberships().filter(
+    (membership) => membership.tenantId === website.tenantId,
+  );
+  const ownerMembership =
+    memberships.find((membership) => membership.role === MEMBERSHIP_ROLE.OWNER) ??
+    memberships[0];
+  const owner = ownerMembership
+    ? getRuntimeUser(ownerMembership.userId)
+    : null;
+
+  if (!owner) {
     return {
       ok: false,
-      message: "وب‌سایت انتخاب‌شده متعلق به مستأجر متصل‌شده نیست.",
+      message:
+        "برای این وب‌سایت کاربر مالک پیدا نشد. ابتدا در کاربران عضویت را تکمیل کنید.",
     };
   }
 
   const updated = refreshDerivedFields({
     ...request,
+    linkedUserId: owner.id,
+    linkedTenantId: tenant.id,
     targetWebsiteId: website.id,
     history: appendHistory(
       request,
       "انتخاب وب‌سایت هدف",
-      website.domain,
+      `${website.domain} · ${owner.displayName}`,
     ),
   });
 

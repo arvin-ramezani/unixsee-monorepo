@@ -71,12 +71,14 @@ export class AdminWebsitesController {
   async list(
     @Query('search') search?: string,
     @Query('tenantId') tenantId?: string,
+    @Query('userId') userId?: string,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ) {
     const data = await this.websitesService.listAdmin({
       search,
       tenantId,
+      userId,
       skip: skip ? Number(skip) : 0,
       take: take ? Number(take) : 50,
     });

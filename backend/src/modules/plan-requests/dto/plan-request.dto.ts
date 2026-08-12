@@ -36,6 +36,9 @@ export class CreatePublicPlanRequestDto {
   notes?: string;
 }
 
+/** Authenticated customer create — same body as public intake. */
+export class CreatePlanRequestDto extends CreatePublicPlanRequestDto {}
+
 export class LinkPlanRequestDto {
   @IsUUID()
   tenantId!: string;
