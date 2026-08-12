@@ -16,6 +16,7 @@ import {
   TicketStatus,
 } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 import type { AppConfigType } from '#/utils/config/app.config.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { isWebsiteRequiredForService, TICKET_SERVICE_CATALOG } from '../ticket-service-catalog.js';
@@ -41,6 +42,7 @@ export class TicketsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
+    private readonly tenantsService: TenantsService,
     private readonly ticketNumbers: TicketNumberService,
     private readonly config: ConfigService<AppConfigType, true>,
   ) {}
@@ -64,6 +66,7 @@ export class TicketsService {
       take?: number;
     },
   ) {
+    await this.tenantsService.ensurePersonalTenantForUser(userId);
     const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     const where: Prisma.TicketWhereInput = {
       tenantId: { in: tenantIds },
@@ -119,6 +122,9 @@ export class TicketsService {
       }>;
     },
   ) {
+    // Heal OTP-created users that never received a personal tenant.
+    await this.tenantsService.ensurePersonalTenantForUser(userId);
+
     const tenantId =
       input.tenantId ?? (await this.tenantAccess.resolvePrimaryTenantId(userId));
     await this.tenantAccess.requireMembership(userId, tenantId);

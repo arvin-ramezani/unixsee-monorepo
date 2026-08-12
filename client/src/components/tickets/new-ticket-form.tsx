@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useState } from "react";
 import {
   AlertCircle,
   ClipboardList,
@@ -40,6 +40,8 @@ type FieldErrors = Partial<
 const controlClassName =
   "w-full h-11! border border-border bg-background px-4 text-base shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground)_6%,transparent)] outline-none transition-[border-color,box-shadow,background-color] hover:border-ring/55 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/10 sm:text-sm";
 
+const WEBSITE_NONE_VALUE = "__none__";
+
 export function NewTicketForm({
   services,
   websites,
@@ -62,16 +64,9 @@ export function NewTicketForm({
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const selectedService = useMemo(
-    () => services.find((item) => item.code === service),
-    [service, services],
-  );
-  const requiresWebsite = selectedService?.websiteRequired ?? false;
-
   function validate() {
     const nextErrors: FieldErrors = {};
     if (!service) nextErrors.service = t("errors.service");
-    if (requiresWebsite && !website) nextErrors.website = t("errors.website");
     if (!subject.trim()) nextErrors.subject = t("errors.subject");
     if (description.trim().length < 20)
       nextErrors.description = t("errors.description");
@@ -189,24 +184,20 @@ export function NewTicketForm({
             <Field
               htmlFor="ticket-website"
               label={t("website.label")}
-              hint={
-                requiresWebsite
-                  ? t("website.requiredHint")
-                  : t("website.optionalHint")
-              }
+              hint={t("website.optionalHint")}
               error={errors.website}
-              required={requiresWebsite}
             >
               <Select
-                value={website}
+                value={website || WEBSITE_NONE_VALUE}
                 onValueChange={(value) => {
-                  setWebsite(value);
+                  setWebsite(value === WEBSITE_NONE_VALUE ? "" : value);
                   setErrors((current) => ({
                     ...current,
                     website: undefined,
                     form: undefined,
                   }));
                 }}
+                disabled={websites.length === 0}
               >
                 <SelectTrigger
                   id="ticket-website"
@@ -218,9 +209,18 @@ export function NewTicketForm({
                   }
                   className={`${controlClassName} text-start`}
                 >
-                  <SelectValue placeholder={t("website.placeholder")} />
+                  <SelectValue
+                    placeholder={
+                      websites.length === 0
+                        ? t("website.emptyPlaceholder")
+                        : t("website.placeholder")
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent position="popper">
+                  <SelectItem value={WEBSITE_NONE_VALUE}>
+                    {t("website.none")}
+                  </SelectItem>
                   {websites.map((value) => (
                     <SelectItem key={value.id} value={value.id}>
                       {value.name} — {value.domain}

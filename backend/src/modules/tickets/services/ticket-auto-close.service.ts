@@ -38,7 +38,8 @@ export class TicketAutoCloseService
     const job = new CronJob(
       settings.autoCloseCronExpression,
       () => {
-        void this.runAutoClose('cron');
+        // Swallow rejections so a failed cron cycle cannot crash the process.
+        void this.runAutoClose('cron').catch(() => undefined);
       },
       null,
       false,
@@ -98,7 +99,11 @@ export class TicketAutoCloseService
       this.logger.error('ticket.auto_close.failed', error as Error, {
         trigger,
       });
-      throw error;
+      // Manual callers can observe the rejection; cron must not tear down Nest.
+      if (trigger === 'manual') {
+        throw error;
+      }
+      return 0;
     } finally {
       this.isRunning = false;
     }

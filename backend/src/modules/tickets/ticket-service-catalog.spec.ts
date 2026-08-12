@@ -8,30 +8,17 @@ import {
 } from './ticket-service-catalog.js';
 
 describe('ticket-service-catalog', () => {
-  it('marks MANAGED_SERVER, MIGRATION_OPTIMIZATION, WOOCOMMERCE_SUPPORT, SEO, PRODUCT_DATA_ENTRY as website-required', () => {
-    const required = [
-      TicketServiceCategory.MANAGED_SERVER,
-      TicketServiceCategory.MIGRATION_OPTIMIZATION,
-      TicketServiceCategory.WOOCOMMERCE_SUPPORT,
-      TicketServiceCategory.SEO,
-      TicketServiceCategory.PRODUCT_DATA_ENTRY,
-    ];
-
-    for (const code of required) {
-      expect(isWebsiteRequiredForService(code)).toBe(true);
-      expect(
-        TICKET_SERVICE_CATALOG.find((item) => item.code === code)
-          ?.websiteRequired,
-      ).toBe(true);
+  it('marks every service as website-optional', () => {
+    for (const item of TICKET_SERVICE_CATALOG) {
+      expect(item.websiteRequired).toBe(false);
+      expect(isWebsiteRequiredForService(item.code)).toBe(false);
     }
-  });
 
-  it('marks GRAPHIC_DESIGN and SOCIAL_MEDIA_SUPPORT as website-optional', () => {
     expect(
-      isWebsiteRequiredForService(TicketServiceCategory.GRAPHIC_DESIGN),
+      isWebsiteRequiredForService(TicketServiceCategory.WOOCOMMERCE_SUPPORT),
     ).toBe(false);
     expect(
-      isWebsiteRequiredForService(TicketServiceCategory.SOCIAL_MEDIA_SUPPORT),
+      isWebsiteRequiredForService(TicketServiceCategory.GRAPHIC_DESIGN),
     ).toBe(false);
   });
 });

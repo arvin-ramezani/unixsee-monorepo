@@ -111,6 +111,20 @@ describe('TicketAutoCloseService.runAutoClose', () => {
     });
   });
 
+  it('does not crash process when cron run fails', async () => {
+    prisma.ticket.updateMany.mockRejectedValue(
+      new Error('relation "public.tickets" does not exist'),
+    );
+
+    await expect(service.runAutoClose('cron')).resolves.toBe(0);
+  });
+
+  it('rethrows when manual run fails', async () => {
+    prisma.ticket.updateMany.mockRejectedValue(new Error('db down'));
+
+    await expect(service.runAutoClose('manual')).rejects.toThrow('db down');
+  });
+
   it('registers cron name ticket-auto-close-cycle when enabled', () => {
     schedulerRegistry.getCronJob.mockImplementation(() => {
       throw new Error('missing');

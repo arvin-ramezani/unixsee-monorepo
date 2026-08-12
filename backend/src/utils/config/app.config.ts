@@ -73,6 +73,16 @@ const appConfig = registerAs('app', () => {
       autoCloseGraceDays: env.TICKET_AUTO_CLOSE_GRACE_DAYS,
       autoCloseCronExpression: env.TICKET_AUTO_CLOSE_CRON,
     },
+    mail: {
+      smtpHost: env.EMAIL_SMTP_HOST,
+      smtpPort: env.EMAIL_SMTP_PORT,
+      smtpSecure: env.EMAIL_SMTP_SECURE,
+      smtpTlsRejectUnauthorized: env.EMAIL_SMTP_TLS_REJECT_UNAUTHORIZED,
+      smtpUser: env.EMAIL_SMTP_USER,
+      smtpPassword: env.EMAIL_SMTP_PASSWORD,
+      from: env.EMAIL_FROM,
+      phoneOtpMockDeliveryEmail: env.PHONE_OTP_MOCK_DELIVERY_EMAIL,
+    },
   };
 });
 

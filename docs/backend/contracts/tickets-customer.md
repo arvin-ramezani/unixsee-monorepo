@@ -12,7 +12,7 @@
 >
 > **Services:** [`ticket-service-categories.md`](./ticket-service-categories.md)
 >
-> **Last verified:** 2026-08-10
+> **Last verified:** 2026-08-11
 
 Customer dashboard contract for listing, creating, reading, replying to, and
 closing/reopening support tickets. Matches the create form fields in
@@ -150,7 +150,7 @@ Body mirrors the customer new-ticket form:
 | Field | Required | Rules |
 |---|---|---|
 | `service` | Yes | `TicketServiceCategory` |
-| `websiteId` | Conditional | Required per service rules; must belong to the ticket tenant and be accessible to the caller |
+| `websiteId` | No | Optional for every service; when present must belong to the ticket tenant and be accessible to the caller |
 | `subject` | Yes | 1–300 chars, trimmed non-empty |
 | `description` | Yes | 20–10000 chars (matches client validation) |
 | `attachments` | No | 0–N; see Attachments |
@@ -279,7 +279,7 @@ Implemented in Nest against this contract:
 
 1. Prisma `TicketServiceCategory` and `TicketStatus.SUBMITTED` (replaces app use of `OPEN`).
 2. Required `service`, unique human `number`, `resolvedAt`, `autoCloseAt` on `Ticket`.
-3. Customer create uses `service` + `description` (+ conditional `websiteId` + attachments).
+3. Customer create uses `service` + `description` (+ optional `websiteId` + attachments).
 4. Customer `close` / `reopen` routes and scheduled auto-close worker.
 5. Minimal admin `POST /api/v1/admin/tickets/:id/resolve` to enter `RESOLVED`.
 

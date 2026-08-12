@@ -182,7 +182,7 @@ describe('TicketsModule (e2e)', () => {
         expect.arrayContaining([
           expect.objectContaining({
             code: TicketServiceCategory.WOOCOMMERCE_SUPPORT,
-            websiteRequired: true,
+            websiteRequired: false,
           }),
           expect.objectContaining({
             code: TicketServiceCategory.GRAPHIC_DESIGN,

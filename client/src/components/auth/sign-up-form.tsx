@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
 
+import { requestLoginOtp } from "@/actions/auth/request-login-otp";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import {
   AuthCrossLinks,
@@ -68,33 +69,38 @@ export function SignUpForm() {
 
   async function onSubmit(data: SignUpSchemaType) {
     setFormError(null);
+
+    if (data.mode === "phone") {
+      const identifier = normalizeNationalPhone(data.phone ?? "");
+      const result = await requestLoginOtp({ phone: identifier });
+
+      if (!result.ok) {
+        setFormError(tAuthErrors(result.errorKey));
+        return;
+      }
+
+      const params = new URLSearchParams({
+        mode: "phone",
+        display: maskIdentifier("phone", identifier),
+      });
+      router.push(`/otp?${params.toString()}`);
+      return;
+    }
+
     await wait(AUTH_MOCK_DELAY_MS);
 
-    const identifier =
-      data.mode === "phone"
-        ? normalizeNationalPhone(data.phone ?? "")
-        : (data.email ?? "").trim();
+    const identifier = (data.email ?? "").trim();
 
-    if (isMockExistingAccount(data.mode, identifier)) {
+    if (isMockExistingAccount("email", identifier)) {
       setAlreadyExists(true);
       return;
     }
 
-    if (data.mode === "email") {
-      const params = new URLSearchParams({
-        status: "pending",
-        email: maskIdentifier("email", identifier),
-      });
-      router.push(`/verify-email?${params.toString()}`);
-      return;
-    }
-
     const params = new URLSearchParams({
-      mode: "phone",
-      identifier,
-      display: maskIdentifier("phone", identifier),
+      status: "pending",
+      email: maskIdentifier("email", identifier),
     });
-    router.push(`/otp?${params.toString()}`);
+    router.push(`/verify-email?${params.toString()}`);
   }
 
   function switchMode(next: IdentifierMode) {
@@ -217,9 +223,11 @@ export function SignUpForm() {
         <AuthSubmitButton
           className="mt-6"
           loading={pending}
-          pendingLabel={tCommon("continuing")}
+          pendingLabel={
+            mode === "phone" ? tCommon("sending") : tCommon("continuing")
+          }
         >
-          {tCommon("continue")}
+          {mode === "phone" ? tCommon("sendCode") : tCommon("continue")}
         </AuthSubmitButton>
 
         <AuthDivider className="mt-6" />
@@ -233,7 +241,11 @@ export function SignUpForm() {
             {t("signInLink")}
           </AuthTextLink>
         </p>
-        <p className="text-muted-foreground text-xs">{tCommon("prototypeNote")}</p>
+        <p className="text-muted-foreground text-xs">
+          {mode === "phone"
+            ? tCommon("phoneOtpLiveNote")
+            : tCommon("prototypeNote")}
+        </p>
       </AuthCrossLinks>
     </div>
   );

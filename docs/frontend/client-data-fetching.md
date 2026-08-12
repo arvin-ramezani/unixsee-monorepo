@@ -2,16 +2,21 @@
 
 > **Status:** Accepted  
 > **Owner:** Frontend  
-> **Last verified:** 2026-08-10  
+> **Last verified:** 2026-08-11  
 > **Applies to:** `client/`  
 > **ADR:** [`../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../architecture/decisions/0010-client-hybrid-auth-data-fetching.md)  
 > **Integration:** [`../architecture/decisions/0011-client-nest-auth-integration.md`](../architecture/decisions/0011-client-nest-auth-integration.md)
 
 Live Nest wiring is **allowed in `client/`** for auth and customer JWT fetches
-(ADR 0011). First live slice: **phone OTP** sign-in. Email OTP, password login,
-Google, and TanStack Query dashboard panes remain deferred. Staff Nest wiring
-lives in `admin-panel/` under ADR 0012 / [`admin-data-fetching.md`](./admin-data-fetching.md)
-(same hybrid transport, different UX and cookies).
+(ADR 0011). First live slice: **phone OTP** sign-in / sign-up. Nest creates the
+OTP and **delivers it** (temporary mock: SMTP email to
+`PHONE_OTP_MOCK_DELIVERY_EMAIL`, default `arvin.ramezani6@gmail.com`, for any
+phone number until a real SMS provider is wired). The client only calls
+`/auth/otp/request` and `/auth/otp/verify` — it does not send OTP email.
+Email OTP, password login, Google, and TanStack Query dashboard panes remain
+deferred. Staff Nest wiring lives in `admin-panel/` under ADR 0012 /
+[`admin-data-fetching.md`](./admin-data-fetching.md) (same hybrid transport,
+different UX and cookies).
 
 ## Purpose
 
@@ -141,8 +146,9 @@ privileged data helper. Do not claim Proxy “protects” Server Actions.
 
 ## Implementation status
 
-**Layer 1 (session):** phone OTP request/verify, hybrid cookies + Zustand access
-seed, refresh Route Handler, proxy dashboard gate, `GET /users/me` via
+**Layer 1 (session):** phone OTP request/verify (sign-in and phone sign-up);
+Nest owns OTP delivery (email mock today / SMS later); hybrid cookies + Zustand
+access seed, refresh Route Handler, proxy dashboard gate, `GET /users/me` via
 `server-fetch`, boot reseed of memory access token via `/api/auth/refresh`.
 
 **Layer 2 (domain):** conventions in

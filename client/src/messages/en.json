@@ -61,7 +61,7 @@
       "maskedPhone": "Code sent to {identifier}",
       "maskedEmail": "Code sent to {identifier}",
       "prototypeNote": "UI prototype — authentication is not connected yet.",
-      "phoneOtpLiveNote": "Phone OTP sign-in is connected to the API. Email OTP is coming soon."
+      "phoneOtpLiveNote": "Phone OTP is live via Nest. SMS is mocked on the API (code emailed until an SMS provider is wired). Email OTP is coming soon."
     },
     "signIn": {
       "title": "Sign in",
@@ -3508,8 +3508,10 @@
       "website": {
         "label": "Related website",
         "placeholder": "Select a website",
+        "none": "No website",
+        "emptyPlaceholder": "No websites available",
         "requiredHint": "Required for this service",
-        "optionalHint": "Optional for this service"
+        "optionalHint": "Optional — associate a website when it helps"
       },
       "subject": {
         "label": "Subject",

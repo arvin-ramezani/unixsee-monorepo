@@ -258,7 +258,7 @@ Shared service taxonomy:
 Staff shapes:
 [`contracts/tickets-admin.md`](./contracts/tickets-admin.md).
 
-Create body includes required `service`, conditional `websiteId`, `subject`,
+Create body includes required `service`, optional `websiteId`, `subject`,
 `description`, and optional `attachments[]`. Default status is `SUBMITTED`
 (customer «ارسال‌شده»). S3 upload provider is deferred; keep `storageKey` shape.
 

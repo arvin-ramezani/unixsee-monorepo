@@ -70,11 +70,7 @@ export default async function NewTicketPage({
         services={servicesResult.ok ? servicesResult.data : []}
         websites={websites}
         initialWebsiteId={resolvedWebsiteId}
-        loadError={
-          !servicesResult.ok || !websitesResult.ok
-            ? "unavailable"
-            : undefined
-        }
+        loadError={!servicesResult.ok ? "unavailable" : undefined}
       />
     </DashboardShell>
   );

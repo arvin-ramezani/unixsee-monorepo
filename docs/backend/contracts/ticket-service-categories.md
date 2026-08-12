@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-10
+> **Last verified:** 2026-08-11
 >
 > **Used by:** [`tickets-customer.md`](./tickets-customer.md), customer new-ticket
 > form, admin ticket queues, Nest `tickets` module
@@ -45,23 +45,17 @@ Nest responses directly; they must not add categories outside this table.
 
 ## Website association rules
 
-When creating a ticket, `websiteId` is:
-
-| Service | `websiteId` |
-|---|---|
-| `MANAGED_SERVER` | Required |
-| `MIGRATION_OPTIMIZATION` | Required |
-| `WOOCOMMERCE_SUPPORT` | Required |
-| `SEO` | Required |
-| `PRODUCT_DATA_ENTRY` | Required |
-| `GRAPHIC_DESIGN` | Optional |
-| `SOCIAL_MEDIA_SUPPORT` | Optional |
+When creating a ticket, `websiteId` is **optional for every service**. Customers
+may associate a website when it helps triage; omit it otherwise.
 
 `websiteId`, when present, must belong to a website the caller’s tenant can
 access. Reject otherwise with a non-enumerating authorization error.
 
-Source: `client/src/components/tickets/new-ticket-form.tsx`
-(`websiteRequiredServices`).
+Catalog items still expose `websiteRequired` (always `false` in Phase 1) so
+clients can keep a single form code path.
+
+Source: Nest `ticket-service-catalog.ts` + customer create validation in
+`tickets.service.ts`.
 
 ## Catalog endpoint
 
@@ -76,7 +70,7 @@ Response `data`:
   "items": [
     {
       "code": "MANAGED_SERVER",
-      "websiteRequired": true
+      "websiteRequired": false
     }
   ]
 }

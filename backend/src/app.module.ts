@@ -40,6 +40,9 @@ import { OperationalActionsModule } from './modules/operational-actions/operatio
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // dotenv-cli injects .env.development for start:dev; also load it here so
+      // watch restarts and plain `nest start` still see mail/OTP SMTP settings.
+      envFilePath: ['.env.development', '.env.staging', '.env.production', '.env'],
       load: [appConfig],
       validate: validateEnv,
       expandVariables: true, // Supports ${VAR} interpolation in .env

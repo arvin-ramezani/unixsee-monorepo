@@ -90,6 +90,20 @@ export const envSchema = z.object({
   TICKET_AUTO_CLOSE_ENABLED: booleanEnv.default(true),
   TICKET_AUTO_CLOSE_GRACE_DAYS: z.coerce.number().int().min(5).max(7).default(7),
   TICKET_AUTO_CLOSE_CRON: z.string().trim().min(1).default('0 * * * *'),
+
+  // Temporary phone-OTP delivery via SMTP (SMS stand-in).
+  EMAIL_SMTP_HOST: z.string().trim().min(1),
+  EMAIL_SMTP_PORT: z.coerce.number().int().positive().default(465),
+  EMAIL_SMTP_SECURE: booleanEnv.default(true),
+  EMAIL_SMTP_TLS_REJECT_UNAUTHORIZED: booleanEnv.default(true),
+  EMAIL_SMTP_USER: z.string().trim().min(1),
+  EMAIL_SMTP_PASSWORD: z.string().min(1),
+  EMAIL_FROM: z.string().trim().min(1),
+  PHONE_OTP_MOCK_DELIVERY_EMAIL: z
+    .string()
+    .trim()
+    .email()
+    .default('arvin.ramezani6@gmail.com'),
 });
 
 export type Env = z.infer<typeof envSchema>;

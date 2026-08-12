@@ -16,6 +16,7 @@ import {
   TicketStatus,
 } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
 import { TicketNumberService } from './ticket-number.service.js';
@@ -109,6 +110,10 @@ describe('TicketsService', () => {
     assertWebsiteAccess: vi.fn(),
   };
 
+  const tenantsService = {
+    ensurePersonalTenantForUser: vi.fn().mockResolvedValue({ id: TENANT_A }),
+  };
+
   const ticketNumbers = {
     allocate: vi.fn(),
   };
@@ -142,6 +147,7 @@ describe('TicketsService', () => {
         TicketsService,
         { provide: PrismaService, useValue: prisma },
         { provide: TenantAccessService, useValue: tenantAccess },
+        { provide: TenantsService, useValue: tenantsService },
         { provide: TicketNumberService, useValue: ticketNumbers },
         { provide: ConfigService, useValue: config },
       ],
@@ -209,22 +215,27 @@ describe('TicketsService', () => {
       expect(result.number).toBe('TCK-1052');
     });
 
-    it('rejects when website is required and websiteId omitted', async () => {
+    it('allows create without website for services that previously required one', async () => {
       tenantAccess.resolvePrimaryTenantId.mockResolvedValue(TENANT_A);
       tenantAccess.requireMembership.mockResolvedValue({});
-
-      await expect(
-        service.create(USER_ID, {
+      ticketNumbers.allocate.mockResolvedValue('TCK-1052b');
+      prisma.ticket.create.mockResolvedValue(
+        baseTicket({
+          number: 'TCK-1052b',
+          websiteId: null,
+          website: null,
           service: TicketServiceCategory.WOOCOMMERCE_SUPPORT,
-          subject: 'Payment broken',
-          description: 'Initial description that is long enough.',
         }),
-      ).rejects.toSatisfy(
-        (error: unknown) =>
-          error instanceof BadRequestException &&
-          error.message === ERROR_MESSAGES.fa.ticketWebsiteRequired,
       );
-      expect(prisma.ticket.create).not.toHaveBeenCalled();
+
+      await service.create(USER_ID, {
+        service: TicketServiceCategory.WOOCOMMERCE_SUPPORT,
+        subject: 'Payment broken',
+        description: 'Initial description that is long enough.',
+      });
+
+      expect(tenantAccess.assertWebsiteAccess).not.toHaveBeenCalled();
+      expect(prisma.ticket.create).toHaveBeenCalled();
     });
 
     it('allows create without website for GRAPHIC_DESIGN', async () => {

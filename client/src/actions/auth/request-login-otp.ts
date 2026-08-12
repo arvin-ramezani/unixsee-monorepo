@@ -19,17 +19,23 @@ export async function requestLoginOtp(input: {
   const phoneNumber = toE164IranPhone(national);
 
   try {
-    const response = await publicFetch<{ otp?: string }>("/auth/otp/request", {
-      method: "POST",
-      body: JSON.stringify({
-        phoneNumber,
-        context: "LOGIN",
-      }),
-    });
+    const response = await publicFetch<{ delivered?: boolean }>(
+      "/auth/otp/request",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          phoneNumber,
+          context: "LOGIN",
+        }),
+      },
+    );
 
     if (!response.success) {
       if (response.statusCode === 429) {
         return { ok: false, errorKey: "rateLimited" };
+      }
+      if (response.statusCode === 503) {
+        return { ok: false, errorKey: "unavailable" };
       }
       return { ok: false, errorKey: "generic" };
     }
@@ -52,17 +58,23 @@ export async function resendLoginOtp(): Promise<RequestLoginOtpResult> {
   }
 
   try {
-    const response = await publicFetch<{ otp?: string }>("/auth/otp/request", {
-      method: "POST",
-      body: JSON.stringify({
-        phoneNumber,
-        context: "LOGIN",
-      }),
-    });
+    const response = await publicFetch<{ delivered?: boolean }>(
+      "/auth/otp/request",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          phoneNumber,
+          context: "LOGIN",
+        }),
+      },
+    );
 
     if (!response.success) {
       if (response.statusCode === 429) {
         return { ok: false, errorKey: "rateLimited" };
+      }
+      if (response.statusCode === 503) {
+        return { ok: false, errorKey: "unavailable" };
       }
       return { ok: false, errorKey: "generic" };
     }
@@ -73,7 +85,6 @@ export async function resendLoginOtp(): Promise<RequestLoginOtpResult> {
   }
 }
 
-// Keep clear helper available for cancel flows without exporting unused noise.
 export async function clearPendingLoginPhone() {
   await clearPendingLoginPhoneCookie();
 }

@@ -21,6 +21,7 @@ import { User } from '#/generated/prisma/client.js';
 import { OtpService } from './otp-service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { RequestContext } from '#/common/logging/request-context.js';
+import { MailService } from '#/modules/mail/mail.service.js';
 
 @Injectable()
 export class AuthenticationService {
@@ -32,6 +33,7 @@ export class AuthenticationService {
     private readonly tenantsService: TenantsService,
     private readonly jwtService: JwtService,
     private readonly otpService: OtpService,
+    private readonly mailService: MailService,
     private readonly config: ConfigService<AppConfigType, true>,
   ) {}
 
@@ -175,11 +177,17 @@ export class AuthenticationService {
         context,
       });
 
+      await this.mailService.sendPhoneOtpMockEmail({
+        phoneNumber,
+        otp: otp.otp,
+      });
+
       this.logger.log('auth.otp.created', {
         context: resolvedContext,
         otpId: otp.id,
       });
-      return { otp: otp.otp };
+      // Do not return the OTP code — delivery is owned by Nest (email mock / later SMS).
+      return { delivered: true as const };
     } catch (error) {
       this.logger.error('auth.otp.create_failed', error as Error, {
         context: resolvedContext,
@@ -226,6 +234,13 @@ export class AuthenticationService {
     } else {
       userToSignIn = userExist;
     }
+
+    // OTP sign-in/sign-up must provision a personal tenant (same as password register).
+    await this.tenantsService.ensurePersonalTenantForUser(
+      userToSignIn.id,
+      userToSignIn.fullName ?? userToSignIn.phoneNumber ?? undefined,
+    );
+
     const tokens = await this.createTokens({
       userId: userToSignIn.id,
     });
@@ -270,8 +285,13 @@ export class AuthenticationService {
       context: 'MONITORING_ACCESS',
     });
 
+    await this.mailService.sendPhoneOtpMockEmail({
+      phoneNumber,
+      otp: otp.otp,
+    });
+
     this.logger.log('auth.monitoring_otp.created', { userId, otpId: otp.id });
-    return { otp: otp.otp };
+    return { delivered: true as const };
   }
 
   async verifyMonitoringAccessOtp({

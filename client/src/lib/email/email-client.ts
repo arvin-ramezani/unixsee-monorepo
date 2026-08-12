@@ -2,7 +2,7 @@ import "server-only";
 
 import nodemailer, { type Transporter } from "nodemailer";
 
-import { getEmailConfig } from "./email-config";
+import { getEmailConfig, type EmailConfig } from "./email-config";
 
 export type SendEmailInput = {
   to: string | string[];
@@ -13,13 +13,26 @@ export type SendEmailInput = {
 };
 
 let transporter: Transporter | undefined;
+let transporterFingerprint: string | undefined;
+
+function transporterKey(config: EmailConfig): string {
+  return [
+    config.smtpHost,
+    config.smtpPort,
+    config.smtpSecure,
+    config.smtpTlsRejectUnauthorized,
+    config.smtpUser,
+    config.smtpPassword.length,
+  ].join("|");
+}
 
 function getTransporter(): Transporter {
-  if (transporter) {
+  const config = getEmailConfig();
+  const fingerprint = transporterKey(config);
+
+  if (transporter && transporterFingerprint === fingerprint) {
     return transporter;
   }
-
-  const config = getEmailConfig();
 
   transporter = nodemailer.createTransport({
     host: config.smtpHost,
@@ -29,10 +42,14 @@ function getTransporter(): Transporter {
       user: config.smtpUser,
       pass: config.smtpPassword,
     },
+    tls: {
+      rejectUnauthorized: config.smtpTlsRejectUnauthorized,
+    },
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
     socketTimeout: 20_000,
   });
+  transporterFingerprint = fingerprint;
 
   return transporter;
 }

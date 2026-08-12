@@ -9,11 +9,13 @@ import { OtpService } from './services/otp-service.js';
 import { MonitoringAccessStrategy } from './strategies/monitoring-access.strategy.js';
 import { UsersModule } from '#/modules/users/users.module.js';
 import { TenantsModule } from '#/modules/tenants/tenants.module.js';
+import { MailModule } from '#/modules/mail/mail.module.js';
 
 @Module({
   imports: [
     UsersModule,
     TenantsModule,
+    MailModule,
     JwtModule.register({
       // secret: jwtConstants.secret,
       // signOptions: { expiresIn: '60s' },
