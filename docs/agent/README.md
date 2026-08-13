@@ -55,6 +55,8 @@ Install/ops: [`../../monitoring-agent/README.md`](../../monitoring-agent/README.
 ## Related docs
 
 - **Setup (token + run):** [`setup.md`](./setup.md)
+- **Panel host for install assets:** [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
+  (`unixsee-agent.tar.gz` must be published; not in Git)
 - Phase 1 agent API contract: [`phase1-api-contract.md`](./phase1-api-contract.md)
 - Two-agent ADR: [`../architecture/decisions/0007-two-vps-agents.md`](../architecture/decisions/0007-two-vps-agents.md)
 - Agent language ADR: [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)

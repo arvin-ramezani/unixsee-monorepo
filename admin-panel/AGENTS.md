@@ -48,6 +48,8 @@ The following documents are part of the repository's development rules. Read the
 - ADR 0012: [`../docs/architecture/decisions/0012-admin-nest-auth-integration.md`](../docs/architecture/decisions/0012-admin-nest-auth-integration.md)
 - [Workflow](docs/development/workflow.md)
 - [Validation](docs/quality/validation.md)
+- [Deployment / agent assets](docs/runbooks/deployment.md) — production panel host;
+  **`unixsee-agent.tar.gz` must be packed and uploaded** (not in Git)
 
 ## Agent skills
 

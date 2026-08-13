@@ -28,6 +28,8 @@ both unless a doc says otherwise.
 - **Admin panel** — Base UI shadcn pitfalls (Select, DropdownMenu):
   [`../../admin-panel/docs/development/components.md`](../../admin-panel/docs/development/components.md)
   (`Confirmed` runtime constraints; read before adding menus or selects).
+- **Admin deploy** (includes publishing `public/agents/unixsee-agent.tar.gz`):
+  [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
 
 ## Stack (summary)
 

@@ -37,9 +37,11 @@ Optional flags:
 
 Then confirm the server shows **connected** in admin after the first heartbeat.
 
-**Publish note (Unixsee deployers):** before panel deploys, run
-`bash agent/scripts/pack-for-panel.sh` so `unixsee-agent.tar.gz` exists under
-`admin-panel/public/agents/`.
+**Publish note (Unixsee deployers):** panel deploy must publish
+`unixsee-agent.tar.gz` under the live app’s `public/agents/` (file is gitignored).
+Canonical steps: [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
+(`bash agent/scripts/pack-for-panel.sh`, upload, restart Next, `curl -I` both
+`/agents/install.sh` and `/agents/unixsee-agent.tar.gz`).
 
 ---
 
@@ -134,9 +136,16 @@ If admin revokes the agent:
 
 ## Permissions (non-root)
 
-Do not run as root long-term. The installer creates `unixsee-agent` and applies
-best-effort ACLs for DirectAdmin manifests and access logs. Outbound HTTPS to
-NestJS only; no inbound agent ports.
+Do **not** run the agent as root. It needs **read-only** access to discovery
+paths (DirectAdmin user data, OpenLiteSpeed conf, access logs), not root.
+
+Easiest path: the one-line installer creates system user `unixsee-agent`, installs
+under `/opt/unixsee-agent`, and applies best-effort ACLs (`setfacl`) plus
+`diradmin` group membership when present.
+
+If discovery or traffic looks empty after install, apply the ACL block in
+[`../../agent/README.md`](../../agent/README.md) (Non-root ACL) and restart
+`unixsee-agent`.
 
 ## Related
 
