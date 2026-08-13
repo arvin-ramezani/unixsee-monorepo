@@ -31,6 +31,7 @@
     "prisma:migrate:status:prod": "dotenv -e .env.production -- prisma migrate status",
     "prisma:studio:dev": "dotenv -e .env.development -- prisma studio --port 51212 --browser none",
     "prisma:studio:prod": "dotenv -e .env.production -- prisma studio --port 51212 --browser none",
+    "seed:dev-arvin": "dotenv -e .env.development -- node scripts/seed-dev-arvin.mjs",
     "deploy:prod": "pnpm install --frozen-lockfile && pnpm prisma:generate:prod && pnpm prisma:migrate:prod && pnpm build:prod"
   },
   "dependencies": {
