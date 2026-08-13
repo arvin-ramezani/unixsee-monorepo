@@ -6,6 +6,8 @@
 # Optional:
 #   --api-base-url https://api.unixsee.com
 #   --bundle-url   https://panel.unixsee.com/agents/unixsee-agent.tar.gz
+#   --bundle-user / --bundle-password   (only if panel /agents is behind HTTP Basic Auth)
+#   or env: AGENT_BUNDLE_HTTP_USER / AGENT_BUNDLE_HTTP_PASSWORD
 set -euo pipefail
 
 TOKEN=""
@@ -14,6 +16,8 @@ SERVICE_NAME="unixsee-agent"
 SERVICE_USER="unixsee-agent"
 API_BASE_URL="${API_BASE_URL:-https://api.unixsee.com}"
 BUNDLE_URL="${AGENT_BUNDLE_URL:-https://panel.unixsee.com/agents/unixsee-agent.tar.gz}"
+BUNDLE_HTTP_USER="${AGENT_BUNDLE_HTTP_USER:-}"
+BUNDLE_HTTP_PASSWORD="${AGENT_BUNDLE_HTTP_PASSWORD:-}"
 PANEL_ORIGIN="https://panel.unixsee.com"
 
 log() { echo "[unixsee-agent-install] $*"; }
@@ -33,12 +37,29 @@ while [[ $# -gt 0 ]]; do
       BUNDLE_URL="${2:-}"
       shift 2
       ;;
+    --bundle-user)
+      BUNDLE_HTTP_USER="${2:-}"
+      shift 2
+      ;;
+    --bundle-password)
+      BUNDLE_HTTP_PASSWORD="${2:-}"
+      shift 2
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: install.sh --token <enrollment-token> [--api-base-url URL] [--bundle-url URL]
+Usage: install.sh --token <enrollment-token> [options]
+
+Options:
+  --api-base-url URL
+  --bundle-url URL
+  --bundle-user USER          HTTP Basic Auth for bundle download (temp OLS gates)
+  --bundle-password PASS
 
 Run as root on Ubuntu. Creates user unixsee-agent, installs the agent under
 /opt/unixsee-agent, writes a mode-600 .env, and enables systemd.
+
+Prefer leaving /agents/ public on the panel host; Basic Auth is only for
+temporary testing.
 EOF
       exit 0
       ;;
@@ -120,10 +141,21 @@ ensure_user() {
 install_bundle() {
   local tmp
   tmp="$(mktemp -d)"
-  trap 'rm -rf "${tmp}"' RETURN
 
   log "Downloading agent bundle"
-  curl -fsSL "${BUNDLE_URL}" -o "${tmp}/unixsee-agent.tar.gz"
+  local curl_auth=()
+  if [[ -n "${BUNDLE_HTTP_USER}" ]]; then
+    curl_auth=(-u "${BUNDLE_HTTP_USER}:${BUNDLE_HTTP_PASSWORD}")
+  fi
+  if ! curl -fsSL "${curl_auth[@]}" "${BUNDLE_URL}" -o "${tmp}/unixsee-agent.tar.gz"; then
+    rm -rf "${tmp}"
+    err "Failed to download ${BUNDLE_URL}"
+    if [[ -z "${BUNDLE_HTTP_USER}" ]]; then
+      err "If the panel /agents path uses HTTP Basic Auth, pass --bundle-user/--bundle-password"
+      err "or leave /agents/ public (recommended)."
+    fi
+    exit 1
+  fi
 
   mkdir -p "${INSTALL_DIR}"
   # Preserve existing .env across upgrades when present
@@ -138,6 +170,8 @@ install_bundle() {
   if [[ -f "${tmp}/.env.preserve" && ! -f "${INSTALL_DIR}/.env" ]]; then
     mv "${tmp}/.env.preserve" "${INSTALL_DIR}/.env"
   fi
+
+  rm -rf "${tmp}"
 
   if [[ ! -f "${INSTALL_DIR}/dist/index.js" ]]; then
     err "Bundle missing dist/index.js — publish a packed release first (agent/scripts/pack-for-panel.sh)."

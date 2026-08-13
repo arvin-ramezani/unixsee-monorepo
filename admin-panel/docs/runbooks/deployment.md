@@ -61,6 +61,9 @@ fine). See [`../../.env.example`](../../.env.example).
    curl -I https://panel.unixsee.com/agents/install.sh
    curl -I https://panel.unixsee.com/agents/unixsee-agent.tar.gz
    ```
+   Prefer leaving `/agents/` **public** (no Basic Auth). If Basic Auth is
+   temporarily enabled, the installer must receive `--bundle-user` /
+   `--bundle-password` or the tarball download returns 401.
 6. Smoke staff login against the configured Nest API URL.
 
 ## Agent assets detail
