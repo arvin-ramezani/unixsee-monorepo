@@ -20,11 +20,9 @@ import MobileNavigation from "./mobile-navigation";
 import Logo from "../common/logo";
 import RequestAssessmentDialogDesktop from "./request-assessment-dialog-desktop";
 import { useLightHeaderStore } from "@/providers/light-header-provider";
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { AuthNavCta } from "./auth-nav-cta";
 
 export default function Header() {
-  const tDashboardNavigation = useTranslations("Navigation");
   const scrolled = useScroll(100);
   const { scrollYProgress } = useMotionScroll();
   const prevScrollRef = useRef(0);
@@ -109,13 +107,7 @@ export default function Header() {
                 }}
               />
 
-              <Button
-                asChild
-                variant="outline"
-                className="hidden h-10 text-xs lg:inline-flex"
-              >
-                <Link href="/sign-in">{tDashboardNavigation("signIn")}</Link>
-              </Button>
+              <AuthNavCta className="hidden h-10 text-xs lg:inline-flex" />
 
               <div className="hidden lg:block">
                 <RequestAssessmentDialogDesktop

@@ -615,7 +615,7 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
                       draggable={false}
                       onClick={handleSpecialLinkClick}
                       onDragStart={(event) => event.preventDefault()}
-                      className="group/special flex items-center gap-1.5 rounded-md border border-[#3e5267] bg-[#1d3349] px-3 py-2 font-medium text-white transition-colors outline-none hover:border-[#c7a45a]/70 hover:bg-[#25415d] focus-visible:border-[#c7a45a] focus-visible:ring-2 focus-visible:ring-[#c7a45a]/35 dark:border-[#31506c] dark:bg-[#102c45] dark:hover:border-[#c7a45a]/70 dark:hover:bg-[#173a58]"
+                      className="group/special flex items-center gap-1.5 rounded-md border border-[#3e5267] bg-[#1d3349] px-3 py-2 text-white transition-colors outline-none hover:border-[#c7a45a]/70 hover:bg-[#25415d] focus-visible:border-[#c7a45a] focus-visible:ring-2 focus-visible:ring-[#c7a45a]/35 dark:border-[#31506c] dark:bg-[#102c45] dark:hover:border-[#c7a45a]/70 dark:hover:bg-[#173a58]"
                     >
                       <Icon
                         aria-hidden="true"

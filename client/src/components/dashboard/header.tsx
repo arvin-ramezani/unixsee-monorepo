@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { AccountMenu } from "@/components/dashboard/account-menu";
 import { LocaleSwitcher } from "@/components/dashboard/locale-switcher";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { NotificationCenter } from "@/components/dashboard/notification-center";
@@ -9,7 +10,6 @@ import { GlobalSearch } from "@/components/dashboard/global-search";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { Button } from "@/components/ui/button";
 import { useScroll } from "@/hooks/use-scroll";
-import { Link } from "@/i18n/navigation";
 import type { NotificationItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 import { GridIcon } from "../common/grid-icon";
@@ -48,7 +48,6 @@ export function Header({
   showViewToggle: showViewToggleOverride,
   userName = "Jane",
 }: HeaderProps) {
-  const t = useTranslations("Header");
   const views = useTranslations("Common.views");
   const { view, toggleView } = useDashboardView();
   const scrolled = useScroll(8);
@@ -81,27 +80,11 @@ export function Header({
               className="hover:bg-muted focus-visible:ring-ring hidden size-11 place-items-center rounded-lg focus-visible:ring-2 sm:grid"
             >
               <GridIcon view={view === "table" ? "list" : "grid"} />
-              {/* {view === "grid" ? (
-                <LayoutList aria-hidden="true" className="size-5" />
-              ) : (
-                <LayoutGrid aria-hidden="true" className="size-5" />
-              )} */}
             </Button>
           )}
           <NotificationCenter notifications={notifications} />
           <LocaleSwitcher />
-          <Link
-            href="/dashboard/profile"
-            aria-label={t("profile")}
-            className="focus-visible:ring-ring flex h-12 items-center gap-2 rounded-lg px-1.5 focus-visible:ring-2"
-          >
-            <span className="bg-primary text-primary-foreground grid size-10 place-items-center rounded-full text-xs font-semibold xl:size-12">
-              {userName.slice(0, 1)}
-            </span>
-            <span className="hidden text-sm font-medium sm:inline">
-              {userName}
-            </span>
-          </Link>
+          <AccountMenu userName={userName} />
         </div>
       </div>
     </header>

@@ -21,7 +21,7 @@ import {
 import { Link, usePathname } from "@/i18n/navigation";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import RequestAssessmentDialogMobile from "./request-assessment-dialog-mobile";
-import { Button } from "../ui/button";
+import { AuthNavCta } from "./auth-nav-cta";
 
 type NavigationItem = {
   key: string;
@@ -38,8 +38,6 @@ export default function MobileNavigation({
 }: MobileNavigationProps) {
   // const tHomePage = useTranslations("HomePage");
   const tNavigation = useTranslations("Layout.Navigation");
-  const tDashboardNavigation = useTranslations("Navigation");
-
   const pathname = usePathname();
 
   const activeAccordionValue = useMemo(() => {
@@ -124,11 +122,10 @@ export default function MobileNavigation({
       </Accordion>
 
       <div className="flex flex-col gap-3">
-        <Button asChild variant="outline" className="h-12 w-full">
-          <Link href="/sign-in" onClick={() => setOpen(false)}>
-            {tDashboardNavigation("signIn")}
-          </Link>
-        </Button>
+        <AuthNavCta
+          className="h-12 w-full"
+          onNavigate={() => setOpen(false)}
+        />
 
         {/* <div className="flex gap-4">
           <LocaleSwitcher className="ms-0" />

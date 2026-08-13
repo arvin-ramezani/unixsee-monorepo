@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   createServerClockOffsetInSeconds,
   getServerCoreApiBaseUrl,
+  isSafeReturnToPath,
 } from "@/lib/auth/auth-utils";
 import {
   AUTH_COOKIE_NAMES,
@@ -16,6 +17,8 @@ import type { ApiResponse, AuthTokens } from "@/types/auth.types";
 const handleI18nRouting = createMiddleware(routing);
 
 const protectedRoutePrefixes = ["/dashboard"];
+
+const guestOnlyAuthRoutes = ["/sign-in", "/sign-up", "/otp", "/register"];
 
 function extractLocaleFromPathname(pathname: string) {
   const locale = pathname.split("/")[1];
@@ -40,6 +43,18 @@ function isProtectedRoute(pathnameWithoutLocale: string) {
   );
 }
 
+function isGuestOnlyAuthRoute(pathnameWithoutLocale: string) {
+  return guestOnlyAuthRoutes.some(
+    (route) =>
+      pathnameWithoutLocale === route ||
+      pathnameWithoutLocale.startsWith(`${route}/`),
+  );
+}
+
+function stripLocalePrefix(path: string) {
+  return path.replace(/^\/(en|fa)(?=\/|$)/, "") || "/";
+}
+
 function redirectToSignIn(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const locale = extractLocaleFromPathname(pathname) ?? routing.defaultLocale;
@@ -51,6 +66,19 @@ function redirectToSignIn(request: NextRequest) {
   response.cookies.delete(AUTH_COOKIE_NAMES.refreshToken);
   response.cookies.delete(AUTH_COOKIE_NAMES.serverClockOffset);
   return response;
+}
+
+function redirectAuthenticatedAwayFromAuth(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const locale = extractLocaleFromPathname(pathname) ?? routing.defaultLocale;
+  const returnTo = request.nextUrl.searchParams.get("returnTo");
+  const destination = isSafeReturnToPath(returnTo)
+    ? stripLocalePrefix(returnTo!)
+    : "/dashboard";
+
+  return NextResponse.redirect(
+    new URL(`/${locale}${destination}`, request.url),
+  );
 }
 
 function setAuthTokenCookies(response: NextResponse, tokens: AuthTokens) {
@@ -100,15 +128,23 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const pathnameWithoutLocale = removeLocaleFromPathname(pathname);
+  const refreshToken = request.cookies.get(
+    AUTH_COOKIE_NAMES.refreshToken,
+  )?.value;
+
+  if (isGuestOnlyAuthRoute(pathnameWithoutLocale)) {
+    if (refreshToken) {
+      return redirectAuthenticatedAwayFromAuth(request);
+    }
+
+    return handleI18nRouting(request);
+  }
 
   if (!isProtectedRoute(pathnameWithoutLocale)) {
     return handleI18nRouting(request);
   }
 
   const accessToken = request.cookies.get(AUTH_COOKIE_NAMES.accessToken)?.value;
-  const refreshToken = request.cookies.get(
-    AUTH_COOKIE_NAMES.refreshToken,
-  )?.value;
 
   if (!refreshToken) {
     return redirectToSignIn(request);
