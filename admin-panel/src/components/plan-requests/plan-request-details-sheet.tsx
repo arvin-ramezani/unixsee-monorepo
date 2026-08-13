@@ -349,6 +349,7 @@ function PlanRequestDetailsBody({
     null,
   );
   const [refuseReason, setRefuseReason] = useState("");
+  const [refuseError, setRefuseError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmEnable, setConfirmEnable] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -432,12 +433,14 @@ function PlanRequestDetailsBody({
 
   const openRefusePanel = (kind: "declined" | "cancelled") => {
     setFormError(null);
+    setRefuseError(null);
     setRefuseKind(kind);
   };
 
   const closeRefusePanel = () => {
     setRefuseKind(null);
     setRefuseReason("");
+    setRefuseError(null);
   };
 
   const handleSelectWebsite = async (website: PlanRequestWebsiteOption) => {
@@ -530,11 +533,11 @@ function PlanRequestDetailsBody({
 
     const trimmedReason = refuseReason.trim();
     if (!trimmedReason) {
-      setFormError("برای رد یا لغو، ثبت دلیل الزامی است.");
+      setRefuseError("برای رد یا لغو، ثبت دلیل الزامی است.");
       return;
     }
 
-    setFormError(null);
+    setRefuseError(null);
     setSubmitting(true);
 
     try {
@@ -747,8 +750,14 @@ function PlanRequestDetailsBody({
         <PlanRequestRefusePanel
           refuseKind={refuseKind}
           refuseReason={refuseReason}
+          refuseError={refuseError}
           submitting={submitting}
-          onRefuseReasonChange={setRefuseReason}
+          onRefuseReasonChange={(reason) => {
+            setRefuseReason(reason);
+            if (refuseError) {
+              setRefuseError(null);
+            }
+          }}
           onCancel={closeRefusePanel}
           onConfirm={() => void handleRefuse()}
         />
@@ -830,6 +839,7 @@ function PlanRequestDetailsBody({
 function PlanRequestRefusePanel({
   refuseKind,
   refuseReason,
+  refuseError,
   submitting,
   onRefuseReasonChange,
   onCancel,
@@ -837,6 +847,7 @@ function PlanRequestRefusePanel({
 }: {
   refuseKind: "declined" | "cancelled";
   refuseReason: string;
+  refuseError: string | null;
   submitting: boolean;
   onRefuseReasonChange: (reason: string) => void;
   onCancel: () => void;
@@ -844,6 +855,7 @@ function PlanRequestRefusePanel({
 }) {
   const selectedOption = getRefuseOption(refuseKind);
   const reasonFieldId = "plan-request-refuse-reason";
+  const reasonErrorId = `${reasonFieldId}-error`;
 
   return (
     <section
@@ -871,9 +883,16 @@ function PlanRequestRefusePanel({
             onChange={(event) => onRefuseReasonChange(event.target.value)}
             rows={3}
             required
-            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            aria-invalid={Boolean(refuseError)}
+            aria-describedby={refuseError ? reasonErrorId : undefined}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
             aria-required
           />
+          {refuseError ? (
+            <p id={reasonErrorId} className="text-xs text-destructive" role="alert">
+              {refuseError}
+            </p>
+          ) : null}
         </label>
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
