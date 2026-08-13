@@ -63,8 +63,12 @@ Default: **no premature shared packages**.
   [`../../client/README.md`](../../client/README.md)).
 - `admin-panel/` has its own npm tooling; run scripts from that folder (see
   [`../../admin-panel/README.md`](../../admin-panel/README.md)).
+- Root `npm run dev` starts `backend/`, `client/`, and `admin-panel/` together
+  via `concurrently` (ports 4000, 3001, 3000). Per-app installs and scripts
+  still live in each folder.
 - Monorepo-wide workspace tooling (root workspaces, shared CI) is not configured
-  yet. Do not invent unavailable root scripts or claim builds pass.
+  yet beyond the root dev helper. Do not invent unavailable root scripts or
+  claim builds pass.
 - Backend module/route targets:
   [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
 

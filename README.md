@@ -46,6 +46,18 @@ For admin UI work: [`docs/product/README.md`](./docs/product/README.md).
 Do not invent unavailable scripts or claim builds pass. See
 [`docs/quality/validation.md`](./docs/quality/validation.md).
 
+## Local development (all surfaces)
+
+From the repo root, after installing dependencies in each app folder (`backend/`,
+`client/`, `admin-panel/`):
+
+```bash
+npm install
+npm run dev
+```
+
+Runs NestJS on port **4000**, admin panel on **3000**, and client on **3001**.
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
