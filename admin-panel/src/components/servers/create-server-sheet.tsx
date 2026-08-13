@@ -16,78 +16,44 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 export type CreateServerValues = {
-  label: string;
-  location: string;
-  capacitySummary: string;
+  name: string;
+  ipAddress: string;
   notes: string;
 };
 
 type CreateServerSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreate: (values: CreateServerValues) => void;
+  onCreate: (values: CreateServerValues) => Promise<boolean> | boolean;
 };
-
-const CREATE_SERVER_FIELDS = [
-  {
-    key: "label",
-    label: "شناسه سرور",
-    placeholder: "مثلاً VPS-IR-16",
-    dir: "ltr" as const,
-    required: true,
-  },
-  {
-    key: "location",
-    label: "موقعیت",
-    placeholder: "مثلاً تهران، ایران",
-    required: true,
-  },
-  {
-    key: "capacitySummary",
-    label: "ظرفیت",
-    placeholder: "مثلاً ۴ vCPU · ۱۶ GB RAM · ۲۰۰ GB NVMe",
-    dir: "ltr" as const,
-    required: true,
-  },
-] as const;
 
 function CreateServerForm({
   onCancel,
   onCreate,
 }: {
   onCancel: () => void;
-  onCreate: (values: CreateServerValues) => void;
+  onCreate: (values: CreateServerValues) => Promise<boolean> | boolean;
 }) {
-  const [label, setLabel] = useState("");
-  const [location, setLocation] = useState("");
-  const [capacitySummary, setCapacitySummary] = useState("");
+  const [name, setName] = useState("");
+  const [ipAddress, setIpAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [pending, setPending] = useState(false);
 
-  const fieldValues: Record<(typeof CREATE_SERVER_FIELDS)[number]["key"], string> =
-    {
-      label,
-      location,
-      capacitySummary,
-    };
-
-  const fieldSetters: Record<
-    (typeof CREATE_SERVER_FIELDS)[number]["key"],
-    (value: string) => void
-  > = {
-    label: setLabel,
-    location: setLocation,
-    capacitySummary: setCapacitySummary,
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    onCreate({
-      label: label.trim(),
-      location: location.trim(),
-      capacitySummary: capacitySummary.trim(),
-      notes: notes.trim(),
-    });
+    setPending(true);
+    try {
+      const ok = await onCreate({
+        name: name.trim(),
+        ipAddress: ipAddress.trim(),
+        notes: notes.trim(),
+      });
+      if (ok) {
+        onCancel();
+      }
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -108,21 +74,35 @@ function CreateServerForm({
           </div>
         </div>
 
-        {CREATE_SERVER_FIELDS.map((field) => (
-          <div key={field.key} className="space-y-2">
-            <label htmlFor={`server-${field.key}`} className="text-sm font-medium">
-              {field.label}
-            </label>
-            <Input
-              id={`server-${field.key}`}
-              value={fieldValues[field.key]}
-              onChange={(event) => fieldSetters[field.key](event.target.value)}
-              placeholder={field.placeholder}
-              dir={"dir" in field ? field.dir : undefined}
-              required={field.required}
-            />
-          </div>
-        ))}
+        <div className="space-y-2">
+          <label htmlFor="server-name" className="text-sm font-medium">
+            شناسه سرور
+          </label>
+          <Input
+            id="server-name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="مثلاً VPS-IR-16"
+            dir="ltr"
+            required
+            disabled={pending}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="server-ip" className="text-sm font-medium">
+            آدرس IP
+          </label>
+          <Input
+            id="server-ip"
+            value={ipAddress}
+            onChange={(event) => setIpAddress(event.target.value)}
+            placeholder="مثلاً 203.0.113.10"
+            dir="ltr"
+            required
+            disabled={pending}
+          />
+        </div>
 
         <div className="space-y-2">
           <label htmlFor="server-notes" className="text-sm font-medium">
@@ -134,13 +114,21 @@ function CreateServerForm({
             onChange={(event) => setNotes(event.target.value)}
             placeholder="یادداشت عملیاتی برای تیم"
             className="min-h-24"
+            disabled={pending}
           />
         </div>
       </div>
 
       <SheetFooter className="border-t border-border bg-card">
-        <Button type="submit">ایجاد سرور</Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="submit" disabled={pending}>
+          {pending ? "در حال ایجاد…" : "ایجاد سرور"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={pending}
+        >
           انصراف
         </Button>
       </SheetFooter>
@@ -172,10 +160,7 @@ export function CreateServerSheet({
           <CreateServerForm
             key={String(open)}
             onCancel={() => onOpenChange(false)}
-            onCreate={(values) => {
-              onCreate(values);
-              onOpenChange(false);
-            }}
+            onCreate={onCreate}
           />
         )}
       </SheetContent>

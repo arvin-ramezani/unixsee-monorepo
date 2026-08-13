@@ -13,42 +13,27 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { createEnrollmentToken } from "@/lib/data/servers-data";
-
-export type EnrollmentRevealPayload = {
-  token: string;
-  installCommand: string;
-  issuedAt: string;
-  expiresAt: string;
-  mode: "issue" | "reissue";
-};
+import type { EnrollmentRevealPayload } from "@/actions/servers/server-actions";
 
 type EnrollmentRevealSheetProps = {
   open: boolean;
   serverLabel: string;
-  mode: "issue" | "reissue";
+  payload: EnrollmentRevealPayload | null;
   onOpenChange: (open: boolean) => void;
-  onIssued: (payload: EnrollmentRevealPayload) => void;
+  onDismissed: () => void;
 };
 
 function EnrollmentRevealContent({
   serverLabel,
-  mode,
+  payload,
   onClose,
-  onIssued,
+  onDismissed,
 }: {
   serverLabel: string;
-  mode: "issue" | "reissue";
+  payload: EnrollmentRevealPayload;
   onClose: () => void;
-  onIssued: (payload: EnrollmentRevealPayload) => void;
+  onDismissed: () => void;
 }) {
-  const [payload] = useState(() => {
-    const created = createEnrollmentToken(serverLabel);
-    return {
-      ...created,
-      mode,
-    } satisfies EnrollmentRevealPayload;
-  });
   const [copiedField, setCopiedField] = useState<"token" | "command" | null>(
     null,
   );
@@ -64,7 +49,7 @@ function EnrollmentRevealContent({
   };
 
   const handleDismiss = () => {
-    onIssued(payload);
+    onDismissed();
     onClose();
   };
 
@@ -75,7 +60,10 @@ function EnrollmentRevealContent({
           className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
           role="alert"
         >
-          <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <AlertTriangle
+            className="mt-0.5 size-4 shrink-0"
+            aria-hidden="true"
+          />
           <p>
             این توکن فقط یک‌بار نمایش داده می‌شود. پس از بستن این پنل دیگر قابل
             بازیابی نیست. در صورت تردید، توکن را باطل و دوباره صادر کنید.
@@ -89,7 +77,9 @@ function EnrollmentRevealContent({
             </span>
             <div className="min-w-0">
               <p className="font-medium">
-                {mode === "reissue" ? "صدور مجدد توکن" : "توکن اتصال Agent"}
+                {payload.mode === "reissue"
+                  ? "صدور مجدد توکن"
+                  : "توکن اتصال Agent"}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 سرور <span dir="ltr">{serverLabel}</span> · انقضا:{" "}
@@ -160,7 +150,7 @@ function EnrollmentRevealContent({
             checked={confirmed}
             onChange={(event) => setConfirmed(event.target.checked)}
           />
-          <span>
+          <span className="select-none">
             توکن را ذخیره کردم و می‌دانم پس از بستن پنل دیگر نمایش داده نمی‌شود.
           </span>
         </label>
@@ -178,9 +168,9 @@ function EnrollmentRevealContent({
 export function EnrollmentRevealSheet({
   open,
   serverLabel,
-  mode,
+  payload,
   onOpenChange,
-  onIssued,
+  onDismissed,
 }: EnrollmentRevealSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -191,23 +181,25 @@ export function EnrollmentRevealSheet({
       >
         <SheetHeader className="border-b border-border pe-12">
           <SheetTitle>
-            {mode === "reissue" ? "صدور مجدد توکن اتصال" : "صدور توکن اتصال"}
+            {payload?.mode === "reissue"
+              ? "صدور مجدد توکن اتصال"
+              : "صدور توکن اتصال"}
           </SheetTitle>
           <SheetDescription id="enrollment-reveal-description">
-            توکن را کپی کنید و روی VPS نصب کنید. مقدار متنی توکن بعداً قابل مشاهده
-            نیست.
+            توکن را کپی کنید و روی VPS نصب کنید. مقدار متنی توکن بعداً قابل
+            مشاهده نیست.
           </SheetDescription>
         </SheetHeader>
 
-        {open && (
+        {open && payload ? (
           <EnrollmentRevealContent
-            key={`${serverLabel}-${mode}-${String(open)}`}
+            key={`${serverLabel}-${payload.tokenId}`}
             serverLabel={serverLabel}
-            mode={mode}
+            payload={payload}
             onClose={() => onOpenChange(false)}
-            onIssued={onIssued}
+            onDismissed={onDismissed}
           />
-        )}
+        ) : null}
       </SheetContent>
     </Sheet>
   );
@@ -217,7 +209,7 @@ type RevokeAgentSheetProps = {
   open: boolean;
   serverLabel: string;
   onOpenChange: (open: boolean) => void;
-  onRevoke: (reason: string) => void;
+  onRevoke: (reason: string) => Promise<boolean> | boolean;
 };
 
 export function RevokeAgentSheet({
@@ -227,13 +219,21 @@ export function RevokeAgentSheet({
   onRevoke,
 }: RevokeAgentSheetProps) {
   const [reason, setReason] = useState("");
+  const [pending, setPending] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!reason.trim()) return;
-    onRevoke(reason.trim());
-    onOpenChange(false);
-    setReason("");
+    setPending(true);
+    try {
+      const ok = await onRevoke(reason.trim());
+      if (ok) {
+        onOpenChange(false);
+        setReason("");
+      }
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -268,8 +268,8 @@ export function RevokeAgentSheet({
                 aria-hidden="true"
               />
               <p>
-                این اقدام برگشت‌پذیر نیست. تا صدور توکن جدید، داده‌های پایش از این
-                سرور دریافت نمی‌شود.
+                این اقدام برگشت‌پذیر نیست. تا صدور توکن جدید، داده‌های پایش از
+                این سرور دریافت نمی‌شود.
               </p>
             </div>
 
@@ -284,6 +284,7 @@ export function RevokeAgentSheet({
                 required
                 className="min-h-28"
                 placeholder="مثلاً مشکوک به افشای اعتبار یا قطع طولانی"
+                disabled={pending}
               />
             </div>
 
@@ -293,20 +294,25 @@ export function RevokeAgentSheet({
                 aria-hidden="true"
               />
               <p>
-                در نسخه نهایی، NestJS اعتبار قبلی را باطل می‌کند. اینجا فقط حالت
-                رابط کاربری شبیه‌سازی می‌شود.
+                NestJS اعتبار قبلی Agent را باطل می‌کند. برای اتصال مجدد باید
+                توکن جدید صادر کنید.
               </p>
             </div>
           </div>
 
           <SheetFooter className="border-t border-border bg-card">
-            <Button type="submit" variant="destructive" disabled={!reason.trim()}>
-              تأیید باطل‌سازی
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={!reason.trim() || pending}
+            >
+              {pending ? "در حال باطل‌سازی…" : "تأیید باطل‌سازی"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              disabled={pending}
             >
               انصراف
             </Button>

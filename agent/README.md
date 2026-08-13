@@ -14,8 +14,17 @@ visitors to NestJS.
 
 **Start here:** [`../docs/agent/setup.md`](../docs/agent/setup.md)
 
-That guide covers applying the admin enrollment token, cloning from GitHub,
-`.env`, and running with `npm start` or systemd.
+One-line install (Ubuntu, after admin issues a token):
+
+```bash
+curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN
+```
+
+Publish install assets to the admin panel static host:
+
+```bash
+bash agent/scripts/pack-for-panel.sh
+```
 
 ## Local development
 

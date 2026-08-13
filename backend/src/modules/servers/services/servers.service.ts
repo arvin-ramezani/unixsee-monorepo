@@ -342,7 +342,7 @@ export class ServersService {
   }
 
   private buildInstallCommand(token: string): string {
-    return `curl -fsSL https://agent.unixsee.com/install.sh | bash -s -- --token ${token}`;
+    return `curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token ${token}`;
   }
 
   private toAdminServerReadModel(server: {

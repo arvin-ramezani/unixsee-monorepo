@@ -71,6 +71,15 @@ export type ServerEnrollmentType = {
   expiresAt?: string;
 };
 
+export type ServerEnrollmentTokenRow = {
+  id: string;
+  status: "ACTIVE" | "USED" | "REVOKED" | "EXPIRED" | string;
+  createdAt: string;
+  expiresAt?: string | null;
+  usedAt?: string | null;
+  revokedAt?: string | null;
+};
+
 export type ServerAgentType = {
   state: ServerAgentStateType;
   version?: string;
@@ -87,6 +96,7 @@ export type ServerType = {
   createdAt: string;
   agent: ServerAgentType;
   enrollment: ServerEnrollmentType;
+  enrollmentTokens: ServerEnrollmentTokenRow[];
   discoveries: WebsiteDiscoveryType[];
   websiteIds: string[];
 };
@@ -148,6 +158,7 @@ export const SERVERS: ServerType[] = [
         },
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-001"],
   },
   {
@@ -191,6 +202,7 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۵ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-002"],
   },
   {
@@ -224,6 +236,7 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۸ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-003"],
   },
   {
@@ -267,6 +280,7 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۲ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-004"],
   },
   {
@@ -300,6 +314,7 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۱۵ فروردین ۱۴۰۳",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-005"],
   },
   {
@@ -333,6 +348,7 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۲۵ تیر ۱۴۰۱",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-006"],
   },
   {
@@ -351,6 +367,7 @@ export const SERVERS: ServerType[] = [
       expiresAt: "۷ مرداد ۱۴۰۶، ۱۴:۲۰",
     },
     discoveries: [],
+    enrollmentTokens: [],
     websiteIds: [],
   },
   {
@@ -367,6 +384,7 @@ export const SERVERS: ServerType[] = [
       status: ENROLLMENT_TOKEN_STATUS.NONE,
     },
     discoveries: [],
+    enrollmentTokens: [],
     websiteIds: [],
   },
 ];
@@ -408,14 +426,3 @@ export function getServersSummary(servers: ServerType[]) {
   };
 }
 
-export function createEnrollmentToken(serverLabel: string) {
-  const suffix = Math.random().toString(36).slice(2, 10);
-  const token = `uxs_enroll_${serverLabel.toLowerCase().replace(/[^a-z0-9]/g, "")}_${suffix}`;
-
-  return {
-    token,
-    installCommand: `curl -fsSL https://agent.unixsee.com/install.sh | bash -s -- --token ${token}`,
-    issuedAt: "اکنون",
-    expiresAt: "۲۴ ساعت دیگر",
-  };
-}
