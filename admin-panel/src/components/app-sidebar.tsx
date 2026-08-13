@@ -117,8 +117,13 @@ export function AppSidebar({
     email: string;
   };
 }) {
-  const { open } = useSidebar();
+  const { open, setOpenMobile } = useSidebar();
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    setOpenMobile(false);
+  }, [pathname, setOpenMobile]);
+
   const activeUrl = data.navMain.find(
     (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
   )?.url;
