@@ -103,3 +103,30 @@ When using the shadcn Select component, always use the project's Base UI impleme
 Do not omit `alignItemWithTrigger={false}` from Select implementations.
 
 Follow the existing Select component structure in the repository and place the prop on the appropriate Base UI Select element.
+
+## DropdownMenu
+
+The project uses **shadcn/ui DropdownMenu on Base UI** (`@base-ui/react/menu`).
+
+**Confirmed (runtime):** `DropdownMenuLabel` is implemented as Base UI `Menu.GroupLabel` and **must** be nested inside `DropdownMenuGroup`. Placing a label (or separator used as a group divider) directly under `DropdownMenuContent` throws at runtime:
+
+```text
+MenuGroupContext is missing. Menu group parts must be used within <Menu.Group> or <Menu.RadioGroup>.
+```
+
+Use this structure (reference: `src/components/layout/team-switcher.tsx`):
+
+```tsx
+<DropdownMenuContent align="end">
+  <DropdownMenuGroup>
+    <DropdownMenuLabel>عنوان گروه</DropdownMenuLabel>
+    <DropdownMenuItem onClick={...}>اقدام</DropdownMenuItem>
+  </DropdownMenuGroup>
+</DropdownMenuContent>
+```
+
+Rules:
+
+- Wrap every `DropdownMenuLabel` in `DropdownMenuGroup`.
+- Prefer `DropdownMenuGroup` for related items even when no label is shown.
+- Use `DropdownMenu` for **action lists** (for example رد/لغو in plan-request detail); pick the action in the menu, then confirm with reason in the panel—do not duplicate action type with a second Select.

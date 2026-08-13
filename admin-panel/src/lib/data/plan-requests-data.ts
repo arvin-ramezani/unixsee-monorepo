@@ -1,4 +1,6 @@
 import { PLAN_ID } from "@/lib/data/plans-data";
+import type { PlanRequestIntakeType } from "@/lib/plan-requests/plan-request-intake";
+import { PLAN_REQUEST_INTAKE } from "@/lib/plan-requests/plan-request-intake";
 
 export const PLAN_REQUEST_STATUS = {
   PENDING: "pending",
@@ -54,10 +56,13 @@ export type PlanRequestType = {
   /** Nest plan code (preferred) or plan UUID when code is missing. */
   chosenPlanId: string;
   chosenPlanName: string;
+  /** Logged-in dashboard vs public web intake. */
+  intakeType: PlanRequestIntakeType;
   contactName: string;
   contactEmail: string | null;
   contactMobile: string | null;
   domainHint: string | null;
+  notes: string | null;
   linkedUserId: string | null;
   linkedUserName: string | null;
   linkedTenantId: string | null;
@@ -77,6 +82,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-001",
     chosenPlanId: PLAN_ID.UNIX_CORE,
     chosenPlanName: "UNIX CORE",
+    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
+    notes: null,
     contactName: "نیما فرهادی",
     contactEmail: "nima.farhadi@example.com",
     contactMobile: "09120001122",
@@ -106,6 +113,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-002",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
+    notes: null,
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
     contactMobile: "09121234567",
@@ -141,6 +150,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-003",
     chosenPlanId: PLAN_ID.UNIX_PEAK,
     chosenPlanName: "UNIX PEAK",
+    intakeType: PLAN_REQUEST_INTAKE.LOGGED_IN,
+    notes: null,
     contactName: "مریم حسینی",
     contactEmail: "maryam.hosseini@habibeh.ir",
     contactMobile: "09125551212",
@@ -176,6 +187,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-004",
     chosenPlanId: PLAN_ID.UNIX_ENTERPRISE,
     chosenPlanName: "UNIX ENTERPRISE",
+    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
+    notes: "دامنه فروشگاه اصلی",
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
     contactMobile: "09121234567",
@@ -211,6 +224,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-005",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    intakeType: PLAN_REQUEST_INTAKE.LOGGED_IN,
+    notes: null,
     contactName: "سارا محمدی",
     contactEmail: "sara.mohammadi@parsmod.com",
     contactMobile: "09123334455",
@@ -246,6 +261,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-006",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
+    notes: null,
     contactName: "حامد کاظمی",
     contactEmail: null,
     contactMobile: "09351234567",

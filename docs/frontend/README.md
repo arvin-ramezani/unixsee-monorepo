@@ -23,6 +23,12 @@ both unless a doc says otherwise.
 9. [`admin-domain-data-fetching.md`](./admin-domain-data-fetching.md) — staff Layer 2 domain fetch
 10. [`../quality/validation.md`](../quality/validation.md) — how to validate UI work
 
+## App-specific UI notes
+
+- **Admin panel** — Base UI shadcn pitfalls (Select, DropdownMenu):
+  [`../../admin-panel/docs/development/components.md`](../../admin-panel/docs/development/components.md)
+  (`Confirmed` runtime constraints; read before adding menus or selects).
+
 ## Stack (summary)
 
 See [`../architecture/decisions/0002-stack-choices.md`](../architecture/decisions/0002-stack-choices.md).

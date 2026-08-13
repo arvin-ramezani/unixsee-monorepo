@@ -6,13 +6,14 @@ import {
   useEffect,
   useRef,
   useState,
-  type FormEvent,
 } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
+  ChevronDown,
   Globe2,
   LoaderCircle,
+  UserRound,
   XCircle,
 } from "lucide-react";
 
@@ -24,8 +25,15 @@ import {
   type PlanRequestWebsiteOption,
 } from "@/actions/plan-requests/plan-request-actions";
 import SearchInput from "@/components/common/search-input";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -42,8 +50,13 @@ import {
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
 import { STAFF_CAPABILITY } from "@/lib/data/users-data";
+import {
+  isPublicPlanRequest,
+  PLAN_REQUEST_INTAKE_HINTS,
+} from "@/lib/plan-requests/plan-request-intake";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
+import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
 type PlanRequestDetailsSheetProps = {
@@ -54,6 +67,27 @@ type PlanRequestDetailsSheetProps = {
 };
 
 const WEBSITE_ROW_HEIGHT = 72;
+
+const REFUSE_OPTIONS = [
+  {
+    kind: "declined" as const,
+    label: "رد درخواست",
+    description: "درخواست نامناسب است یا شرایط فعال‌سازی فراهم نیست.",
+  },
+  {
+    kind: "cancelled" as const,
+    label: "لغو درخواست",
+    description: "مشتری منصرف شده یا دیگر نیازی به پیگیری نیست.",
+  },
+] satisfies Array<{
+  kind: "declined" | "cancelled";
+  label: string;
+  description: string;
+}>;
+
+function getRefuseOption(kind: "declined" | "cancelled") {
+  return REFUSE_OPTIONS.find((option) => option.kind === kind) ?? REFUSE_OPTIONS[0];
+}
 
 function isTerminalPlanRequestStatus(status: PlanRequestType["status"]) {
   return (
@@ -107,10 +141,13 @@ export function PlanRequestDetailsSheet({
                 <span className="w-fit" dir="ltr">
                   {request.chosenPlanName}
                 </span>
+                <PlanRequestIntakeBadge intakeType={request.intakeType} />
                 <PlanRequestStatusBadge status={request.status} />
               </SheetTitle>
               <SheetDescription>
-                انتخاب وب‌سایت کاربر متصل، فعال‌سازی یا رد درخواست
+                {isPublicPlanRequest(request)
+                  ? "درخواست مهمان — ابتدا کاربر موجود را پیدا کنید، سپس وب‌سایت را انتخاب و پلن را فعال کنید."
+                  : "درخواست از داشبورد مشتری — حساب متصل است؛ وب‌سایت را انتخاب و پلن را فعال کنید."}
               </SheetDescription>
             </SheetHeader>
 
@@ -128,77 +165,165 @@ export function PlanRequestDetailsSheet({
 }
 
 function PlanRequestSummary({ request }: { request: PlanRequestType }) {
-  const contactSummary = request.contactMobile
-    ? maskMobile(request.contactMobile)
-    : request.contactEmail
-      ? maskEmail(request.contactEmail)
-      : "—";
+  const intakeHint = PLAN_REQUEST_INTAKE_HINTS[request.intakeType];
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
-      <h3 className="text-sm font-semibold">خلاصه درخواست</h3>
-      <dl className="grid gap-3 text-sm sm:grid-cols-2">
-        <div>
-          <dt className="text-xs text-muted-foreground">پلن انتخاب‌شده</dt>
-          <dd className="mt-1 w-fit font-medium" dir="ltr">
-            {request.chosenPlanName}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs text-muted-foreground">اقدام بعدی</dt>
-          <dd className="mt-1">{request.nextAction}</dd>
-        </div>
-        <div>
-          <dt className="text-xs text-muted-foreground">نام تماس</dt>
-          <dd className="mt-1">{request.contactName}</dd>
-        </div>
-        <div>
-          <dt className="text-xs text-muted-foreground">شناسه تماس</dt>
-          <dd className="mt-1 w-fit" dir="ltr">
-            {contactSummary}
-          </dd>
-        </div>
-        {request.domainHint ? (
+    <div className="flex flex-col gap-4">
+      <section
+        className={cn(
+          "rounded-xl border p-4 text-sm",
+          isPublicPlanRequest(request)
+            ? "border-amber-500/30 bg-amber-500/5"
+            : "border-primary/20 bg-primary/5",
+        )}
+      >
+        <div className="flex items-start gap-3">
+          {isPublicPlanRequest(request) ? (
+            <UserRound className="mt-0.5 size-4 shrink-0 text-amber-700 dark:text-amber-300" />
+          ) : (
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
+          )}
           <div>
-            <dt className="text-xs text-muted-foreground">راهنمای دامنه</dt>
-            <dd className="mt-1 w-fit" dir="ltr">
-              {request.domainHint}
+            <p className="font-medium">
+              {isPublicPlanRequest(request)
+                ? "درخواست مهمان (وب عمومی)"
+                : "درخواست کاربر واردشده"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {intakeHint}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {isPublicPlanRequest(request) ? (
+        <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+          <h3 className="text-sm font-semibold">اطلاعات تماس مهمان</h3>
+          <p className="text-xs text-muted-foreground">
+            برای اتصال درخواست، همین شماره یا ایمیل را در{" "}
+            <Link href="/users" className="underline underline-offset-2">
+              کاربران
+            </Link>{" "}
+            جستجو کنید.
+          </p>
+          <dl className="grid gap-3 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="text-xs text-muted-foreground">نام</dt>
+              <dd className="mt-1">{request.contactName}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">موبایل</dt>
+              <dd className="mt-1 w-fit" dir="ltr">
+                {request.contactMobile ?? "—"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">ایمیل</dt>
+              <dd className="mt-1 w-fit" dir="ltr">
+                {request.contactEmail ?? "—"}
+              </dd>
+            </div>
+            {request.domainHint ? (
+              <div>
+                <dt className="text-xs text-muted-foreground">دامنه اعلامی</dt>
+                <dd className="mt-1 w-fit" dir="ltr">
+                  {request.domainHint}
+                </dd>
+              </div>
+            ) : null}
+            {request.notes ? (
+              <div className="sm:col-span-2">
+                <dt className="text-xs text-muted-foreground">یادداشت مشتری</dt>
+                <dd className="mt-1 whitespace-pre-wrap">{request.notes}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </section>
+      ) : (
+        <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+          <h3 className="text-sm font-semibold">حساب مشتری</h3>
+          <dl className="grid gap-3 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="text-xs text-muted-foreground">نام حساب</dt>
+              <dd className="mt-1">
+                {request.linkedUserName ?? request.contactName}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">موبایل ثبت‌شده</dt>
+              <dd className="mt-1 w-fit" dir="ltr">
+                {request.contactMobile
+                  ? maskMobile(request.contactMobile)
+                  : "—"}
+              </dd>
+            </div>
+            {request.contactEmail ? (
+              <div>
+                <dt className="text-xs text-muted-foreground">ایمیل</dt>
+                <dd className="mt-1 w-fit" dir="ltr">
+                  {maskEmail(request.contactEmail)}
+                </dd>
+              </div>
+            ) : null}
+            {request.domainHint ? (
+              <div>
+                <dt className="text-xs text-muted-foreground">دامنه اعلامی</dt>
+                <dd className="mt-1 w-fit" dir="ltr">
+                  {request.domainHint}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        </section>
+      )}
+
+      <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+        <h3 className="text-sm font-semibold">وضعیت فعال‌سازی</h3>
+        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-xs text-muted-foreground">پلن انتخاب‌شده</dt>
+            <dd className="mt-1 w-fit font-medium" dir="ltr">
+              {request.chosenPlanName}
             </dd>
           </div>
-        ) : null}
-        <div>
-          <dt className="text-xs text-muted-foreground">ثبت</dt>
-          <dd className="mt-1">{request.submittedAt}</dd>
-        </div>
-        {request.linkedUserName || request.linkedUserId ? (
-          <div className="sm:col-span-2">
-            <dt className="text-xs text-muted-foreground">کاربر متصل</dt>
-            <dd className="mt-1">
-              {request.linkedUserName ?? "کاربر متصل"}
-              {request.linkedUserId ? (
-                <span className="ms-2 text-muted-foreground" dir="ltr">
-                  {request.linkedUserId}
-                </span>
-              ) : null}
-            </dd>
-          </div>
-        ) : null}
-        {request.linkedTenantName ? (
           <div>
-            <dt className="text-xs text-muted-foreground">مستأجر</dt>
-            <dd className="mt-1">{request.linkedTenantName}</dd>
+            <dt className="text-xs text-muted-foreground">اقدام بعدی</dt>
+            <dd className="mt-1">{request.nextAction}</dd>
           </div>
-        ) : null}
-        {request.targetWebsiteDomain ? (
           <div>
-            <dt className="text-xs text-muted-foreground">وب‌سایت هدف</dt>
-            <dd className="mt-1 w-fit" dir="ltr">
-              {request.targetWebsiteDomain}
-            </dd>
+            <dt className="text-xs text-muted-foreground">ثبت</dt>
+            <dd className="mt-1">{request.submittedAt}</dd>
           </div>
-        ) : null}
-      </dl>
-    </section>
+          {request.linkedUserName || request.linkedUserId ? (
+            <div>
+              <dt className="text-xs text-muted-foreground">کاربر متصل</dt>
+              <dd className="mt-1">
+                {request.linkedUserName ?? "کاربر متصل"}
+                {request.linkedUserId ? (
+                  <span className="ms-2 text-muted-foreground" dir="ltr">
+                    {request.linkedUserId}
+                  </span>
+                ) : null}
+              </dd>
+            </div>
+          ) : null}
+          {request.linkedTenantName ? (
+            <div>
+              <dt className="text-xs text-muted-foreground">مستأجر</dt>
+              <dd className="mt-1">{request.linkedTenantName}</dd>
+            </div>
+          ) : null}
+          {request.targetWebsiteDomain ? (
+            <div>
+              <dt className="text-xs text-muted-foreground">وب‌سایت هدف</dt>
+              <dd className="mt-1 w-fit" dir="ltr">
+                {request.targetWebsiteDomain}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+      </section>
+    </div>
   );
 }
 
@@ -219,8 +344,8 @@ function PlanRequestDetailsBody({
   const [websitesLoading, setWebsitesLoading] = useState(false);
   const [websitesError, setWebsitesError] = useState<string | null>(null);
   const [pendingWebsiteId, setPendingWebsiteId] = useState<string | null>(null);
-  const [refuseKind, setRefuseKind] = useState<"declined" | "cancelled">(
-    "declined",
+  const [refuseKind, setRefuseKind] = useState<"declined" | "cancelled" | null>(
+    null,
   );
   const [refuseReason, setRefuseReason] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
@@ -299,7 +424,19 @@ function PlanRequestDetailsBody({
     setRequest(next);
     setConfirmEnable(false);
     setPendingWebsiteId(null);
+    setRefuseKind(null);
+    setRefuseReason("");
     onRequestChanged(next, message);
+  };
+
+  const openRefusePanel = (kind: "declined" | "cancelled") => {
+    setFormError(null);
+    setRefuseKind(kind);
+  };
+
+  const closeRefusePanel = () => {
+    setRefuseKind(null);
+    setRefuseReason("");
   };
 
   const handleSelectWebsite = async (website: PlanRequestWebsiteOption) => {
@@ -385,15 +522,24 @@ function PlanRequestDetailsBody({
     }
   };
 
-  const handleRefuse = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleRefuse = async () => {
+    if (!refuseKind) {
+      return;
+    }
+
+    const trimmedReason = refuseReason.trim();
+    if (!trimmedReason) {
+      setFormError("برای رد یا لغو، ثبت دلیل الزامی است.");
+      return;
+    }
+
     setFormError(null);
     setSubmitting(true);
 
     try {
       const result = await declinePlanRequestAction({
         requestId: request.id,
-        reason: refuseReason,
+        reason: trimmedReason,
         kind: refuseKind,
       });
 
@@ -439,11 +585,24 @@ function PlanRequestDetailsBody({
               </ul>
               {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) && (
                 <p className="text-xs text-destructive/90">
-                  اگر حساب مالک وب‌سایت وجود ندارد، ابتدا در{" "}
-                  <Link href="/users" className="underline underline-offset-2">
-                    کاربران
-                  </Link>{" "}
-                  ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
+                  {isPublicPlanRequest(request) ? (
+                    <>
+                      برای درخواست مهمان، کاربر موجود را با موبایل/ایمیل بالا در{" "}
+                      <Link href="/users" className="underline underline-offset-2">
+                        کاربران
+                      </Link>{" "}
+                      پیدا کنید و به درخواست متصل کنید؛ این صفحه کاربر جدید
+                      نمی‌سازد.
+                    </>
+                  ) : (
+                    <>
+                      اگر حساب مالک وب‌سایت وجود ندارد، ابتدا در{" "}
+                      <Link href="/users" className="underline underline-offset-2">
+                        کاربران
+                      </Link>{" "}
+                      ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
+                    </>
+                  )}
                 </p>
               )}
             </section>
@@ -558,8 +717,9 @@ function PlanRequestDetailsBody({
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  برای نمایش وب‌سایت‌ها، درخواست باید به کاربر یا مستأجر متصل
-                  باشد.
+                  {isPublicPlanRequest(request)
+                    ? "پس از اتصال کاربر موجود، وب‌سایت‌های او اینجا نمایش داده می‌شود."
+                    : "برای نمایش وب‌سایت‌ها، درخواست باید به کاربر یا مستأجر متصل باشد."}
                 </p>
               )}
             </section>
@@ -574,80 +734,6 @@ function PlanRequestDetailsBody({
             </section>
           )}
 
-          {!isTerminal ? (
-            <form
-              className="flex flex-col gap-3 rounded-xl border border-border p-4"
-              onSubmit={(event) => void handleRefuse(event)}
-            >
-              <h3 className="flex items-center gap-2 text-sm font-semibold">
-                <XCircle className="size-4" aria-hidden />
-                رد یا لغو
-              </h3>
-              <RadioGroup
-                value={refuseKind}
-                onValueChange={(value) => {
-                  if (value === "declined" || value === "cancelled") {
-                    setRefuseKind(value);
-                  }
-                }}
-                aria-label="نوع انصراف"
-                className="gap-2"
-              >
-                <label
-                  className={cn(
-                    "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/80 p-3 transition-colors hover:bg-muted/40",
-                    refuseKind === "declined" &&
-                      "border-primary/40 bg-primary/5",
-                  )}
-                >
-                  <RadioGroupItem
-                    value="declined"
-                    className="mt-0.5"
-                    aria-label="رد درخواست"
-                  />
-                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="text-sm font-medium">رد درخواست</span>
-                    <span className="text-xs leading-5 text-muted-foreground">
-                      درخواست نامناسب است یا شرایط فعال‌سازی فراهم نیست.
-                    </span>
-                  </span>
-                </label>
-                <label
-                  className={cn(
-                    "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background/80 p-3 transition-colors hover:bg-muted/40",
-                    refuseKind === "cancelled" &&
-                      "border-primary/40 bg-primary/5",
-                  )}
-                >
-                  <RadioGroupItem
-                    value="cancelled"
-                    className="mt-0.5"
-                    aria-label="لغو درخواست"
-                  />
-                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="text-sm font-medium">لغو درخواست</span>
-                    <span className="text-xs leading-5 text-muted-foreground">
-                      مشتری منصرف شده یا دیگر نیازی به پیگیری نیست.
-                    </span>
-                  </span>
-                </label>
-              </RadioGroup>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span>دلیل</span>
-                <textarea
-                  value={refuseReason}
-                  onChange={(event) => setRefuseReason(event.target.value)}
-                  rows={3}
-                  className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                  aria-required
-                />
-              </label>
-              <Button type="submit" variant="outline" disabled={submitting}>
-                {submitting ? "در حال ثبت…" : "ثبت رد / لغو"}
-              </Button>
-            </form>
-          ) : null}
-
           {formError ? (
             <p className="text-sm text-destructive" role="alert">
               {formError}
@@ -656,12 +742,55 @@ function PlanRequestDetailsBody({
         </div>
       </div>
 
+      {refuseKind && !isTerminal ? (
+        <PlanRequestRefusePanel
+          refuseKind={refuseKind}
+          refuseReason={refuseReason}
+          submitting={submitting}
+          onRefuseReasonChange={setRefuseReason}
+          onCancel={closeRefusePanel}
+          onConfirm={() => void handleRefuse()}
+        />
+      ) : null}
+
       <SheetFooter className="border-t border-border px-4 py-4">
         {!isTerminal ? (
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={onClose}>
               بستن
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                disabled={submitting}
+                className={buttonVariants({
+                  variant: "outline",
+                  className: "gap-1.5",
+                })}
+              >
+                <XCircle className="size-4" aria-hidden />
+                رد یا لغو
+                <ChevronDown className="size-4 opacity-60" aria-hidden />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-72">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>نوع انصراف</DropdownMenuLabel>
+                  {REFUSE_OPTIONS.map((option) => (
+                    <DropdownMenuItem
+                      key={option.kind}
+                      variant="destructive"
+                      onClick={() => openRefusePanel(option.kind)}
+                    >
+                      <span className="flex min-w-0 flex-col gap-0.5">
+                        <span className="font-medium">{option.label}</span>
+                        <span className="text-xs leading-5 text-muted-foreground">
+                          {option.description}
+                        </span>
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               type="button"
               disabled={!canActivate || submitting}
@@ -694,5 +823,77 @@ function PlanRequestDetailsBody({
         ) : null}
       </SheetFooter>
     </>
+  );
+}
+
+function PlanRequestRefusePanel({
+  refuseKind,
+  refuseReason,
+  submitting,
+  onRefuseReasonChange,
+  onCancel,
+  onConfirm,
+}: {
+  refuseKind: "declined" | "cancelled";
+  refuseReason: string;
+  submitting: boolean;
+  onRefuseReasonChange: (reason: string) => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const selectedOption = getRefuseOption(refuseKind);
+  const reasonFieldId = "plan-request-refuse-reason";
+
+  return (
+    <section
+      aria-labelledby="plan-request-refuse-heading"
+      className="border-t border-destructive/20 bg-destructive/5 px-4 py-4"
+    >
+      <div className="flex flex-col gap-3">
+        <div>
+          <h3
+            id="plan-request-refuse-heading"
+            className="text-sm font-semibold text-destructive"
+          >
+            تأیید {selectedOption.label}
+          </h3>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {selectedOption.description}
+          </p>
+        </div>
+
+        <label className="flex flex-col gap-1.5 text-sm" htmlFor={reasonFieldId}>
+          <span>دلیل</span>
+          <textarea
+            id={reasonFieldId}
+            value={refuseReason}
+            onChange={(event) => onRefuseReasonChange(event.target.value)}
+            rows={3}
+            required
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            aria-required
+          />
+        </label>
+
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={submitting}
+            onClick={onCancel}
+          >
+            انصراف
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={submitting}
+            onClick={onConfirm}
+          >
+            {submitting ? "در حال ثبت…" : `ثبت ${selectedOption.label}`}
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }
