@@ -6,6 +6,7 @@ import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import { resendLoginOtp } from "@/actions/auth/request-login-otp";
 import { verifyLoginOtp } from "@/actions/auth/verify-login-otp";
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation";
 import { isSafeReturnToPath } from "@/lib/auth/auth-utils";
 import type { FormErrorKey } from "@/lib/form-errors";
+import { PLAN_REQUEST_ACCOUNT_EXISTS_TOAST_ID } from "@/lib/plans/plan-request-session";
 import { otpSchema, type OtpSchemaType } from "@/lib/zod-schemas/auth-schemas";
 
 const RESEND_COOLDOWN_SECONDS = 30;
@@ -98,6 +100,8 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
     await new Promise((resolve) =>
       window.setTimeout(resolve, reduceMotion ? 120 : 380),
     );
+
+    toast.dismiss(PLAN_REQUEST_ACCOUNT_EXISTS_TOAST_ID);
 
     const destination = isSafeReturnToPath(returnTo) ? returnTo! : "/dashboard";
     router.push(destination);

@@ -28,6 +28,56 @@ export class UsersService {
     });
   }
 
+  async findCustomerByPhoneOrEmail(input: {
+    phoneNumber?: string | null;
+    email?: string | null;
+  }) {
+    const phoneNumber = input.phoneNumber?.trim();
+    const email = input.email?.trim().toLowerCase();
+    const orConditions: Prisma.UserWhereInput[] = [];
+
+    if (phoneNumber) {
+      orConditions.push({ phoneNumber });
+    }
+
+    if (email) {
+      orConditions.push({ email });
+    }
+
+    if (orConditions.length === 0) {
+      return null;
+    }
+
+    return this.prisma.user.findFirst({
+      where: {
+        role: { in: [Role.USER, Role.TENANT] },
+        OR: orConditions,
+      },
+      omit: userPublicOmit,
+    });
+  }
+
+  async findCustomerOwningWebsiteDomain(domain: string) {
+    const website = await this.prisma.website.findFirst({
+      where: {
+        OR: [
+          { domain },
+          { domain: `www.${domain}` },
+        ],
+        user: {
+          role: { in: [Role.USER, Role.TENANT] },
+        },
+      },
+      select: {
+        id: true,
+        domain: true,
+        userId: true,
+      },
+    });
+
+    return website;
+  }
+
   async findOneById(userId: string) {
     return this.prisma.user.findUnique({
       where: { id: userId },

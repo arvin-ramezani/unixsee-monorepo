@@ -48,7 +48,7 @@ Paths under `client/src/` (phone OTP slice implemented; Query provider deferred)
 
 ```text
 client/src/
-├── proxy.ts                          # optimistic dashboard gates (+ optional light refresh)
+├── proxy.ts                          # optimistic dashboard gates; guest auth bounce when signed in; optional light refresh
 ├── app/api/auth/refresh/route.ts     # browser refresh BFF (sets cookies; returns access + serverTime only)
 ├── lib/auth/
 │   ├── jwt.ts                        # jose decode; shouldRefresh + buffer

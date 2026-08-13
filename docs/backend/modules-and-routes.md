@@ -168,7 +168,8 @@ Consultant requests are modeled as **complementary-service** public intake
 
 | Method | Path | Audience |
 |---|---|---|
-| POST | `/api/v1/public/plan-requests` | Public (rejects existing customer phone/email with `409 ACCOUNT_EXISTS`) |
+| POST | `/api/v1/public/plan-requests/account-check` | Public (early phone/email/website match; `{ exists, matchedBy }`) |
+| POST | `/api/v1/public/plan-requests` | Public (rejects existing customer phone/email/website with `409 ACCOUNT_EXISTS`) |
 | POST | `/api/v1/plan-requests` | Customer (logged-in create) |
 | GET | `/api/v1/plan-requests` | Customer (own) |
 | GET | `/api/v1/plan-requests/:id` | Customer (own) |

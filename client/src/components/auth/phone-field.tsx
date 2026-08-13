@@ -3,12 +3,14 @@
 import { useId } from "react";
 import { useTranslations } from "next-intl";
 
+import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import {
   Field,
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { parseIranPhoneInput } from "@/lib/auth/iran-phone";
 import { cn } from "@/lib/utils";
 
 export type PhoneFieldProps = {
@@ -19,6 +21,11 @@ export type PhoneFieldProps = {
   countryCode?: string;
   className?: string;
   autoComplete?: string;
+  /** Override default Auth.common.phoneLabel; pass empty string to hide. */
+  label?: string;
+  id?: string;
+  required?: boolean;
+  onBlur?: () => void;
 };
 
 export function PhoneField({
@@ -29,19 +36,35 @@ export function PhoneField({
   countryCode = "+98",
   className,
   autoComplete = "tel",
+  label,
+  id: idProp,
+  required,
+  onBlur,
 }: PhoneFieldProps) {
   const t = useTranslations("Auth.common");
-  const id = useId();
+  const generatedId = useId();
+  const id = idProp ?? generatedId;
   const errorId = `${id}-error`;
   const invalid = !!error;
+  const resolvedLabel = label === undefined ? t("phoneLabel") : label;
+
+  function handleChange(raw: string) {
+    const parsed = parseIranPhoneInput(raw);
+    onChange(parsed.national);
+  }
 
   return (
     <Field
       data-invalid={invalid || undefined}
       className={cn(className)}
     >
-      <FieldLabel htmlFor={id}>{t("phoneLabel")}</FieldLabel>
-      <div className="mt-1.5 flex gap-2" dir="ltr">
+      {resolvedLabel ? (
+        <FieldLabel htmlFor={id} className={required ? "gap-1" : undefined}>
+          {resolvedLabel}
+          {required ? <RequiredInputIcon /> : null}
+        </FieldLabel>
+      ) : null}
+      <div className={cn("flex gap-2", resolvedLabel ? "mt-1.5" : undefined)} dir="ltr">
         <Input
           type="text"
           inputMode="tel"
@@ -50,7 +73,7 @@ export function PhoneField({
           value={countryCode}
           aria-label={t("countryCode")}
           disabled={disabled}
-          className="bg-muted/50 text-muted-foreground h-11 w-16 shrink-0 px-2 text-center text-base md:text-base"
+          className="bg-muted/50 text-muted-foreground h-12 w-16 shrink-0 px-2 text-center text-base md:text-base"
         />
         <Input
           id={id}
@@ -63,8 +86,10 @@ export function PhoneField({
           disabled={disabled}
           aria-invalid={invalid || undefined}
           aria-describedby={invalid ? errorId : undefined}
-          onChange={(event) => onChange(event.target.value)}
-          className="h-11 min-h-11 flex-1 text-base md:text-base"
+          aria-required={required || undefined}
+          onChange={(event) => handleChange(event.target.value)}
+          onBlur={onBlur}
+          className="h-12 min-h-12 flex-1 text-base md:text-base"
         />
       </div>
       {invalid && (

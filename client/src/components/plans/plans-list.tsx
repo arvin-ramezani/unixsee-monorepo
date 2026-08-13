@@ -162,9 +162,15 @@ const PLAN_DEFINITIONS = [
   },
 ] as const;
 
-export type PlansListProps = { className?: string };
+export type PlansListProps = {
+  className?: string;
+  requestPath?: string;
+};
 
-export default function PlansList({ className }: PlansListProps) {
+export default function PlansList({
+  className,
+  requestPath = "/services/managed-woocommerce-server/request",
+}: PlansListProps) {
   const locale = useLocale();
   const t = useTranslations("MigrationPage.PlansSection.items");
   const sectionT = useTranslations("MigrationPage.PlansSection");
@@ -208,7 +214,7 @@ export default function PlansList({ className }: PlansListProps) {
               }
               cta={{
                 label: t(plan.ctaLabelKey),
-                href: t(plan.ctaHrefKey),
+                href: `${requestPath}?plan=${plan.key}`,
               }}
             />
           );

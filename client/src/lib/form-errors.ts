@@ -13,6 +13,7 @@ export const FORM_ERROR_KEYS = [
   "emailRequired",
   "emailInvalid",
   "websiteInvalid",
+  "websiteRequired",
   "passwordRequired",
   "passwordTooShort",
   "passwordMismatch",

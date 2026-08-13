@@ -16,6 +16,7 @@
     "messageTooShort": "Message must be at least 20 characters",
     "messageRequired": "Message content is required",
     "websiteInvalid": "Please enter a valid website url",
+    "websiteRequired": "Website is required unless you don't have one yet",
     "passwordRequired": "Password is required",
     "passwordTooShort": "Password must be at least 8 characters",
     "passwordMismatch": "Passwords do not match",
@@ -1745,6 +1746,14 @@
       "title": "Request submitted | Unixsee",
       "description": "Your plan request was submitted. Our team will contact you shortly."
     },
+    "guestPlanRequest": {
+      "title": "Plan request | Unixsee",
+      "description": "Submit your contact details for the plan you chose. This is not a payment."
+    },
+    "guestPlanRequestSuccess": {
+      "title": "Request submitted | Unixsee",
+      "description": "Your plan request was submitted. Our team will contact you shortly."
+    },
     "helpCenter": {
       "title": "Help Center | Unixsee",
       "description": "Search guides, browse topics, and learn about Unixsee services and operational concepts."
@@ -1944,6 +1953,11 @@
       "emptyDescription": "New Unixsee stories and product updates will appear here."
     },
     "profile": "Open profile menu",
+    "accountMenu": {
+      "open": "Open account menu",
+      "profile": "Profile",
+      "logOut": "Log out"
+    },
     "changeLanguage": "Switch language to {language}",
     "english": "English",
     "persian": "Persian"
@@ -2178,6 +2192,49 @@
     "empty": "Plans will be available here soon.",
     "loadError": "We could not load plans right now. Please try again later."
   },
+  "GuestPlanRequestPage": {
+    "title": "Submit a plan request",
+    "description": "Share your contact details so our team can review your chosen plan and call you. This is not a payment.",
+    "backToPlans": "Back to plans",
+    "summary": {
+      "planLabel": "Selected plan"
+    },
+    "form": {
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Jane Doe",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "912 345 6789",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "websiteLabel": "Website",
+      "websitePlaceholder": "https://example.com",
+      "noWebsiteLabel": "I don't have a website yet",
+      "descriptionLabel": "Description (optional)",
+      "descriptionPlaceholder": "Tell us about your store or project…",
+      "submit": "Submit request",
+      "processing": "Submitting…",
+      "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup."
+    },
+    "accountExists": {
+      "toast": "You already have an account. Sign in to continue."
+    },
+    "success": {
+      "title": "Your request was submitted",
+      "description": "Thank you. Our team will review your plan request and contact you to continue setup.",
+      "planLabel": "Requested plan",
+      "nextTitle": "What happens next",
+      "step1": "Our team reviews your request.",
+      "step2": "We contact you to confirm setup details.",
+      "step3": "After staff enablement, your plan goes live on your website.",
+      "backToPlans": "Back to plans"
+    },
+    "errors": {
+      "planNotFoundTitle": "Plan not found",
+      "planNotFoundDescription": "That plan is unavailable or the link is invalid. Choose a plan from the list and try again.",
+      "serviceUnavailableTitle": "Plans are temporarily unavailable",
+      "serviceUnavailableDescription": "We could not load plan details right now. Check that the API is running, then try again from the plans section."
+    }
+  },
   "Checkout": {
     "title": "Submit a plan request",
     "description": "Review your chosen plan and send a request. This is not a payment.",
@@ -2207,7 +2264,8 @@
       "forbidden": "You do not have permission to submit this request.",
       "notFound": "That plan is no longer available.",
       "rateLimited": "Too many attempts. Please wait and try again.",
-      "validation": "Please check your details and try again."
+      "validation": "Please check your details and try again.",
+      "accountExists": "You already have an account. Sign in to continue."
     }
   },
   "PlansSuccess": {

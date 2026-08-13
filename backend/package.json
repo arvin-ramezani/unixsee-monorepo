@@ -14,7 +14,7 @@
     "start": "dotenv -e .env.development -- nest start",
     "start:dev": "dotenv -e .env.development -- nest start --watch",
     "start:debug": "dotenv -e .env.development -- nest start --debug --watch",
-    "start:prod": "dotenv -e .env.production -- node dist/main",
+    "start:prod": "dotenv -e .env.production -- node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -32,6 +32,7 @@
     "prisma:studio:dev": "dotenv -e .env.development -- prisma studio --port 51212 --browser none",
     "prisma:studio:prod": "dotenv -e .env.production -- prisma studio --port 51212 --browser none",
     "seed:dev-arvin": "dotenv -e .env.development -- node scripts/seed-dev-arvin.mjs",
+    "seed:dev-plans": "node scripts/seed-dev-plans.mjs",
     "deploy:prod": "pnpm install --frozen-lockfile && pnpm prisma:generate:prod && pnpm prisma:migrate:prod && pnpm build:prod"
   },
   "dependencies": {
@@ -112,6 +113,6 @@
     "testEnvironment": "node"
   },
   "imports": {
-    "#/*": "./dist/src/*"
+    "#/*": "./dist/*"
   }
 }

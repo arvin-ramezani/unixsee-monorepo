@@ -1,8 +1,16 @@
 /**
  * Dev-only bootstrap: upsert the four published Phase 1 plan tiers.
- * Usage from backend/: pnpm exec dotenv -e .env.development -- node scripts/seed-dev-plans.mjs
+ * Usage from backend/:
+ *   pnpm seed:dev-plans
+ *   node --env-file=.env.development scripts/seed-dev-plans.mjs
  */
+import { config } from 'dotenv';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+
+const backendRoot = resolve(fileURLToPath(import.meta.url), '../..');
+config({ path: resolve(backendRoot, '.env.development') });
 
 const PLANS = [
   {

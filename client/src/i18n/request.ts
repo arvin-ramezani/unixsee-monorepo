@@ -1,8 +1,16 @@
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
+import en from "@/messages/en.json";
+import fa from "@/messages/fa.json";
+
 import { routing } from "./routing";
 import { applicationTimeZone, getFormats } from "./formats";
+
+const messagesByLocale = {
+  en,
+  fa,
+} as const;
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
@@ -13,7 +21,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   return {
     locale,
     formats: getFormats(locale),
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: messagesByLocale[locale],
     timeZone: applicationTimeZone,
   };
 });

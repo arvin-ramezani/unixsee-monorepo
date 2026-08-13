@@ -10,7 +10,15 @@ import { createAppLogger } from '#/common/logging/app-logger.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import { PlanRequestStatus } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { UsersService } from '#/modules/users/services/users.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+import {
+  normalizeContactEmail,
+  normalizeContactPhoneToE164,
+  normalizeWebsiteDomain,
+} from '#/utils/helpers.js';
+
+export type PublicAccountMatchBy = 'phone' | 'email' | 'website';
 
 @Injectable()
 export class PlanRequestsService {
@@ -20,6 +28,7 @@ export class PlanRequestsService {
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
     private readonly idempotency: IdempotencyService,
+    private readonly usersService: UsersService,
   ) {}
 
   async createPublic(input: {
@@ -31,6 +40,7 @@ export class PlanRequestsService {
     notes?: string;
   }) {
     await this.requirePublishedPlan(input.planId);
+    await this.assertNoExistingCustomerAccount(input);
 
     const request = await this.prisma.planRequest.create({
       data: {
@@ -93,6 +103,47 @@ export class PlanRequestsService {
     return request;
   }
 
+  async checkPublicAccount(input: {
+    contactPhone?: string;
+    contactEmail?: string;
+    websiteDomain?: string;
+  }): Promise<{ exists: boolean; matchedBy: PublicAccountMatchBy | null }> {
+    const phoneNumber = input.contactPhone
+      ? normalizeContactPhoneToE164(input.contactPhone)
+      : null;
+    const email = normalizeContactEmail(input.contactEmail);
+    const domain = normalizeWebsiteDomain(input.websiteDomain);
+
+    if (phoneNumber) {
+      const byPhone = await this.usersService.findCustomerByPhoneOrEmail({
+        phoneNumber,
+      });
+      if (byPhone) {
+        return { exists: true, matchedBy: 'phone' };
+      }
+    }
+
+    if (email) {
+      const byEmail = await this.usersService.findCustomerByPhoneOrEmail({
+        email,
+      });
+      if (byEmail) {
+        return { exists: true, matchedBy: 'email' };
+      }
+    }
+
+    if (domain) {
+      const website = await this.usersService.findCustomerOwningWebsiteDomain(
+        domain,
+      );
+      if (website) {
+        return { exists: true, matchedBy: 'website' };
+      }
+    }
+
+    return { exists: false, matchedBy: null };
+  }
+
   private async requirePublishedPlan(planId: string) {
     const plan = await this.prisma.plan.findFirst({
       where: { id: planId, isPublished: true },
@@ -101,6 +152,23 @@ export class PlanRequestsService {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
     return plan;
+  }
+
+  private async assertNoExistingCustomerAccount(input: {
+    contactPhone: string;
+    contactEmail?: string;
+    websiteDomain?: string;
+  }) {
+    const match = await this.checkPublicAccount(input);
+    if (match.exists) {
+      this.logger.warn('plan_request.public.rejected_account_exists', {
+        matchedBy: match.matchedBy,
+      });
+      throw new ConflictException({
+        code: 'ACCOUNT_EXISTS',
+        message: ERROR_MESSAGES.en.conflict,
+      });
+    }
   }
 
   async listForUser(userId: string, params?: { skip?: number; take?: number }) {

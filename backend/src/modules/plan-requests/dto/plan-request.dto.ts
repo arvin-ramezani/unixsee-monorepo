@@ -67,3 +67,19 @@ export class DeclinePlanRequestDto {
   @MaxLength(1000)
   reason?: string;
 }
+
+export class CheckPublicPlanRequestAccountDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(32)
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsEmail()
+  contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  websiteDomain?: string;
+}

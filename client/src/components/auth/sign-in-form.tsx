@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import { requestLoginOtp } from "@/actions/auth/request-login-otp";
 import { AuthAlert } from "@/components/auth/auth-alert";
@@ -22,6 +23,11 @@ import { PhoneField } from "@/components/auth/phone-field";
 import { useRouter } from "@/i18n/navigation";
 import type { FormErrorKey } from "@/lib/form-errors";
 import {
+  PLAN_REQUEST_ACCOUNT_EXISTS_NOTICE,
+  PLAN_REQUEST_ACCOUNT_EXISTS_TOAST_ID,
+  PLAN_REQUEST_SIGN_IN_PHONE_KEY,
+} from "@/lib/plans/plan-request-session";
+import {
   maskIdentifier,
   normalizeNationalPhone,
   signInSchema,
@@ -29,11 +35,18 @@ import {
   type SignInSchemaType,
 } from "@/lib/zod-schemas/auth-schemas";
 
-export function SignInForm() {
+export function SignInForm({
+  returnTo,
+  notice,
+}: {
+  returnTo?: string;
+  notice?: string;
+}) {
   const t = useTranslations("Auth.signIn");
   const tCommon = useTranslations("Auth.common");
   const tErrors = useTranslations("FormErrors");
   const tAuthErrors = useTranslations("Auth.errors");
+  const tAccountExists = useTranslations("GuestPlanRequestPage.accountExists");
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -45,6 +58,29 @@ export function SignInForm() {
       email: "",
     },
   });
+
+  useEffect(() => {
+    const storedPhone = sessionStorage.getItem(PLAN_REQUEST_SIGN_IN_PHONE_KEY);
+    if (!storedPhone) {
+      return;
+    }
+
+    form.setValue("phone", storedPhone);
+    sessionStorage.removeItem(PLAN_REQUEST_SIGN_IN_PHONE_KEY);
+  }, [form]);
+
+  useEffect(() => {
+    if (notice !== PLAN_REQUEST_ACCOUNT_EXISTS_NOTICE) {
+      return;
+    }
+
+    // Keep `notice` in the URL so refresh re-opens the toast.
+    toast.info(tAccountExists("toast"), {
+      id: PLAN_REQUEST_ACCOUNT_EXISTS_TOAST_ID,
+      duration: Infinity,
+      closeButton: true,
+    });
+  }, [notice, tAccountExists]);
 
   const mode = useWatch({ control: form.control, name: "mode" });
   const pending = form.formState.isSubmitting;
@@ -76,6 +112,10 @@ export function SignInForm() {
       mode: "phone",
       display: maskIdentifier("phone", identifier),
     });
+
+    if (returnTo) {
+      params.set("returnTo", returnTo);
+    }
 
     router.push(`/otp?${params.toString()}`);
   }
