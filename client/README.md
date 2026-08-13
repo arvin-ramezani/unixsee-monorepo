@@ -30,8 +30,8 @@ Usually available at `http://localhost:3000`.
 
 ```bash
 npm run dev          # Next.js development server
-npm run build        # Prisma generate/migrate + Next.js build
-npm run build:static # Next.js build without Prisma migrate
+npm run build        # Next.js production build
+npm run build:static # Same as build (kept for existing scripts)
 npm run start        # production Next.js server
 npm run lint
 npm run typecheck

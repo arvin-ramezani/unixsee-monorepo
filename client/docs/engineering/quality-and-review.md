@@ -28,7 +28,8 @@ npm run lint
 npm run build:static
 ```
 
-The full `npm run build` generates Prisma and deploys migrations before building. Run it only when a configured database and migration execution are appropriate for the task.
+`npm run build` runs a Next.js production build. This app does not generate
+Prisma clients or deploy database migrations.
 
 The repository currently has no test runner or test script. Do not document or claim tests that do not exist. Add focused tests when introducing a runner is within scope; otherwise document the unvalidated behavior.
 

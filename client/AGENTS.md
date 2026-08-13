@@ -23,7 +23,7 @@ experience; English is the secondary LTR experience.
 - Forms: React Hook Form and Zod
 - UI state: Zustand
 - Internationalization: next-intl (Persian RTL / English LTR)
-- Application data: NestJS APIs (not Prisma/DB ownership in this app long-term)
+- Application data: NestJS APIs only (no Prisma / no direct database access)
 
 Use the existing stack unless the user explicitly approves a change.
 
@@ -31,6 +31,7 @@ Use the existing stack unless the user explicitly approves a change.
 
 - This app is presentation-only for managed-service data: NestJS owns auth,
   persistence, orchestration, and agent control.
+- Do not add Prisma, PostgreSQL clients, or other database access in this app.
 - Do not talk to VPS agents or infrastructure hosts from the browser.
 - Follow Nest integration rules for this app:
   [`../docs/architecture/decisions/0011-client-nest-auth-integration.md`](../docs/architecture/decisions/0011-client-nest-auth-integration.md)
@@ -110,3 +111,13 @@ npm run build:static
 ```
 
 Do not invent unavailable root monorepo scripts.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
