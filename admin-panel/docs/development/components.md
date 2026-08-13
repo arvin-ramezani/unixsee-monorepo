@@ -104,6 +104,15 @@ Do not omit `alignItemWithTrigger={false}` from Select implementations.
 
 Follow the existing Select component structure in the repository and place the prop on the appropriate Base UI Select element.
 
+## Nest API errors (POST mutations)
+
+When a Server Action POST to Nest fails, show the resolved Persian message with
+`toastApiErrorMessage` from `src/lib/api/toast-api-error.ts`. Map
+`error.code` first via `map-api-error.ts` → `STAFF_API_ERROR_MESSAGES`.
+
+Keep inline errors for client-side validation only. Contract:
+[`docs/backend/contracts/api-errors.md`](../../../docs/backend/contracts/api-errors.md).
+
 ## DropdownMenu
 
 The project uses **shadcn/ui DropdownMenu on Base UI** (`@base-ui/react/menu`).

@@ -65,7 +65,8 @@ admin-panel/src/
 │   ├── client-fetch.ts               # Bearer from client-auth → Nest
 │   ├── server-fetch.ts               # cookie access → Nest (no Zustand)
 │   ├── server-action-fetch.ts        # Action-scoped authenticated Nest calls
-│   └── map-api-error.ts              # Nest ApiResponse → UI error keys
+│   ├── map-api-error.ts              # Nest error.code → UI keys (code first)
+│   └── toast-api-error.ts            # toast.error for failed mutations
 ├── stores/auth-store.ts              # access token + staff user DTO
 └── components/providers/             # AuthStoreProvider (+ boot reseed)
 ```

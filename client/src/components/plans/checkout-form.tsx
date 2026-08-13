@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "@/i18n/navigation";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import type { DashboardPlan } from "@/lib/plans/types";
 
 type FieldErrors = Partial<Record<"name" | "phone" | "form", string>>;
@@ -23,6 +24,7 @@ export function CheckoutForm({
   initialPhone?: string;
 }) {
   const t = useTranslations("Checkout");
+  const tApiErrors = useTranslations("ApiErrors");
   const router = useRouter();
   const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState(initialPhone);
@@ -50,7 +52,7 @@ export function CheckoutForm({
     });
 
     if (!result.ok) {
-      setErrors({ form: t(`errors.${result.error.key}`) });
+      toastMappedApiError(result.error, tApiErrors);
       setSubmitting(false);
       return;
     }
@@ -63,12 +65,6 @@ export function CheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      {errors.form ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
-          {errors.form}
-        </p>
-      ) : null}
-
       <div className="space-y-2">
         <Label htmlFor="checkout-name">{t("nameLabel")}</Label>
         <Input

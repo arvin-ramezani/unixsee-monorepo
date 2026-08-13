@@ -32,7 +32,9 @@ queues are REST-first.
 - Lifecycle mutations prefer explicit actions: `enable`, `assign`, `decline`.
 - Idempotency keys on enablement, assignment, message create, operational actions.
 - Lists: filter + cursor/page; never leak other tenants.
-- Errors: stable codes + localized `fa`/`en` messages; auth failures non-enumerating.
+- Errors: stable `error.code` on every failure; EN/FA copy lives in frontends
+  (see [`contracts/api-errors.md`](./contracts/api-errors.md)); auth failures
+  non-enumerating.
 - Split public / customer / admin **controllers**; do not branch one handler on a role flag.
 
 ## Trust and authz
@@ -166,7 +168,7 @@ Consultant requests are modeled as **complementary-service** public intake
 
 | Method | Path | Audience |
 |---|---|---|
-| POST | `/api/v1/public/plan-requests` | Public |
+| POST | `/api/v1/public/plan-requests` | Public (rejects existing customer phone/email with `409 ACCOUNT_EXISTS`) |
 | POST | `/api/v1/plan-requests` | Customer (logged-in create) |
 | GET | `/api/v1/plan-requests` | Customer (own) |
 | GET | `/api/v1/plan-requests/:id` | Customer (own) |

@@ -62,7 +62,9 @@ client/src/
 │   ├── client-fetch.ts               # Bearer from client-auth → Nest
 │   ├── server-fetch.ts               # cookie access → Nest (no Zustand)
 │   ├── server-action-fetch.ts        # Action-scoped authenticated Nest calls
-│   └── map-api-error.ts              # Nest ApiResponse → UI error keys
+│   ├── map-api-error.ts              # Nest error.code → UI keys (code first)
+│   ├── resolve-api-error-message.ts  # Mapped key → ApiErrors i18n string
+│   └── toast-api-error.ts            # toast.error for failed mutations
 ├── stores/auth-store.ts              # access token + user DTO; per-request provider
 └── components/providers/             # AuthStoreProvider (+ boot reseed); future QueryClientProvider
 ```

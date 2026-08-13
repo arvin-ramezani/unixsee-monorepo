@@ -17,6 +17,7 @@ import {
 import { createTicketAction } from "@/actions/tickets/create-ticket";
 import { Panel } from "@/components/dashboard/panel";
 import { Label } from "@/components/ui/label";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import {
   Select,
   SelectContent,
@@ -55,7 +56,7 @@ export function NewTicketForm({
 }) {
   const t = useTranslations("Tickets.new");
   const serviceT = useTranslations("Tickets.services");
-  const errorsT = useTranslations("Tickets.errors");
+  const tApiErrors = useTranslations("ApiErrors");
   const router = useRouter();
   const [service, setService] = useState<"" | TicketServiceCategory>("");
   const [website, setWebsite] = useState(initialWebsiteId ?? "");
@@ -88,9 +89,7 @@ export function NewTicketForm({
     });
 
     if (!result.ok) {
-      setErrors({
-        form: errorsT(result.error.key),
-      });
+      toastMappedApiError(result.error, tApiErrors);
       setSubmitting(false);
       return;
     }
@@ -311,15 +310,6 @@ export function NewTicketForm({
               {t("attachments.unavailable")}
             </div>
           </Field>
-          {errors.form ? (
-            <p
-              role="alert"
-              className="text-destructive flex items-center gap-1.5 text-xs"
-            >
-              <AlertCircle aria-hidden="true" className="size-3.5" />
-              {errors.form}
-            </p>
-          ) : null}
         </div>
         <div className="border-border bg-muted/10 flex flex-col gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:px-6">
           <DashboardButton

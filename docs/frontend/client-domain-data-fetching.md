@@ -33,6 +33,8 @@ client pane needs it. Until then, prefer RSC + `server-fetch`.
 
 ## Nest `ApiResponse` and error mapping
 
+Canonical failure contract: [`../backend/contracts/api-errors.md`](../backend/contracts/api-errors.md).
+
 Nest returns:
 
 ```ts
@@ -45,25 +47,29 @@ type ApiResponse<T> = {
 };
 ```
 
-Typed in [`../../client/src/types/auth.types.ts`](../../client/src/types/auth.types.ts)
-(shared API envelope; domain DTOs live next to features or under `types/`).
+Typed in [`../../client/src/types/auth.types.ts`](../../client/src/types/auth.types.ts).
 
 | Condition | Client behaviour |
 |---|---|
 | `success === true` and `data` present | Use `data` (map to a safe DTO before Client Components) |
-| `success === false` / `error` set | Map `error.code` → i18n key; show non-enumerating copy for authz |
+| `success === false` / `error` set | `mapApiError` (**code first**) → `ApiErrors.*` i18n key |
+| Failed POST/PUT/PATCH/DELETE from Client Component | `toast.error` with resolved message |
 | HTTP 401 after refresh retry | Treat as signed out; redirect to sign-in |
 | HTTP 403 | Permission-denied UI; do not leak tenant existence |
 | HTTP 404 | Not-found / empty state for that resource |
 | HTTP 429 | Rate-limit message; disable retry until cooldown |
-| Network / parse failure | Generic unavailable message |
+| Network / parse failure | `ApiErrors.unavailable` |
 
 Rules:
 
-- Prefer Nest `error.code` over raw `message` for i18n.
+- **`error.code` is authoritative** — map to [`ApiErrors`](../../client/src/messages/en.json)
+  (EN/FA). Do not display raw `error.message` or invent copy from HTTP status when a code exists.
+- Special flows (e.g. `ACCOUNT_EXISTS` panel) may bypass toast when product UX requires it.
+- Client-side validation stays inline on fields; Nest validation uses `VALIDATION_ERROR` + toast.
 - Do not surface stack traces, URLs, or token material.
-- Auth failures stay non-enumerating (same as product auth UX).
-- Helper: [`../../client/src/lib/api/map-api-error.ts`](../../client/src/lib/api/map-api-error.ts).
+- Helpers: [`map-api-error.ts`](../../client/src/lib/api/map-api-error.ts),
+  [`resolve-api-error-message.ts`](../../client/src/lib/api/resolve-api-error-message.ts),
+  [`toast-api-error.ts`](../../client/src/lib/api/toast-api-error.ts).
 
 ## Query keys, defaults, dehydrate
 
@@ -118,7 +124,7 @@ Before wiring a Nest domain into `client/`:
 3. Choose transport from the table above (RSC first unless interactivity needs Query).
 4. Add typed DTO / mapper; strip fields Client Components must not see.
 5. Implement fetch through `server-fetch` / `client-fetch` / Action helpers—no ad hoc `fetch` to Nest from components.
-6. Map errors with `map-api-error` + i18n keys.
+6. Map errors with `map-api-error` → `ApiErrors` i18n; toast failed mutations.
 7. Add loading / empty / denied / error UI states.
 8. Keep mocks honest for any surface still unwired.
 9. Do not add admin Nest wiring here—use

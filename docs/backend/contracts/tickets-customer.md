@@ -272,8 +272,8 @@ Details:
 
 ## Errors
 
-Follow modules-and-routes error rules: stable codes + localized `fa`/`en`
-messages; authz failures non-enumerating. Reject invalid transitions
+Follow [`api-errors.md`](./api-errors.md): stable `error.code` on every failure;
+client maps codes to `ApiErrors` i18n (EN/FA). Reject invalid transitions
 consistently (do not no-op).
 
 ## Persistence notes

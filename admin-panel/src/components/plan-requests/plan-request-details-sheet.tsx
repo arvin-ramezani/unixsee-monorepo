@@ -55,6 +55,7 @@ import {
   PLAN_REQUEST_INTAKE_HINTS,
 } from "@/lib/plan-requests/plan-request-intake";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
+import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import { cn } from "@/lib/utils";
 import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
@@ -458,7 +459,7 @@ function PlanRequestDetailsBody({
       });
 
       if (!result.ok) {
-        setFormError(result.message);
+        toastApiErrorMessage(result.message);
         setPendingWebsiteId(null);
         return;
       }
@@ -507,7 +508,7 @@ function PlanRequestDetailsBody({
       });
 
       if (!result.ok) {
-        setFormError(result.message);
+        toastApiErrorMessage(result.message);
         setConfirmEnable(false);
         return;
       }
@@ -544,7 +545,7 @@ function PlanRequestDetailsBody({
       });
 
       if (!result.ok) {
-        setFormError(result.message);
+        toastApiErrorMessage(result.message);
         return;
       }
 

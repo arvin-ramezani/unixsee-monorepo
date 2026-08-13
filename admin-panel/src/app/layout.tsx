@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AuthStoreProvider } from "@/components/providers/auth-store-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { YekanBakhFont } from "@/fonts";
 
 import "./globals.css";
@@ -24,6 +25,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <AuthStoreProvider>{children}</AuthStoreProvider>
+        <Toaster />
       </body>
     </html>
   );

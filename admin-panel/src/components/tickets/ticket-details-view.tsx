@@ -39,6 +39,7 @@ import {
   TICKET_STATUS_CONFIG,
   toPersianDigits,
 } from "@/lib/tickets-utils";
+import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import { cn } from "@/lib/utils";
 import { TicketStatusBadge } from "./ticket-status-badge";
 
@@ -201,7 +202,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
   const [messageText, setMessageText] = useState("");
   const [isInternal, setIsInternal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [actionError, setActionError] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -235,13 +235,12 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
     key: string,
     action: () => Promise<{ ok: true } | { ok: false; message: string }>,
   ) {
-    setActionError(null);
     setPendingAction(key);
     const result = await action();
     setPendingAction(null);
 
     if (!result.ok) {
-      setActionError(result.message);
+      toastApiErrorMessage(result.message);
       return;
     }
 
@@ -340,11 +339,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
             ) : null}
           </div>
         </div>
-        {actionError ? (
-          <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {actionError}
-          </p>
-        ) : null}
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">

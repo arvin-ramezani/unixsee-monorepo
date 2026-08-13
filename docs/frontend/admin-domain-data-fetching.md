@@ -42,6 +42,8 @@ admin pane needs it. Until then, prefer RSC + `server-fetch`.
 
 ## Nest `ApiResponse` and error mapping
 
+Canonical failure contract: [`../backend/contracts/api-errors.md`](../backend/contracts/api-errors.md).
+
 Same envelope as customer APIs:
 
 ```ts
@@ -57,15 +59,24 @@ type ApiResponse<T> = {
 | Condition | Admin UI behaviour |
 |---|---|
 | `success === true` and `data` present | Map to a safe DTO before Client Components |
-| `success === false` / `error` set | Map `error.code` → UI copy; keep authz non-enumerating |
+| `success === false` / `error` set | `mapApiError` (**code first**) → `STAFF_API_ERROR_MESSAGES` |
+| Failed POST/PUT/PATCH/DELETE from Client Component | `toast.error` (Persian copy) |
 | HTTP 401 after refresh retry | Signed out; redirect to staff sign-in |
 | HTTP 403 | Permission-denied / capability-locked UI |
 | HTTP 404 | Not-found / empty for that resource |
 | HTTP 429 | Rate-limit message; cooldown |
 | Network / parse failure | Generic unavailable message |
 
-Prefer Nest `error.code` over raw `message`. Do not surface stack traces,
-URLs, or token material.
+**Admin is FA-only** — no next-intl; use `STAFF_API_ERROR_MESSAGES` in
+[`map-api-error.ts`](../../admin-panel/src/lib/api/map-api-error.ts).
+
+Rules:
+
+- **`error.code` is authoritative** — do not display raw `error.message` or guess from HTTP status alone.
+- Client-side validation stays inline; Nest failures on mutations use toast.
+- Do not surface stack traces, URLs, or token material.
+- Helpers: [`map-api-error.ts`](../../admin-panel/src/lib/api/map-api-error.ts),
+  [`toast-api-error.ts`](../../admin-panel/src/lib/api/toast-api-error.ts).
 
 ## Query keys, defaults, dehydrate
 
@@ -111,7 +122,7 @@ Before wiring a Nest domain into `admin-panel/`:
 4. Add typed DTO / mapper; strip fields Client Components must not see
    (secrets, internal-only fields product forbids).
 5. Fetch only through `server-fetch` / `client-fetch` / Action helpers.
-6. Map errors with `map-api-error` + staff UI copy.
+6. Map errors with `map-api-error` + `STAFF_API_ERROR_MESSAGES`; toast failed mutations.
 7. Add loading / empty / denied / error states consistent with the admin UX
    flow for that domain.
 8. Keep fixtures honest for any surface still unwired

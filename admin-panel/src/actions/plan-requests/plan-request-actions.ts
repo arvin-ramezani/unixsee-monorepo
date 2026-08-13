@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import {
-  mapApiError,
+  resolveStaffApiErrorMessage,
   STAFF_API_ERROR_MESSAGES,
 } from "@/lib/api/map-api-error";
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
@@ -48,10 +48,7 @@ type AdminWebsiteListResponse = {
 };
 
 function staffErrorMessage(response: ApiResponse<unknown>): string {
-  const mapped = mapApiError(response);
-  return mapped
-    ? STAFF_API_ERROR_MESSAGES[mapped.key]
-    : STAFF_API_ERROR_MESSAGES.generic;
+  return resolveStaffApiErrorMessage(response);
 }
 
 async function mutatePlanRequest(

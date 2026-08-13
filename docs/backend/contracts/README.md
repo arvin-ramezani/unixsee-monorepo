@@ -18,10 +18,12 @@ must not invent competing enums.
 ```text
 docs/backend/contracts/
 ├── README.md
+├── api-errors.md                  # shared ApiResponse error envelope + codes
 ├── ticket-service-categories.md   # shared ticket service taxonomy
 ├── tickets-customer.md            # customer dashboard ticket API
 ├── tickets-admin.md               # staff queue ticket API
 ├── plan-requests-customer.md      # customer plan-request create/list
+├── plan-requests-public.md        # anonymous public plan-request intake
 └── plan-requests-admin.md         # staff plan-request queue
 ```
 
@@ -29,15 +31,19 @@ docs/backend/contracts/
 
 | Contract | Audience | Purpose |
 |---|---|---|
+| [`api-errors.md`](./api-errors.md) | Shared | `ApiResponse` failure envelope, global codes, frontend mapping rules |
 | [`ticket-service-categories.md`](./ticket-service-categories.md) | Shared | Canonical ticket service enum for client, admin, and Nest |
 | [`tickets-customer.md`](./tickets-customer.md) | `/api/v1/tickets/*` | Customer create, list, detail, reply, attach, close, reopen |
 | [`tickets-admin.md`](./tickets-admin.md) | `/api/v1/admin/tickets/*` | Staff list, detail (incl. internal notes), assign, resolve, reopen, messages |
 | [`plan-requests-customer.md`](./plan-requests-customer.md) | `/api/v1/plan-requests/*` | Logged-in create, list, detail |
+| [`plan-requests-public.md`](./plan-requests-public.md) | `/api/v1/public/plan-requests` | Anonymous create; account guard |
 | [`plan-requests-admin.md`](./plan-requests-admin.md) | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline |
 
 ## Writing rules
 
 - One audience (or one shared vocabulary) per document.
+- Link [`api-errors.md`](./api-errors.md) for failure shapes; document only
+  domain-specific `error.code` values on each contract.
 - Prefer explicit lifecycle actions (`close`, `reopen`) over generic PATCH.
 - Mark deferred providers (for example S3) clearly; keep the wire shape stable.
 - When a contract changes persistence enums, call out the Prisma rename in the

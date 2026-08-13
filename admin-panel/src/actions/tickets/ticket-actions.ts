@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import {
-  mapApiError,
+  resolveStaffApiErrorMessage,
   STAFF_API_ERROR_MESSAGES,
 } from "@/lib/api/map-api-error";
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
@@ -38,12 +38,9 @@ async function mutateTicket(
   try {
     const response = await serverActionFetch(endpoint, init);
     if (!response.success) {
-      const mapped = mapApiError(response);
       return {
         ok: false,
-        message: mapped
-          ? STAFF_API_ERROR_MESSAGES[mapped.key]
-          : STAFF_API_ERROR_MESSAGES.generic,
+        message: resolveStaffApiErrorMessage(response),
       };
     }
 

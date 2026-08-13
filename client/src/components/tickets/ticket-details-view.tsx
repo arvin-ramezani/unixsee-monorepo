@@ -25,6 +25,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Link, useRouter } from "@/i18n/navigation";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import type {
   TicketDetail,
   TicketMessage,
@@ -34,7 +35,7 @@ import { cn } from "@/lib/utils";
 
 export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
   const t = useTranslations("Tickets");
-  const errorsT = useTranslations("Tickets.errors");
+  const tApiErrors = useTranslations("ApiErrors");
   const format = useFormatter();
   const router = useRouter();
   const [status, setStatus] = useState<TicketStatus>(ticket.status);
@@ -44,7 +45,6 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
   const [sending, setSending] = useState(false);
   const [mutating, setMutating] = useState(false);
   const [replyError, setReplyError] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
   const repliesAllowed = status !== "CLOSED";
 
   async function sendReply(event: FormEvent<HTMLFormElement>) {
@@ -54,7 +54,6 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
       return;
     }
     setSending(true);
-    setActionError(null);
 
     const result = await addTicketMessageAction({
       ticketId: ticket.id,
@@ -63,7 +62,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
     });
 
     if (!result.ok) {
-      setActionError(errorsT(result.error.key));
+      toastMappedApiError(result.error, tApiErrors);
       setSending(false);
       return;
     }
@@ -78,10 +77,9 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
 
   async function handleReopen() {
     setMutating(true);
-    setActionError(null);
     const result = await reopenTicketAction(ticket.id);
     if (!result.ok) {
-      setActionError(errorsT(result.error.key));
+      toastMappedApiError(result.error, tApiErrors);
       setMutating(false);
       return;
     }
@@ -93,10 +91,9 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
 
   async function handleClose() {
     setMutating(true);
-    setActionError(null);
     const result = await closeTicketAction(ticket.id);
     if (!result.ok) {
-      setActionError(errorsT(result.error.key));
+      toastMappedApiError(result.error, tApiErrors);
       setMutating(false);
       return;
     }
@@ -219,12 +216,6 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
           </div>
         </Alert>
       )}
-
-      {actionError ? (
-        <p role="alert" className="text-destructive mt-4 text-sm">
-          {actionError}
-        </p>
-      ) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <Panel className="overflow-hidden">
