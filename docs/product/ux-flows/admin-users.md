@@ -30,12 +30,12 @@
 - **Goal:** Find or create the correct customer user and tenant, manage membership and account state, and complete website ownership assignment without leaving the provisioning context.
 - **Current problem:** `/users` is a dead end. Discovery assignment (`تخصیص وب‌سایت کشف‌شده`) can only choose from a fixed tenant list and cannot create a missing customer/user while continuing.
 - **Proposed change:** Provide a first-class users-and-tenants admin flow, plus an inline **create-customer-and-continue** path inside تخصیص وب‌سایت کشف‌شده.
-- **Main decisions:** Distinguish **user account**, **tenant**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Plan requests may link an existing account but do **not** create users. Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. This admin flow does **not** design public auth/signup UX.
+- **Main decisions:** Distinguish **user account**, **contact verification**, **احراز هویت**, **tenant**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Public signup creates a user, not a tenant. **Authorized** means staff approved احراز هویت and the customer **became a tenant** (or staff created/approved the tenant). Plan requests may be submitted before tenant approval but may only be **enabled** after a tenant exists. Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. This admin flow does **not** design public auth/signup UX.
 - **Completion state:** The intended customer/tenant exists, membership and owner are valid, and related website assignment or plan-request linking can complete without offline workaround.
-- **Highest-risk failure:** Creating a duplicate of a public-signup or previously admin-created customer, or assigning a website while create/link result is uncertain.
+- **Highest-risk failure:** Creating a duplicate of a public-signup or previously admin-created customer, enabling a plan for a non-tenant user, or assigning a website while create/link result is uncertain.
 - **Accessibility risk:** Nested create-inside-assign surfaces can trap focus, lose context, or fail to announce create/assign status.
-- **Evidence gap:** No staff interviews; public signup rules, invite-vs-create, verification bootstrap, and capability separation are unresolved.
-- **Next validation:** Prototype find existing signup customer → or admin create → resume discovery assignment; confirm plan-request enablement only links existing users.
+- **Evidence gap:** No staff interviews; certification document set, invite-vs-create, and capability separation remain partially open.
+- **Next validation:** Prototype find existing signup customer → certifications / tenant approve → resume discovery assignment; confirm plan-request enablement only after tenant exists.
 
 ## Problem and desired outcome
 
@@ -64,12 +64,14 @@ Unixsee can onboard customers and activate managed websites consistently while p
 #### In scope
 
 - Administrator find, view, create, and maintain customer user accounts.
-- Tenant create/approve, membership add/change/remove, and owner assignment safeguards.
-- Account state review: active, suspended, locked, verified, 2FA-protected indicators.
+- Tenant create/approve (including احراز هویت certification review), membership
+  add/change/remove, and owner assignment safeguards.
+- Account state review: active, suspended, locked, contact-verified, tenant /
+  احراز هویت state, 2FA-protected indicators.
 - Controlled staff assistance for verification/session recovery without exposing secrets.
 - Internal notes that never appear to customers.
-- Cross-flow: inline create-user/tenant during `تخصیص وب‌سایت کشف‌شده`, then continue assignment.
-- Entry from plan-request enablement when a missing user must be created here first, then linked back on `/plan-requests` (create is never owned by the plan-request surface).
+- Cross-flow: create-user/tenant via `/users/new?returnTo=…` during تخصیص وب‌سایت کشف‌شده, then continue assignment.
+- Entry from plan-request enablement when a missing user or missing tenant must be resolved here first, then linked back on `/plan-requests` (create is never owned by the plan-request surface).
 - Loading, empty, permission, validation, conflict, failure, and recovery states.
 - Persian RTL and equivalent English LTR behaviour.
 
@@ -136,7 +138,7 @@ No staff interviews, support tickets, or analytics were available. E-001–E-004
 | A-004 | Staff-created accounts start unverified; the customer becomes verified after signing in with the admin-entered phone or email and passing OTP (no invite token required for this Phase 1 path) | Phase 1 §8.1.1 (2026-08-09) | Low once implemented | Post-create security state | Auth/product confirmation | Accepted for this phase |
 | A-005 | Search across email/mobile/name/tenant name is capability-scoped and non-enumerating beyond authorized results | §8.2 / §19.2 | Medium | Find-or-create UX | Security review | Unvalidated |
 | A-006 | Current fixture conflation of user IDs as tenants is a prototype shortcut, not the target domain model | E-010 + E-003 | High if retained | Data model and labels | Architecture/product | Unvalidated |
-| A-007 | Public signup, when enabled, creates a customer user (and possibly tenant) that admin must be able to find during plan-request linking and website assignment | E-012 | High if signup creates only a lead with no account | Find-before-create | Auth/product decision | Unvalidated |
+| A-007 | Public signup, when enabled, creates a customer **user** only; tenant comes from احراز هویت approval or staff create/approve | Phase 1 §8.1.2 + authorization note | High if signup is mistaken for tenant | Find-before-enable | Auth/product | Accepted for this phase |
 
 ### Unknowns
 
@@ -156,19 +158,25 @@ before Staff access UI ships.
 | U-006 | Concurrent create of the same contact by two staff members | Duplicate ownership risk | Idempotency/conflict UX | Backend design | High |
 | U-007 | Retention and expiry of abandoned inline-create drafts inside assignment | Lost work vs stale PII | Save/resume policy | Product/security | Medium |
 | U-008 | Whether discovery-assignment inline create is the only create-customer contract besides standalone `/users` create | Duplication or inconsistent rules | Shared create design | Product/engineering | Medium |
-| U-009 | Exact public signup eligibility and whether plan requests may arrive with only contacts until an account exists elsewhere | Link timing from درخواست‌های پلن (enablement stays blocked until a user exists) | Identity linking | Auth/product decision | Critical |
+| U-009 | Exact public signup eligibility and whether plan requests may arrive with only contacts until an account exists elsewhere | Link timing from درخواست‌های پلن (enablement stays blocked until a **tenant** exists) | Identity linking | Auth/product decision | Critical |
+| U-010 | Exact certification document set and customer upload UI for احراز هویت | Incomplete authorization queue | Tenant approval UX | Product/ops | Critical |
 
 ## Domain distinctions for this flow
 
 | Concept | Meaning in this flow | Must not be confused with |
 |---|---|---|
 | Customer user | Person identity/contact account that can authenticate and hold memberships | Tenant organization record |
-| Tenant | Customer organization/account that owns websites and services | A single login by itself |
+| Contact verification | OTP / email proof that a contact works | احراز هویت / tenant approval |
+| احراز هویت | Staff review of certifications that authorizes the customer | Sign-in success |
+| Tenant | Approved customer organization that owns websites and can receive sold services (**authorized**) | A single login by itself |
 | Membership | Link of a user to a tenant with a tenant role | Website-level permission override |
 | Tenant owner | Membership role that controls the tenant with owner-safeguard rules | Staff administrator role |
 | Managed website ownership | Website belongs to exactly one tenant after assignment | Raw agent discovery |
 
-**Inference:** تخصیص وب‌سایت کشف‌شده should select a **tenant** as owner of the website, while inline create may also create the first **user** and owner membership when the customer does not yet exist.
+Canonical product note:
+[`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
+
+**Inference:** تخصیص وب‌سایت کشف‌شده should select a **tenant** as owner of the website, while create-and-return via `/users/new` may also create the first **user** and owner membership when the customer does not yet exist. Public signup alone must not be treated as tenant approval.
 
 ## Users, roles and permissions
 

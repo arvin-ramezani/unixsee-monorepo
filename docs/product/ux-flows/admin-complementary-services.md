@@ -64,6 +64,9 @@ Unixsee can operate complementary services consistently while preserving quotati
 - Intake queues for submitted requests and waiting work.
 - Request detail at `/complementary-services/[id]`; creating an assignment is a Dialog on that page.
 - Customer, tenant, website and request context.
+- Non-blocking intake when the customer is not yet a tenant; commercial
+  activation / assignment applyment still requires a tenant per
+  [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
 - Ownership and specialist assignment.
 - Structured requests for customer information.
 - Scope, exclusions and commercial-model definition.

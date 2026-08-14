@@ -31,11 +31,11 @@
 - **Goal:** Sign in or create an account with the fewest steps, verify contact, and reach the intended dashboard destination.
 - **Current problem:** No designed customer auth UX; stub register page; marketing CTAs jump toward dashboard without a clear auth path.
 - **Proposed change:** OTP-first authentication with **phone as default** identifier, email as secondary mode, Google as an alternate path, plus email verification and password recovery surfaces that share one auth shell.
-- **Main decisions:** Sign-in is OTP-first (not password-first). Password is collected at sign-up and used for forgot/reset, not as the primary sign-in method. NestJS remains the auth authority. This doc is UX only (ADR 0003).
-- **Completion state:** Customer has an authorized session and lands on the intended safe dashboard route (`returnTo` or `/dashboard`).
+- **Main decisions:** Sign-in is OTP-first (not password-first). Password is collected at sign-up and used for forgot/reset, not as the primary sign-in method. NestJS remains the auth authority. This doc is UX only (ADR 0003). **Signup / sign-in is not احراز هویت**; becoming a tenant is a separate authorization path.
+- **Completion state:** Customer has an authenticated session and lands on the intended safe dashboard route (`returnTo` or `/dashboard`).
 - **Highest-risk failure:** Account enumeration via error copy; duplicate signup; redirect to an unsafe URL after auth.
 - **Accessibility risk:** OTP entry, phone RTL, focus loss on step changes, and password visibility controls.
-- **Evidence gap:** Google OAuth product approval; exact phone country-code UX; whether email verification is mandatory before dashboard access; `returnTo` allowlist.
+- **Evidence gap:** Google OAuth product approval; exact phone country-code UX; whether email verification is mandatory before dashboard access; `returnTo` allowlist; customer certification-upload UX lives outside this auth shell.
 - **Next validation:** Static UI prototype of Sign in → OTP → redirect; Sign up → verify; Forgot → Reset → Sign in.
 
 ## Problem and desired outcome
@@ -81,6 +81,8 @@ Unixsee can onboard and authenticate customers through the public channel withou
 - Customer dashboard Profile security (change password after reauth, 2FA, session list) beyond what this flow must hand off to.
 - Impersonation.
 - Plan enablement or website activation as a side effect of signup.
+- احراز هویت certification upload / tenant approval (separate from this auth shell;
+  see [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)).
 - Visual polish details (see UI companion).
 
 ### Success definition
@@ -88,7 +90,7 @@ Unixsee can onboard and authenticate customers through the public channel withou
 - A customer can complete auth in a short, understandable path.
 - Failures explain recovery without disclosing whether an unrelated account exists.
 - After success, the user lands on a safe intended dashboard destination.
-- Signup alone never implies a plan was enabled.
+- Signup alone never implies a tenant was approved or a plan was enabled.
 
 ## Available evidence
 
@@ -269,8 +271,9 @@ flowchart TD
 | BR-002 | Email is available as an alternate identifier mode on the same Sign-in/Sign-up pattern | Confirmed |
 | BR-003 | Google is an alternate path, not a replacement for OTP availability until product confirms OAuth | Proposed |
 | BR-004 | Auth errors are non-enumerating for credential/account existence where Phase 1 requires it | Confirmed |
-| BR-005 | Public signup creates a customer account origin; it does not enable a plan or activate a website | Confirmed |
-| BR-006 | Admin-created customers become verified after OTP on the recorded phone/email | Confirmed |
+| BR-005 | Public signup creates a customer **user** account origin; it does not create a tenant, enable a plan, or activate a website | Confirmed |
+| BR-005a | احراز هویت (certifications → staff approve tenant) is outside this auth shell; see `../notes/customer-authorization-and-tenant.md` | Confirmed |
+| BR-006 | Admin-created customers become **contact-verified** after OTP on the recorded phone/email | Confirmed |
 | BR-007 | Password is not the primary Sign-in method; used at Sign-up (secondary credential) and Forgot/Reset | Proposed |
 | BR-008 | Post-auth redirect uses allowlisted same-app paths only; default `/{locale}/dashboard` | Proposed |
 | BR-009 | NestJS owns real authentication; this UX is UI-spec only under ADR 0003 | Confirmed |
@@ -488,5 +491,6 @@ sentence.
   [`../../architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../../architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
   [`../../architecture/decisions/0011-client-nest-auth-integration.md`](../../architecture/decisions/0011-client-nest-auth-integration.md)
 - Phase 1: [`../phase-1-application-features.md`](../phase-1-application-features.md) §8
+- Authorization / tenant: [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)
 - Admin consumer: [`admin-users.md`](./admin-users.md)
 - UI-only phase: [`../../architecture/decisions/0003-ui-only-phase-boundaries.md`](../../architecture/decisions/0003-ui-only-phase-boundaries.md)

@@ -4,7 +4,7 @@
 >
 > **Owner:** Product and architecture groups
 >
-> **Last verified:** 2026-08-09
+> **Last verified:** 2026-08-13
 
 ## 1. Purpose
 
@@ -48,14 +48,21 @@ to the managed-infrastructure offering.
 
 Phase 1 must enable these complete outcomes across its delivery waves:
 
-- An authorized customer can access only their tenant's account and resources.
-- Staff can receive a plan request, enable the chosen plan on a website for an
-  existing customer, and assign managed websites to the correct customer.
+- An authorized customer (a usable **tenant**) can access only that tenant's
+  account and resources.
+- Sign up / sign in create or authenticate a **user account**; becoming a
+  **tenant** requires a separate **احراز هویت** step (customer certifications
+  reviewed and approved in the admin panel, or staff create/approve tenant).
+  See [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
+- Staff can receive a plan request before the customer is a tenant, but must
+  not **enable** (sell/apply) the plan until a tenant exists; customers must
+  see that certifications are required before managed services can be delivered.
 - Staff can enroll agents from servers administration; agents discover websites
   and keep admin inventory (and assigned owner dashboards) up to date.
-- Customers created by admin remain unverified until they sign in with the
-  recorded phone or email and pass OTP; public signup creates customer accounts
-  that follow the same verification rules where applicable.
+- Customers created by admin remain contact-unverified until they sign in with
+  the recorded phone or email and pass OTP; public signup creates customer
+  accounts that follow the same contact-verification rules where applicable.
+  Contact verification is not احراز هویت.
 - Customers and staff can complete a support-ticket workflow with messages and
   attachments.
 - Customers can request a complementary service; staff can scope, quote,
@@ -82,10 +89,14 @@ Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
 - Authentication and OTP-based sign-in for customers.
 - Customer and tenant administration in the admin panel.
 - User origins: public signup from the web app, or admin create. Admin-created
-  accounts start **unverified** until the customer signs in with the
-  admin-entered phone or email and passes OTP, after which the account is
-  marked verified.
-- Plan catalog visibility, plan requests, and staff plan enablement.
+  accounts start **contact-unverified** until the customer signs in with the
+  admin-entered phone or email and passes OTP, after which the contact is
+  marked verified. Public signup alone does **not** create a tenant.
+- احراز هویت: customers submit certifications; staff review in admin and
+  approve a tenant before commercial applyments. Details:
+  [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
+- Plan catalog visibility, plan requests (allowed without a tenant), and staff
+  plan enablement (requires a tenant).
 - Website administration in the admin panel.
 - Server administration in the admin panel, including agent enrollment and
   registration. Running agents discover websites and update website inventory
@@ -241,7 +252,7 @@ stale values and recover through refetch or reconnection.
 | Capability | Customer experience | Administrator experience | Phase priority |
 | --- | --- | --- | --- |
 | Access and security | Sign in, OTP verification, sessions | Account support and access control | First-wave |
-| Customers and tenants | Profile and membership visibility | Create/find users and tenants; verification state | First-wave |
+| Customers and tenants | Profile, membership, احراز هویت status | Create/find users; review certifications; approve tenants; contact-verification state | First-wave |
 | Plans and onboarding | Browse and submit a plan request | Review and enable chosen plan on a website | First-wave |
 | Websites | Owner list/detail after assignment | Create, assign, configure; inventory from discovery | First-wave |
 | Servers and agents | Indirect via owned websites | Enroll agents, review discovery, assign ownership | First-wave |
@@ -276,32 +287,67 @@ Customers need to:
 - Receive understandable, non-enumerating errors for invalid credentials,
   locked accounts, expired challenges, and rate limits.
 
-### 8.1.1 Account origins and verification
+### 8.1.1 Account origins and contact verification
 
 Customer accounts enter the system through:
 
 1. **Public signup** on the web app, when that channel is enabled.
-2. **Admin create** in the administrator panel (or inline during discovery
-   assignment), using the contact details staff enter.
+2. **Admin create** in the administrator panel (or during discovery-assignment
+   create-and-return), using the contact details staff enter.
 
-Admin-created accounts are **not verified** at create time. Saving a phone or
-email in the admin form does not verify that contact. The customer becomes
-verified after they sign in with the same admin-entered phone or email and
-successfully pass OTP validation. Phase 1 does not require a separate invite
-token for this verification path.
+Admin-created accounts are **not contact-verified** at create time. Saving a
+phone or email in the admin form does not verify that contact. The customer
+becomes contact-verified after they sign in with the same admin-entered phone
+or email and successfully pass OTP validation. Phase 1 does not require a
+separate invite token for this contact-verification path.
+
+Public signup and successful sign-in create an authenticatable **user**. They
+do not by themselves mean the customer is commercially **authorized**.
+
+### 8.1.2 Organizational authorization (احراز هویت)
+
+Unixsee separates:
+
+| Step | Outcome |
+|---|---|
+| Sign up / sign in | Customer **user** account and session |
+| Contact verification (OTP / email) | Proven contact on that user |
+| احراز هویت | Staff-approved **tenant** (authorized customer organization) |
+
+Customers submit required certifications for احراز هویت. Staff review those
+materials in the admin panel and approve or reject. **Authorized**, in this
+product sense, means the customer **became a tenant** (usable tenant with the
+required owner membership).
+
+Rules for this phase:
+
+- Unixsee does **not sell** or commercially apply managed services until a
+  tenant exists.
+- Customers **may still send plan requests** (and consultant / complementary
+  intake) before authorization. Do not block those submissions only because
+  certifications are missing.
+- Customer-facing messaging must state that certifications are **necessary**
+  before Unixsee can deliver managed/paid services for that request.
+- Admin must **block important applyments**—especially plan enablement and
+  other sell/activate actions—when the linked customer is not yet a tenant.
+
+Canonical detail:
+[`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
 
 ### 8.2 Administrator behavior
 
 Authorized staff need to:
 
 - Find an account by safe customer identifiers.
-- See whether an account is active, suspended, locked, verified, or protected
-  by two-factor authentication.
-- Create a customer with contact details that remain unverified until OTP
-  succeeds.
+- See whether an account is active, suspended, locked, contact-verified, has a
+  tenant (authorized), or is protected by two-factor authentication.
+- Create a customer with contact details that remain contact-unverified until
+  OTP succeeds.
+- Review احراز هویت certification submissions and approve or reject tenant
+  authorization.
 - Suspend or restore access with a required reason.
 - Revoke sessions after a security event.
-- Start a controlled verification or two-factor recovery process.
+- Start a controlled contact-verification or two-factor recovery process.
 - Review security-relevant account history.
 
 Staff must not see passwords, one-time codes, recovery-code plaintext, refresh
@@ -313,8 +359,11 @@ separate audited security design is approved.
 - A user cannot access protected dashboard data without an authorized session.
 - Session revocation prevents further refresh and protected requests.
 - Expired and reused verification challenges are rejected.
-- Admin create leaves the account unverified until OTP succeeds for the
-  recorded phone or email.
+- Admin create leaves the account contact-unverified until OTP succeeds for
+  the recorded phone or email.
+- Public signup alone does not create a tenant or mark the customer authorized.
+- Staff cannot complete commercial applyments (including plan enablement) for a
+  customer who is not yet a tenant.
 - Password change revokes the sessions required by the approved security
   policy.
 - Customer and staff security events create audit records.
@@ -332,7 +381,9 @@ security-sensitive fields.
 
 ### 9.2 Tenant
 
-A tenant represents one approved Unixsee customer organization or account. It
+A tenant represents one **approved** Unixsee customer organization or account—
+the commercial outcome of **احراز هویت**. A signed-in user without an approved
+tenant is not yet authorized to receive sold managed services. A tenant
 contains:
 
 - Display and legal names where required.
@@ -346,7 +397,9 @@ contains:
 
 Staff need to:
 
-- Create or approve a tenant during onboarding.
+- Review customer certification submissions for احراز هویت.
+- Create or approve a tenant during onboarding (after certification review, or
+  via staff-mediated create when identity was already checked).
 - Add, invite, change, or remove members.
 - Assign the tenant owner with safeguards against leaving the tenant ownerless.
 - Review the tenant's websites, plan requests, tickets, complementary services,
@@ -364,6 +417,8 @@ Staff need to:
   the tenant through an approved process.
 - Internal notes never appear in customer responses or search.
 - Tenant state changes create an audit record and explain their customer impact.
+- Plan enablement and other commercial applyments are blocked when no usable
+  tenant exists for the linked customer.
 
 ## 10. Dashboard overview
 
@@ -433,8 +488,16 @@ products accidentally.
 ### 11.2 Customer plan request
 
 Selecting a plan on the public web app creates a plan request. It is not a
-payment confirmation. Validation outside the admin application may occur before
-staff enablement; that validation is not an admin-panel workflow in this phase.
+payment confirmation and is not a sale. Validation outside the admin
+application may occur before staff enablement; that validation is not an
+admin-panel workflow in this phase.
+
+Customers **may submit** a plan request before احراز هویت / tenant approval.
+The request surface must make clear that they need to send certifications so
+Unixsee can authorize them as a tenant and deliver managed services. Do not
+block submission only because certifications are missing. The same
+non-blocking stance applies to consultant-oriented intake; commercial
+**applyment** still waits on a tenant.
 
 The customer supplies at least:
 
@@ -455,28 +518,35 @@ Terminal alternatives:
 
 `declined` or `cancelled`
 
-`ready_to_enable` means an existing user/tenant is linked and a target website
-is selected with no unresolved one-plan conflict. Every consequential
-transition records the actor, time, and reason when required.
+`ready_to_enable` means an existing **tenant** (authorized customer) is linked
+and a target website is selected with no unresolved one-plan conflict. Linking
+only a user account without a tenant is not enough to enable. Every
+consequential transition records the actor, time, and reason when required.
 
 ### 11.4 Administrator plan enablement
 
 Authorized staff need to:
 
 - View incoming plan requests and the plan the customer chose.
-- Link an **existing** user/tenant to the request (no create from this surface).
+- Link an **existing** customer; enablement additionally requires a usable
+  **tenant** (no create from this surface).
 - Select the target website.
 - Enforce one active plan per website.
 - Enable the requested plan on that website, or decline/cancel with a reason.
+- Block enablement when احراز هویت is incomplete (no tenant yet), while still
+  allowing the request to remain in the queue.
 
-User/tenant creation, server/agent enrollment, and discovery assignment remain
-in their own admin flows. Plan enablement consumes those records; it does not
-replace them.
+User/tenant creation, احراز هویت review, server/agent enrollment, and discovery
+assignment remain in their own admin flows. Plan enablement consumes those
+records; it does not replace them.
 
 ### 11.5 Acceptance criteria
 
 - Submitting a request never displays payment-success language.
-- Staff cannot enable a plan request without a linked existing user/tenant.
+- Submitting a request is allowed before the customer is a tenant; copy must
+  state that certifications are required before managed services can be
+  delivered.
+- Staff cannot enable a plan request without a linked existing **tenant**.
 - Staff cannot leave two active plans on the same website.
 - Enabling a request makes that request’s chosen plan the website’s active plan.
 - Retried enablement does not create unintended duplicate active-plan

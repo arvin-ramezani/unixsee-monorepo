@@ -25,6 +25,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | Doc | Topic |
 |---|---|
 | [`notes/servers-agent-data-flow.md`](./notes/servers-agent-data-flow.md) | Server → enrollment → agent → NestJS → admin assignment |
+| [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md) | احراز هویت: signup ≠ tenant; certifications → staff approve tenant |
 | [`notes/onboarding-paths-and-handoffs.md`](./notes/onboarding-paths-and-handoffs.md) | Onboarding path handoffs |
 | [`notes/onboarding-plan-request-user-website.md`](./notes/onboarding-plan-request-user-website.md) | Plan request ↔ user ↔ website linking |
 | [`notes/phase-1-public-entry-channels.md`](./notes/phase-1-public-entry-channels.md) | Public entry channels |

@@ -47,7 +47,16 @@ Exit (guest): guest success page — team will review and call.
 
 Exit (existing account): sign-in (phone OTP) with account-exists toast → `/dashboard/plans` → choose plan / checkout → dashboard success.
 
-Out of scope: payment, guest request tracking, user creation from admin plan-request surface, email OTP sign-in.
+Out of scope: payment, guest request tracking, user creation from admin plan-request surface, email OTP sign-in, selling/enablement language that implies the request is already commercially applied.
+
+## Authorization messaging
+
+Plan request submission is allowed before احراز هویت / tenant approval. The
+guest and dashboard request surfaces must make clear that the customer needs
+to send certifications so Unixsee can authorize them as a tenant and deliver
+managed services. Do not block submit solely because certifications are
+missing. Canonical rule:
+[`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
 
 ## Account detection
 
@@ -112,6 +121,7 @@ request (safety net).
 - **AC-005:** Logged-in user opening guest request URL → redirected to dashboard checkout.
 - **AC-006:** “No website” checkbox → `websiteDomain` omitted; request succeeds.
 - **AC-007:** No payment-success language on any screen in this flow.
+- **AC-008:** Request surfaces state that certifications / احراز هویت are required before managed services can be delivered, without blocking submission.
 
 ## Analytics (documented; wiring optional)
 
@@ -126,8 +136,10 @@ request (safety net).
 
 - **Assumption:** Phone normalization matches auth storage format (E.164).
 - **Risk:** Account enumeration via public endpoint — accepted for Phase 1; rate limiting deferred.
+- **Assumption:** Exact certification-upload UI may live on dashboard / profile after submit; this flow only needs clear necessity messaging at request time.
 
 ## Related
 
 - Admin enablement: [`admin-plan-requests.md`](./admin-plan-requests.md)
+- Authorization / tenant: [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)
 - Public API: [`../../backend/contracts/plan-requests-public.md`](../../backend/contracts/plan-requests-public.md)
