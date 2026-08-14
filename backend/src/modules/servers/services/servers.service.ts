@@ -134,6 +134,60 @@ export class ServersService {
     return server;
   }
 
+  async delete(id: string) {
+    await this.ensureServer(id);
+
+    const boundWebsiteCount = await this.prisma.website.count({
+      where: { vpsNode: { serverId: id } },
+    });
+    if (boundWebsiteCount > 0) {
+      throw new ConflictException(ERROR_MESSAGES.fa.conflict);
+    }
+
+    const now = new Date();
+    const result = await this.prisma.$transaction(async (tx) => {
+      const revokedTokens = await tx.serverEnrollmentToken.updateMany({
+        where: {
+          serverId: id,
+          status: EnrollmentTokenStatus.ACTIVE,
+        },
+        data: {
+          status: EnrollmentTokenStatus.REVOKED,
+          revokedAt: now,
+        },
+      });
+
+      const disabledNodes = await tx.vpsNode.updateMany({
+        where: { serverId: id },
+        data: {
+          secretKey: '',
+          status: VpsNodeStatus.OFFLINE,
+          credentialsRevokedAt: now,
+          credentialsRevokedReason: 'server.deleted',
+        },
+      });
+
+      await tx.server.delete({ where: { id } });
+
+      return {
+        revokedTokenCount: revokedTokens.count,
+        disabledNodeCount: disabledNodes.count,
+      };
+    });
+
+    this.logger.log('server.deleted', {
+      serverId: id,
+      revokedTokenCount: result.revokedTokenCount,
+      disabledNodeCount: result.disabledNodeCount,
+    });
+
+    return {
+      id,
+      revokedTokenCount: result.revokedTokenCount,
+      disabledNodeCount: result.disabledNodeCount,
+    };
+  }
+
   async createEnrollmentToken(
     serverId: string,
     input?: { expiresAt?: string },

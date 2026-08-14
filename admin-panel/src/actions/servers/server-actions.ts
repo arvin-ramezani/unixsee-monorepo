@@ -216,3 +216,24 @@ export async function revokeAgentCredentialsAction(input: {
     return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
   }
 }
+
+export async function deleteServerAction(input: {
+  serverId: string;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    const response = await serverActionFetch<{
+      id: string;
+      revokedTokenCount: number;
+      disabledNodeCount: number;
+    }>(`/admin/servers/${input.serverId}`, { method: "DELETE" });
+
+    if (!response.success) {
+      return { ok: false, message: staffErrorMessage(response) };
+    }
+
+    revalidateServers();
+    return { ok: true };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}

@@ -10,12 +10,14 @@ import {
   Monitor,
   Server,
   ShieldAlert,
+  Trash2,
 } from "lucide-react";
 
 import {
   issueEnrollmentTokenAction,
   revokeAgentCredentialsAction,
   revokeEnrollmentTokenAction,
+  deleteServerAction,
   type EnrollmentRevealPayload,
 } from "@/actions/servers/server-actions";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -37,10 +39,8 @@ import {
   type WebsiteDiscoveryType,
 } from "@/lib/data/servers-data";
 import { cn } from "@/lib/utils";
-import {
-  AssignDiscoverySheet,
-  type AssignDiscoveryValues,
-} from "./assign-discovery-sheet";
+import { AssignDiscoverySheet, type AssignDiscoveryValues } from "./assign-discovery-sheet";
+import { DeleteServerSheet } from "./delete-server-sheet";
 import {
   EnrollmentRevealSheet,
   RevokeAgentSheet,
@@ -87,6 +87,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
   const [revealPayload, setRevealPayload] =
     useState<EnrollmentRevealPayload | null>(null);
   const [revokeOpen, setRevokeOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [selectedDiscovery, setSelectedDiscovery] =
     useState<WebsiteDiscoveryType | null>(null);
@@ -173,6 +174,17 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
     return true;
   };
 
+  const handleDeleteServer = async () => {
+    const result = await deleteServerAction({ serverId: server.id });
+    if (!result.ok) {
+      toastApiErrorMessage(result.message);
+      return false;
+    }
+    router.push("/servers");
+    router.refresh();
+    return true;
+  };
+
   const handleRevokeUnusedToken = () => {
     if (!activeToken) return;
 
@@ -235,6 +247,17 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
           <ArrowRight data-icon="inline-start" />
           بازگشت به سرورها
         </Link>
+        <Button
+          type="button"
+          size="sm"
+          variant="destructive"
+          className="gap-2"
+          disabled={isPending}
+          onClick={() => setDeleteOpen(true)}
+        >
+          <Trash2 className="size-4" aria-hidden="true" />
+          حذف سرور
+        </Button>
       </div>
 
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
@@ -555,6 +578,12 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
         serverLabel={server.label}
         onOpenChange={setRevokeOpen}
         onRevoke={handleRevokeAgent}
+      />
+      <DeleteServerSheet
+        open={deleteOpen}
+        serverLabel={server.label}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDeleteServer}
       />
       <AssignDiscoverySheet
         open={assignOpen}

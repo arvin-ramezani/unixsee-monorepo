@@ -39,7 +39,7 @@ docs/backend/contracts/
 | [`plan-requests-customer.md`](./plan-requests-customer.md) | `/api/v1/plan-requests/*` | Logged-in create, list, detail |
 | [`plan-requests-public.md`](./plan-requests-public.md) | `/api/v1/public/plan-requests` | Anonymous create; account guard |
 | [`plan-requests-admin.md`](./plan-requests-admin.md) | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline |
-| [`servers-admin.md`](./servers-admin.md) | `/api/v1/admin/servers/*` | Staff servers, one-time enrollment reveal, agent revoke |
+| [`servers-admin.md`](./servers-admin.md) | `/api/v1/admin/servers/*` | Staff servers, enrollment, agent revoke, server delete |
 
 ## Writing rules
 

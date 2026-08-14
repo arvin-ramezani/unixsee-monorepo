@@ -7,7 +7,7 @@
 | Staff login / session | Server Actions + `unixsee_admin_*` cookies + refresh BFF | ADR 0012 Layer 1 |
 | `/tickets`, `/tickets/[id]` | RSC `server-fetch` + ticket Server Actions | Nest `status` / `skip` / `take` from URL; contract [`tickets-admin.md`](../../../docs/backend/contracts/tickets-admin.md) |
 | `/plan-requests` list | RSC `server-fetch` | Nest list; detail sheet link/enable/decline via Server Actions; contract [`plan-requests-admin.md`](../../../docs/backend/contracts/plan-requests-admin.md) |
-| `/servers`, `/servers/[id]` | RSC `server-fetch` + server Server Actions | Create server, issue/revoke enrollment token, revoke agent; contract [`servers-admin.md`](../../../docs/backend/contracts/servers-admin.md) |
+| `/servers`, `/servers/[id]` | RSC `server-fetch` + server Server Actions | Create/delete server, issue/revoke enrollment token, revoke agent; contract [`servers-admin.md`](../../../docs/backend/contracts/servers-admin.md) |
 
 ### Fixture-backed (not yet wired)
 

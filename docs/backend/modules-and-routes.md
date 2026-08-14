@@ -205,7 +205,7 @@ user/tenant and at most one active plan per website.
 | Method | Path | Audience |
 |---|---|---|
 | GET/POST | `/api/v1/admin/servers` | Admin |
-| GET/PATCH | `/api/v1/admin/servers/:id` | Admin |
+| GET/PATCH/DELETE | `/api/v1/admin/servers/:id` | Admin (DELETE revokes tokens + agent, then removes row) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens` | Admin (one-time reveal) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
 | POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |

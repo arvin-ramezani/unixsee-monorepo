@@ -9,9 +9,9 @@
 >
 > **Last verified:** 2026-08-12
 
-Staff server registry, one-time agent enrollment tokens, and agent credential
-revoke. The admin panel never receives long-lived agent secrets and never calls
-agent-plane enroll endpoints.
+Staff server registry, one-time agent enrollment tokens, agent credential
+revoke, and server delete. The admin panel never receives long-lived agent
+secrets and never calls agent-plane enroll endpoints.
 
 ## Auth
 
@@ -98,6 +98,34 @@ Response `data` is the persisted `Server` row (`id`, `name`, `ipAddress`,
 `PATCH /api/v1/admin/servers/:id`
 
 Body (all optional): `{ name?, ipAddress?, notes? }`.
+
+### Delete server
+
+`DELETE /api/v1/admin/servers/:id` → `200`
+
+Disables the agent plane **before** removing the row, in one transaction:
+
+1. Revoke every `ACTIVE` enrollment token (`REVOKED` + `revokedAt`).
+2. Blank `secretKey` on all `vpsNodes` for this server, set `OFFLINE`, and
+   stamp `credentialsRevokedAt` / reason `server.deleted`.
+3. Delete the `Server` row (tokens, nodes, discoveries, and alerts cascade).
+
+`409 CONFLICT` when any `Website` is still bound to a node on this server
+(website `vpsNodeId` is required; cascade would wipe customer websites). Staff
+must reassign or remove those websites first.
+
+A running agent cannot enroll or HMAC after this call even if the VPS process
+is still up.
+
+Response `data`:
+
+```ts
+{
+  id: string;
+  revokedTokenCount: number;
+  disabledNodeCount: number;
+}
+```
 
 ### Issue enrollment token (one-time reveal)
 

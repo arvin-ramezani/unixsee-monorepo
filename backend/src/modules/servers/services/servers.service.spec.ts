@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -195,5 +195,101 @@ describe('ServersService.enrollWithToken', () => {
         }),
       }),
     );
+  });
+});
+
+describe('ServersService.delete', () => {
+  let service: ServersService;
+
+  const prisma = {
+    server: {
+      findUnique: vi.fn(),
+      delete: vi.fn(),
+    },
+    website: {
+      count: vi.fn(),
+    },
+    $transaction: vi.fn(),
+  };
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ServersService,
+        { provide: PrismaService, useValue: prisma },
+        {
+          provide: ConfigService,
+          useValue: {
+            getOrThrow: vi.fn((key: string) => {
+              if (key === 'app.agentApiBaseUrl') {
+                return 'https://core.unixsee.com';
+              }
+              throw new Error(`Unexpected config key: ${key}`);
+            }),
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get(ServersService);
+  });
+
+  it('revokes active tokens and blanks agent secrets before deleting the server', async () => {
+    prisma.server.findUnique.mockResolvedValue({ id: 'server-1' });
+    prisma.website.count.mockResolvedValue(0);
+
+    const updateTokens = vi.fn().mockResolvedValue({ count: 2 });
+    const updateNodes = vi.fn().mockResolvedValue({ count: 1 });
+    const deleteServer = vi.fn().mockResolvedValue({ id: 'server-1' });
+
+    prisma.$transaction.mockImplementation(async (callback) => {
+      return callback({
+        serverEnrollmentToken: { updateMany: updateTokens },
+        vpsNode: { updateMany: updateNodes },
+        server: { delete: deleteServer },
+      });
+    });
+
+    await expect(service.delete('server-1')).resolves.toEqual({
+      id: 'server-1',
+      revokedTokenCount: 2,
+      disabledNodeCount: 1,
+    });
+
+    expect(updateTokens).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          serverId: 'server-1',
+          status: EnrollmentTokenStatus.ACTIVE,
+        },
+        data: expect.objectContaining({
+          status: EnrollmentTokenStatus.REVOKED,
+        }),
+      }),
+    );
+    expect(updateNodes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { serverId: 'server-1' },
+        data: expect.objectContaining({
+          secretKey: '',
+          status: VpsNodeStatus.OFFLINE,
+          credentialsRevokedReason: 'server.deleted',
+        }),
+      }),
+    );
+    expect(deleteServer).toHaveBeenCalledWith({ where: { id: 'server-1' } });
+  });
+
+  it('rejects delete when websites are still bound to the server nodes', async () => {
+    prisma.server.findUnique.mockResolvedValue({ id: 'server-1' });
+    prisma.website.count.mockResolvedValue(3);
+    prisma.$transaction.mockResolvedValue(undefined);
+
+    await expect(service.delete('server-1')).rejects.toBeInstanceOf(
+      ConflictException,
+    );
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 });

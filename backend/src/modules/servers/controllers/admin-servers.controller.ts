@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -57,6 +58,13 @@ export class AdminServersController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() body: UpdateServerDto) {
     const data = await this.serversService.update(id, body);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: string) {
+    const data = await this.serversService.delete(id);
     return ApiResponseBuilder.ok(data);
   }
 
