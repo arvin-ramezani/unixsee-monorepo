@@ -21,18 +21,19 @@ agent enrolls outbound to NestJS over HTTPS.
 3. On the VPS (Ubuntu, root/sudo), run:
 
 ```bash
-curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN
+curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN --api-base-url https://core.unixsee.com
 ```
 
 The script installs Node.js 20+ if needed, downloads the agent bundle from
 `https://panel.unixsee.com/agents/unixsee-agent.tar.gz`, writes a mode-600
-`.env`, installs the systemd unit, and starts `unixsee-agent`.
+`.env`, verifies enrollment with Nest (persists `AGENT_SECRET`), then enables
+and starts `unixsee-agent`. If enrollment fails, systemd is **not** started.
 
 Optional flags:
 
 | Flag | Default |
 |---|---|
-| `--api-base-url` | `https://api.unixsee.com` |
+| `--api-base-url` | `https://core.unixsee.com` |
 | `--bundle-url` | `https://panel.unixsee.com/agents/unixsee-agent.tar.gz` |
 
 Then confirm the server shows **connected** in admin after the first heartbeat.

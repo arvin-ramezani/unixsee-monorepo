@@ -4,7 +4,7 @@
 #   curl -fsSL https://panel.unixsee.com/agents/install.sh | bash -s -- --token <enrollment-token>
 #
 # Optional:
-#   --api-base-url https://api.unixsee.com
+#   --api-base-url https://core.unixsee.com
 #   --bundle-url   https://panel.unixsee.com/agents/unixsee-agent.tar.gz
 #   --bundle-user / --bundle-password   (only if panel /agents is behind HTTP Basic Auth)
 #   or env: AGENT_BUNDLE_HTTP_USER / AGENT_BUNDLE_HTTP_PASSWORD
@@ -14,7 +14,7 @@ TOKEN=""
 INSTALL_DIR="/opt/unixsee-agent"
 SERVICE_NAME="unixsee-agent"
 SERVICE_USER="unixsee-agent"
-API_BASE_URL="${API_BASE_URL:-https://api.unixsee.com}"
+API_BASE_URL="${API_BASE_URL:-https://core.unixsee.com}"
 BUNDLE_URL="${AGENT_BUNDLE_URL:-https://panel.unixsee.com/agents/unixsee-agent.tar.gz}"
 BUNDLE_HTTP_USER="${AGENT_BUNDLE_HTTP_USER:-}"
 BUNDLE_HTTP_PASSWORD="${AGENT_BUNDLE_HTTP_PASSWORD:-}"
@@ -56,7 +56,8 @@ Options:
   --bundle-password PASS
 
 Run as root on Ubuntu. Creates user unixsee-agent, installs the agent under
-/opt/unixsee-agent, writes a mode-600 .env, and enables systemd.
+/opt/unixsee-agent, verifies enrollment with Nest, persists AGENT_SECRET, then
+enables and starts systemd.
 
 Prefer leaving /agents/ public on the panel host; Basic Auth is only for
 temporary testing.
@@ -136,6 +137,107 @@ ensure_user() {
   if getent group diradmin >/dev/null 2>&1; then
     usermod -aG diradmin "${SERVICE_USER}" || true
   fi
+}
+
+validate_token() {
+  if [[ ${#TOKEN} -ne 64 ]]; then
+    err "Enrollment token must be exactly 64 hex characters (got ${#TOKEN})."
+    err "Copy the install command or token from the admin panel reveal sheet."
+    exit 1
+  fi
+  if ! [[ "${TOKEN}" =~ ^[0-9a-fA-F]{64}$ ]]; then
+    err "Enrollment token must be hexadecimal (0-9, a-f)."
+    exit 1
+  fi
+}
+
+resolve_machine_id() {
+  local path id
+  for path in /etc/machine-id /var/lib/dbus/machine-id; do
+    if [[ -f "${path}" ]]; then
+      id="$(tr -d '[:space:]' < "${path}")"
+      if [[ -n "${id}" ]]; then
+        echo "${id}"
+        return 0
+      fi
+    fi
+  done
+  err "Unable to read machine-id from /etc/machine-id or /var/lib/dbus/machine-id"
+  exit 1
+}
+
+finalize_env_after_enroll() {
+  local secret_key="$1"
+  local env_file="${INSTALL_DIR}/.env"
+  local tmp_env preserved
+  tmp_env="$(mktemp)"
+  preserved="$(mktemp)"
+
+  if [[ -f "${env_file}" ]]; then
+    grep -vE '^(NODE_ENV|API_BASE_URL|ENROLLMENT_TOKEN|AGENT_SECRET|ACCESS_LOG_DIR|OPENLITESPEED_SERVER_ROOT)=' \
+      "${env_file}" > "${preserved}" || true
+  else
+    : > "${preserved}"
+  fi
+
+  {
+    echo "NODE_ENV=production"
+    echo "API_BASE_URL=${API_BASE_URL}"
+    echo "AGENT_SECRET=${secret_key}"
+    echo "ACCESS_LOG_DIR=/var/log/httpd/domains"
+    echo "OPENLITESPEED_SERVER_ROOT=/usr/local/lsws"
+    if [[ -s "${preserved}" ]]; then
+      cat "${preserved}"
+    fi
+  } > "${tmp_env}"
+
+  mv "${tmp_env}" "${env_file}"
+  rm -f "${preserved}"
+  chmod 600 "${env_file}"
+  chown "${SERVICE_USER}:${SERVICE_USER}" "${env_file}"
+  log "Persisted AGENT_SECRET and removed ENROLLMENT_TOKEN from ${env_file}"
+}
+
+verify_and_persist_enrollment() {
+  local machine_id enroll_url response http_code secret_key
+  machine_id="$(resolve_machine_id)"
+  enroll_url="${API_BASE_URL%/}/api/internal/agent/v1/enroll"
+  response="$(mktemp)"
+
+  log "Verifying enrollment with ${enroll_url} (machineId=${machine_id})…"
+
+  http_code="$(curl -sS -o "${response}" -w '%{http_code}' \
+    -X POST "${enroll_url}" \
+    -H "Content-Type: application/json" \
+    -H "x-enrollment-token: ${TOKEN}" \
+    -d "{\"machineId\":\"${machine_id}\",\"agentVersion\":\"0.1.0\"}")"
+
+  if [[ "${http_code}" != "201" ]]; then
+    err "Enrollment failed with HTTP ${http_code}."
+    if [[ -s "${response}" ]]; then
+      err "Response: $(tr -d '\n' < "${response}")"
+    fi
+    rm -f "${response}"
+    err "Request a fresh enrollment token in admin and re-run install."
+    err "Confirm API_BASE_URL is the Nest origin only (no /api/v1 suffix)."
+    exit 1
+  fi
+
+  if ! secret_key="$(node -e "
+    const fs = require('node:fs');
+    const payload = JSON.parse(fs.readFileSync('${response}', 'utf8'));
+    const secretKey = payload?.data?.secretKey;
+    if (typeof secretKey !== 'string' || !secretKey) process.exit(1);
+    process.stdout.write(secretKey);
+  " 2>/dev/null)"; then
+    rm -f "${response}"
+    err "Enrollment returned HTTP 201 but response JSON was unexpected."
+    exit 1
+  fi
+  rm -f "${response}"
+
+  finalize_env_after_enroll "${secret_key}"
+  log "Enrollment verified successfully."
 }
 
 install_bundle() {
@@ -226,7 +328,7 @@ apply_acls() {
   fi
 }
 
-install_systemd() {
+install_systemd_unit() {
   local unit_src="${INSTALL_DIR}/systemd/unixsee-agent.service"
   if [[ ! -f "${unit_src}" ]]; then
     err "Missing ${unit_src} in agent bundle"
@@ -236,22 +338,30 @@ install_systemd() {
   chown -R "${SERVICE_USER}:${SERVICE_USER}" "${INSTALL_DIR}"
   cp "${unit_src}" "/etc/systemd/system/${SERVICE_NAME}.service"
   systemctl daemon-reload
-  systemctl enable --now "${SERVICE_NAME}"
+  systemctl enable "${SERVICE_NAME}"
+  log "Installed systemd unit (not started until enrollment succeeds)"
+}
+
+start_systemd_service() {
+  systemctl start "${SERVICE_NAME}"
   sleep 1
   systemctl --no-pager --full status "${SERVICE_NAME}" || true
 }
 
 main() {
   log "Starting install into ${INSTALL_DIR}"
+  validate_token
   ensure_packages
   ensure_node
   ensure_user
   install_bundle
   write_env
   apply_acls
-  install_systemd
+  install_systemd_unit
+  verify_and_persist_enrollment
+  start_systemd_service
   log "Done. Confirm agent status in admin panel (should move to connected after first heartbeat)."
-  log "Do not share or commit ENROLLMENT_TOKEN / AGENT_SECRET."
+  log "Do not share or commit AGENT_SECRET."
 }
 
 main

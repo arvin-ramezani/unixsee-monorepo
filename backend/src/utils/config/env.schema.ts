@@ -25,6 +25,11 @@ export const envSchema = z.object({
 
   PORT: z.coerce.number().int().positive().default(4000),
 
+  /** Nest origin for agent enroll/heartbeat (no /api/v1 suffix). */
+  AGENT_API_BASE_URL: z
+    .url('AGENT_API_BASE_URL must be a valid URL')
+    .default('https://core.unixsee.com'),
+
   DATABASE_URL: z.url('DATABASE_URL must be a valid URL'),
 
   JWT_ACCESS_SECRET: z

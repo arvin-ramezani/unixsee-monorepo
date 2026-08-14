@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -25,6 +26,17 @@ describe('ServersService.enrollWithToken', () => {
       providers: [
         ServersService,
         { provide: PrismaService, useValue: prisma },
+        {
+          provide: ConfigService,
+          useValue: {
+            getOrThrow: vi.fn((key: string) => {
+              if (key === 'app.agentApiBaseUrl') {
+                return 'https://core.unixsee.com';
+              }
+              throw new Error(`Unexpected config key: ${key}`);
+            }),
+          },
+        },
       ],
     }).compile();
 

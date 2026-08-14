@@ -128,8 +128,12 @@ Plaintext is returned only here. Hash is stored server-side.
 Default `installCommand` shape:
 
 ```bash
-curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token <plaintext>
+curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token <plaintext> --api-base-url https://core.unixsee.com
 ```
+
+`--api-base-url` is derived from Nest `AGENT_API_BASE_URL` (origin only, no
+`/api/v1`). The installer validates the token, enrolls once, persists
+`AGENT_SECRET`, then starts systemd.
 
 ### Revoke unused enrollment token
 

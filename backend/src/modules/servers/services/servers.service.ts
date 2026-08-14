@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import {
@@ -13,6 +14,7 @@ import {
 } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+import type { AppConfigType } from '#/utils/config/app.config.js';
 
 const AGENT_CONNECTED_MS = 2 * 60 * 1000;
 const AGENT_STALE_MS = 10 * 60 * 1000;
@@ -21,7 +23,10 @@ const AGENT_STALE_MS = 10 * 60 * 1000;
 export class ServersService {
   private readonly logger = createAppLogger(ServersService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService<AppConfigType>,
+  ) {}
 
   async list(params?: { skip?: number; take?: number }) {
     const [items, total] = await this.prisma.$transaction([
@@ -342,7 +347,10 @@ export class ServersService {
   }
 
   private buildInstallCommand(token: string): string {
-    return `curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token ${token}`;
+    const apiBaseUrl = this.configService.getOrThrow('app.agentApiBaseUrl', {
+      infer: true,
+    });
+    return `curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token ${token} --api-base-url ${apiBaseUrl}`;
   }
 
   private toAdminServerReadModel(server: {
