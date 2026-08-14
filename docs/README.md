@@ -18,6 +18,7 @@ and engineering conventions.
 | Work on monitoring-agent (later) | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) |
 | Change product behavior | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md) |
 | Git / PR / Cursor review workflow | [`quality/git-and-pr-workflow.md`](./quality/git-and-pr-workflow.md) |
+| Sync monorepo apps to server deploy repos | [`quality/deployment-remotes.md`](./quality/deployment-remotes.md) |
 | Record a structural decision | [`architecture/decisions/`](./architecture/decisions/) |
 
 ## Map

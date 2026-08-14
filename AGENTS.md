@@ -62,6 +62,20 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
   indexes and cross-links.
 - Keep `.cursor/rules` thin; put lasting detail in `docs/`.
 
+## Deploy remotes (server repos)
+
+Development happens in this monorepo. **Deployment / staging / real-server
+testing** uses separate single-app repositories per surface.
+
+When asked to **update the main repos** or **sync deploy repos**, follow
+[`docs/quality/deployment-remotes.md`](./docs/quality/deployment-remotes.md):
+
+| Monorepo path | Remote repo | Branch |
+|---|---|---|
+| `backend/` | `unixseemaster-pixel/unixsee-api` | `develop` |
+| `client/` | `unixseemaster-pixel/unixsee-web` | `staging` |
+| `admin-panel/` | `unixseemaster-pixel/unixsee-admin` | `dev` |
+
 ## Cursor rules
 
 | Rule | When it applies |

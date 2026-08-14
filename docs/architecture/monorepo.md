@@ -69,6 +69,8 @@ Default: **no premature shared packages**.
 - Monorepo-wide workspace tooling (root workspaces, shared CI) is not configured
   yet beyond the root dev helper. Do not invent unavailable root scripts or
   claim builds pass.
+- **Deploy remotes:** each app folder may sync to a single-app repo for real
+  servers — see [`../quality/deployment-remotes.md`](../quality/deployment-remotes.md).
 - Backend module/route targets:
   [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
 

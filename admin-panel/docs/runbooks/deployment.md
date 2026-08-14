@@ -33,8 +33,10 @@ fine). See [`../../.env.example`](../../.env.example).
 
 ## Deploy checklist
 
-1. **Ship app code** to the panel host (sync from monorepo `admin-panel/` or the
-   dedicated admin repo `dev` branch — same tree).
+1. **Ship app code** to the panel host (sync from monorepo `admin-panel/` to
+   [`unixsee-admin`](https://github.com/unixseemaster-pixel/unixsee-admin.git)
+   branch `dev`, or equivalent copy — see
+   [`../../../docs/quality/deployment-remotes.md`](../../../docs/quality/deployment-remotes.md)).
 2. **Install and build** on the host (or CI artifact) with the production env
    available to Next:
    ```bash
