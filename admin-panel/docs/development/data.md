@@ -9,6 +9,8 @@
 | `/plan-requests` list | RSC `server-fetch` | Nest list; contract [`plan-requests-admin.md`](../../../docs/backend/contracts/plan-requests-admin.md) |
 | `/plan-requests/[id]` | RSC `server-fetch` | Nest GET by id; enable/decline via Server Actions; revalidates list and `[id]` |
 | `/servers`, `/servers/[id]` | RSC `server-fetch` + server Server Actions | Create/delete server, issue/revoke enrollment token, revoke agent; contract [`servers-admin.md`](../../../docs/backend/contracts/servers-admin.md). `assign` + `tenantId` search params reopen the assign Dialog after `/users/new`. |
+| `/users`, `/users/[id]` | RSC `server-fetch` + fixture overlay | Nest customer list/detail first; remaining fixtures shown underneath (id/mobile/email collision → Nest wins). Soft Nest warning keeps fixtures visible. Create / security / notes still local until Actions are wired. Authorization status on list = tenant membership (no ID-card fields). |
+| `/users/authorization`, `/users/authorization/[id]` | RSC `server-fetch` + fixture overlay | Nest authorization cases first; fixtures kept for demo IDs without Nest user overlap. Approve / needs-info / reject via Server Actions. Contract [`authorization-cases.md`](../../../docs/backend/contracts/authorization-cases.md). |
 
 ### Fixture-backed (not yet wired)
 
@@ -23,10 +25,11 @@ Examples still fixture-driven:
 ```text
 overview-data.ts   # ticket attention strip still uses tickets-data fixtures
 websites-data.ts
-users-data.ts
+users-data.ts      # enums + labels; list/detail pages read Nest
 servers-data.ts    # enums + labels; list/detail pages read Nest
 plan-requests-data.ts   # enums + overview fixtures; list/detail pages read Nest
 complementary-services-data.ts
+authorization-data.ts   # KYC enums/labels + demo cases under Nest
 ```
 
 `tickets-data.ts` remains for overview fixtures and shared status/service enums;
@@ -35,8 +38,10 @@ status labels and overview fixtures while `/plan-requests` and
 `/plan-requests/[id]` load Nest.
 `servers-data.ts` keeps agent/enrollment enums and labels while `/servers`
 loads Nest; discovery assignment on the detail pane is still local-only.
-`/users`, `/users/new`, and `/users/[id]` stay fixture-backed via
-`users-runtime.ts`.
+`users-data.ts` keeps account/tenant enums and demo customers while `/users`
+and `/users/[id]` load Nest **on top of** fixtures (`merge-nest-over-fixture.ts`).
+`/users/new` stays fixture-backed.
+`/users/authorization` loads Nest cases (with fixture fallback/overlay).
 `/complementary-services` and `/complementary-services/[id]` stay
 fixture-backed; in-session assignment creates use
 `complementary-services-runtime.ts`. There is no Nest GET-by-id yet.

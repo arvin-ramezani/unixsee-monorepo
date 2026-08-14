@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 import { RadialRevealLink } from "@/components/common/radial-reveal/radial-reveal-link";
+import { Link } from "@/i18n/navigation";
 
 export function GuestPlanRequestSuccessView({
   planName,
@@ -74,12 +75,20 @@ export function GuestPlanRequestSuccessView({
           </ol>
         </section>
 
-        <RadialRevealLink
-          href="/services/managed-woocommerce-server#plans"
-          className="mt-8 h-12 w-full max-w-sm text-base font-bold sm:w-auto"
-        >
-          {t("backToPlans")}
-        </RadialRevealLink>
+        <div className="mt-8 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+          <RadialRevealLink
+            href="/dashboard/authorization"
+            className="h-12 w-full text-base font-bold sm:w-auto"
+          >
+            {t("authorizationCta")}
+          </RadialRevealLink>
+          <Link
+            href="/services/managed-woocommerce-server#plans"
+            className="inline-flex h-12 items-center justify-center rounded-full border px-6 text-base font-medium"
+          >
+            {t("backToPlans")}
+          </Link>
+        </div>
       </div>
     </main>
   );

@@ -35,6 +35,7 @@ import { ActivitiesModule } from './modules/activities/activities.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AdminOverviewModule } from './modules/admin-overview/admin-overview.module.js';
 import { OperationalActionsModule } from './modules/operational-actions/operational-actions.module.js';
+import { AuthorizationCasesModule } from './modules/authorization-cases/authorization-cases.module.js';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { OperationalActionsModule } from './modules/operational-actions/operatio
     AuditModule,
     AdminOverviewModule,
     OperationalActionsModule,
+    AuthorizationCasesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -5,7 +5,7 @@ import { AuthenticationController } from './controllers/authentication.controlle
 import { AuthenticationService } from './services/authentication.service.js';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy.js';
 import { AccessTokenStrategy } from './strategies/access-token.strategy.js';
-import { OtpService } from './services/otp-service.js';
+import { OtpModule } from './otp.module.js';
 import { MonitoringAccessStrategy } from './strategies/monitoring-access.strategy.js';
 import { UsersModule } from '#/modules/users/users.module.js';
 import { TenantsModule } from '#/modules/tenants/tenants.module.js';
@@ -16,6 +16,7 @@ import { MailModule } from '#/modules/mail/mail.module.js';
     UsersModule,
     TenantsModule,
     MailModule,
+    OtpModule,
     JwtModule.register({
       // secret: jwtConstants.secret,
       // signOptions: { expiresIn: '60s' },
@@ -28,7 +29,6 @@ import { MailModule } from '#/modules/mail/mail.module.js';
     AccessTokenStrategy,
     RefreshTokenStrategy,
     MonitoringAccessStrategy,
-    OtpService,
   ],
 })
 export class AuthModule {}

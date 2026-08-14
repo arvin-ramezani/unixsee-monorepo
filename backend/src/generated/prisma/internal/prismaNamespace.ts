@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Membership: 'Membership',
+  AuthorizationCase: 'AuthorizationCase',
   Server: 'Server',
   ServerEnrollmentToken: 'ServerEnrollmentToken',
   VpsNode: 'VpsNode',
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
+    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -658,6 +659,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MembershipCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MembershipCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthorizationCase: {
+      payload: Prisma.$AuthorizationCasePayload<ExtArgs>
+      fields: Prisma.AuthorizationCaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthorizationCaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthorizationCaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        findFirst: {
+          args: Prisma.AuthorizationCaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthorizationCaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        findMany: {
+          args: Prisma.AuthorizationCaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        create: {
+          args: Prisma.AuthorizationCaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        createMany: {
+          args: Prisma.AuthorizationCaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthorizationCaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        delete: {
+          args: Prisma.AuthorizationCaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        update: {
+          args: Prisma.AuthorizationCaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthorizationCaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthorizationCaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthorizationCaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthorizationCaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        aggregate: {
+          args: Prisma.AuthorizationCaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthorizationCase>
+        }
+        groupBy: {
+          args: Prisma.AuthorizationCaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthorizationCaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthorizationCaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthorizationCaseCountAggregateOutputType> | number
         }
       }
     }
@@ -3155,6 +3230,8 @@ export const UserScalarFieldEnum = {
   hashedRt: 'hashedRt',
   suspendedAt: 'suspendedAt',
   suspendedReason: 'suspendedReason',
+  phoneVerifiedAt: 'phoneVerifiedAt',
+  emailVerifiedAt: 'emailVerifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3184,6 +3261,36 @@ export const MembershipScalarFieldEnum = {
 } as const
 
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const AuthorizationCaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  nationalId: 'nationalId',
+  birthDate: 'birthDate',
+  mobile: 'mobile',
+  mobileChallenge: 'mobileChallenge',
+  mobileBelongsToNationalId: 'mobileBelongsToNationalId',
+  email: 'email',
+  emailChallenge: 'emailChallenge',
+  province: 'province',
+  city: 'city',
+  address: 'address',
+  postalCode: 'postalCode',
+  nationalIdCardFileName: 'nationalIdCardFileName',
+  attestedTruthful: 'attestedTruthful',
+  staffReason: 'staffReason',
+  staffFieldsToFix: 'staffFieldsToFix',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  decidedByUserId: 'decidedByUserId',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuthorizationCaseScalarFieldEnum = (typeof AuthorizationCaseScalarFieldEnum)[keyof typeof AuthorizationCaseScalarFieldEnum]
 
 
 export const ServerScalarFieldEnum = {
@@ -3875,6 +3982,41 @@ export type ListEnumMembershipRoleFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'AuthorizationCaseStatus'
+ */
+export type EnumAuthorizationCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthorizationCaseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthorizationCaseStatus[]'
+ */
+export type ListEnumAuthorizationCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthorizationCaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactChallengeState'
+ */
+export type EnumContactChallengeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactChallengeState'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactChallengeState[]'
+ */
+export type ListEnumContactChallengeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactChallengeState[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'EnrollmentTokenStatus'
  */
 export type EnumEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrollmentTokenStatus'>
@@ -3899,13 +4041,6 @@ export type EnumVpsNodeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'VpsNodeStatus[]'
  */
 export type ListEnumVpsNodeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VpsNodeStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4287,6 +4422,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   tenant?: Prisma.TenantOmit
   membership?: Prisma.MembershipOmit
+  authorizationCase?: Prisma.AuthorizationCaseOmit
   server?: Prisma.ServerOmit
   serverEnrollmentToken?: Prisma.ServerEnrollmentTokenOmit
   vpsNode?: Prisma.VpsNodeOmit

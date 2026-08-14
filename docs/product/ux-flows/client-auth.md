@@ -82,7 +82,8 @@ Unixsee can onboard and authenticate customers through the public channel withou
 - Impersonation.
 - Plan enablement or website activation as a side effect of signup.
 - احراز هویت certification upload / tenant approval (separate from this auth shell;
-  see [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)).
+  see [`client-authorization.md`](./client-authorization.md) and
+  [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)).
 - Visual polish details (see UI companion).
 
 ### Success definition
@@ -492,5 +493,6 @@ sentence.
   [`../../architecture/decisions/0011-client-nest-auth-integration.md`](../../architecture/decisions/0011-client-nest-auth-integration.md)
 - Phase 1: [`../phase-1-application-features.md`](../phase-1-application-features.md) §8
 - Authorization / tenant: [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)
+- Customer authorization UX: [`client-authorization.md`](./client-authorization.md)
 - Admin consumer: [`admin-users.md`](./admin-users.md)
 - UI-only phase: [`../../architecture/decisions/0003-ui-only-phase-boundaries.md`](../../architecture/decisions/0003-ui-only-phase-boundaries.md)

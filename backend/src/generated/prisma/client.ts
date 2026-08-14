@@ -57,6 +57,11 @@ export type Tenant = Prisma.TenantModel
  */
 export type Membership = Prisma.MembershipModel
 /**
+ * Model AuthorizationCase
+ * Customer احراز هویت package for staff review → tenant approval.
+ */
+export type AuthorizationCase = Prisma.AuthorizationCaseModel
+/**
  * Model Server
  * 
  */

@@ -43,6 +43,7 @@ import {
   type PlanRequestBlockerType,
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
+import { findAuthorizationCaseByUserId } from "@/lib/data/authorization-runtime";
 import { STAFF_CAPABILITY } from "@/lib/data/users-data";
 import {
   isPublicPlanRequest,
@@ -100,8 +101,10 @@ function resolveEnablementBlockers(
 
   const blockers: PlanRequestBlockerType[] = [];
 
-  if (!request.linkedUserId || !request.linkedTenantId) {
+  if (!request.linkedUserId) {
     blockers.push(PLAN_REQUEST_BLOCKER.MISSING_USER);
+  } else if (!request.linkedTenantId) {
+    blockers.push(PLAN_REQUEST_BLOCKER.MISSING_TENANT);
   }
 
   if (!request.targetWebsiteId && !selectedWebsite) {
@@ -588,6 +591,47 @@ function PlanRequestDetailsBody({
                       ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
                     </>
                   )}
+                </p>
+              )}
+              {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_TENANT) && (
+                <p className="text-xs text-destructive/90">
+                  فعال‌سازی تا تأیید احراز هویت و ایجاد مستأجر مسدود است.{" "}
+                  {(() => {
+                    const authCase = request.linkedUserId
+                      ? findAuthorizationCaseByUserId(request.linkedUserId)
+                      : undefined;
+                    if (authCase) {
+                      return (
+                        <Link
+                          href={`/users/authorization/${authCase.id}`}
+                          className="underline underline-offset-2"
+                        >
+                          باز کردن پرونده احراز هویت
+                        </Link>
+                      );
+                    }
+                    return (
+                      <Link
+                        href="/users/authorization"
+                        className="underline underline-offset-2"
+                      >
+                        صف احراز هویت
+                      </Link>
+                    );
+                  })()}
+                  {request.linkedUserId ? (
+                    <>
+                      {" "}
+                      یا{" "}
+                      <Link
+                        href={`/users/${request.linkedUserId}`}
+                        className="underline underline-offset-2"
+                      >
+                        پرونده کاربر
+                      </Link>
+                    </>
+                  ) : null}
+                  .
                 </p>
               )}
             </section>

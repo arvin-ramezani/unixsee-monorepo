@@ -65,6 +65,57 @@ export class MailService {
     }
   }
 
+  /**
+   * Temporary email-OTP stand-in: deliver to the fixed mock inbox (not the
+   * target address) until real recipient delivery is enabled.
+   */
+  async sendEmailOtpMockEmail(input: {
+    email: string;
+    otp: string;
+  }): Promise<void> {
+    const mail = this.config.get('app', { infer: true }).mail;
+    const to = mail.phoneOtpMockDeliveryEmail;
+
+    try {
+      await this.getTransporter().sendMail({
+        from: mail.from,
+        to,
+        subject: `Unixsee email OTP (mock) — ${input.email}`,
+        text: [
+          'Email verification code',
+          '',
+          'Use this one-time code in the client app.',
+          'This email is delivered to the mock inbox until real email delivery is connected.',
+          '',
+          `Intended recipient: ${input.email}`,
+          `OTP code: ${input.otp}`,
+          '',
+          'Mock email delivery',
+        ].join('\n'),
+        html: [
+          '<p><strong>Email verification code</strong></p>',
+          '<p>Use this one-time code in the client app. Delivered to the mock inbox until real email delivery is connected.</p>',
+          `<p>Intended recipient: <code dir="ltr">${escapeHtml(input.email)}</code></p>`,
+          `<p>OTP code: <code dir="ltr">${escapeHtml(input.otp)}</code></p>`,
+          '<p>Mock email delivery</p>',
+        ].join(''),
+      });
+
+      this.logger.log('mail.email_otp_mock.sent', {
+        email: input.email,
+      });
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error('mail.email_otp_mock.failed', err, {
+        email: input.email,
+      });
+
+      throw new ServiceUnavailableException(
+        'OTP delivery is temporarily unavailable.',
+      );
+    }
+  }
+
   private getTransporter(): Transporter {
     if (this.transporter) {
       return this.transporter;

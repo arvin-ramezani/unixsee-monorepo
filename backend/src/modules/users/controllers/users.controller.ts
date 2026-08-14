@@ -5,8 +5,16 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Post,
 } from '@nestjs/common';
-import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { UsersService } from '../services/users.service.js';
 import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
@@ -29,6 +37,38 @@ class UpdateMeDto {
   locale?: string;
 }
 
+class RequestPhoneVerifyOtpDto {
+  @IsString()
+  @Matches(/^\+[1-9]\d{7,14}$/)
+  phoneNumber!: string;
+}
+
+class VerifyPhoneOtpDto {
+  @IsString()
+  @Matches(/^\+[1-9]\d{7,14}$/)
+  phoneNumber!: string;
+
+  @IsString()
+  @MinLength(4)
+  @MaxLength(8)
+  otp!: string;
+}
+
+class RequestEmailVerifyOtpDto {
+  @IsEmail()
+  email!: string;
+}
+
+class VerifyEmailOtpDto {
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  @MinLength(4)
+  @MaxLength(8)
+  otp!: string;
+}
+
 @Controller('v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -46,6 +86,52 @@ export class UsersController {
     @Body() body: UpdateMeDto,
   ) {
     const updated = await this.usersService.updateMe(user.id, body);
+    return ApiResponseBuilder.ok(updated);
+  }
+
+  @Post('me/contacts/phone/otp/request')
+  @HttpCode(HttpStatus.OK)
+  async requestPhoneVerifyOtp(
+    @CurrentUser() user: CurrentUserType,
+    @Body() body: RequestPhoneVerifyOtpDto,
+  ) {
+    const result = await this.usersService.requestPhoneVerifyOtp(
+      user.id,
+      body.phoneNumber,
+    );
+    return ApiResponseBuilder.ok(result);
+  }
+
+  @Post('me/contacts/phone/otp/verify')
+  @HttpCode(HttpStatus.OK)
+  async verifyPhoneOtp(
+    @CurrentUser() user: CurrentUserType,
+    @Body() body: VerifyPhoneOtpDto,
+  ) {
+    const updated = await this.usersService.verifyPhoneOtp(user.id, body);
+    return ApiResponseBuilder.ok(updated);
+  }
+
+  @Post('me/contacts/email/otp/request')
+  @HttpCode(HttpStatus.OK)
+  async requestEmailVerifyOtp(
+    @CurrentUser() user: CurrentUserType,
+    @Body() body: RequestEmailVerifyOtpDto,
+  ) {
+    const result = await this.usersService.requestEmailVerifyOtp(
+      user.id,
+      body.email,
+    );
+    return ApiResponseBuilder.ok(result);
+  }
+
+  @Post('me/contacts/email/otp/verify')
+  @HttpCode(HttpStatus.OK)
+  async verifyEmailOtp(
+    @CurrentUser() user: CurrentUserType,
+    @Body() body: VerifyEmailOtpDto,
+  ) {
+    const updated = await this.usersService.verifyEmailOtp(user.id, body);
     return ApiResponseBuilder.ok(updated);
   }
 }

@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Membership: 'Membership',
+  AuthorizationCase: 'AuthorizationCase',
   Server: 'Server',
   ServerEnrollmentToken: 'ServerEnrollmentToken',
   VpsNode: 'VpsNode',
@@ -118,6 +119,8 @@ export const UserScalarFieldEnum = {
   hashedRt: 'hashedRt',
   suspendedAt: 'suspendedAt',
   suspendedReason: 'suspendedReason',
+  phoneVerifiedAt: 'phoneVerifiedAt',
+  emailVerifiedAt: 'emailVerifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -147,6 +150,36 @@ export const MembershipScalarFieldEnum = {
 } as const
 
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const AuthorizationCaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  nationalId: 'nationalId',
+  birthDate: 'birthDate',
+  mobile: 'mobile',
+  mobileChallenge: 'mobileChallenge',
+  mobileBelongsToNationalId: 'mobileBelongsToNationalId',
+  email: 'email',
+  emailChallenge: 'emailChallenge',
+  province: 'province',
+  city: 'city',
+  address: 'address',
+  postalCode: 'postalCode',
+  nationalIdCardFileName: 'nationalIdCardFileName',
+  attestedTruthful: 'attestedTruthful',
+  staffReason: 'staffReason',
+  staffFieldsToFix: 'staffFieldsToFix',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  decidedByUserId: 'decidedByUserId',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuthorizationCaseScalarFieldEnum = (typeof AuthorizationCaseScalarFieldEnum)[keyof typeof AuthorizationCaseScalarFieldEnum]
 
 
 export const ServerScalarFieldEnum = {

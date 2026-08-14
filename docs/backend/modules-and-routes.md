@@ -83,6 +83,10 @@ Module: `auth`. No redesign.
 |---|---|---|
 | GET | `/api/v1/users/me` | Customer (existing) |
 | PATCH | `/api/v1/users/me` | Customer |
+| POST | `/api/v1/users/me/contacts/phone/otp/request` | Customer |
+| POST | `/api/v1/users/me/contacts/phone/otp/verify` | Customer |
+| POST | `/api/v1/users/me/contacts/email/otp/request` | Customer |
+| POST | `/api/v1/users/me/contacts/email/otp/verify` | Customer |
 | GET | `/api/v1/admin/users` | Admin |
 | GET | `/api/v1/admin/users/:id` | Admin |
 | POST | `/api/v1/admin/users` | Admin |
@@ -91,6 +95,24 @@ Module: `auth`. No redesign.
 | POST | `/api/v1/admin/users/:id/restore` | Admin |
 
 Never return passwords, OTP codes, recovery secrets, refresh hashes, or agent keys.
+
+### Authorization cases (احراز هویت) — add `authorization-cases`
+
+Customer identity package submit + staff review. Approve creates tenant +
+OWNER membership. Package fields stay off `/admin/users` list.
+
+| Method | Path | Audience |
+|---|---|---|
+| GET | `/api/v1/authorization-cases/me` | Customer (own case or `null`) |
+| PUT | `/api/v1/authorization-cases/me/draft` | Customer |
+| POST | `/api/v1/authorization-cases/me/submit` | Customer |
+| GET | `/api/v1/admin/authorization-cases` | Admin |
+| GET | `/api/v1/admin/authorization-cases/:id` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/approve` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/needs-info` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/reject` | Admin |
+
+Contract: [`contracts/authorization-cases.md`](./contracts/authorization-cases.md).
 
 ### Tenants — add
 

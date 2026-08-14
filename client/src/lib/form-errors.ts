@@ -19,6 +19,21 @@ export const FORM_ERROR_KEYS = [
   "passwordMismatch",
   "otpRequired",
   "otpInvalid",
+  "nationalIdRequired",
+  "nationalIdInvalid",
+  "birthDateRequired",
+  "mobileRequired",
+  "mobileInvalid",
+  "mobileBelongsRequired",
+  "provinceRequired",
+  "cityRequired",
+  "addressRequired",
+  "addressTooLong",
+  "postalCodeRequired",
+  "postalCodeInvalid",
+  "attestationRequired",
+  "documentRequired",
+  "documentInvalid",
 ] as const;
 
 export type FormErrorKey = (typeof FORM_ERROR_KEYS)[number];

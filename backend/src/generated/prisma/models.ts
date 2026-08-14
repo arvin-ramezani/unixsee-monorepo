@@ -11,6 +11,7 @@
 export type * from './models/User.js'
 export type * from './models/Tenant.js'
 export type * from './models/Membership.js'
+export type * from './models/AuthorizationCase.js'
 export type * from './models/Server.js'
 export type * from './models/ServerEnrollmentToken.js'
 export type * from './models/VpsNode.js'

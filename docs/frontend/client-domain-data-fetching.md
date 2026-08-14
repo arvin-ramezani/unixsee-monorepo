@@ -114,6 +114,17 @@ cookie (guests). With a valid refresh cookie it sets cookies and returns
 
 Do not reseed from `localStorage`. Do not return refresh tokens to JS.
 
+## Profile contact verification
+
+`/dashboard/profile` loads `/users/me` via RSC and maps
+`phoneVerifiedAt` / `emailVerifiedAt` to contact badges. Phone/email OTP uses
+Server Actions against `/users/me/contacts/*/otp/*` (contract
+[`../backend/contracts/users-me-contacts.md`](../backend/contracts/users-me-contacts.md)).
+`fullName` and `locale` persist via `PATCH /users/me`
+(`updateProfileAction`). Success and Nest failures use Sonner toasts
+(`toast.success` / `toastMappedApiError`). Avatar remains local preview only
+(no S3 yet).
+
 ## Per-feature checklist
 
 Before wiring a Nest domain into `client/`:

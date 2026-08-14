@@ -1,3 +1,8 @@
+/**
+ * Profile UI model. Contact fields + verification and fullName/locale come from
+ * Nest `/users/me` (+ PATCH / OTP verify). Avatar is local preview only (no S3).
+ * Password / 2FA remain fixture overlays until those APIs exist.
+ */
 export type VerificationStatus = "verified" | "unverified" | "pending";
 export type PasswordState = "set" | "not-set";
 export type TwoFactorState = "enabled" | "disabled";

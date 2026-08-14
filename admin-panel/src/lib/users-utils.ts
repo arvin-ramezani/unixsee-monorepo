@@ -17,6 +17,7 @@ import {
 import { COMPLEMENTARY_SERVICE_REQUESTS } from "@/lib/data/complementary-services-data";
 import { TICKETS } from "@/lib/data/tickets-data";
 import { listRuntimeWebsites } from "@/lib/data/websites-runtime";
+import type { UserKycStatusType } from "@/lib/users/map-admin-user";
 
 export const ACCOUNT_STATE_CONFIG: Record<
   AccountStateType,
@@ -225,6 +226,10 @@ export type CustomerQueueRowType = {
   user: CustomerUserType;
   tenantMemberships: TenantMembershipType[];
   websiteCount: number;
+  /** Nest-derived: tenant membership means organizationally authorized. */
+  authorization?: UserKycStatusType;
+  /** Present when list is Nest-over-fixture hybrid. */
+  source?: "nest" | "fixture";
 };
 
 export function buildCustomerQueueRows(

@@ -24,6 +24,9 @@ export type AuthUser = {
   username: string | null;
   fullName: string | null;
   role?: string;
+  locale?: string | null;
+  phoneVerifiedAt?: string | null;
+  emailVerifiedAt?: string | null;
 };
 
 export type AuthSessionPayload = AuthTokens & AuthUser;

@@ -37,6 +37,8 @@ export type UserMinAggregateOutputType = {
   hashedRt: string | null
   suspendedAt: Date | null
   suspendedReason: string | null
+  phoneVerifiedAt: Date | null
+  emailVerifiedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +56,8 @@ export type UserMaxAggregateOutputType = {
   hashedRt: string | null
   suspendedAt: Date | null
   suspendedReason: string | null
+  phoneVerifiedAt: Date | null
+  emailVerifiedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +75,8 @@ export type UserCountAggregateOutputType = {
   hashedRt: number
   suspendedAt: number
   suspendedReason: number
+  phoneVerifiedAt: number
+  emailVerifiedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +96,8 @@ export type UserMinAggregateInputType = {
   hashedRt?: true
   suspendedAt?: true
   suspendedReason?: true
+  phoneVerifiedAt?: true
+  emailVerifiedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +115,8 @@ export type UserMaxAggregateInputType = {
   hashedRt?: true
   suspendedAt?: true
   suspendedReason?: true
+  phoneVerifiedAt?: true
+  emailVerifiedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +134,8 @@ export type UserCountAggregateInputType = {
   hashedRt?: true
   suspendedAt?: true
   suspendedReason?: true
+  phoneVerifiedAt?: true
+  emailVerifiedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +226,8 @@ export type UserGroupByOutputType = {
   hashedRt: string | null
   suspendedAt: Date | null
   suspendedReason: string | null
+  phoneVerifiedAt: Date | null
+  emailVerifiedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -252,11 +266,15 @@ export type UserWhereInput = {
   hashedRt?: Prisma.StringNullableFilter<"User"> | string | null
   suspendedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   suspendedReason?: Prisma.StringNullableFilter<"User"> | string | null
+  phoneVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   websites?: Prisma.WebsiteListRelationFilter
   vpsNodes?: Prisma.VpsNodeListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
+  authorizationCases?: Prisma.AuthorizationCaseListRelationFilter
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseListRelationFilter
   createdPlanRequests?: Prisma.PlanRequestListRelationFilter
   linkedPlanRequests?: Prisma.PlanRequestListRelationFilter
   complementaryRequests?: Prisma.ComplementaryServiceRequestListRelationFilter
@@ -282,11 +300,15 @@ export type UserOrderByWithRelationInput = {
   hashedRt?: Prisma.SortOrderInput | Prisma.SortOrder
   suspendedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   suspendedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   websites?: Prisma.WebsiteOrderByRelationAggregateInput
   vpsNodes?: Prisma.VpsNodeOrderByRelationAggregateInput
   memberships?: Prisma.MembershipOrderByRelationAggregateInput
+  authorizationCases?: Prisma.AuthorizationCaseOrderByRelationAggregateInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseOrderByRelationAggregateInput
   createdPlanRequests?: Prisma.PlanRequestOrderByRelationAggregateInput
   linkedPlanRequests?: Prisma.PlanRequestOrderByRelationAggregateInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestOrderByRelationAggregateInput
@@ -315,11 +337,15 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   hashedRt?: Prisma.StringNullableFilter<"User"> | string | null
   suspendedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   suspendedReason?: Prisma.StringNullableFilter<"User"> | string | null
+  phoneVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   websites?: Prisma.WebsiteListRelationFilter
   vpsNodes?: Prisma.VpsNodeListRelationFilter
   memberships?: Prisma.MembershipListRelationFilter
+  authorizationCases?: Prisma.AuthorizationCaseListRelationFilter
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseListRelationFilter
   createdPlanRequests?: Prisma.PlanRequestListRelationFilter
   linkedPlanRequests?: Prisma.PlanRequestListRelationFilter
   complementaryRequests?: Prisma.ComplementaryServiceRequestListRelationFilter
@@ -345,6 +371,8 @@ export type UserOrderByWithAggregationInput = {
   hashedRt?: Prisma.SortOrderInput | Prisma.SortOrder
   suspendedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   suspendedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -368,6 +396,8 @@ export type UserScalarWhereWithAggregatesInput = {
   hashedRt?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   suspendedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   suspendedReason?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  phoneVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -385,11 +415,15 @@ export type UserCreateInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -415,11 +449,15 @@ export type UserUncheckedCreateInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -445,11 +483,15 @@ export type UserUpdateInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -475,11 +517,15 @@ export type UserUncheckedUpdateInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -505,6 +551,8 @@ export type UserCreateManyInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -522,6 +570,8 @@ export type UserUpdateManyMutationInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -539,6 +589,8 @@ export type UserUncheckedUpdateManyInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -556,6 +608,8 @@ export type UserCountOrderByAggregateInput = {
   hashedRt?: Prisma.SortOrder
   suspendedAt?: Prisma.SortOrder
   suspendedReason?: Prisma.SortOrder
+  phoneVerifiedAt?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -573,6 +627,8 @@ export type UserMaxOrderByAggregateInput = {
   hashedRt?: Prisma.SortOrder
   suspendedAt?: Prisma.SortOrder
   suspendedReason?: Prisma.SortOrder
+  phoneVerifiedAt?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -590,6 +646,8 @@ export type UserMinOrderByAggregateInput = {
   hashedRt?: Prisma.SortOrder
   suspendedAt?: Prisma.SortOrder
   suspendedReason?: Prisma.SortOrder
+  phoneVerifiedAt?: Prisma.SortOrder
+  emailVerifiedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -640,6 +698,36 @@ export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutMembershipsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipsInput, Prisma.UserUpdateWithoutMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
+}
+
+export type UserCreateNestedOneWithoutAuthorizationCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutAuthorizationCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthorizationCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutDecidedAuthorizationCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutDecidedAuthorizationCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDecidedAuthorizationCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAuthorizationCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutAuthorizationCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthorizationCasesInput
+  upsert?: Prisma.UserUpsertWithoutAuthorizationCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthorizationCasesInput, Prisma.UserUpdateWithoutAuthorizationCasesInput>, Prisma.UserUncheckedUpdateWithoutAuthorizationCasesInput>
+}
+
+export type UserUpdateOneWithoutDecidedAuthorizationCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutDecidedAuthorizationCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDecidedAuthorizationCasesInput
+  upsert?: Prisma.UserUpsertWithoutDecidedAuthorizationCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDecidedAuthorizationCasesInput, Prisma.UserUpdateWithoutDecidedAuthorizationCasesInput>, Prisma.UserUncheckedUpdateWithoutDecidedAuthorizationCasesInput>
 }
 
 export type UserCreateNestedOneWithoutVpsNodesInput = {
@@ -837,10 +925,14 @@ export type UserCreateWithoutMembershipsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -866,10 +958,14 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -911,10 +1007,14 @@ export type UserUpdateWithoutMembershipsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -940,10 +1040,310 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserCreateWithoutAuthorizationCasesInput = {
+  id?: string
+  phoneNumber: string
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
+}
+
+export type UserUncheckedCreateWithoutAuthorizationCasesInput = {
+  id?: string
+  phoneNumber: string
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type UserCreateOrConnectWithoutAuthorizationCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutAuthorizationCasesInput>
+}
+
+export type UserCreateWithoutDecidedAuthorizationCasesInput = {
+  id?: string
+  phoneNumber: string
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
+}
+
+export type UserUncheckedCreateWithoutDecidedAuthorizationCasesInput = {
+  id?: string
+  phoneNumber: string
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type UserCreateOrConnectWithoutDecidedAuthorizationCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutDecidedAuthorizationCasesInput>
+}
+
+export type UserUpsertWithoutAuthorizationCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuthorizationCasesInput, Prisma.UserUncheckedUpdateWithoutAuthorizationCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutAuthorizationCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuthorizationCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuthorizationCasesInput, Prisma.UserUncheckedUpdateWithoutAuthorizationCasesInput>
+}
+
+export type UserUpdateWithoutAuthorizationCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuthorizationCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUpsertWithoutDecidedAuthorizationCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedUpdateWithoutDecidedAuthorizationCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedCreateWithoutDecidedAuthorizationCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDecidedAuthorizationCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDecidedAuthorizationCasesInput, Prisma.UserUncheckedUpdateWithoutDecidedAuthorizationCasesInput>
+}
+
+export type UserUpdateWithoutDecidedAuthorizationCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDecidedAuthorizationCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -969,10 +1369,14 @@ export type UserCreateWithoutVpsNodesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -998,10 +1402,14 @@ export type UserUncheckedCreateWithoutVpsNodesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -1043,10 +1451,14 @@ export type UserUpdateWithoutVpsNodesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -1072,10 +1484,14 @@ export type UserUncheckedUpdateWithoutVpsNodesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -1101,10 +1517,14 @@ export type UserCreateWithoutWebsitesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -1130,10 +1550,14 @@ export type UserUncheckedCreateWithoutWebsitesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -1175,10 +1599,14 @@ export type UserUpdateWithoutWebsitesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -1204,10 +1632,14 @@ export type UserUncheckedUpdateWithoutWebsitesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -1233,11 +1665,15 @@ export type UserCreateWithoutLinkedPlanRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -1262,11 +1698,15 @@ export type UserUncheckedCreateWithoutLinkedPlanRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -1296,11 +1736,15 @@ export type UserCreateWithoutCreatedPlanRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -1325,11 +1769,15 @@ export type UserUncheckedCreateWithoutCreatedPlanRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -1370,11 +1818,15 @@ export type UserUpdateWithoutLinkedPlanRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -1399,11 +1851,15 @@ export type UserUncheckedUpdateWithoutLinkedPlanRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -1439,11 +1895,15 @@ export type UserUpdateWithoutCreatedPlanRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -1468,11 +1928,15 @@ export type UserUncheckedUpdateWithoutCreatedPlanRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -1497,11 +1961,15 @@ export type UserCreateWithoutComplementaryRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -1526,11 +1994,15 @@ export type UserUncheckedCreateWithoutComplementaryRequestsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -1571,11 +2043,15 @@ export type UserUpdateWithoutComplementaryRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -1600,11 +2076,15 @@ export type UserUncheckedUpdateWithoutComplementaryRequestsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -1629,11 +2109,15 @@ export type UserCreateWithoutCreatedTicketsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -1658,11 +2142,15 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -1692,11 +2180,15 @@ export type UserCreateWithoutAssignedTicketsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -1721,11 +2213,15 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -1766,11 +2262,15 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -1795,11 +2295,15 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -1835,11 +2339,15 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -1864,11 +2372,15 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -1893,11 +2405,15 @@ export type UserCreateWithoutTicketMessagesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -1922,11 +2438,15 @@ export type UserUncheckedCreateWithoutTicketMessagesInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -1967,11 +2487,15 @@ export type UserUpdateWithoutTicketMessagesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -1996,11 +2520,15 @@ export type UserUncheckedUpdateWithoutTicketMessagesInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -2025,11 +2553,15 @@ export type UserCreateWithoutAuthoredNotificationsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -2054,11 +2586,15 @@ export type UserUncheckedCreateWithoutAuthoredNotificationsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -2099,11 +2635,15 @@ export type UserUpdateWithoutAuthoredNotificationsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -2128,11 +2668,15 @@ export type UserUncheckedUpdateWithoutAuthoredNotificationsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -2157,11 +2701,15 @@ export type UserCreateWithoutNotificationReadsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -2186,11 +2734,15 @@ export type UserUncheckedCreateWithoutNotificationReadsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -2231,11 +2783,15 @@ export type UserUpdateWithoutNotificationReadsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -2260,11 +2816,15 @@ export type UserUncheckedUpdateWithoutNotificationReadsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -2289,11 +2849,15 @@ export type UserCreateWithoutAuditRecordsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -2318,11 +2882,15 @@ export type UserUncheckedCreateWithoutAuditRecordsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -2363,11 +2931,15 @@ export type UserUpdateWithoutAuditRecordsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -2392,11 +2964,15 @@ export type UserUncheckedUpdateWithoutAuditRecordsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -2421,11 +2997,15 @@ export type UserCreateWithoutOperationalActionsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
@@ -2450,11 +3030,15 @@ export type UserUncheckedCreateWithoutOperationalActionsInput = {
   hashedRt?: string | null
   suspendedAt?: Date | string | null
   suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
   memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
@@ -2495,11 +3079,15 @@ export type UserUpdateWithoutOperationalActionsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
@@ -2524,11 +3112,15 @@ export type UserUncheckedUpdateWithoutOperationalActionsInput = {
   hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
   memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
   createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
   linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
@@ -2549,6 +3141,8 @@ export type UserCountOutputType = {
   websites: number
   vpsNodes: number
   memberships: number
+  authorizationCases: number
+  decidedAuthorizationCases: number
   createdPlanRequests: number
   linkedPlanRequests: number
   complementaryRequests: number
@@ -2565,6 +3159,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   websites?: boolean | UserCountOutputTypeCountWebsitesArgs
   vpsNodes?: boolean | UserCountOutputTypeCountVpsNodesArgs
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+  authorizationCases?: boolean | UserCountOutputTypeCountAuthorizationCasesArgs
+  decidedAuthorizationCases?: boolean | UserCountOutputTypeCountDecidedAuthorizationCasesArgs
   createdPlanRequests?: boolean | UserCountOutputTypeCountCreatedPlanRequestsArgs
   linkedPlanRequests?: boolean | UserCountOutputTypeCountLinkedPlanRequestsArgs
   complementaryRequests?: boolean | UserCountOutputTypeCountComplementaryRequestsArgs
@@ -2606,6 +3202,20 @@ export type UserCountOutputTypeCountVpsNodesArgs<ExtArgs extends runtime.Types.E
  */
 export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MembershipWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuthorizationCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuthorizationCaseWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDecidedAuthorizationCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuthorizationCaseWhereInput
 }
 
 /**
@@ -2692,11 +3302,15 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   hashedRt?: boolean
   suspendedAt?: boolean
   suspendedReason?: boolean
+  phoneVerifiedAt?: boolean
+  emailVerifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   websites?: boolean | Prisma.User$websitesArgs<ExtArgs>
   vpsNodes?: boolean | Prisma.User$vpsNodesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  authorizationCases?: boolean | Prisma.User$authorizationCasesArgs<ExtArgs>
+  decidedAuthorizationCases?: boolean | Prisma.User$decidedAuthorizationCasesArgs<ExtArgs>
   createdPlanRequests?: boolean | Prisma.User$createdPlanRequestsArgs<ExtArgs>
   linkedPlanRequests?: boolean | Prisma.User$linkedPlanRequestsArgs<ExtArgs>
   complementaryRequests?: boolean | Prisma.User$complementaryRequestsArgs<ExtArgs>
@@ -2723,6 +3337,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   hashedRt?: boolean
   suspendedAt?: boolean
   suspendedReason?: boolean
+  phoneVerifiedAt?: boolean
+  emailVerifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2740,6 +3356,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   hashedRt?: boolean
   suspendedAt?: boolean
   suspendedReason?: boolean
+  phoneVerifiedAt?: boolean
+  emailVerifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -2757,15 +3375,19 @@ export type UserSelectScalar = {
   hashedRt?: boolean
   suspendedAt?: boolean
   suspendedReason?: boolean
+  phoneVerifiedAt?: boolean
+  emailVerifiedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phoneNumber" | "email" | "username" | "password" | "fullName" | "role" | "status" | "locale" | "hashedRt" | "suspendedAt" | "suspendedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phoneNumber" | "email" | "username" | "password" | "fullName" | "role" | "status" | "locale" | "hashedRt" | "suspendedAt" | "suspendedReason" | "phoneVerifiedAt" | "emailVerifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   websites?: boolean | Prisma.User$websitesArgs<ExtArgs>
   vpsNodes?: boolean | Prisma.User$vpsNodesArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  authorizationCases?: boolean | Prisma.User$authorizationCasesArgs<ExtArgs>
+  decidedAuthorizationCases?: boolean | Prisma.User$decidedAuthorizationCasesArgs<ExtArgs>
   createdPlanRequests?: boolean | Prisma.User$createdPlanRequestsArgs<ExtArgs>
   linkedPlanRequests?: boolean | Prisma.User$linkedPlanRequestsArgs<ExtArgs>
   complementaryRequests?: boolean | Prisma.User$complementaryRequestsArgs<ExtArgs>
@@ -2787,6 +3409,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     websites: Prisma.$WebsitePayload<ExtArgs>[]
     vpsNodes: Prisma.$VpsNodePayload<ExtArgs>[]
     memberships: Prisma.$MembershipPayload<ExtArgs>[]
+    authorizationCases: Prisma.$AuthorizationCasePayload<ExtArgs>[]
+    decidedAuthorizationCases: Prisma.$AuthorizationCasePayload<ExtArgs>[]
     createdPlanRequests: Prisma.$PlanRequestPayload<ExtArgs>[]
     linkedPlanRequests: Prisma.$PlanRequestPayload<ExtArgs>[]
     complementaryRequests: Prisma.$ComplementaryServiceRequestPayload<ExtArgs>[]
@@ -2811,6 +3435,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     hashedRt: string | null
     suspendedAt: Date | null
     suspendedReason: string | null
+    phoneVerifiedAt: Date | null
+    emailVerifiedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -3210,6 +3836,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   websites<T extends Prisma.User$websitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$websitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vpsNodes<T extends Prisma.User$vpsNodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vpsNodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VpsNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authorizationCases<T extends Prisma.User$authorizationCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authorizationCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthorizationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  decidedAuthorizationCases<T extends Prisma.User$decidedAuthorizationCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$decidedAuthorizationCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthorizationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdPlanRequests<T extends Prisma.User$createdPlanRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdPlanRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   linkedPlanRequests<T extends Prisma.User$linkedPlanRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$linkedPlanRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   complementaryRequests<T extends Prisma.User$complementaryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$complementaryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplementaryServiceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3261,6 +3889,8 @@ export interface UserFieldRefs {
   readonly hashedRt: Prisma.FieldRef<"User", 'String'>
   readonly suspendedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly suspendedReason: Prisma.FieldRef<"User", 'String'>
+  readonly phoneVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -3725,6 +4355,54 @@ export type User$membershipsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MembershipScalarFieldEnum | Prisma.MembershipScalarFieldEnum[]
+}
+
+/**
+ * User.authorizationCases
+ */
+export type User$authorizationCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuthorizationCase
+   */
+  select?: Prisma.AuthorizationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuthorizationCase
+   */
+  omit?: Prisma.AuthorizationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuthorizationCaseInclude<ExtArgs> | null
+  where?: Prisma.AuthorizationCaseWhereInput
+  orderBy?: Prisma.AuthorizationCaseOrderByWithRelationInput | Prisma.AuthorizationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.AuthorizationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuthorizationCaseScalarFieldEnum | Prisma.AuthorizationCaseScalarFieldEnum[]
+}
+
+/**
+ * User.decidedAuthorizationCases
+ */
+export type User$decidedAuthorizationCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuthorizationCase
+   */
+  select?: Prisma.AuthorizationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuthorizationCase
+   */
+  omit?: Prisma.AuthorizationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuthorizationCaseInclude<ExtArgs> | null
+  where?: Prisma.AuthorizationCaseWhereInput
+  orderBy?: Prisma.AuthorizationCaseOrderByWithRelationInput | Prisma.AuthorizationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.AuthorizationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuthorizationCaseScalarFieldEnum | Prisma.AuthorizationCaseScalarFieldEnum[]
 }
 
 /**

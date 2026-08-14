@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import type { Prisma } from '#/generated/prisma/client.js';
@@ -9,6 +13,9 @@ import {
 import bcrypt from 'bcryptjs';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+import { OtpService } from '#/modules/auth/services/otp-service.js';
+import { MailService } from '#/modules/mail/mail.service.js';
+import { RequestContext } from '#/common/logging/request-context.js';
 
 const userPublicOmit = {
   hashedRt: true,
@@ -19,7 +26,11 @@ const userPublicOmit = {
 export class UsersService {
   private readonly logger = createAppLogger(UsersService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly otpService: OtpService,
+    private readonly mailService: MailService,
+  ) {}
 
   async findOneByPhoneNumber(phoneNumber: string) {
     return this.prisma.user.findUnique({
@@ -143,15 +154,242 @@ export class UsersService {
     userId: string,
     data: { fullName?: string; email?: string; locale?: string },
   ) {
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    const nextEmail =
+      data.email !== undefined ? data.email.trim().toLowerCase() : undefined;
+    const emailChanged =
+      nextEmail !== undefined && nextEmail !== (current.email ?? '');
+
     return this.prisma.user.update({
       where: { id: userId },
-      data,
+      data: {
+        ...(data.fullName !== undefined && { fullName: data.fullName }),
+        ...(data.locale !== undefined && { locale: data.locale }),
+        ...(nextEmail !== undefined && {
+          email: nextEmail,
+          ...(emailChanged ? { emailVerifiedAt: null } : {}),
+        }),
+      },
       omit: userPublicOmit,
     });
   }
 
+  async requestPhoneVerifyOtp(userId: string, phoneNumber: string) {
+    RequestContext.setUserId(userId);
+    this.logger.log('user.phone_verify.otp_requested', { userId, phoneNumber });
+
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: userPublicOmit,
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (phoneNumber !== current.phoneNumber) {
+      const conflict = await this.prisma.user.findFirst({
+        where: {
+          phoneNumber,
+          NOT: { id: userId },
+        },
+        select: { id: true },
+      });
+      if (conflict) {
+        throw new ConflictException({
+          code: 'ACCOUNT_EXISTS',
+          message: ERROR_MESSAGES.fa.conflict,
+        });
+      }
+    }
+
+    const otp = await this.otpService.createAndOverwrite({
+      length: 6,
+      phoneNumber,
+      context: 'PHONE_VERIFY',
+    });
+
+    await this.mailService.sendPhoneOtpMockEmail({
+      phoneNumber,
+      otp: otp.otp,
+    });
+
+    this.logger.log('user.phone_verify.otp_created', {
+      userId,
+      otpId: otp.id,
+    });
+    return { delivered: true as const };
+  }
+
+  async verifyPhoneOtp(
+    userId: string,
+    input: { phoneNumber: string; otp: string },
+  ) {
+    RequestContext.setUserId(userId);
+    this.logger.log('user.phone_verify.attempt', {
+      userId,
+      phoneNumber: input.phoneNumber,
+    });
+
+    await this.otpService.validateOtp({
+      phoneNumber: input.phoneNumber,
+      otp: input.otp,
+      context: 'PHONE_VERIFY',
+    });
+
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: userPublicOmit,
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (input.phoneNumber !== current.phoneNumber) {
+      const conflict = await this.prisma.user.findFirst({
+        where: {
+          phoneNumber: input.phoneNumber,
+          NOT: { id: userId },
+        },
+        select: { id: true },
+      });
+      if (conflict) {
+        throw new ConflictException({
+          code: 'ACCOUNT_EXISTS',
+          message: ERROR_MESSAGES.fa.conflict,
+        });
+      }
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        phoneNumber: input.phoneNumber,
+        phoneVerifiedAt: new Date(),
+      },
+      omit: userPublicOmit,
+    });
+
+    await this.otpService.remove(input.otp);
+
+    this.logger.log('user.phone_verify.completed', { userId });
+    return updated;
+  }
+
+  async requestEmailVerifyOtp(userId: string, email: string) {
+    RequestContext.setUserId(userId);
+    const normalized = email.trim().toLowerCase();
+    this.logger.log('user.email_verify.otp_requested', {
+      userId,
+      email: normalized,
+    });
+
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: userPublicOmit,
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (normalized !== (current.email ?? '')) {
+      const conflict = await this.prisma.user.findFirst({
+        where: {
+          email: normalized,
+          NOT: { id: userId },
+        },
+        select: { id: true },
+      });
+      if (conflict) {
+        throw new ConflictException({
+          code: 'ACCOUNT_EXISTS',
+          message: ERROR_MESSAGES.fa.conflict,
+        });
+      }
+    }
+
+    const otp = await this.otpService.createAndOverwriteByIdentifier({
+      length: 6,
+      identifier: normalized,
+      context: 'EMAIL_VERIFY',
+    });
+
+    await this.mailService.sendEmailOtpMockEmail({
+      email: normalized,
+      otp: otp.otp,
+    });
+
+    this.logger.log('user.email_verify.otp_created', {
+      userId,
+      otpId: otp.id,
+    });
+    return { delivered: true as const };
+  }
+
+  async verifyEmailOtp(
+    userId: string,
+    input: { email: string; otp: string },
+  ) {
+    RequestContext.setUserId(userId);
+    const normalized = input.email.trim().toLowerCase();
+    this.logger.log('user.email_verify.attempt', {
+      userId,
+      email: normalized,
+    });
+
+    await this.otpService.validateOtpByIdentifier({
+      identifier: normalized,
+      otp: input.otp,
+      context: 'EMAIL_VERIFY',
+    });
+
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: userPublicOmit,
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    if (normalized !== (current.email ?? '')) {
+      const conflict = await this.prisma.user.findFirst({
+        where: {
+          email: normalized,
+          NOT: { id: userId },
+        },
+        select: { id: true },
+      });
+      if (conflict) {
+        throw new ConflictException({
+          code: 'ACCOUNT_EXISTS',
+          message: ERROR_MESSAGES.fa.conflict,
+        });
+      }
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: normalized,
+        emailVerifiedAt: new Date(),
+      },
+      omit: userPublicOmit,
+    });
+
+    await this.otpService.remove(input.otp);
+
+    this.logger.log('user.email_verify.completed', { userId });
+    return updated;
+  }
+
   async listAdmin(params?: { skip?: number; take?: number; search?: string }) {
-    const where: Prisma.UserWhereInput = params?.search
+    const searchWhere: Prisma.UserWhereInput | undefined = params?.search
       ? {
           OR: [
             { phoneNumber: { contains: params.search } },
@@ -160,12 +398,37 @@ export class UsersService {
             { username: { contains: params.search, mode: 'insensitive' } },
           ],
         }
-      : {};
+      : undefined;
+
+    const where: Prisma.UserWhereInput = {
+      role: { in: [Role.USER, Role.TENANT] },
+      ...searchWhere,
+    };
 
     const [items, total] = await this.prisma.$transaction([
       this.prisma.user.findMany({
         where,
         omit: userPublicOmit,
+        include: {
+          memberships: {
+            include: {
+              tenant: {
+                select: {
+                  id: true,
+                  name: true,
+                  displayName: true,
+                  status: true,
+                },
+              },
+            },
+          },
+          _count: {
+            select: {
+              websites: true,
+              memberships: true,
+            },
+          },
+        },
         orderBy: { createdAt: 'desc' },
         skip: params?.skip ?? 0,
         take: params?.take ?? 50,

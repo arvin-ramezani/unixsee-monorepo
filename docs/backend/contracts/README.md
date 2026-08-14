@@ -25,7 +25,9 @@ docs/backend/contracts/
 ├── plan-requests-customer.md      # customer plan-request create/list
 ├── plan-requests-public.md        # anonymous public plan-request intake
 ├── plan-requests-admin.md         # staff plan-request queue
-└── servers-admin.md               # staff servers + enrollment tokens
+├── servers-admin.md               # staff servers + enrollment tokens
+├── users-admin.md                 # staff customer users + membership summary
+└── users-me-contacts.md           # customer phone/email OTP verification
 ```
 
 ## Index
@@ -40,6 +42,8 @@ docs/backend/contracts/
 | [`plan-requests-public.md`](./plan-requests-public.md) | `/api/v1/public/plan-requests` | Anonymous create; account guard |
 | [`plan-requests-admin.md`](./plan-requests-admin.md) | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline |
 | [`servers-admin.md`](./servers-admin.md) | `/api/v1/admin/servers/*` | Staff servers, enrollment, agent revoke, server delete |
+| [`users-admin.md`](./users-admin.md) | `/api/v1/admin/users/*` | Staff customer directory + tenant membership summary |
+| [`users-me-contacts.md`](./users-me-contacts.md) | `/api/v1/users/me/contacts/*` | Customer phone/email OTP verification |
 
 ## Writing rules
 

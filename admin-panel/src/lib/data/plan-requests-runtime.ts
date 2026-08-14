@@ -41,6 +41,36 @@ export function getRuntimePlanRequest(id: string) {
   return runtimeRequests.find((request) => request.id === id);
 }
 
+/** After authorization approve, attach the new tenant to waiting plan requests. */
+export function attachTenantToLinkedPlanRequests(
+  userId: string,
+  tenantId: string,
+  tenantName: string,
+) {
+  runtimeRequests = runtimeRequests.map((request) => {
+    if (
+      request.linkedUserId !== userId ||
+      request.linkedTenantId ||
+      request.status === PLAN_REQUEST_STATUS.ENABLED ||
+      request.status === PLAN_REQUEST_STATUS.DECLINED ||
+      request.status === PLAN_REQUEST_STATUS.CANCELLED
+    ) {
+      return request;
+    }
+
+    return refreshDerivedFields({
+      ...request,
+      linkedTenantId: tenantId,
+      linkedTenantName: tenantName,
+      history: appendHistory(
+        request,
+        "اتصال مستأجر پس از تأیید احراز هویت",
+        tenantName,
+      ),
+    });
+  });
+}
+
 function replaceRequest(updated: PlanRequestType) {
   runtimeRequests = runtimeRequests.map((request) =>
     request.id === updated.id ? updated : request,
@@ -77,8 +107,10 @@ export function getPlanRequestBlockers(
 
   const blockers: PlanRequestBlockerType[] = [];
 
-  if (!request.linkedUserId || !request.linkedTenantId) {
+  if (!request.linkedUserId) {
     blockers.push(PLAN_REQUEST_BLOCKER.MISSING_USER);
+  } else if (!request.linkedTenantId) {
+    blockers.push(PLAN_REQUEST_BLOCKER.MISSING_TENANT);
   }
 
   if (!request.targetWebsiteId) {
@@ -124,7 +156,10 @@ function nextActionFor(request: PlanRequestType): string {
 
   const blockers = getPlanRequestBlockers(request);
   if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER)) {
-    return "انتخاب وب‌سایت هدف";
+    return "اتصال کاربر موجود";
+  }
+  if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_TENANT)) {
+    return "تأیید احراز هویت / ایجاد مستأجر";
   }
   if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE)) {
     return "انتخاب وب‌سایت هدف";
@@ -294,6 +329,13 @@ export function enablePlanRequest(requestId: string): EnablePlanResultType {
         ok: false,
         message:
           "فعال‌سازی ممکن نیست. کاربر باید از قبل وجود داشته باشد و به درخواست متصل شود.",
+      };
+    }
+    if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_TENANT)) {
+      return {
+        ok: false,
+        message:
+          "فعال‌سازی ممکن نیست. ابتدا احراز هویت را تأیید کنید تا مستأجر ایجاد شود.",
       };
     }
     if (blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE)) {

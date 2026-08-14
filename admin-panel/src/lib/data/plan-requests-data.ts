@@ -24,6 +24,7 @@ export const PLAN_REQUEST_STATUS_LABELS: Record<PlanRequestStatusType, string> =
 
 export const PLAN_REQUEST_BLOCKER = {
   MISSING_USER: "missing_user",
+  MISSING_TENANT: "missing_tenant",
   MISSING_WEBSITE: "missing_website",
   ACTIVE_PLAN_CONFLICT: "active_plan_conflict",
 } as const;
@@ -37,6 +38,8 @@ export const PLAN_REQUEST_BLOCKER_LABELS: Record<
 > = {
   [PLAN_REQUEST_BLOCKER.MISSING_USER]:
     "کاربر موجود هنوز به این درخواست متصل نشده است.",
+  [PLAN_REQUEST_BLOCKER.MISSING_TENANT]:
+    "مشتری هنوز مستأجر تأییدشده نیست. ابتدا احراز هویت را تأیید کنید.",
   [PLAN_REQUEST_BLOCKER.MISSING_WEBSITE]:
     "وب‌سایت هدف برای فعال‌سازی انتخاب نشده است.",
   [PLAN_REQUEST_BLOCKER.ACTIVE_PLAN_CONFLICT]:
@@ -88,14 +91,14 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     contactEmail: "nima.farhadi@example.com",
     contactMobile: "09120001122",
     domainHint: "nima-store.ir",
-    linkedUserId: null,
-    linkedUserName: null,
+    linkedUserId: "user-201",
+    linkedUserName: "نیما فرهادی",
     linkedTenantId: null,
     linkedTenantName: null,
     targetWebsiteId: null,
     targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
-    nextAction: "اتصال کاربر موجود",
+    nextAction: "تأیید احراز هویت / ایجاد مستأجر",
     submittedAt: "۱۶ مرداد ۱۴۰۵",
     updatedAt: "۱۶ مرداد ۱۴۰۵",
     terminalReason: null,
@@ -106,6 +109,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
         action: "ثبت درخواست از وب عمومی",
         actorName: "سامانه",
         note: "پلن UNIX CORE انتخاب شد.",
+      },
+      {
+        id: "prh-001b",
+        at: "۱۶ مرداد ۱۴۰۵",
+        action: "اتصال کاربر موجود",
+        actorName: "آرش نیک‌پور",
+        note: "نیما فرهادی — بدون مستأجر؛ احراز هویت در انتظار بررسی",
       },
     ],
   },

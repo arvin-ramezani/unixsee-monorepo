@@ -85,10 +85,33 @@ export type AlertStatus = (typeof AlertStatus)[keyof typeof AlertStatus]
 
 export const OtpContext = {
   LOGIN: 'LOGIN',
-  MONITORING_ACCESS: 'MONITORING_ACCESS'
+  MONITORING_ACCESS: 'MONITORING_ACCESS',
+  PHONE_VERIFY: 'PHONE_VERIFY',
+  EMAIL_VERIFY: 'EMAIL_VERIFY'
 } as const
 
 export type OtpContext = (typeof OtpContext)[keyof typeof OtpContext]
+
+
+export const AuthorizationCaseStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  NEEDS_MORE_INFO: 'NEEDS_MORE_INFO',
+  REJECTED: 'REJECTED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type AuthorizationCaseStatus = (typeof AuthorizationCaseStatus)[keyof typeof AuthorizationCaseStatus]
+
+
+export const ContactChallengeState = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  SKIPPED_ALREADY_VERIFIED: 'SKIPPED_ALREADY_VERIFIED'
+} as const
+
+export type ContactChallengeState = (typeof ContactChallengeState)[keyof typeof ContactChallengeState]
 
 
 export const PlanRequestStatus = {

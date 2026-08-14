@@ -21,7 +21,22 @@
     "passwordTooShort": "Password must be at least 8 characters",
     "passwordMismatch": "Passwords do not match",
     "otpRequired": "Enter the verification code",
-    "otpInvalid": "Enter a valid 6-digit code"
+    "otpInvalid": "Enter a valid 6-digit code",
+    "nationalIdRequired": "National ID is required",
+    "nationalIdInvalid": "Enter a valid 10-digit national ID",
+    "birthDateRequired": "Date of birth is required",
+    "mobileRequired": "Mobile number is required",
+    "mobileInvalid": "Enter a valid Iranian mobile number",
+    "mobileBelongsRequired": "Confirm this mobile belongs to the same national ID",
+    "provinceRequired": "Province is required",
+    "cityRequired": "City is required",
+    "addressRequired": "Full address is required",
+    "addressTooLong": "Address must be under 500 characters",
+    "postalCodeRequired": "Postal code is required",
+    "postalCodeInvalid": "Enter a valid 10-digit postal code",
+    "attestationRequired": "Confirm that the information is accurate",
+    "documentRequired": "National ID card photo is required",
+    "documentInvalid": "Upload a JPG, PNG, or WebP image up to 5MB"
   },
   "Auth": {
     "common": {
@@ -1790,6 +1805,10 @@
       "title": "Profile | Unixsee",
       "description": "Manage your personal information and account security."
     },
+    "authorization": {
+      "title": "Organization authorization | Unixsee",
+      "description": "Submit identity documents so Unixsee can approve you as a tenant."
+    },
     "complementaryServices": {
       "title": "Complementary Services | Unixsee",
       "description": "View specialist services connected to your websites."
@@ -2224,8 +2243,9 @@
       "planLabel": "Requested plan",
       "nextTitle": "What happens next",
       "step1": "Our team reviews your request.",
-      "step2": "We contact you to confirm setup details.",
+      "step2": "Complete organization authorization so staff can approve you as a tenant before managed services are delivered.",
       "step3": "After staff enablement, your plan goes live on your website.",
+      "authorizationCta": "Start authorization",
       "backToPlans": "Back to plans"
     },
     "errors": {
@@ -2274,8 +2294,9 @@
     "planLabel": "Requested plan",
     "nextTitle": "What happens next",
     "step1": "Our team reviews your request.",
-    "step2": "We contact you to confirm setup details.",
+    "step2": "Complete organization authorization so staff can approve you as a tenant before managed services are delivered.",
     "step3": "After staff enablement, your plan goes live on your website.",
+    "authorizationCta": "Open authorization",
     "backToWebsites": "Go to websites",
     "viewPlans": "View plans"
   },
@@ -3689,14 +3710,23 @@
     "personal": {
       "title": "Personal information",
       "description": "Update the contact details and language used for your account.",
+      "contactRule": "Only one verified contact is required: a verified mobile makes email optional, and a verified email makes mobile optional.",
       "name": "Full name",
       "email": "Email",
       "mobile": "Mobile number",
       "language": "Preferred language",
-      "emailChanged": "Verification will be required after saving.",
-      "sendEmail": "Send verification email",
-      "mobileChanged": "OTP verification will be required after saving.",
-      "verifyMobile": "Verify mobile number",
+      "optional": "optional",
+      "optionalBecausePhone": "Optional because your mobile number is verified.",
+      "optionalBecauseEmail": "Optional because your email is verified.",
+      "notProvided": "Not provided",
+      "emailChanged": "Verification is required before this email is saved.",
+      "emailNeedsVerify": "This email is not verified yet.",
+      "sendEmail": "Send verification code",
+      "mobileChanged": "Verification is required before this mobile is saved.",
+      "mobileNeedsVerify": "This mobile number is not verified yet.",
+      "verifyMobile": "Send verification code",
+      "contactSaveHint": "Email and mobile changes are saved only after verification — use Send verification code.",
+      "nestUnavailable": "Live account data is unavailable. Showing local sample profile.",
       "reset": "Reset changes",
       "save": "Save changes",
       "saving": "Saving...",
@@ -3705,7 +3735,27 @@
       "errors": {
         "name": "Enter your full name.",
         "email": "Enter a valid email address.",
-        "mobile": "Use 09xxxxxxxxx or +989xxxxxxxxx."
+        "emailRequired": "Enter an email, or verify a mobile number first.",
+        "mobile": "Use 09xxxxxxxxx or +989xxxxxxxxx.",
+        "mobileRequired": "Enter a mobile number, or verify an email first."
+      },
+      "verifyDialog": {
+        "phoneTitle": "Verify mobile number",
+        "emailTitle": "Verify email",
+        "mockDeliveryHint": "Dev delivery: the code is emailed to the mock inbox (same as sign-in), not SMS and not necessarily this address.",
+        "sending": "Sending code…",
+        "resend": "Resend code",
+        "cancel": "Cancel",
+        "confirm": "Confirm code"
+      },
+      "toast": {
+        "phoneCodeSent": "Mobile verification code sent to the mock inbox.",
+        "emailCodeSent": "Email verification code sent to the mock inbox.",
+        "phoneVerified": "Mobile number verified.",
+        "emailVerified": "Email verified.",
+        "invalidCode": "Enter the 6-digit code.",
+        "profileSaved": "Profile updated.",
+        "avatarLocalOnly": "Photo preview is local only until cloud storage is connected."
       }
     },
     "unsaved": {
@@ -3770,6 +3820,116 @@
           "working": "Working..."
         }
       }
+    }
+  },
+  "Authorization": {
+    "title": "Organization authorization",
+    "description": "Submit identity details and your national ID card so staff can approve you as a commercial tenant. Signing in is not enough.",
+    "searchHeader": "Search authorization…",
+    "banner": {
+      "not_started": "Complete organization authorization to become a tenant before Unixsee can deliver managed services.",
+      "draft": "You have an unfinished authorization draft. Continue when ready.",
+      "needs_more_info": "Staff requested changes to your authorization package.",
+      "rejected": "Your authorization was rejected. Review the reasons and resubmit.",
+      "cta": "Open authorization"
+    },
+    "statuses": {
+      "not_started": "Not started",
+      "draft": "Draft",
+      "pending_review": "Under review",
+      "needs_more_info": "Needs changes",
+      "rejected": "Rejected",
+      "approved": "Approved — tenant"
+    },
+    "status": {
+      "not_startedTitle": "Become a commercial tenant",
+      "not_startedBody": "Submit your identity package, including a national ID card photo. Plan requests stay allowed; selling and enablement wait for staff approval.",
+      "draftTitle": "Continue your draft",
+      "draftBody": "Your answers are saved. Finish the remaining steps and submit for staff review.",
+      "pendingTitle": "Under staff review",
+      "pendingBody": "Your package was received. This does not mean you are authorized yet, and services are not enabled.",
+      "needsInfoTitle": "More information needed",
+      "needsInfoBody": "Staff asked you to fix the items below, then resubmit.",
+      "rejectedTitle": "Authorization rejected",
+      "rejectedBody": "Review the reasons, update your package, and resubmit if you want to continue.",
+      "approvedTitle": "You are an approved tenant",
+      "approvedBody": "Staff approved your authorization. Unixsee may now sell and enable managed services for your organization.",
+      "start": "Start authorization",
+      "continue": "Continue draft",
+      "fix": "Fix and resubmit",
+      "view": "View package",
+      "dashboard": "Back to dashboard",
+      "plans": "Browse plans",
+      "support": "Contact support"
+    },
+    "steps": {
+      "progress": "Step {current} of {total}",
+      "identity": "Identity",
+      "contacts": "Contacts",
+      "address": "Address",
+      "document": "Document",
+      "review": "Review"
+    },
+    "fields": {
+      "nationalId": "National ID",
+      "birthDate": "Date of birth",
+      "mobile": "Mobile (belongs to this national ID)",
+      "mobileBelongs": "I confirm this mobile number belongs to the same national ID (code melli).",
+      "mobileNeedsVerify": "No mobile on your account — verify this number with OTP to continue.",
+      "email": "Email",
+      "province": "Province",
+      "city": "City",
+      "address": "Full address",
+      "postalCode": "Postal code",
+      "document": "National ID card photo",
+      "attestation": "I confirm the information and document are accurate and belong to me."
+    },
+    "challenges": {
+      "skipped": "Already verified at signup — no new challenge",
+      "verified": "Verified",
+      "pending": "Verification pending",
+      "unverified": "Needs verification",
+      "sendOtp": "Send mobile OTP",
+      "verifyOtp": "Verify code",
+      "otpLabel": "Mobile verification code",
+      "otpHint": "Prototype: enter 123456",
+      "sendEmail": "Send email confirmation",
+      "confirmEmail": "Mark email confirmed",
+      "emailHint": "Prototype: confirmation is simulated"
+    },
+    "document": {
+      "hint": "JPG, PNG, or WebP up to 5MB. Front of the national ID card is enough for this phase.",
+      "upload": "Upload photo",
+      "replace": "Replace photo",
+      "remove": "Remove photo",
+      "empty": "No photo uploaded yet",
+      "uploaded": "Uploaded: {name}"
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "saveDraft": "Save draft",
+      "cancelDraft": "Cancel draft",
+      "submit": "Submit for review",
+      "submitting": "Submitting…",
+      "saving": "Saving…",
+      "editSection": "Edit"
+    },
+    "review": {
+      "title": "Review before submit",
+      "hint": "After submit, edits are locked until staff approve, reject, or request changes."
+    },
+    "alerts": {
+      "saved": "Draft saved.",
+      "submitted": "Submitted for review. You are not authorized yet.",
+      "incomplete": "Complete all required fields and the national ID photo before submit.",
+      "locked": "This package cannot be edited while under review or after approval.",
+      "cancelled": "Draft cancelled."
+    },
+    "profileLink": {
+      "title": "Organization authorization",
+      "description": "Submit certifications to become a tenant. Separate from login and contact verification.",
+      "cta": "Open authorization"
     }
   },
   "WebsiteDetails": {

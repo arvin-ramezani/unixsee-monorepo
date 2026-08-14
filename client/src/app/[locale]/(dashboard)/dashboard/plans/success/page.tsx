@@ -82,6 +82,9 @@ export default async function PlansSuccessPage({
 
         <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
           <Button asChild size="lg">
+            <Link href="/dashboard/authorization">{t("authorizationCta")}</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
             <Link href="/dashboard/websites">{t("backToWebsites")}</Link>
           </Button>
           <Button asChild size="lg" variant="outline">

@@ -34,6 +34,7 @@ import {
   STAFF_CAPABILITY,
   type CustomerUserType,
   type MembershipRoleType,
+  type MembershipType,
   type SecurityActionType,
   type StaffCapabilityType,
   type TenantType,
@@ -57,8 +58,13 @@ import {
   getUserTenantMemberships,
   hasCapability,
 } from "@/lib/users-utils";
+import {
+  USER_KYC_STATUS,
+  type UserKycStatusType,
+} from "@/lib/users/map-admin-user";
 import { cn } from "@/lib/utils";
 import { AccountStateBadge } from "./account-status-badge";
+import { AuthorizationStatusBadge } from "./authorization-status-badge";
 import { AddMemberDialog } from "./add-member-dialog";
 import { SecurityActionDialog } from "./security-action-dialog";
 import { TenantMembershipsSection } from "./tenant-memberships-section";
@@ -186,15 +192,29 @@ type StatusMessageType = {
 
 type UserDetailsViewProps = {
   initialUser: CustomerUserType;
+  initialTenants?: TenantType[];
+  initialMemberships?: MembershipType[];
+  authorization?: UserKycStatusType;
+  nestBacked?: boolean;
 };
 
-export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
+export function UserDetailsView({
+  initialUser,
+  initialTenants,
+  initialMemberships,
+  authorization,
+  nestBacked = false,
+}: UserDetailsViewProps) {
   const [user, setUser] = useState(initialUser);
   const [users, setUsers] = useState(listRuntimeUsers);
-  const [tenants] = useState(listRuntimeTenants);
-  const [memberships, setMemberships] = useState(listRuntimeMemberships);
+  const [tenants] = useState(
+    () => initialTenants ?? listRuntimeTenants(),
+  );
+  const [memberships, setMemberships] = useState(
+    () => initialMemberships ?? listRuntimeMemberships(),
+  );
   const [auditEntries, setAuditEntries] = useState(() =>
-    listUserAuditEntries(initialUser.id),
+    nestBacked ? [] : listUserAuditEntries(initialUser.id),
   );
   const [statusMessage, setStatusMessage] = useState<StatusMessageType | null>(
     null,
@@ -203,9 +223,13 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
     useState<SecurityActionType | null>(null);
   const [memberTenant, setMemberTenant] = useState<TenantType | null>(null);
 
-  const notes = listUserNotes(user.id);
-  const canManageMembership = hasCapability(STAFF_CAPABILITY.MANAGE_MEMBERSHIP);
-  const canViewNotes = hasCapability(STAFF_CAPABILITY.VIEW_INTERNAL_NOTES);
+  const notes = nestBacked ? [] : listUserNotes(user.id);
+  const canManageMembership =
+    !nestBacked && hasCapability(STAFF_CAPABILITY.MANAGE_MEMBERSHIP);
+  const canViewNotes =
+    !nestBacked && hasCapability(STAFF_CAPABILITY.VIEW_INTERNAL_NOTES);
+  const resolvedAuthorization =
+    authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
 
   const tenantMemberships = getUserTenantMemberships(
     user.id,
@@ -239,10 +263,24 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
   };
 
   const handleChangeRole = (membershipId: string, role: MembershipRoleType) => {
+    if (nestBacked) {
+      setStatusMessage({
+        text: "تغییر عضویت هنوز به NestJS وصل نشده است.",
+        isBlocked: true,
+      });
+      return;
+    }
     applyMembershipResult(changeMembershipRole({ membershipId, role }));
   };
 
   const handleRemoveMembership = (membershipId: string) => {
+    if (nestBacked) {
+      setStatusMessage({
+        text: "حذف عضویت هنوز به NestJS وصل نشده است.",
+        isBlocked: true,
+      });
+      return;
+    }
     applyMembershipResult(removeTenantMembership(membershipId));
   };
 
@@ -253,7 +291,7 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
     userId: string;
     role: MembershipRoleType;
   }) => {
-    if (!memberTenant) return;
+    if (nestBacked || !memberTenant) return;
 
     applyMembershipResult(
       addTenantMembership({ tenantId: memberTenant.id, userId, role }),
@@ -261,6 +299,13 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
   };
 
   const handleSecurityAction = (action: SecurityActionType, reason: string) => {
+    if (nestBacked) {
+      setStatusMessage({
+        text: "اقدام امنیتی هنوز به NestJS وصل نشده است.",
+        isBlocked: true,
+      });
+      return;
+    }
     const result = applySecurityAction({ userId: user.id, action, reason });
     if (!result) return;
 
@@ -283,6 +328,38 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
           <ArrowRight data-icon="inline-start" />
           بازگشت به کاربران
         </Link>
+      </div>
+
+      <div
+        className={cn(
+          "rounded-xl border px-4 py-3 text-sm",
+          resolvedAuthorization === USER_KYC_STATUS.APPROVED
+            ? "border-emerald-500/30 bg-emerald-500/5"
+            : resolvedAuthorization === USER_KYC_STATUS.REJECTED
+              ? "border-destructive/30 bg-destructive/5"
+              : "border-amber-500/30 bg-amber-500/5",
+        )}
+        role="status"
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <AuthorizationStatusBadge status={resolvedAuthorization} />
+          <p className="text-muted-foreground">
+            {resolvedAuthorization === USER_KYC_STATUS.APPROVED
+              ? "بسته احراز هویت این حساب تایید شده است."
+              : resolvedAuthorization === USER_KYC_STATUS.REJECTED
+                ? "بسته احراز هویت این حساب رد شده است."
+                : "هنوز بسته احراز هویت ارسال نشده یا در صف بررسی است."}
+          </p>
+        </div>
+        <p className="text-muted-foreground mt-2 text-xs">
+          کد ملی و عکس کارت ملی در این صفحه نیست.{" "}
+          <Link
+            href="/users/authorization"
+            className="text-primary underline underline-offset-2"
+          >
+            رفتن به صف بررسی مدارک
+          </Link>
+        </p>
       </div>
 
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
@@ -375,46 +452,51 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
           <h2 className="font-semibold">امنیت حساب</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          هر اقدام امنیتی نیازمند دلیل است. رمز عبور، کد یک‌بارمصرف و اطلاعات
-          بازیابی هرگز نمایش داده نمی‌شوند.
+          {nestBacked
+            ? "اقدام‌های امنیتی (تعلیق، بازیابی، پایان نشست) هنوز از این صفحه به Nest وصل نشده‌اند. رمز، OTP و توکن هرگز نمایش داده نمی‌شوند."
+            : "هر اقدام امنیتی نیازمند دلیل است. رمز عبور، کد یک‌بارمصرف و اطلاعات بازیابی هرگز نمایش داده نمی‌شوند."}
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {SECURITY_ACTION_CONFIGS.map((config) => {
-            const Icon = config.icon;
-            const isPermitted = hasCapability(config.capability);
-            const isAvailable = config.isAvailable(user);
+        {!nestBacked && (
+          <>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {SECURITY_ACTION_CONFIGS.map((config) => {
+                const Icon = config.icon;
+                const isPermitted = hasCapability(config.capability);
+                const isAvailable = config.isAvailable(user);
 
-            return (
-              <Button
-                key={config.action}
-                type="button"
-                size="sm"
-                variant={config.variant}
-                className="gap-2"
-                disabled={!isPermitted || !isAvailable}
-                onClick={() => setSecurityAction(config.action)}
-              >
-                <Icon className="size-4" aria-hidden="true" />
-                {SECURITY_ACTION_LABELS[config.action]}
-              </Button>
-            );
-          })}
-        </div>
+                return (
+                  <Button
+                    key={config.action}
+                    type="button"
+                    size="sm"
+                    variant={config.variant}
+                    className="gap-2"
+                    disabled={!isPermitted || !isAvailable}
+                    onClick={() => setSecurityAction(config.action)}
+                  >
+                    <Icon className="size-4" aria-hidden="true" />
+                    {SECURITY_ACTION_LABELS[config.action]}
+                  </Button>
+                );
+              })}
+            </div>
 
-        <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
-          {SECURITY_ACTION_CONFIGS.filter(
-            (config) =>
-              !hasCapability(config.capability) || !config.isAvailable(user),
-          ).map((config) => (
-            <li key={config.action}>
-              {SECURITY_ACTION_LABELS[config.action]}:{" "}
-              {hasCapability(config.capability)
-                ? config.unavailableReason
-                : "برای نقش فعلی فعال نیست و باید به همکار دارای این دسترسی ارجاع شود."}
-            </li>
-          ))}
-        </ul>
+            <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
+              {SECURITY_ACTION_CONFIGS.filter(
+                (config) =>
+                  !hasCapability(config.capability) || !config.isAvailable(user),
+              ).map((config) => (
+                <li key={config.action}>
+                  {SECURITY_ACTION_LABELS[config.action]}:{" "}
+                  {hasCapability(config.capability)
+                    ? config.unavailableReason
+                    : "برای نقش فعلی فعال نیست و باید به همکار دارای این دسترسی ارجاع شود."}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
 
       <section className={cn(surfaceClassName, "p-4 shadow-sm")}>

@@ -142,4 +142,5 @@ request (safety net).
 
 - Admin enablement: [`admin-plan-requests.md`](./admin-plan-requests.md)
 - Authorization / tenant: [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)
+- Customer authorization UX: [`client-authorization.md`](./client-authorization.md)
 - Public API: [`../../backend/contracts/plan-requests-public.md`](../../backend/contracts/plan-requests-public.md)

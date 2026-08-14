@@ -78,6 +78,7 @@ Unixsee can onboard customers and activate managed websites consistently while p
 #### Out of scope
 
 - Designing the public-site auth/signup, password, verification-challenge, or session journey in this admin doc. Public signup may be a real account origin; the customer journey is specified in [`client-auth.md`](./client-auth.md) (UI companion: [`../../frontend/client-auth-ui.md`](../../frontend/client-auth-ui.md)).
+- Detailed customer submission and staff review of احراز هویت packages — see [`client-authorization.md`](./client-authorization.md) and [`admin-authorization.md`](./admin-authorization.md); this users flow consumes the resulting tenant.
 - Customer self-service profile editing in the customer dashboard beyond what admin must display as state.
 - Designing the public plan-request form; admin consumes resulting requests via `admin-plan-requests.md`.
 - Staff impersonation of customers.
@@ -175,6 +176,8 @@ before Staff access UI ships.
 
 Canonical product note:
 [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
+Dedicated flows: [`client-authorization.md`](./client-authorization.md),
+[`admin-authorization.md`](./admin-authorization.md).
 
 **Inference:** تخصیص وب‌سایت کشف‌شده should select a **tenant** as owner of the website, while create-and-return via `/users/new` may also create the first **user** and owner membership when the customer does not yet exist. Public signup alone must not be treated as tenant approval.
 

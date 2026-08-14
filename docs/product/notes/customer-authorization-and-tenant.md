@@ -96,11 +96,40 @@ Keep distinct:
 - plan/consultant **request** ≠ **enablement / sale**;
 - signup alone never enables a plan or activates a website.
 
+## Required fields for tenant authorization (`Confirmed`)
+
+Customers must provide all of the following to complete احراز هویت and become
+a tenant:
+
+| Field (FA) | Meaning | Notes |
+|---|---|---|
+| کد ملی | Iranian national ID | Required |
+| تاریخ تولد | Date of birth | Required |
+| شماره موبایل متعلق به همان کد ملی | Mobile number belonging to that national ID | Required |
+| تأیید موبایل با OTP | Mobile OTP confirmation | Required unless this mobile is already the signup mobile **and** already contact-verified |
+| ایمیل | Email address | Required |
+| تأیید ایمیل | Email confirmation | Required unless this email is already the signup email **and** already contact-verified |
+| استان | Province | Required |
+| شهر | City | Required |
+| آدرس کامل | Full street address | Required |
+| کد پستی | Postal code | Required |
+| عکس از کارت ملی | Photo of national ID card | Required upload |
+
+**Skip re-verification rule (`Confirmed`):** If the customer reuses the same
+mobile or email they already signed up with, and that contact is already
+verified on the account, do **not** require another OTP / email confirmation
+for that contact during احراز هویت. Changing to a different mobile or email
+requires fresh verification of the new value.
+
+Document file constraints (format, size, quality), national-ID checksum rules,
+and whether Shahkar/mobile-national-ID matching is automated vs staff-only
+remain `Unknown` until backend/product decide.
+
 ## Open items (`Unknown`)
 
-- Exact certification document set and locale-specific requirements.
-- Customer UI for upload, resubmit, and status (`pending` / `rejected` /
-  `approved`).
+- Exact upload format/size/quality rules for کارت ملی photo.
+- Whether mobile↔کد ملی ownership is auto-checked (e.g. Shahkar) or staff-judged.
+- Customer surface placement (`/dashboard/authorization` vs profile section).
 - Whether complementary **activation** (vs intake) is hard-blocked the same way
   as plan enablement in every family.
 - Whether ticket creation is ever hard-blocked for non-tenant users.
@@ -108,6 +137,8 @@ Keep distinct:
 ## Related
 
 - Phase brief: [`../phase-1-application-features.md`](../phase-1-application-features.md) §§8–9, 11
+- Client UX: [`../ux-flows/client-authorization.md`](../ux-flows/client-authorization.md)
+- Admin UX: [`../ux-flows/admin-authorization.md`](../ux-flows/admin-authorization.md)
 - Onboarding model: [`onboarding-plan-request-user-website.md`](./onboarding-plan-request-user-website.md)
 - Paths: [`onboarding-paths-and-handoffs.md`](./onboarding-paths-and-handoffs.md)
 - Public entry: [`phase-1-public-entry-channels.md`](./phase-1-public-entry-channels.md)

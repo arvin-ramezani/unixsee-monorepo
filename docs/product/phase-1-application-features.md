@@ -333,6 +333,12 @@ Rules for this phase:
 
 Canonical detail:
 [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
+UX flows: [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md),
+[`ux-flows/admin-authorization.md`](./ux-flows/admin-authorization.md).
+
+Required customer fields (کد ملی، تاریخ تولد، موبایل متعلق به کد ملی + OTP unless
+already-verified signup mobile، ایمیل + confirm unless already-verified signup
+email، استان، شهر، آدرس کامل، کد پستی، عکس کارت ملی) are listed in that note.
 
 ### 8.2 Administrator behavior
 

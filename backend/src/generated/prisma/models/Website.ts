@@ -872,10 +872,6 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput = {
   deleteMany?: Prisma.WebsiteScalarWhereInput | Prisma.WebsiteScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type EnumWebsiteLifecycleStatusFieldUpdateOperationsInput = {
   set?: $Enums.WebsiteLifecycleStatus
 }

@@ -15,6 +15,7 @@ import {
   SettingsIcon,
   Puzzle,
   ClipboardList,
+  ShieldCheck,
   ChevronRightIcon,
   ChevronLeftIcon,
 } from "lucide-react";
@@ -57,6 +58,11 @@ const data = {
       title: "کاربران",
       url: "/users",
       icon: UserIcon,
+    },
+    {
+      title: "بررسی احراز هویت",
+      url: "/users/authorization",
+      icon: ShieldCheck,
     },
     {
       title: "تیکت‌ها",
@@ -124,9 +130,11 @@ export function AppSidebar({
     setOpenMobile(false);
   }, [pathname, setOpenMobile]);
 
-  const activeUrl = data.navMain.find(
-    (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
-  )?.url;
+  const activeUrl = [...data.navMain]
+    .sort((a, b) => b.url.length - a.url.length)
+    .find(
+      (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
+    )?.url;
 
   return (
     <Sidebar className="" side="right" dir="rtl" collapsible="icon" {...props}>

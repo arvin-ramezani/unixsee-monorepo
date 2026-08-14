@@ -44,6 +44,8 @@ Operational clarifications that support Phase 1 and UX flows:
 | Doc | Flow |
 |---|---|
 | [`ux-flows/client-auth.md`](./ux-flows/client-auth.md) | Public customer sign-in, sign-up, verification, password recovery |
+| [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md) | احراز هویت submission → become tenant |
+| [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md) | Guest / dashboard plan request intake |
 | UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md) | Auth shell, tokens, inputs, RTL, motion |
 
 ## Admin UX flows
@@ -52,6 +54,7 @@ Operational clarifications that support Phase 1 and UX flows:
 |---|---|
 | [`ux-flows/admin-overview.md`](./ux-flows/admin-overview.md) | Administrator home / triage (`نمای‌کلی`) |
 | [`ux-flows/admin-users.md`](./ux-flows/admin-users.md) | Users / tenants |
+| [`ux-flows/admin-authorization.md`](./ux-flows/admin-authorization.md) | Staff احراز هویت review → approve tenant |
 | [`ux-flows/admin-plan-requests.md`](./ux-flows/admin-plan-requests.md) | Plan requests (`درخواست‌های پلن`) |
 | [`ux-flows/admin-servers-websites-agents.md`](./ux-flows/admin-servers-websites-agents.md) | Servers, websites, agents |
 | [`ux-flows/admin-complementary-services.md`](./ux-flows/admin-complementary-services.md) | Complementary services |

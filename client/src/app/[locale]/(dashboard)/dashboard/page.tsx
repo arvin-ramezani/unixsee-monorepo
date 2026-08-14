@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { AuthorizationDashboardBanner } from "@/components/authorization/authorization-dashboard-banner";
 import { ActivityFeedCard } from "@/components/dashboard/activity-feed-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { FeedCard } from "@/components/dashboard/feed-card";
@@ -42,6 +43,9 @@ export default async function DashboardPage({
           <Plus aria-hidden="true" className="size-4" /> {t("hero.addSite")}
         </DashboardButtonLink>
       </section>
+      <div className="mt-4">
+        <AuthorizationDashboardBanner />
+      </div>
       <div className="mt-8 grid items-start gap-5.5 xl:grid-cols-[minmax(0,1fr)_288px]">
         <div className="min-w-0 space-y-4.5">
           <WebsiteTable websites={websites} />

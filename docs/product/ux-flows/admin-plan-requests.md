@@ -484,6 +484,8 @@ Sufficient for static Persian RTL admin flows covering:
 - Public entry sync: `docs/product/notes/phase-1-public-entry-channels.md`
 - Agent sequence: `docs/product/notes/servers-agent-data-flow.md`
 - Users/tenants / احراز هویت: `docs/product/ux-flows/admin-users.md`
+- Authorization review: `docs/product/ux-flows/admin-authorization.md`
+- Customer authorization: `docs/product/ux-flows/client-authorization.md`
 - Authorization note: `docs/product/notes/customer-authorization-and-tenant.md`
 - Servers/agents/websites: `docs/product/ux-flows/admin-servers-websites-agents.md`
 - Product source: `docs/product/phase-1-application-features.md` §11
