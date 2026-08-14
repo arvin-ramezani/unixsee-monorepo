@@ -16,7 +16,7 @@ import {
 
 import SearchInput from "@/components/common/search-input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -45,7 +45,6 @@ import {
   listRuntimeMemberships,
   listRuntimeTenants,
   listRuntimeUsers,
-  type CreateCustomerResultType,
 } from "@/lib/data/users-runtime";
 import {
   ACCOUNT_ORIGIN_FILTER_ALL,
@@ -62,7 +61,6 @@ import {
 } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { AccountStateBadge } from "./account-status-badge";
-import { CreateCustomerSheet } from "./create-customer-sheet";
 
 const ACCOUNT_STATE_FILTER_OPTIONS = [
   { value: ACCOUNT_STATE_FILTER.ALL, label: "همه وضعیت‌ها" },
@@ -262,8 +260,6 @@ export function UsersView() {
     ACCOUNT_ORIGIN_FILTER_ALL,
   );
   const [showFilters, setShowFilters] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const canCreateCustomer = hasCapability(STAFF_CAPABILITY.CREATE_CUSTOMER);
   const summary = useMemo(() => getCustomerQueueSummary(rows), [rows]);
@@ -318,16 +314,6 @@ export function UsersView() {
       filter: ACCOUNT_STATE_FILTER.ALL as AccountStateFilterType,
     },
   ];
-
-  const handleCreated = (result: CreateCustomerResultType) => {
-    setRows(loadQueueRows());
-    setQuery("");
-    setAccountState(ACCOUNT_STATE_FILTER.ALL);
-    setOrigin(ACCOUNT_ORIGIN_FILTER_ALL);
-    setStatusMessage(
-      `مشتری ${result.user.displayName} و مستأجر ${result.tenant.name} ایجاد شد. دعوت‌نامه ارسال شده و حساب تا تکمیل آن تأییدنشده است.`,
-    );
-  };
 
   const hasActiveSearch = query.trim().length > 0;
 
@@ -416,15 +402,16 @@ export function UsersView() {
               فیلتر
             </Button>
             {canCreateCustomer && (
-              <Button
-                type="button"
-                size="sm"
-                className="gap-2"
-                onClick={() => setCreateOpen(true)}
+              <Link
+                href="/users/new"
+                className={buttonVariants({
+                  size: "sm",
+                  className: "gap-2",
+                })}
               >
                 <Plus className="size-4" />
                 ایجاد مشتری
-              </Button>
+              </Link>
             )}
           </div>
         </div>
@@ -519,14 +506,6 @@ export function UsersView() {
         )}
       </div>
 
-      <div role="status" aria-live="polite" aria-atomic="true">
-        {statusMessage && (
-          <div className="rounded-xl border border-accent bg-accent/20 px-4 py-3 text-sm text-accent-foreground">
-            {statusMessage}
-          </div>
-        )}
-      </div>
-
       {!canCreateCustomer && (
         <div
           className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground"
@@ -559,9 +538,9 @@ export function UsersView() {
             </p>
           </div>
           {canCreateCustomer && (
-            <Button type="button" onClick={() => setCreateOpen(true)}>
+            <Link href="/users/new" className={buttonVariants()}>
               ایجاد مشتری
-            </Button>
+            </Link>
           )}
         </div>
       ) : (
@@ -593,12 +572,6 @@ export function UsersView() {
           </div>
         </>
       )}
-
-      <CreateCustomerSheet
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onCreated={handleCreated}
-      />
     </div>
   );
 }

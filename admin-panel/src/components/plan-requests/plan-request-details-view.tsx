@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   useEffect,
@@ -9,6 +10,7 @@ import {
 } from "react";
 import {
   AlertTriangle,
+  ArrowRight,
   CheckCircle2,
   ChevronDown,
   Globe2,
@@ -35,14 +37,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import {
   PLAN_REQUEST_BLOCKER,
   PLAN_REQUEST_BLOCKER_LABELS,
   PLAN_REQUEST_STATUS,
@@ -56,15 +50,13 @@ import {
 } from "@/lib/plan-requests/plan-request-intake";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
-type PlanRequestDetailsSheetProps = {
-  request: PlanRequestType | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onRequestChanged: (request: PlanRequestType, message: string) => void;
+type PlanRequestDetailsViewProps = {
+  request: PlanRequestType;
 };
 
 const WEBSITE_ROW_HEIGHT = 72;
@@ -123,45 +115,43 @@ function resolveEnablementBlockers(
   return blockers;
 }
 
-export function PlanRequestDetailsSheet({
+export function PlanRequestDetailsView({
   request,
-  open,
-  onOpenChange,
-  onRequestChanged,
-}: PlanRequestDetailsSheetProps) {
+}: PlanRequestDetailsViewProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="flex w-full flex-col gap-0 sm:max-w-lg"
+    <div className="flex flex-1 flex-col gap-4">
+      <Link
+        href="/plan-requests"
+        className={buttonVariants({
+          variant: "ghost",
+          size: "sm",
+          className: "w-fit gap-2",
+        })}
+        aria-label="بازگشت به درخواست‌های پلن"
       >
-        {request && (
-          <>
-            <SheetHeader className="border-b border-border px-4 py-4 pe-12 text-right">
-              <SheetTitle className="flex flex-wrap items-center gap-2">
-                <span className="w-fit" dir="ltr">
-                  {request.chosenPlanName}
-                </span>
-                <PlanRequestIntakeBadge intakeType={request.intakeType} />
-                <PlanRequestStatusBadge status={request.status} />
-              </SheetTitle>
-              <SheetDescription>
-                {isPublicPlanRequest(request)
-                  ? "درخواست مهمان — ابتدا کاربر موجود را پیدا کنید، سپس وب‌سایت را انتخاب و پلن را فعال کنید."
-                  : "درخواست از داشبورد مشتری — حساب متصل است؛ وب‌سایت را انتخاب و پلن را فعال کنید."}
-              </SheetDescription>
-            </SheetHeader>
+        <ArrowRight data-icon="inline-start" />
+        بازگشت به درخواست‌های پلن
+      </Link>
 
-            <PlanRequestDetailsBody
-              key={request.id}
-              request={request}
-              onRequestChanged={onRequestChanged}
-              onClose={() => onOpenChange(false)}
-            />
-          </>
-        )}
-      </SheetContent>
-    </Sheet>
+      <header className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <h1 className="flex flex-wrap items-center gap-2 text-xl font-semibold tracking-tight">
+          <span className="w-fit" dir="ltr">
+            {request.chosenPlanName}
+          </span>
+          <PlanRequestIntakeBadge intakeType={request.intakeType} />
+          <PlanRequestStatusBadge status={request.status} />
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {isPublicPlanRequest(request)
+            ? "درخواست مهمان — ابتدا کاربر موجود را پیدا کنید، سپس وب‌سایت را انتخاب و پلن را فعال کنید."
+            : "درخواست از داشبورد مشتری — حساب متصل است؛ وب‌سایت را انتخاب و پلن را فعال کنید."}
+        </p>
+      </header>
+
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <PlanRequestDetailsBody key={request.id} request={request} />
+      </div>
+    </div>
   );
 }
 
@@ -330,13 +320,10 @@ function PlanRequestSummary({ request }: { request: PlanRequestType }) {
 
 function PlanRequestDetailsBody({
   request: initialRequest,
-  onRequestChanged,
-  onClose,
 }: {
   request: PlanRequestType;
-  onRequestChanged: PlanRequestDetailsSheetProps["onRequestChanged"];
-  onClose: () => void;
 }) {
+  const router = useRouter();
   const canEnable = hasCapability(STAFF_CAPABILITY.ENABLE_PLAN_REQUEST);
   const [request, setRequest] = useState(initialRequest);
   const [websiteQuery, setWebsiteQuery] = useState("");
@@ -422,13 +409,13 @@ function PlanRequestDetailsBody({
     overscan: 6,
   });
 
-  const syncRequest = (next: PlanRequestType, message: string) => {
+  const syncRequest = (next: PlanRequestType) => {
     setRequest(next);
     setConfirmEnable(false);
     setPendingWebsiteId(null);
     setRefuseKind(null);
     setRefuseReason("");
-    onRequestChanged(next, message);
+    router.refresh();
   };
 
   const openRefusePanel = (kind: "declined" | "cancelled") => {
@@ -467,10 +454,8 @@ function PlanRequestDetailsBody({
         return;
       }
 
-      syncRequest(
-        result.request,
-        "وب‌سایت هدف انتخاب شد و به درخواست متصل شد.",
-      );
+      syncRequest(result.request);
+      toast.success("وب‌سایت هدف انتخاب شد و به درخواست متصل شد.");
     } finally {
       setSubmitting(false);
     }
@@ -516,11 +501,8 @@ function PlanRequestDetailsBody({
         return;
       }
 
-      syncRequest(
-        result.request,
-        `پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`,
-      );
-      onClose();
+      syncRequest(result.request);
+      toast.success(`پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`);
     } finally {
       setSubmitting(false);
     }
@@ -552,11 +534,10 @@ function PlanRequestDetailsBody({
         return;
       }
 
-      syncRequest(
-        result.request,
+      syncRequest(result.request);
+      toast.success(
         refuseKind === "declined" ? "درخواست رد شد." : "درخواست لغو شد.",
       );
-      onClose();
     } finally {
       setSubmitting(false);
     }
@@ -763,12 +744,15 @@ function PlanRequestDetailsBody({
         />
       ) : null}
 
-      <SheetFooter className="border-t border-border px-4 py-4">
+      <div className="border-t border-border px-4 py-4">
         {!isTerminal ? (
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button type="button" variant="outline" onClick={onClose}>
-              بستن
-            </Button>
+            <Link
+              href="/plan-requests"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              بازگشت
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger
                 disabled={submitting}
@@ -811,9 +795,12 @@ function PlanRequestDetailsBody({
             </Button>
           </div>
         ) : (
-          <Button type="button" variant="outline" onClick={onClose}>
-            بستن
-          </Button>
+          <Link
+            href="/plan-requests"
+            className={buttonVariants({ variant: "outline" })}
+          >
+            بازگشت
+          </Link>
         )}
         {!canEnable && !isTerminal ? (
           <p className="w-full text-xs text-muted-foreground">
@@ -831,7 +818,7 @@ function PlanRequestDetailsBody({
             با تأیید، پلن {request.chosenPlanName} پلن فعال وب‌سایت می‌شود.
           </p>
         ) : null}
-      </SheetFooter>
+      </div>
     </>
   );
 }

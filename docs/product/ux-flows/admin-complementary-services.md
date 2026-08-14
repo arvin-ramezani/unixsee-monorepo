@@ -62,6 +62,7 @@ Unixsee can operate complementary services consistently while preserving quotati
 #### In scope
 
 - Intake queues for submitted requests and waiting work.
+- Request detail at `/complementary-services/[id]`; creating an assignment is a Dialog on that page.
 - Customer, tenant, website and request context.
 - Ownership and specialist assignment.
 - Structured requests for customer information.
@@ -222,12 +223,12 @@ Role names are descriptive placeholders. Enforcement must use approved capabilit
 | Stage | Goal | Behaviour | Response | Decision | Backstage | Problem | Need |
 |---|---|---|---|---|---|---|---|
 | 1. Intake | Find actionable request | Filter or open prioritized request | Shows state, age, owner, tenant, website and next action | Is user permitted? | Scope authorization | JP-001 | UN-001 |
-| 2. Review | Determine completeness | Inspect customer answers, attachments and related services | Distinguishes missing, internal and customer-visible information | Enough information? | Attachment safety checks | JP-002 | UN-001 |
+| 2. Review | Determine completeness | Open `/complementary-services/[id]`; inspect customer answers, attachments and related services | Distinguishes missing, internal and customer-visible information | Enough information? | Attachment safety checks | JP-002 | UN-001 |
 | 3. Clarify | Obtain missing evidence | Send structured information request | State becomes `needs_customer_information` | Customer responds or request ends | Durable notification and response | JP-002 | UN-002 |
 | 4. Scope | Define offer | Record included/excluded scope and commercial model | Validates model-specific terms | Does policy require approval? | Policy evaluation | JP-002 | UN-002 |
 | 5. Quote | Publish controlled offer | Review and publish a quotation version | State becomes `quoted`; version is retained | Customer accepts, rejects or quote expires | Customer delivery channel | JP-002 | UN-002 |
 | 6. Accept | Record decision | Verify acceptance evidence against exact version | State becomes `accepted` or terminal alternative | Evidence valid? | Audit acceptance | JP-002 | UN-003 |
-| 7. Activate | Start agreed service | Review assignment configuration and confirm activation | Exactly one linked assignment is created | All activation preconditions met? | Idempotent creation | JP-002 | UN-003 |
+| 7. Activate | Start agreed service | Open create-assignment Dialog on the request page and confirm | Exactly one linked assignment is created | All activation preconditions met? | Idempotent creation | JP-002 | UN-003 |
 | 8. Deliver | Maintain truthful progress | Record milestone, quota, deliverable, blocker or note | Updates assignment and permitted customer activity | Within accepted scope? | Audit and notify | JP-002 | UN-004 |
 | 9. Resolve lifecycle | Close or continue service | Pause, renew, complete, cancel or allow expiry | Reason, effect date and next state are recorded | Transition valid? | Preserve periods/history | JP-002 | UN-005 |
 | 10. Re-enter | Review durable record | Reopen request or assignment | Shows history, current state and available actions | Any action remains? | Retrieve audit and related records | JP-002 | UN-005 |

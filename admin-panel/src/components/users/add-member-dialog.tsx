@@ -5,20 +5,20 @@ import { UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import {
   MEMBERSHIP_ROLE,
   MEMBERSHIP_ROLE_LABELS,
@@ -43,7 +43,7 @@ const MEMBERSHIP_ROLE_OPTIONS = [
   },
 ] as const;
 
-type AddMemberSheetProps = {
+type AddMemberDialogProps = {
   open: boolean;
   tenant: TenantType | null;
   candidates: CustomerUserType[];
@@ -60,7 +60,7 @@ function AddMemberForm({
   tenant: TenantType;
   candidates: CustomerUserType[];
   onCancel: () => void;
-  onAddMember: AddMemberSheetProps["onAddMember"];
+  onAddMember: AddMemberDialogProps["onAddMember"];
 }) {
   const [userId, setUserId] = useState(candidates[0]?.id ?? "");
   const [role, setRole] = useState<MembershipRoleType>(MEMBERSHIP_ROLE.MANAGER);
@@ -76,7 +76,7 @@ function AddMemberForm({
 
   return (
     <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-      <div className="app-scrollbar flex-1 space-y-5 overflow-y-auto px-4 pb-6">
+      <div className="app-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-6">
         <div className="rounded-xl border border-border bg-muted/30 p-4">
           <div className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -97,7 +97,7 @@ function AddMemberForm({
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label htmlFor="member-user" className="text-sm font-medium">
                 مشتری
               </label>
@@ -127,7 +127,7 @@ function AddMemberForm({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <label htmlFor="member-role" className="text-sm font-medium">
                 نقش
               </label>
@@ -157,38 +157,37 @@ function AddMemberForm({
         )}
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <DialogFooter>
         <Button type="submit" disabled={!selectedUser}>
           افزودن عضو
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           انصراف
         </Button>
-      </SheetFooter>
+      </DialogFooter>
     </form>
   );
 }
 
-export function AddMemberSheet({
+export function AddMemberDialog({
   open,
   tenant,
   candidates,
   onOpenChange,
   onAddMember,
-}: AddMemberSheetProps) {
+}: AddMemberDialogProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full gap-0 sm:max-w-lg"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="max-w-lg gap-0"
         aria-describedby="add-member-description"
       >
-        <SheetHeader className="border-b border-border pe-12">
-          <SheetTitle>افزودن عضو به مستأجر</SheetTitle>
-          <SheetDescription id="add-member-description">
+        <DialogHeader className="border-b border-border">
+          <DialogTitle>افزودن عضو به مستأجر</DialogTitle>
+          <DialogDescription id="add-member-description">
             یک مشتری موجود را با نقش مشخص به این مستأجر اضافه کنید.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         {tenant && (
           <AddMemberForm
@@ -202,7 +201,7 @@ export function AddMemberSheet({
             }}
           />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

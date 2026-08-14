@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
   ArrowRight,
   Globe2,
@@ -39,12 +39,13 @@ import {
   type WebsiteDiscoveryType,
 } from "@/lib/data/servers-data";
 import { cn } from "@/lib/utils";
-import { AssignDiscoverySheet, type AssignDiscoveryValues } from "./assign-discovery-sheet";
-import { DeleteServerSheet } from "./delete-server-sheet";
 import {
-  EnrollmentRevealSheet,
-  RevokeAgentSheet,
-} from "./enrollment-reveal-sheet";
+  AssignDiscoveryDialog,
+  type AssignDiscoveryValues,
+} from "./assign-discovery-dialog";
+import { DeleteServerDialog } from "./delete-server-dialog";
+import { EnrollmentRevealDialog } from "./enrollment-reveal-dialog";
+import { RevokeAgentDialog } from "./revoke-agent-dialog";
 import { ServerStatusBadge } from "./server-status-badge";
 
 const surfaceClassName = "rounded-2xl border border-border bg-card/90";
@@ -78,10 +79,17 @@ const SERVER_IDENTITY_FIELDS = [
 
 type ServerDetailsViewProps = {
   initialServer: ServerType;
+  initialAssignDiscoveryId?: string | null;
+  initialTenantId?: string | null;
 };
 
-export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
+export function ServerDetailsView({
+  initialServer,
+  initialAssignDiscoveryId = null,
+  initialTenantId = null,
+}: ServerDetailsViewProps) {
   const router = useRouter();
+  const didResumeAssign = useRef(false);
   const [server, setServer] = useState(initialServer);
   const [enrollmentOpen, setEnrollmentOpen] = useState(false);
   const [revealPayload, setRevealPayload] =
@@ -91,12 +99,38 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
   const [assignOpen, setAssignOpen] = useState(false);
   const [selectedDiscovery, setSelectedDiscovery] =
     useState<WebsiteDiscoveryType | null>(null);
+  const [resumeTenantId, setResumeTenantId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setServer(initialServer);
   }, [initialServer]);
+
+  useEffect(() => {
+    if (didResumeAssign.current || !initialAssignDiscoveryId) return;
+
+    const discovery = initialServer.discoveries.find(
+      (item) => item.id === initialAssignDiscoveryId,
+    );
+    if (
+      !discovery ||
+      discovery.assignmentStatus !== DISCOVERY_ASSIGNMENT_STATUS.UNASSIGNED
+    ) {
+      return;
+    }
+
+    didResumeAssign.current = true;
+    setSelectedDiscovery(discovery);
+    setResumeTenantId(initialTenantId);
+    setAssignOpen(true);
+    router.replace(`/servers/${initialServer.id}`, { scroll: false });
+  }, [
+    initialAssignDiscoveryId,
+    initialServer,
+    initialTenantId,
+    router,
+  ]);
 
   const unassignedDiscoveries = server.discoveries.filter(
     (discovery) =>
@@ -489,6 +523,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                             type="button"
                             size="sm"
                             onClick={() => {
+                              setResumeTenantId(null);
                               setSelectedDiscovery(discovery);
                               setAssignOpen(true);
                             }}
@@ -556,7 +591,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
         )}
       </section>
 
-      <EnrollmentRevealSheet
+      <EnrollmentRevealDialog
         open={enrollmentOpen}
         serverLabel={server.label}
         payload={revealPayload}
@@ -573,23 +608,30 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
           );
         }}
       />
-      <RevokeAgentSheet
+      <RevokeAgentDialog
         open={revokeOpen}
         serverLabel={server.label}
         onOpenChange={setRevokeOpen}
         onRevoke={handleRevokeAgent}
       />
-      <DeleteServerSheet
+      <DeleteServerDialog
         open={deleteOpen}
         serverLabel={server.label}
         onOpenChange={setDeleteOpen}
         onConfirm={handleDeleteServer}
       />
-      <AssignDiscoverySheet
+      <AssignDiscoveryDialog
         open={assignOpen}
         discovery={selectedDiscovery}
+        serverId={server.id}
         serverLabel={server.label}
-        onOpenChange={setAssignOpen}
+        initialTenantId={resumeTenantId}
+        onOpenChange={(open) => {
+          setAssignOpen(open);
+          if (!open) {
+            setResumeTenantId(null);
+          }
+        }}
         onAssign={handleAssignDiscovery}
       />
     </div>

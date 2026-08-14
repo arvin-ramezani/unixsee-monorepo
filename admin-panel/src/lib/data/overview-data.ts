@@ -190,7 +190,7 @@ function buildPlanRequestItems(
         : null,
       ageLabel: request.updatedAt,
       slaHint: request.nextAction,
-      href: "/plan-requests?status=ACTIONABLE",
+      href: `/plan-requests/${request.id}`,
       nextHint: "بررسی",
       sectionId: OVERVIEW_SECTION_ID.PLAN_REQUESTS,
     }));
@@ -212,7 +212,7 @@ function buildComplementaryItems(
       customerHref: `/users/${request.customerId}`,
       ageLabel: request.updatedAt,
       slaHint: request.nextAction,
-      href: "/complementary-services?status=ACTIONABLE",
+      href: `/complementary-services/${request.id}`,
       nextHint: "بررسی",
       sectionId: OVERVIEW_SECTION_ID.COMPLEMENTARY,
     }));

@@ -1,8 +1,4 @@
 import { ComplementaryServicesView } from "@/components/complementary-services/complementary-services-view";
-import {
-  COMPLEMENTARY_SERVICE_ASSIGNMENTS,
-  COMPLEMENTARY_SERVICE_REQUESTS,
-} from "@/lib/data/complementary-services-data";
 import { readEnumParam } from "@/lib/url-search-params";
 
 const COMPLEMENTARY_STATUS_FILTER_VALUES = [
@@ -39,11 +35,7 @@ export default async function ComplementaryServicesPage({
         </p>
       </div>
 
-      <ComplementaryServicesView
-        initialRequests={COMPLEMENTARY_SERVICE_REQUESTS}
-        initialAssignments={COMPLEMENTARY_SERVICE_ASSIGNMENTS}
-        initialStatus={initialStatus}
-      />
+      <ComplementaryServicesView initialStatus={initialStatus} />
     </div>
   );
 }

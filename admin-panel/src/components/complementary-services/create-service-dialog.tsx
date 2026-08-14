@@ -13,13 +13,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
   COMPLEMENTARY_SERVICE_FAMILY_LABELS,
@@ -39,7 +39,7 @@ type CreateServiceValues = {
   exclusions: string;
 };
 
-type CreateServiceSheetProps = {
+type CreateServiceDialogProps = {
   open: boolean;
   request: ComplementaryServiceRequestType | null;
   hasDuplicateAssignment: boolean;
@@ -61,7 +61,7 @@ function CreateServiceForm({
   request: ComplementaryServiceRequestType;
   hasDuplicateAssignment: boolean;
   onCancel: () => void;
-  onCreate: CreateServiceSheetProps["onCreate"];
+  onCreate: CreateServiceDialogProps["onCreate"];
 }) {
   const [ownerName, setOwnerName] = useState(
     request.ownerName ?? COMPLEMENTARY_SERVICE_OWNERS[0],
@@ -253,37 +253,36 @@ function CreateServiceForm({
         </div>
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <DialogFooter>
         <Button type="submit">ایجاد سرویس</Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           انصراف
         </Button>
-      </SheetFooter>
+      </DialogFooter>
     </form>
   );
 }
 
-export function CreateServiceSheet({
+export function CreateServiceDialog({
   open,
   request,
   hasDuplicateAssignment,
   onOpenChange,
   onCreate,
-}: CreateServiceSheetProps) {
+}: CreateServiceDialogProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full gap-0 sm:max-w-2xl"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="max-w-2xl gap-0"
         aria-describedby="create-service-description"
       >
-        <SheetHeader className="border-b border-border pe-12">
-          <SheetTitle>ایجاد سرویس تکمیلی</SheetTitle>
-          <SheetDescription id="create-service-description">
+        <DialogHeader className="border-b border-border">
+          <DialogTitle>ایجاد سرویس تکمیلی</DialogTitle>
+          <DialogDescription id="create-service-description">
             اطلاعات توافق را بازبینی و سرویس را برای وب‌سایت درخواست‌شده ایجاد
             کنید.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         {request && (
           <CreateServiceForm
@@ -294,7 +293,7 @@ export function CreateServiceSheet({
             onCreate={onCreate}
           />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

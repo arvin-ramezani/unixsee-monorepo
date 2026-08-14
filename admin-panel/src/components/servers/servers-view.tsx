@@ -42,9 +42,9 @@ import {
 } from "@/lib/data/servers-data";
 import { cn } from "@/lib/utils";
 import {
-  CreateServerSheet,
+  CreateServerDialog,
   type CreateServerValues,
-} from "./create-server-sheet";
+} from "./create-server-dialog";
 import { ServerStatusBadge } from "./server-status-badge";
 
 export const SERVER_AGENT_FILTER = {
@@ -533,7 +533,7 @@ export function ServersView({
         </>
       )}
 
-      <CreateServerSheet
+      <CreateServerDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onCreate={handleCreateServer}

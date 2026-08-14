@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowLeft,
   BriefcaseBusiness,
-  CalendarClock,
   CheckCircle2,
   CircleDollarSign,
   Clock3,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 import SearchInput from "@/components/common/search-input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -25,14 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -52,8 +44,11 @@ import {
   type ComplementaryServiceRequestType,
   type ServiceRequestStatusType,
 } from "@/lib/data/complementary-services-data";
+import {
+  listRuntimeComplementaryAssignments,
+  listRuntimeComplementaryRequests,
+} from "@/lib/data/complementary-services-runtime";
 import { cn } from "@/lib/utils";
-import { CreateServiceSheet } from "./create-service-sheet";
 import { ServiceStatusBadge } from "./service-status-badge";
 
 const VIEW_MODE = {
@@ -104,8 +99,6 @@ const ACTIONABLE_REQUEST_STATUSES = new Set<ServiceRequestStatusType>([
 ]);
 
 type ComplementaryServicesViewProps = {
-  initialRequests: ComplementaryServiceRequestType[];
-  initialAssignments: ComplementaryServiceAssignmentType[];
   initialStatus?: RequestStatusFilterType;
 };
 
@@ -168,10 +161,8 @@ function SummaryCard({
 
 function RequestCard({
   request,
-  onOpen,
 }: {
   request: ComplementaryServiceRequestType;
-  onOpen: (request: ComplementaryServiceRequestType) => void;
 }) {
   return (
     <article className="rounded-xl border border-border bg-card p-4">
@@ -215,15 +206,16 @@ function RequestCard({
         <p className="mt-1 font-medium">{request.nextAction}</p>
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="mt-4 w-full"
-        onClick={() => onOpen(request)}
+      <Link
+        href={`/complementary-services/${request.id}`}
+        className={buttonVariants({
+          variant: "outline",
+          className: "mt-4 w-full",
+        })}
       >
         بررسی درخواست
         <ArrowLeft data-icon="inline-end" />
-      </Button>
+      </Link>
     </article>
   );
 }
@@ -260,145 +252,11 @@ function AssignmentCard({
   );
 }
 
-function RequestDetailsSheet({
-  request,
-  open,
-  onOpenChange,
-  onCreate,
-}: {
-  request: ComplementaryServiceRequestType | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCreate: (request: ComplementaryServiceRequestType) => void;
-}) {
-  const canCreate = request?.status === SERVICE_REQUEST_STATUS.ACCEPTED;
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-xl">
-        {request && (
-          <>
-            <SheetHeader className="border-b border-border pe-12">
-              <div className="mb-2">
-                <ServiceStatusBadge kind="request" status={request.status} />
-              </div>
-              <SheetTitle>{request.title}</SheetTitle>
-              <SheetDescription>
-                درخواست {request.id} · آخرین بروزرسانی {request.updatedAt}
-              </SheetDescription>
-            </SheetHeader>
-
-            <div className="app-scrollbar flex-1 space-y-5 overflow-y-auto px-4 pb-5">
-              <div className="rounded-xl border border-border bg-muted/30 p-4">
-                <div className="flex items-start gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Globe2 className="size-5" aria-hidden="true" />
-                  </span>
-                  <div>
-                    <p className="font-medium">{request.websiteTitle}</p>
-                    <p
-                      className="mt-1 text-sm text-muted-foreground w-fit"
-                      dir="ltr"
-                    >
-                      {request.websiteDomain}
-                    </p>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {request.customerName}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <section>
-                <h3 className="text-sm font-semibold">شرح درخواست مشتری</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {request.description}
-                </p>
-              </section>
-
-              <dl className="grid gap-4 rounded-xl border border-border p-4 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-muted-foreground">نوع سرویس</dt>
-                  <dd className="mt-1 text-sm font-medium">
-                    {COMPLEMENTARY_SERVICE_FAMILY_LABELS[request.family]}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">نوع همکاری</dt>
-                  <dd className="mt-1 text-sm font-medium">
-                    {request.preferredEngagement}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">مسئول</dt>
-                  <dd className="mt-1 text-sm font-medium">
-                    {request.ownerName ?? "تخصیص داده نشده"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">زمان ثبت</dt>
-                  <dd className="mt-1 text-sm font-medium">
-                    {request.submittedAt}
-                  </dd>
-                </div>
-              </dl>
-
-              <section className="rounded-xl border border-accent bg-accent/15 p-4">
-                <p className="text-xs text-accent-foreground">اقدام بعدی</p>
-                <p className="mt-1 text-sm font-medium">{request.nextAction}</p>
-                {request.dueLabel && (
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <CalendarClock className="size-3.5" aria-hidden="true" />
-                    سررسید: {request.dueLabel}
-                  </p>
-                )}
-              </section>
-
-              {request.customerNote && (
-                <section className="rounded-xl border border-border p-4">
-                  <h3 className="text-sm font-semibold">
-                    یادداشت قابل مشاهده مشتری
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {request.customerNote}
-                  </p>
-                </section>
-              )}
-            </div>
-
-            <SheetFooter className="border-t border-border bg-card">
-              {canCreate ? (
-                <Button type="button" onClick={() => onCreate(request)}>
-                  <Plus data-icon="inline-start" />
-                  ایجاد سرویس برای این وب‌سایت
-                </Button>
-              ) : (
-                <p className="text-xs leading-5 text-muted-foreground">
-                  ایجاد سرویس پس از ثبت پذیرش پیشنهاد در دسترس قرار می‌گیرد.
-                </p>
-              )}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                بستن
-              </Button>
-            </SheetFooter>
-          </>
-        )}
-      </SheetContent>
-    </Sheet>
-  );
-}
-
 export function ComplementaryServicesView({
-  initialRequests,
-  initialAssignments,
   initialStatus = REQUEST_STATUS_FILTER.ALL,
 }: ComplementaryServicesViewProps) {
-  const [requests, setRequests] = useState(initialRequests);
-  const [assignments, setAssignments] = useState(initialAssignments);
+  const requests = listRuntimeComplementaryRequests();
+  const assignments = listRuntimeComplementaryAssignments();
   const [viewMode, setViewMode] = useState<ViewModeType>(VIEW_MODE.REQUESTS);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] =
@@ -406,11 +264,6 @@ export function ComplementaryServicesView({
   const [familyFilter, setFamilyFilter] =
     useState<FamilyFilterType>(FAMILY_FILTER_ALL);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [selectedRequest, setSelectedRequest] =
-    useState<ComplementaryServiceRequestType | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   const acceptedRequests = requests.filter(
     (request) => request.status === SERVICE_REQUEST_STATUS.ACCEPTED,
@@ -476,76 +329,7 @@ export function ComplementaryServicesView({
     FAMILY_FILTER_OPTIONS.find((option) => option.value === familyFilter)
       ?.label ?? "همه سرویس‌ها";
 
-  const openRequestDetails = (request: ComplementaryServiceRequestType) => {
-    setSelectedRequest(request);
-    setIsDetailsOpen(true);
-  };
-
-  const openCreateService = (request: ComplementaryServiceRequestType) => {
-    setSelectedRequest(request);
-    setIsDetailsOpen(false);
-    setIsCreateOpen(true);
-  };
-
-  const handleHeaderCreate = () => {
-    const firstAcceptedRequest = acceptedRequests[0];
-    if (!firstAcceptedRequest) return;
-    openCreateService(firstAcceptedRequest);
-  };
-
-  const handleCreateService: React.ComponentProps<
-    typeof CreateServiceSheet
-  >["onCreate"] = (request, values) => {
-    const createdAssignment: ComplementaryServiceAssignmentType = {
-      id: `CSA-${3022 + assignments.length - initialAssignments.length}`,
-      requestId: request.id,
-      customerName: request.customerName,
-      websiteId: request.websiteId,
-      websiteDomain: request.websiteDomain,
-      family: request.family,
-      title: request.title,
-      ownerName: values.ownerName,
-      commercialModel: values.commercialModel,
-      status: SERVICE_ASSIGNMENT_STATUS.SCHEDULED,
-      startDate: new Intl.DateTimeFormat("fa-IR", {
-        dateStyle: "medium",
-      }).format(new Date(`${values.startDate}T00:00:00`)),
-      renewalDate: null,
-      progressLabel: "در انتظار رسیدن تاریخ شروع",
-      agreedAmount: values.agreedAmount,
-    };
-
-    setAssignments((currentAssignments) => [
-      createdAssignment,
-      ...currentAssignments,
-    ]);
-    setRequests((currentRequests) =>
-      currentRequests.map((currentRequest) =>
-        currentRequest.id === request.id
-          ? {
-              ...currentRequest,
-              status: SERVICE_REQUEST_STATUS.ACTIVATED,
-              nextAction: "مشاهده سرویس ایجادشده",
-              updatedAt: "همین حالا",
-            }
-          : currentRequest,
-      ),
-    );
-    setSuccessMessage(
-      `سرویس «${request.title}» برای ${request.websiteDomain} ایجاد و زمان‌بندی شد.`,
-    );
-    setIsCreateOpen(false);
-    setViewMode(VIEW_MODE.ASSIGNMENTS);
-  };
-
-  const hasDuplicateAssignment =
-    selectedRequest !== null &&
-    assignments.some(
-      (assignment) =>
-        assignment.websiteId === selectedRequest.websiteId &&
-        assignment.family === selectedRequest.family &&
-        assignment.status !== SERVICE_ASSIGNMENT_STATUS.COMPLETED,
-    );
+  const firstAcceptedRequest = acceptedRequests[0] ?? null;
 
   const filterControls = (
     <>
@@ -622,16 +406,6 @@ export function ComplementaryServicesView({
         />
       </section>
 
-      {!!successMessage && (
-        <div
-          className="flex items-start gap-2 rounded-xl border border-accent bg-accent/20 p-4 text-sm text-accent-foreground"
-          role="status"
-        >
-          <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <p>{successMessage}</p>
-        </div>
-      )}
-
       <section className="rounded-xl border border-border bg-card">
         <div className="flex flex-col gap-4 border-b border-border p-4 lg:flex-row lg:items-center lg:justify-between">
           <div
@@ -666,19 +440,24 @@ export function ComplementaryServicesView({
             </Button>
           </div>
 
-          <Button
-            type="button"
-            onClick={handleHeaderCreate}
-            disabled={acceptedRequests.length === 0}
-            title={
-              acceptedRequests.length === 0
-                ? "درخواست تأییدشده‌ای برای ایجاد سرویس وجود ندارد"
-                : undefined
-            }
-          >
-            <Plus data-icon="inline-start" />
-            ایجاد سرویس
-          </Button>
+          {firstAcceptedRequest ? (
+            <Link
+              href={`/complementary-services/${firstAcceptedRequest.id}`}
+              className={buttonVariants()}
+            >
+              <Plus data-icon="inline-start" />
+              ایجاد سرویس
+            </Link>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              title="درخواست تأییدشده‌ای برای ایجاد سرویس وجود ندارد"
+            >
+              <Plus data-icon="inline-start" />
+              ایجاد سرویس
+            </Button>
+          )}
         </div>
 
         <div className="border-b border-border p-4">
@@ -790,15 +569,16 @@ export function ComplementaryServicesView({
                           )}
                         </TableCell>
                         <TableCell className="px-4 py-3">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
+                          <Link
+                            href={`/complementary-services/${request.id}`}
+                            className={buttonVariants({
+                              variant: "ghost",
+                              size: "icon",
+                            })}
                             aria-label={`بررسی درخواست ${request.id}`}
-                            onClick={() => openRequestDetails(request)}
                           >
                             <Eye />
-                          </Button>
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))
@@ -819,11 +599,7 @@ export function ComplementaryServicesView({
             <div className="grid gap-3 p-4 md:grid-cols-2 lg:hidden">
               {filteredRequests.length > 0 ? (
                 filteredRequests.map((request) => (
-                  <RequestCard
-                    key={request.id}
-                    request={request}
-                    onOpen={openRequestDetails}
-                  />
+                  <RequestCard key={request.id} request={request} />
                 ))
               ) : (
                 <div className="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground md:col-span-2">
@@ -940,20 +716,6 @@ export function ComplementaryServicesView({
         <CircleDollarSign className="size-4" aria-hidden="true" />
         مبالغ این صفحه عملیاتی هستند و گزارش حسابداری محسوب نمی‌شوند.
       </p>
-
-      <RequestDetailsSheet
-        request={selectedRequest}
-        open={isDetailsOpen}
-        onOpenChange={setIsDetailsOpen}
-        onCreate={openCreateService}
-      />
-      <CreateServiceSheet
-        open={isCreateOpen}
-        request={selectedRequest}
-        hasDuplicateAssignment={hasDuplicateAssignment}
-        onOpenChange={setIsCreateOpen}
-        onCreate={handleCreateService}
-      />
     </div>
   );
 }

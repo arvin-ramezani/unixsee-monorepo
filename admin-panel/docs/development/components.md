@@ -89,6 +89,17 @@ Before creating a UI primitive:
 
 Project-specific components should compose shadcn components rather than recreate or replace their primitives.
 
+## Overlays
+
+Choose the overlay from the task, not from habit:
+
+- Durable work record → dedicated page (`/[id]`).
+- Short focused create or pick → `Dialog`.
+- Irreversible confirm → `AlertDialog`.
+- Inspector, filters, or mobile nav → `Sheet`.
+
+Do not use `Sheet` as the default overlay. Do not change `src/components/ui/sidebar.tsx` (mobile nav Sheet).
+
 ## Select
 
 When using the shadcn Select component, always use the project's Base UI implementation with:

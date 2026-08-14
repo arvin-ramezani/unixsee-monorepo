@@ -266,26 +266,25 @@ Role names are descriptive placeholders. Enforcement must use approved capabilit
 |---|---|---|---|---|---|---|---|
 | 1. Enter users work | Find actionable customer admin work | Open users queue or search | Lists/scopes authorized users and tenants | Permitted? | Capability filter | JP-001 | UN-001 |
 | 2. Find or confirm | Avoid duplicates | Search by approved identifiers | Shows matches with state and memberships | Exact/possible duplicate? | Non-enumerating search | JP-002 | UN-001 |
-| 3. Create standalone | Establish customer | Enter minimum identity + tenant/owner defaults | User + tenant + owner membership created | Valid and unique? | NestJS create + audit | JP-001 | UN-003 |
+| 3. Create standalone | Establish customer | Open `/users/new`; enter minimum identity + tenant/owner defaults | User + tenant + owner membership created | Valid and unique? | NestJS create + audit | JP-001 | UN-003 |
 | 4. Maintain membership | Keep access correct | Add/change/remove members; change owner with safeguards | Membership and owner state update | Final owner protected? | Authorization + audit | JP-001 | UN-004 |
 | 5. Security assist | Restore safe access | Suspend/restore, revoke sessions, start recovery | State changes with reason | Capability and policy ok? | No secret reveal | JP-005 | UN-005 |
 | 6. Discovery assign entry | Make website customer-owned | Start تخصیص وب‌سایت کشف‌شده | Tenant/plan required; discovery context visible | Matching tenant exists? | Preserve discovery draft | JP-002 | UN-002 |
-| 7. Inline create | Unblock assignment | Choose “ایجاد مشتری جدید”, complete minimum create | Create succeeds; return to assignment with tenant selected | Create authorized and unique? | Same create contract as standalone | JP-003 | UN-002 |
+| 7. Create from assign | Unblock assignment | Choose “ایجاد مشتری جدید”; complete `/users/new?returnTo=/servers/{id}&assign=` | Create succeeds; return to assignment Dialog with tenant selected | Create authorized and unique? | Same create contract as standalone | JP-003 | UN-002 |
 | 8. Resume assign | Finish ownership | Confirm tenant, plan, display title | Managed website ownership created | Activation prerequisites met? | NestJS assignment + audit | E-005 | UN-003 |
 | 9. Re-enter | Support later work | Open user/tenant detail | Related websites, requests, tickets, notes, history | Further action needed? | Retrieve related records | JP-004 | UN-006 |
 
 ### Cross-flow change required in website assignment
 
-**CH-001 — Create-and-continue inside تخصیص وب‌سایت کشف‌شده**
+**CH-001 — Create-and-continue from تخصیص وب‌سایت کشف‌شده**
 
 When no suitable tenant/user exists:
 
-1. Staff keep the discovery assignment surface open or explicitly stacked.
-2. Staff start inline create with discovery domain/title available as optional context only.
-3. System creates user + tenant + owner membership under the same rules as standalone create.
-4. On success, focus returns to assignment with the new tenant preselected and prior title/plan inputs restored.
-5. Staff confirm assignment as a separate consequential action.
-6. Canceling inline create returns to assignment without creating records and without clearing discovery inputs.
+1. Staff leave the assignment Dialog for `/users/new?returnTo=/servers/{serverId}&assign={discoveryId}`.
+2. System creates user + tenant + owner membership under the same rules as standalone create.
+3. On success, staff return to `/servers/{serverId}` with the assign Dialog reopened and the new tenant preselected.
+4. Staff confirm assignment as a separate consequential action.
+5. Canceling create returns via `returnTo` without creating records; the discovery stays unassigned.
 
 This change should also be reflected in `admin-servers-websites-agents.md` as an alternative path under assignment.
 
@@ -359,12 +358,12 @@ flowchart TD
 |---|---|---|---|---|---|---|---|
 | S-01 | Users queue | Find customer admin work | Authorized `/users` | Name, contact masks, tenant(s), account state, website count | Search, filter, create, open | Scope by capability | Record selected/created |
 | S-02 | Find results | Prevent duplicates | Search submitted | Ranked authorized matches and “no match” empty state | Open match, start create | Avoid leaking existence beyond policy | Detail or create |
-| S-03 | Create user/tenant | Establish customer | Create from queue or inline | Display name, contact identifiers, locale, tenant name, owner default, internal note optional | Save, cancel | Validates uniqueness; creates user+tenant+owner as configured | Detail or resume parent flow |
+| S-03 | Create user/tenant | Establish customer | Create from `/users/new` or assign returnTo | Display name, contact identifiers, locale, tenant name, owner default, internal note optional | Save, cancel | Validates uniqueness; creates user+tenant+owner as configured | Detail or resume parent flow |
 | S-04 | User/tenant detail | Understand customer context | Record opened | Identity, verification/security state, memberships, related websites/requests/tickets, internal notes | Edit permitted fields, manage members, security actions | Separates internal vs customer-visible | Related workflow |
 | S-05 | Membership edit | Keep access correct | Manage members | Members, roles, owner marker | Add/change/remove, change owner | Enforces final-owner rule | Updated membership |
 | S-06 | Security action | Safe recovery | Suspend/restore/revoke/recovery | Current state, impact summary, reason | Confirm with reason | Never reveals secrets; audits | Updated account state |
 | S-07 | Discovery assign | Bind website ownership | Unassigned discovery selected | Domain, server/agent context, title, tenant, plan | Select tenant, create customer, confirm assign | Keeps discovery staff-only until success | Assigned or create branch |
-| S-08 | Inline create | Unblock assign | Create customer from S-07 | Minimum create fields + preserved assignment draft summary | Save create, cancel create | Same create rules as S-03; does not assign website yet | S-09 or back to S-07 |
+| S-08 | Create from assign | Unblock assign | Create customer from S-07 via `/users/new` | Minimum create fields | Save create, cancel create | Same create rules as S-03; does not assign website yet | S-09 or back to S-07 |
 | S-09 | Assignment resume | Finish ownership | Inline create succeeded | Preselected tenant, restored title/plan, create confirmation | Confirm assign, edit, cancel assign | Revalidates prerequisites | Managed website |
 | S-10 | Completion | Confirm outcome | Assignment accepted | Website id/reference, tenant, plan, next actions | Open website, open tenant, continue other discoveries | Customer visibility follows activation rules | Re-entry |
 
@@ -494,12 +493,12 @@ flowchart TD
 
 | ID | Criterion | State | Problem/status | Required behaviour | Severity | Test |
 |---|---|---|---|---|---:|---|
-| AX-001 | Keyboard operation | Queue, create, inline create, assign | Nested sheets/dialogs may become pointer-only | All find/create/assign actions operable by keyboard | 4 provisional | Keyboard |
+| AX-001 | Keyboard operation | Queue, `/users/new`, assign Dialog | Create is a dedicated page; assign is a Dialog | All find/create/assign actions operable by keyboard | 4 provisional | Keyboard |
 | AX-002 | Focus order/restoration | Inline create open/close | Returning from create may lose assignment context | On open, focus first create field; on success/cancel, restore focus to tenant control or status summary | 4 provisional | Keyboard/SR |
 | AX-003 | Status messages | Create and assign | Silent success would hide whether continue is safe | Announce create success, selected tenant, assign pending/success/failure | 4 provisional | Screen reader |
 | AX-004 | Labels and errors | Create/assign forms | Conditional identity fields may be unclear | Programmatic labels, required state, linked error text, retained valid input | 3 provisional | SR/code |
 | AX-005 | Critical submission | Create, owner change, suspend, assign | Accidental high-impact changes | Review summary and confirm for high-impact actions; create-and-assign remain separate confirms | 4 provisional | Keyboard/usability |
-| AX-006 | No keyboard trap | Nested create inside assign | Focus may stick in stacked surface | Escape/cancel returns to parent; focus remains usable | 4 provisional | Keyboard |
+| AX-006 | No keyboard trap | Assign Dialog | Focus must remain usable in the Dialog | Escape/cancel closes assign; create uses `/users/new` instead of a nested overlay | 4 provisional | Keyboard |
 | AX-007 | RTL/LTR | Contact identifiers and domains | Email/domain are LTR inside RTL UI | Keep identifiers copyable and readable without breaking reading order | 3 provisional | Manual RTL/LTR |
 | AX-008 | Timing | Invite/verification windows | Unwarned expiry blocks customer access | Expose pending-verification state and next action in text | 3 provisional | Functional |
 

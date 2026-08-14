@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
 import { AlertTriangle, Info, MailCheck, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SheetFooter } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import {
   CUSTOMER_LOCALE,
   CUSTOMER_LOCALE_LABELS,
@@ -27,6 +27,18 @@ import {
   type CreateCustomerResultType,
 } from "@/lib/data/users-runtime";
 import { formatContactSummary, normalizeMobile } from "@/lib/users-utils";
+
+function FormActions({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "mt-auto flex flex-col gap-2 border-t border-border bg-card p-4",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 const CREATE_STEP = {
   FORM: "FORM",
@@ -239,7 +251,7 @@ export function CustomerCreateForm({
           </div>
         </div>
 
-        <SheetFooter className="border-t border-border bg-card">
+        <FormActions>
           <Button type="button" autoFocus onClick={handleConfirm}>
             تأیید و ایجاد مشتری
           </Button>
@@ -250,7 +262,7 @@ export function CustomerCreateForm({
           >
             بازگشت به ویرایش
           </Button>
-        </SheetFooter>
+        </FormActions>
       </div>
     );
   }
@@ -479,12 +491,12 @@ export function CustomerCreateForm({
         </div>
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <FormActions>
         <Button type="submit">بازبینی و ادامه</Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           {cancelLabel}
         </Button>
-      </SheetFooter>
+      </FormActions>
     </form>
   );
 }

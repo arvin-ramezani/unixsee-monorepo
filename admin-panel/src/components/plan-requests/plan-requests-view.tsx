@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
   CheckCircle2,
@@ -45,7 +47,6 @@ import {
   PLAN_REQUEST_INTAKE,
   PLAN_REQUEST_INTAKE_LABELS,
 } from "@/lib/plan-requests/plan-request-intake";
-import { PlanRequestDetailsSheet } from "./plan-request-details-sheet";
 import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
@@ -126,7 +127,7 @@ export function PlanRequestsView({
   initialRequests = [],
   loadError = null,
 }: PlanRequestsViewProps = {}) {
-  const [requests, setRequests] = useState(initialRequests);
+  const requests = initialRequests;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
     useState<StatusFilterType>(initialStatus);
@@ -135,9 +136,7 @@ export function PlanRequestsView({
     INTAKE_FILTER.ALL,
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const summary = useMemo(() => {
     return {
@@ -250,20 +249,8 @@ export function PlanRequestsView({
     });
   }, [requests, search, statusFilter, planFilter, intakeFilter]);
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedId) ?? null;
-
   const openRequest = (requestId: string) => {
-    setSelectedId(requestId);
-    setSheetOpen(true);
-  };
-
-  const handleRequestChanged = (request: PlanRequestType, message: string) => {
-    setSelectedId(request.id);
-    setStatusMessage(message);
-    setRequests((prev) =>
-      prev.map((item) => (item.id === request.id ? request : item)),
-    );
+    router.push(`/plan-requests/${requestId}`);
   };
 
   return (
@@ -353,16 +340,6 @@ export function PlanRequestsView({
           );
         })}
       </section>
-
-      {statusMessage && (
-        <p
-          className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm"
-          role="status"
-          aria-live="polite"
-        >
-          {statusMessage}
-        </p>
-      )}
 
       <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -491,6 +468,8 @@ export function PlanRequestsView({
                     key={request.id}
                     className="cursor-pointer"
                     tabIndex={0}
+                    role="link"
+                    aria-label={`مشاهده درخواست ${request.chosenPlanName}`}
                     onClick={() => openRequest(request.id)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
@@ -552,11 +531,10 @@ export function PlanRequestsView({
             </p>
           ) : (
             filtered.map((request) => (
-              <button
+              <Link
                 key={request.id}
-                type="button"
+                href={`/plan-requests/${request.id}`}
                 className="rounded-xl border border-border bg-background p-4 text-right shadow-sm"
-                onClick={() => openRequest(request.id)}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -586,23 +564,11 @@ export function PlanRequestsView({
                     <dd>{request.nextAction}</dd>
                   </div>
                 </dl>
-              </button>
+              </Link>
             ))
           )}
         </div>
       </div>
-
-      <PlanRequestDetailsSheet
-        request={selectedRequest}
-        open={sheetOpen}
-        onOpenChange={(open) => {
-          setSheetOpen(open);
-          if (!open) {
-            window.setTimeout(() => setSelectedId(null), 220);
-          }
-        }}
-        onRequestChanged={handleRequestChanged}
-      />
     </div>
   );
 }

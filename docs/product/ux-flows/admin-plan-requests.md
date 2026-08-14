@@ -61,7 +61,7 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 
 #### In scope
 
-- Admin queue and detail for plan requests at `/plan-requests`.
+- Admin queue at `/plan-requests` and request detail at `/plan-requests/[id]`.
 - Display of the plan the customer already chose on the public web app.
 - Confirming and linking an **existing** user/tenant to the request.
 - Selecting the target website for enablement.
@@ -199,7 +199,7 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 | Stage | Goal | Behaviour | Response | Decision | Backstage | Problem | Need |
 |---|---|---|---|---|---|---|---|
 | 1. Intake | Find work | Open `/plan-requests`, filter by state | Shows chosen plan, link state, blockers | Permitted? | Capability scope | JP-001 | UN-001 |
-| 2. Review | Understand request | Open detail: chosen plan, contacts, current link/website state | Shows what is missing | Ready to enable? | Fixture/API later | JP-002 | UN-001 |
+| 2. Review | Understand request | Open `/plan-requests/[id]`: chosen plan, contacts, current link/website state | Shows what is missing | Ready to enable? | Fixture/API later | JP-002 | UN-001 |
 | 3. Link customer | Attach existing owner | Search/link existing user/tenant only | Request linked, or blocked with “user must exist” | Match found? | Users domain read/search | Missing user | UN-002 |
 | 4. Choose website | Pick target | Select eligible website for this tenant/context | Website selected or blocked | Website eligible? | Websites domain | Missing/conflicted website | UN-003 |
 | 5. Enable or refuse | Finish | Confirm enable, or decline/cancel with reason | `enabled` or terminal | Valid? | One-plan rule + audit | Wrong plan/site | UN-003, UN-004 |
@@ -247,7 +247,7 @@ flowchart LR
 | Step | State | Goal | Entry condition | Information | Actions | System behaviour | Exit |
 |---|---|---|---|---|---|---|---|
 | S-01 | Queue ready | Choose work | Authorized `/plan-requests` | State, chosen plan, user-link state, website readiness, next action | Filter, open | Capability scoping | Request selected |
-| S-02 | Pending review | Understand blockers | Request opened | Chosen plan, contacts, linked user/tenant, website candidate, history | Link existing user, select website, decline/cancel | No create-user action | Ready, still pending, or terminal |
+| S-02 | Pending review | Understand blockers | Request opened at `/plan-requests/[id]` | Chosen plan, contacts, linked user/tenant, website candidate, history | Link existing user, select website, decline/cancel | No create-user action | Ready, still pending, or terminal |
 | S-03 | Ready to enable | Confirm outcome | Existing user linked + website selected + no active-plan conflict | Summary: user, tenant, website, chosen plan | Confirm enable, go back, decline/cancel | Validates one-plan rule | Enabled or blocked |
 | S-04 | Enabled / terminal | Durable outcome | Enable or refuse completed | Timeline, linked website/plan, reasons | Open linked user/website records | Preserves history | Re-entry read-only or related records |
 

@@ -59,8 +59,8 @@ import {
 } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { AccountStateBadge } from "./account-status-badge";
-import { AddMemberSheet } from "./add-member-sheet";
-import { SecurityActionSheet } from "./security-action-sheet";
+import { AddMemberDialog } from "./add-member-dialog";
+import { SecurityActionDialog } from "./security-action-dialog";
 import { TenantMembershipsSection } from "./tenant-memberships-section";
 
 const surfaceClassName = "rounded-2xl border border-border bg-card/90";
@@ -584,7 +584,7 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
         )}
       </section>
 
-      <SecurityActionSheet
+      <SecurityActionDialog
         open={!!securityAction}
         action={securityAction}
         user={user}
@@ -593,7 +593,7 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
         }}
         onConfirm={handleSecurityAction}
       />
-      <AddMemberSheet
+      <AddMemberDialog
         open={!!memberTenant}
         tenant={memberTenant}
         candidates={memberCandidates}

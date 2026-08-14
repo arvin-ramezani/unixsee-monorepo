@@ -4,15 +4,15 @@ import { useState, type FormEvent } from "react";
 import { Server } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export type CreateServerValues = {
@@ -21,7 +21,7 @@ export type CreateServerValues = {
   notes: string;
 };
 
-type CreateServerSheetProps = {
+type CreateServerDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreate: (values: CreateServerValues) => Promise<boolean> | boolean;
@@ -58,7 +58,7 @@ function CreateServerForm({
 
   return (
     <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-      <div className="app-scrollbar flex-1 space-y-5 overflow-y-auto px-4 pb-6">
+      <div className="app-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-6">
         <div className="rounded-xl border border-border bg-muted/30 p-4">
           <div className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -74,7 +74,7 @@ function CreateServerForm({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="server-name" className="text-sm font-medium">
             شناسه سرور
           </label>
@@ -89,7 +89,7 @@ function CreateServerForm({
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="server-ip" className="text-sm font-medium">
             آدرس IP
           </label>
@@ -104,7 +104,7 @@ function CreateServerForm({
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="server-notes" className="text-sm font-medium">
             یادداشت داخلی
           </label>
@@ -119,7 +119,7 @@ function CreateServerForm({
         </div>
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <DialogFooter>
         <Button type="submit" disabled={pending}>
           {pending ? "در حال ایجاد…" : "ایجاد سرور"}
         </Button>
@@ -131,30 +131,29 @@ function CreateServerForm({
         >
           انصراف
         </Button>
-      </SheetFooter>
+      </DialogFooter>
     </form>
   );
 }
 
-export function CreateServerSheet({
+export function CreateServerDialog({
   open,
   onOpenChange,
   onCreate,
-}: CreateServerSheetProps) {
+}: CreateServerDialogProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full gap-0 sm:max-w-xl"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="max-w-xl gap-0"
         aria-describedby="create-server-description"
       >
-        <SheetHeader className="border-b border-border pe-12">
-          <SheetTitle>ایجاد سرور</SheetTitle>
-          <SheetDescription id="create-server-description">
+        <DialogHeader className="border-b border-border">
+          <DialogTitle>ایجاد سرور</DialogTitle>
+          <DialogDescription id="create-server-description">
             یک VPS جدید را در پنل ثبت کنید تا بتوانید توکن اتصال Agent را صادر
             کنید.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         {open && (
           <CreateServerForm
@@ -163,7 +162,7 @@ export function CreateServerSheet({
             onCreate={onCreate}
           />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

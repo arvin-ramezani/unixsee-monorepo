@@ -6,8 +6,9 @@
 |---|---|---|
 | Staff login / session | Server Actions + `unixsee_admin_*` cookies + refresh BFF | ADR 0012 Layer 1 |
 | `/tickets`, `/tickets/[id]` | RSC `server-fetch` + ticket Server Actions | Nest `status` / `skip` / `take` from URL; contract [`tickets-admin.md`](../../../docs/backend/contracts/tickets-admin.md) |
-| `/plan-requests` list | RSC `server-fetch` | Nest list; detail sheet link/enable/decline via Server Actions; contract [`plan-requests-admin.md`](../../../docs/backend/contracts/plan-requests-admin.md) |
-| `/servers`, `/servers/[id]` | RSC `server-fetch` + server Server Actions | Create/delete server, issue/revoke enrollment token, revoke agent; contract [`servers-admin.md`](../../../docs/backend/contracts/servers-admin.md) |
+| `/plan-requests` list | RSC `server-fetch` | Nest list; contract [`plan-requests-admin.md`](../../../docs/backend/contracts/plan-requests-admin.md) |
+| `/plan-requests/[id]` | RSC `server-fetch` | Nest GET by id; enable/decline via Server Actions; revalidates list and `[id]` |
+| `/servers`, `/servers/[id]` | RSC `server-fetch` + server Server Actions | Create/delete server, issue/revoke enrollment token, revoke agent; contract [`servers-admin.md`](../../../docs/backend/contracts/servers-admin.md). `assign` + `tenantId` search params reopen the assign Dialog after `/users/new`. |
 
 ### Fixture-backed (not yet wired)
 
@@ -24,15 +25,21 @@ overview-data.ts   # ticket attention strip still uses tickets-data fixtures
 websites-data.ts
 users-data.ts
 servers-data.ts    # enums + labels; list/detail pages read Nest
-plan-requests-data.ts   # enums + overview fixtures; list page reads Nest
+plan-requests-data.ts   # enums + overview fixtures; list/detail pages read Nest
 complementary-services-data.ts
 ```
 
 `tickets-data.ts` remains for overview fixtures and shared status/service enums;
 list/detail pages read Nest, not `TICKETS`. `plan-requests-data.ts` keeps UI
-status labels and overview fixtures while `/plan-requests` loads Nest.
+status labels and overview fixtures while `/plan-requests` and
+`/plan-requests/[id]` load Nest.
 `servers-data.ts` keeps agent/enrollment enums and labels while `/servers`
 loads Nest; discovery assignment on the detail pane is still local-only.
+`/users`, `/users/new`, and `/users/[id]` stay fixture-backed via
+`users-runtime.ts`.
+`/complementary-services` and `/complementary-services/[id]` stay
+fixture-backed; in-session assignment creates use
+`complementary-services-runtime.ts`. There is no Nest GET-by-id yet.
 
 Prefer named constants:
 

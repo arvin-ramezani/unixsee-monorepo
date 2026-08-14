@@ -52,6 +52,7 @@ function staffErrorMessage(response: ApiResponse<unknown>): string {
 }
 
 async function mutatePlanRequest(
+  requestId: string,
   endpoint: string,
   init?: RequestInit,
 ): Promise<PlanRequestMutationResult> {
@@ -66,6 +67,7 @@ async function mutatePlanRequest(
     }
 
     revalidatePath("/plan-requests");
+    revalidatePath(`/plan-requests/${requestId}`);
     return { ok: true, request: mapAdminPlanRequestToUi(response.data) };
   } catch {
     return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
@@ -135,6 +137,7 @@ export async function linkPlanRequestWebsiteAction(input: {
   linkedUserId?: string | null;
 }): Promise<PlanRequestMutationResult> {
   return mutatePlanRequest(
+    input.requestId,
     `/admin/plan-requests/${input.requestId}/link`,
     {
       method: "POST",
@@ -153,6 +156,7 @@ export async function enablePlanRequestAction(input: {
   tenantId?: string | null;
 }): Promise<PlanRequestMutationResult> {
   return mutatePlanRequest(
+    input.requestId,
     `/admin/plan-requests/${input.requestId}/enable`,
     {
       method: "POST",
@@ -184,6 +188,7 @@ export async function declinePlanRequestAction(input: {
       : trimmedReason;
 
   return mutatePlanRequest(
+    input.requestId,
     `/admin/plan-requests/${input.requestId}/decline`,
     {
       method: "POST",

@@ -1,42 +1,35 @@
-import { ServerDetailsView } from "@/components/servers/server-details-view";
+import { PlanRequestDetailsView } from "@/components/plan-requests/plan-request-details-view";
 import {
   mapApiError,
   STAFF_API_ERROR_MESSAGES,
 } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
+import type { PlanRequestType } from "@/lib/data/plan-requests-data";
 import {
-  mapAdminServerToUi,
-  type AdminServerReadModelDto,
-} from "@/lib/servers/map-admin-server";
-import type { ServerType } from "@/lib/data/servers-data";
-import { readStringParam } from "@/lib/url-search-params";
+  mapAdminPlanRequestToUi,
+  type AdminPlanRequestDto,
+} from "@/lib/plan-requests/map-admin-plan-request";
 
-export type ServerDetailsPageProps = {
+export type PlanRequestDetailsPageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{
-    assign?: string | string[];
-    tenantId?: string | string[];
-  }>;
 };
 
-export default async function ServerDetailsPage({
+export default async function PlanRequestDetailsPage({
   params,
-  searchParams,
-}: ServerDetailsPageProps) {
+}: PlanRequestDetailsPageProps) {
   const { id } = await params;
-  const query = await searchParams;
 
-  let server: ServerType | null = null;
+  let request: PlanRequestType | null = null;
   let loadError: string | null = null;
 
   try {
-    const response = await serverFetch<AdminServerReadModelDto>(
-      `/admin/servers/${id}`,
+    const response = await serverFetch<AdminPlanRequestDto>(
+      `/admin/plan-requests/${id}`,
       { method: "GET" },
     );
 
     if (response.success && response.data) {
-      server = mapAdminServerToUi(response.data);
+      request = mapAdminPlanRequestToUi(response.data);
     } else {
       const mapped = mapApiError(response);
       loadError = mapped
@@ -55,7 +48,7 @@ export default async function ServerDetailsPage({
     );
   }
 
-  if (!server) {
+  if (!request) {
     return (
       <div className="flex flex-1 items-center justify-center rounded-2xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
         {STAFF_API_ERROR_MESSAGES.notFound}
@@ -63,13 +56,5 @@ export default async function ServerDetailsPage({
     );
   }
 
-  return (
-    <div className="flex flex-1 flex-col gap-6 pt-4">
-      <ServerDetailsView
-        initialServer={server}
-        initialAssignDiscoveryId={readStringParam(query.assign) ?? null}
-        initialTenantId={readStringParam(query.tenantId) ?? null}
-      />
-    </div>
-  );
+  return <PlanRequestDetailsView request={request} />;
 }

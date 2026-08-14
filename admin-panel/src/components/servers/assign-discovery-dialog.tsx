@@ -1,9 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
 import { AlertTriangle, CheckCircle2, Globe2, UserPlus } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,44 +22,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { CustomerCreateForm } from "@/components/users/customer-create-form";
-import {
   SERVER_PLAN_OPTIONS,
   SERVER_STACK,
   type WebsiteDiscoveryType,
 } from "@/lib/data/servers-data";
 import {
   STAFF_CAPABILITY,
-  type CustomerUserType,
   type MembershipType,
   type TenantType,
 } from "@/lib/data/users-data";
 import {
   listRuntimeMemberships,
   listRuntimeTenants,
-  type CreateCustomerResultType,
 } from "@/lib/data/users-runtime";
 import {
   getTenantAssignmentEligibility,
-  getUserTenantMemberships,
   hasCapability,
 } from "@/lib/users-utils";
 
 const TENANT_FIELD_ID = "discovery-tenant";
-
-const ASSIGN_STEP = {
-  ASSIGN: "ASSIGN",
-  CREATE: "CREATE",
-} as const;
-
-type AssignStepType = (typeof ASSIGN_STEP)[keyof typeof ASSIGN_STEP];
 
 export type AssignDiscoveryValues = {
   tenantId: string;
@@ -59,10 +49,12 @@ export type AssignDiscoveryValues = {
   title: string;
 };
 
-type AssignDiscoverySheetProps = {
+type AssignDiscoveryDialogProps = {
   open: boolean;
   discovery: WebsiteDiscoveryType | null;
+  serverId: string;
   serverLabel: string;
+  initialTenantId?: string | null;
   onOpenChange: (open: boolean) => void;
   onAssign: (
     discovery: WebsiteDiscoveryType,
@@ -124,32 +116,39 @@ function DiscoveryContextCard({
 
 function AssignDiscoveryForm({
   discovery,
+  serverId,
   serverLabel,
+  initialTenantId,
   onCancel,
   onAssign,
 }: {
   discovery: WebsiteDiscoveryType;
+  serverId: string;
   serverLabel: string;
+  initialTenantId?: string | null;
   onCancel: () => void;
-  onAssign: AssignDiscoverySheetProps["onAssign"];
+  onAssign: AssignDiscoveryDialogProps["onAssign"];
 }) {
-  const [step, setStep] = useState<AssignStepType>(ASSIGN_STEP.ASSIGN);
-  const [tenants, setTenants] = useState(listRuntimeTenants);
-  const [memberships, setMemberships] = useState(listRuntimeMemberships);
-  const [tenantId, setTenantId] = useState(() =>
-    findFirstEligibleTenantId(listRuntimeTenants(), listRuntimeMemberships()),
-  );
+  const [tenants] = useState(listRuntimeTenants);
+  const [memberships] = useState(listRuntimeMemberships);
+  const [tenantId, setTenantId] = useState(() => {
+    const currentTenants = listRuntimeTenants();
+    const currentMemberships = listRuntimeMemberships();
+    if (
+      initialTenantId &&
+      currentTenants.some((tenant) => tenant.id === initialTenantId)
+    ) {
+      return initialTenantId;
+    }
+    return findFirstEligibleTenantId(currentTenants, currentMemberships);
+  });
   const [plan, setPlan] = useState<string>(SERVER_PLAN_OPTIONS[1]);
   const [title, setTitle] = useState(discovery.title);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const shouldFocusTenant = useRef(false);
-
-  useEffect(() => {
-    if (!shouldFocusTenant.current) return;
-
-    shouldFocusTenant.current = false;
-    document.getElementById(TENANT_FIELD_ID)?.focus();
-  });
+  const [statusMessage] = useState<string | null>(() =>
+    initialTenantId
+      ? "مشتری و مستأجر جدید برای این تخصیص انتخاب شد. وب‌سایت هنوز تخصیص نیافته است؛ برای تکمیل، تخصیص را تأیید کنید."
+      : null,
+  );
 
   const canCreateCustomer = hasCapability(STAFF_CAPABILITY.CREATE_CUSTOMER);
   const selectedTenant = tenants.find((tenant) => tenant.id === tenantId);
@@ -161,41 +160,7 @@ function AssignDiscoveryForm({
           "مستأجری برای تخصیص انتخاب نشده است. یک مستأجر انتخاب کنید یا مشتری جدید بسازید.",
       };
 
-  const returnToAssign = (message: string | null) => {
-    setStep(ASSIGN_STEP.ASSIGN);
-    setStatusMessage(message);
-    shouldFocusTenant.current = true;
-  };
-
-  const handleCreated = (result: CreateCustomerResultType) => {
-    setTenants(listRuntimeTenants());
-    setMemberships(listRuntimeMemberships());
-    setTenantId(result.tenant.id);
-    returnToAssign(
-      `مشتری ${result.user.displayName} و مستأجر ${result.tenant.name} ایجاد و برای این تخصیص انتخاب شد. وب‌سایت هنوز تخصیص نیافته است؛ برای تکمیل، تخصیص را تأیید کنید.`,
-    );
-  };
-
-  const handleSelectExistingCustomer = (existingUser: CustomerUserType) => {
-    const existingTenants = getUserTenantMemberships(
-      existingUser.id,
-      tenants,
-      memberships,
-    );
-
-    if (existingTenants.length === 0) {
-      returnToAssign(
-        `${existingUser.displayName} از قبل وجود دارد اما عضو هیچ مستأجری نیست. ابتدا مستأجر و مالک او را تعیین کنید.`,
-      );
-      return;
-    }
-
-    const [firstTenant] = existingTenants;
-    setTenantId(firstTenant.tenant.id);
-    returnToAssign(
-      `مستأجر ${firstTenant.tenant.name} از حساب موجود ${existingUser.displayName} انتخاب شد. رکورد تکراری ساخته نشد.`,
-    );
-  };
+  const createCustomerHref = `/users/new?returnTo=${encodeURIComponent(`/servers/${serverId}`)}&assign=${encodeURIComponent(discovery.id)}`;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -209,43 +174,9 @@ function AssignDiscoveryForm({
     });
   };
 
-  if (step === ASSIGN_STEP.CREATE) {
-    return (
-      <CustomerCreateForm
-        contextSlot={
-          <>
-            <DiscoveryContextCard
-              discovery={discovery}
-              serverLabel={serverLabel}
-            />
-            <div
-              className="flex items-start gap-2 rounded-xl border border-border bg-card p-3 text-sm text-muted-foreground"
-              role="note"
-            >
-              <UserPlus className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <p>
-                اطلاعات تخصیص شما حفظ می‌شود. پس از ایجاد مشتری، به همین تخصیص
-                با مستأجر انتخاب‌شده بازمی‌گردید و تخصیص وب‌سایت جداگانه تأیید
-                می‌شود.
-              </p>
-            </div>
-          </>
-        }
-        cancelLabel="بازگشت به تخصیص"
-        onCancel={() =>
-          returnToAssign(
-            "ایجاد مشتری لغو شد. هیچ حسابی ساخته نشد و اطلاعات تخصیص حفظ شده است.",
-          )
-        }
-        onCreated={handleCreated}
-        onSelectExistingCustomer={handleSelectExistingCustomer}
-      />
-    );
-  }
-
   return (
     <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-      <div className="app-scrollbar flex-1 space-y-5 overflow-y-auto px-4 pb-6">
+      <div className="app-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto px-4 pb-6">
         <DiscoveryContextCard discovery={discovery} serverLabel={serverLabel} />
 
         <div role="status" aria-live="polite" aria-atomic="true">
@@ -270,7 +201,7 @@ function AssignDiscoveryForm({
           </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="discovery-title" className="text-sm font-medium">
             عنوان نمایشی
           </label>
@@ -283,7 +214,7 @@ function AssignDiscoveryForm({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor={TENANT_FIELD_ID} className="text-sm font-medium">
               مستأجر مالک
             </label>
@@ -317,7 +248,7 @@ function AssignDiscoveryForm({
             </p>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor="discovery-plan" className="text-sm font-medium">
               طرح سرویس
             </label>
@@ -359,23 +290,21 @@ function AssignDiscoveryForm({
         <div className="rounded-xl border border-border bg-card p-3">
           <p className="text-sm font-medium">مشتری موردنظر پیدا نمی‌شود؟</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            بدون خروج از این تخصیص، مشتری و مستأجر جدید بسازید و به همین صفحه
-            بازگردید.
+            مشتری و مستأجر جدید بسازید و به همین تخصیص با مستأجر انتخاب‌شده
+            بازگردید. تخصیص وب‌سایت جداگانه تأیید می‌شود.
           </p>
           {canCreateCustomer ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-3 gap-2"
-              onClick={() => {
-                setStatusMessage(null);
-                setStep(ASSIGN_STEP.CREATE);
-              }}
+            <Link
+              href={createCustomerHref}
+              className={buttonVariants({
+                variant: "outline",
+                size: "sm",
+                className: "mt-3 gap-2",
+              })}
             >
               <UserPlus className="size-4" aria-hidden="true" />
               ایجاد مشتری جدید
-            </Button>
+            </Link>
           ) : (
             <p className="mt-3 text-sm text-muted-foreground">
               دسترسی ایجاد مشتری برای نقش فعلی فعال نیست. این تخصیص باز می‌ماند؛
@@ -396,45 +325,48 @@ function AssignDiscoveryForm({
         </div>
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <DialogFooter>
         <Button type="submit" disabled={!eligibility.eligible}>
           تخصیص وب‌سایت
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           انصراف
         </Button>
-      </SheetFooter>
+      </DialogFooter>
     </form>
   );
 }
 
-export function AssignDiscoverySheet({
+export function AssignDiscoveryDialog({
   open,
   discovery,
+  serverId,
   serverLabel,
+  initialTenantId,
   onOpenChange,
   onAssign,
-}: AssignDiscoverySheetProps) {
+}: AssignDiscoveryDialogProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full gap-0 sm:max-w-xl"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="max-w-xl gap-0"
         aria-describedby="assign-discovery-description"
       >
-        <SheetHeader className="border-b border-border pe-12">
-          <SheetTitle>تخصیص وب‌سایت کشف‌شده</SheetTitle>
-          <SheetDescription id="assign-discovery-description">
+        <DialogHeader className="border-b border-border">
+          <DialogTitle>تخصیص وب‌سایت کشف‌شده</DialogTitle>
+          <DialogDescription id="assign-discovery-description">
             مستأجر و طرح را مشخص کنید تا کشف Agent به وب‌سایت مدیریت‌شده تبدیل
             شود.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         {discovery && (
           <AssignDiscoveryForm
-            key={discovery.id}
+            key={`${discovery.id}:${initialTenantId ?? ""}`}
             discovery={discovery}
+            serverId={serverId}
             serverLabel={serverLabel}
+            initialTenantId={initialTenantId}
             onCancel={() => onOpenChange(false)}
             onAssign={(item, values) => {
               onAssign(item, values);
@@ -442,7 +374,7 @@ export function AssignDiscoverySheet({
             }}
           />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
