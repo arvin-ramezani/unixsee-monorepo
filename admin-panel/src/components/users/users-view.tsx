@@ -251,7 +251,10 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
               <p className="truncate font-medium">{row.user.displayName}</p>
               <DataSourceBadge source={row.source} />
             </div>
-            <p className="truncate text-xs text-muted-foreground" dir="ltr">
+            <p
+              className="truncate text-xs text-muted-foreground w-fit"
+              dir="ltr"
+            >
               {formatContactSummary(row.user)}
             </p>
           </div>
@@ -265,9 +268,9 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
       </div>
 
       <div className="mt-3 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-        <div>
+        <div className="flex items-center gap-2">
           <p className="text-xs">وب‌سایت‌ها</p>
-          <p className="mt-1 font-medium text-foreground">
+          <p className="mt-1 text-xs font-medium text-foreground">
             {row.websiteCount.toLocaleString("fa-IR")}
           </p>
         </div>
@@ -390,7 +393,7 @@ export function UsersView({
 
   return (
     <div className="flex flex-col gap-4">
-      {nestWarning ? (
+      {!!nestWarning && (
         <div
           className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
           role="status"
@@ -400,25 +403,7 @@ export function UsersView({
             {nestWarning} — نمونه‌های محلی همچنان نمایش داده می‌شوند.
           </p>
         </div>
-      ) : null}
-
-      <div
-        className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground"
-        role="note"
-      >
-        ستون «احراز هویت» وضعیت بسته مدارک است: تایید شده، ارسال نشده، یا رد شده.
-        {notSubmittedCount > 0
-          ? ` ${notSubmittedCount.toLocaleString("fa-IR")} حساب هنوز بسته ارسال نکرده‌اند.`
-          : ""}{" "}
-        برای بررسی دستی مدارک ارسال‌شده به{" "}
-        <Link
-          href="/users/authorization"
-          className="text-primary font-medium underline underline-offset-2"
-        >
-          صف بررسی احراز هویت
-        </Link>{" "}
-        بروید. کد ملی و عکس کارت ملی اینجا نمایش داده نمی‌شود.
-      </div>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {summaryItems.map((item) => {
@@ -485,13 +470,6 @@ export function UsersView({
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-lg font-semibold">مشتریان و مستأجرها</h2>
-            <p className="text-sm text-muted-foreground">
-              {hybrid
-                ? "حساب‌های Nest در بالا؛ نمونه‌های محلی زیر آن‌ها. پیش از ایجاد مشتری جدید با شناسه تماس جستجو کنید."
-                : nestBacked
-                  ? "فهرست زنده از NestJS. پیش از ایجاد مشتری جدید با شناسه تماس جستجو کنید."
-                  : "پیش از ایجاد مشتری جدید، با شناسه تماس جستجو کنید تا رکورد تکراری ساخته نشود."}
-            </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -520,7 +498,7 @@ export function UsersView({
           </div>
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[minmax(220px,1fr)_minmax(160px,200px)_minmax(160px,200px)]">
+        <div className="grid gap-2 lg:grid-cols-[minmax(220px,580px)_minmax(160px,200px)_minmax(160px,200px)]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}

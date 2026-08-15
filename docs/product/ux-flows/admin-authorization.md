@@ -6,9 +6,9 @@
 |---|---|
 | Project | Unixsee Admin Panel (`admin-panel/`) |
 | Flow or service | Staff review of customer احراز هویت packages → approve tenant |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
-| Date | 2026-08-13 |
+| Date | 2026-08-15 |
 | Evidence sources | Stakeholder field list 2026-08-13; `docs/product/notes/customer-authorization-and-tenant.md`; `docs/product/ux-flows/client-authorization.md`; `docs/product/ux-flows/admin-users.md`; `docs/product/ux-flows/admin-plan-requests.md`; inspected admin `/users` fixture queue/detail — no certification review queue yet |
 | Owner | Product, operations, customer administration |
 | Reviewers | Product, ops, security, backend, frontend (`admin-panel/`), QA, accessibility |
@@ -282,6 +282,50 @@ flowchart TD
 
 ### AC-006 — No secrets
 **Given** any authorization screen, **when** staff view the case, **then** OTPs, passwords, and raw tokens are never shown.
+
+### AC-007 — Narrow-viewport queue (no horizontal table scroll)
+**Given** authorized staff open the authorization queue on a narrow viewport, **when** filtered cases exist, **then** each case is presented as a single navigable card (not a horizontally scrolling multi-column table), **and** the card shows customer identity, package status, contact identifiers, contact-challenge summary, and submitted time, **and** activating the card opens the same case detail as desktop.
+
+**Given** the same queue on a wide viewport, **when** cases exist, **then** the multi-column table remains available for scan-and-compare.
+
+**Given** filters yield no cases, **when** staff view the queue on any viewport, **then** one shared empty state explains no matches and offers clearing filters (no duplicate empty chrome).
+
+## Responsive queue presentation (v0.2 addendum)
+
+Focused change only — does not alter approve/reject/needs-info business rules.
+
+| Item | Value |
+|---|---|
+| Primary user | Staff reviewing authorization cases on phone/tablet |
+| Goal | Scan and open a case without losing context to horizontal scroll |
+| Trigger | Queue rendered below `md` breakpoint |
+| Complete outcome | Same case opened as from the desktop table row |
+| Evidence | Observed horizontal scrollbar on `/users/authorization` queue at ~406px; established admin pattern on users / plan-requests / servers queues (`md:hidden` cards + `md:block` table) |
+| Assumption | Card density may omit column headers as persistent chrome; labels live with each field (`dl`) so meaning is not memorised |
+| Hard constraint | BR-009 / AC-006 — never show OTP/password/token material |
+| Presentation | `< md`: one card per case; `md+`: existing table. Filters, search, summary chips, permission denial, and empty state stay shared |
+
+### Card information hierarchy
+
+1. Customer display name (primary) + case status badge
+2. Contact line (mobile · email) — LTR
+3. Contact-challenge summary
+4. Submitted time
+5. User id as secondary identifier (muted, LTR)
+
+### Interaction
+
+- Whole card is one link to `/users/authorization/:id` (same destination as table row).
+- Keyboard: tab to card, Enter/Space activate via native link behaviour.
+- Search/filter results feed both presentations from one filtered list.
+
+### Heuristic notes (queue list only)
+
+| Heuristic | Note | Severity |
+|---|---|---|
+| HX-001 Visibility | Status badge remains on the card header | 3 |
+| HX-006 Recognition | Field labels on card replace table headers | 3 |
+| HX-004 Consistency | Match users/plan-requests mobile queue pattern | 2 |
 
 ## Questions requiring user research
 

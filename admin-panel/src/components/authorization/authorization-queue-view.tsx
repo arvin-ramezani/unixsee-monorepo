@@ -65,6 +65,10 @@ const STATUS_FILTER_OPTIONS = [
   },
 ] as const;
 
+function caseHref(authCase: AuthorizationCaseType) {
+  return `/users/authorization/${authCase.id}`;
+}
+
 function contactSummary(authCase: AuthorizationCaseType) {
   return [
     CONTACT_CHALLENGE_LABELS[authCase.package.mobileChallenge],
@@ -72,9 +76,19 @@ function contactSummary(authCase: AuthorizationCaseType) {
   ].join(" · ");
 }
 
-function AuthorizationTableRow({ authCase }: { authCase: AuthorizationCaseType }) {
+function contactIdentifiers(authCase: AuthorizationCaseType) {
+  return authCase.userEmail
+    ? `${authCase.userMobile} · ${authCase.userEmail}`
+    : authCase.userMobile;
+}
+
+function AuthorizationTableRow({
+  authCase,
+}: {
+  authCase: AuthorizationCaseType;
+}) {
   const router = useRouter();
-  const href = `/users/authorization/${authCase.id}`;
+  const href = caseHref(authCase);
 
   return (
     <TableRow
@@ -103,9 +117,8 @@ function AuthorizationTableRow({ authCase }: { authCase: AuthorizationCaseType }
         </div>
       </TableCell>
       <TableCell className="px-4 py-3 text-sm">
-        <span dir="ltr">
-          {authCase.userMobile}
-          {authCase.userEmail ? ` · ${authCase.userEmail}` : ""}
+        <span className="inline-block max-w-56 truncate" dir="ltr">
+          {contactIdentifiers(authCase)}
         </span>
       </TableCell>
       <TableCell className="px-4 py-3">
@@ -116,6 +129,54 @@ function AuthorizationTableRow({ authCase }: { authCase: AuthorizationCaseType }
       </TableCell>
       <TableCell className="px-4 py-3 text-sm">{authCase.submittedAt}</TableCell>
     </TableRow>
+  );
+}
+
+function AuthorizationCaseCard({
+  authCase,
+}: {
+  authCase: AuthorizationCaseType;
+}) {
+  const href = caseHref(authCase);
+
+  return (
+    <Link
+      href={href}
+      className="block rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/30"
+      aria-label={`مشاهده پرونده ${authCase.userDisplayName}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate font-medium">{authCase.userDisplayName}</p>
+          <p
+            className="text-muted-foreground mt-0.5 w-fit truncate text-xs"
+            dir="ltr"
+          >
+            {authCase.userId}
+          </p>
+        </div>
+        <AuthorizationStatusBadge status={authCase.status} />
+      </div>
+
+      <dl className="mt-3 grid gap-2 text-xs">
+        <div className="flex items-start justify-between gap-3">
+          <dt className="text-muted-foreground shrink-0">تماس</dt>
+          <dd className="min-w-0 truncate text-end font-medium" dir="ltr">
+            {contactIdentifiers(authCase)}
+          </dd>
+        </div>
+        <div className="flex items-start justify-between gap-3">
+          <dt className="text-muted-foreground shrink-0">تأیید تماس</dt>
+          <dd className="text-muted-foreground min-w-0 text-end">
+            {contactSummary(authCase)}
+          </dd>
+        </div>
+        <div className="flex items-start justify-between gap-3">
+          <dt className="text-muted-foreground shrink-0">زمان ارسال</dt>
+          <dd className="font-medium text-end">{authCase.submittedAt}</dd>
+        </div>
+      </dl>
+    </Link>
   );
 }
 
@@ -220,10 +281,14 @@ export function AuthorizationQueueView({
             value && setStatusFilter(value as AuthorizationStatusFilterType)
           }
         >
-          <SelectTrigger className="min-h-11 w-full sm:w-56" aria-label="فیلتر وضعیت">
+          <SelectTrigger
+            className="min-h-11 w-full sm:w-56"
+            aria-label="فیلتر وضعیت"
+          >
             <SelectValue>
-              {STATUS_FILTER_OPTIONS.find((option) => option.value === statusFilter)
-                ?.label ?? "وضعیت"}
+              {STATUS_FILTER_OPTIONS.find(
+                (option) => option.value === statusFilter,
+              )?.label ?? "وضعیت"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
@@ -236,41 +301,52 @@ export function AuthorizationQueueView({
         </Select>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        {filtered.length === 0 ? (
-          <div className="text-muted-foreground flex flex-col items-center gap-2 px-4 py-16 text-center text-sm">
-            <SearchX className="size-8 opacity-50" aria-hidden />
-            <p>پرونده‌ای با این فیلتر یافت نشد.</p>
-            <button
-              type="button"
-              className="text-primary text-sm underline-offset-2 hover:underline"
-              onClick={() => {
-                setQuery("");
-                setStatusFilter("ALL");
-              }}
-            >
-              پاک‌کردن فیلترها
-            </button>
+      {filtered.length === 0 ? (
+        <div className="text-muted-foreground flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-4 py-16 text-center text-sm">
+          <SearchX className="size-8 opacity-50" aria-hidden />
+          <p>پرونده‌ای با این فیلتر یافت نشد.</p>
+          <button
+            type="button"
+            className="text-primary text-sm underline-offset-2 hover:underline"
+            onClick={() => {
+              setQuery("");
+              setStatusFilter("ALL");
+            }}
+          >
+            پاک‌کردن فیلترها
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="hidden overflow-hidden rounded-2xl border border-border bg-card md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="px-4">مشتری</TableHead>
+                  <TableHead className="px-4">تماس</TableHead>
+                  <TableHead className="px-4">وضعیت</TableHead>
+                  <TableHead className="px-4">تأیید تماس</TableHead>
+                  <TableHead className="px-4">زمان ارسال</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((authCase) => (
+                  <AuthorizationTableRow
+                    key={authCase.id}
+                    authCase={authCase}
+                  />
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="px-4">مشتری</TableHead>
-                <TableHead className="px-4">تماس</TableHead>
-                <TableHead className="px-4">وضعیت</TableHead>
-                <TableHead className="px-4">تأیید تماس</TableHead>
-                <TableHead className="px-4">زمان ارسال</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((authCase) => (
-                <AuthorizationTableRow key={authCase.id} authCase={authCase} />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </div>
+
+          <div className="grid gap-3 md:hidden">
+            {filtered.map((authCase) => (
+              <AuthorizationCaseCard key={authCase.id} authCase={authCase} />
+            ))}
+          </div>
+        </>
+      )}
 
       <p className="text-muted-foreground flex items-center gap-2 text-xs">
         <ShieldCheck className="size-3.5" aria-hidden />

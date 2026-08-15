@@ -2,14 +2,9 @@ import Link from "next/link";
 
 import { UsersView } from "@/components/users/users-view";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  mapApiError,
-  STAFF_API_ERROR_MESSAGES,
-} from "@/lib/api/map-api-error";
+import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
-import {
-  type AdminAuthorizationListResponse,
-} from "@/lib/authorization/map-admin-authorization-case";
+import { type AdminAuthorizationListResponse } from "@/lib/authorization/map-admin-authorization-case";
 import { getAuthorizationQueueSummary } from "@/lib/data/authorization-runtime";
 import {
   mapAuthorizationCaseStatusToUserKyc,
@@ -117,20 +112,13 @@ export default async function UsersPage() {
     kycStatusByUserId,
   );
   const totalCount =
-    nestTotal === null
-      ? rows.length
-      : nestTotal + merged.fixtureCount;
+    nestTotal === null ? rows.length : nestTotal + merged.fixtureCount;
 
   return (
     <div className="flex flex-1 flex-col gap-6 pt-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">کاربران</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            حساب‌های زنده NestJS در بالای فهرست؛ نمونه‌های محلی زیر آن‌ها
-            می‌مانند. داشتن مستأجر با «تأیید بسته مدارک» یکی نیست — بررسی فایل
-            فقط در صف بررسی احراز هویت و به‌صورت دستی است.
-          </p>
         </div>
         <Link
           href="/users/authorization"
@@ -141,21 +129,6 @@ export default async function UsersPage() {
             ? ` (${pendingAuthCount.toLocaleString("fa-IR")} در انتظار)`
             : ""}
         </Link>
-      </div>
-
-      <div
-        className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm"
-        role="note"
-      >
-        برای دیدن مدارکی که مشتری ارسال کرده (کد ملی، آدرس، عکس کارت ملی) بروید
-        به{" "}
-        <Link
-          href="/users/authorization"
-          className="font-medium underline underline-offset-2"
-        >
-          بررسی احراز هویت
-        </Link>
-        . ارسال مدارک توسط مشتری تأیید خودکار ایجاد نمی‌کند.
       </div>
 
       <UsersView
