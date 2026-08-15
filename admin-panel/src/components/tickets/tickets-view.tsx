@@ -65,6 +65,13 @@ function buildTicketsHref(
   return qs ? `/tickets?${qs}` : "/tickets";
 }
 
+function ticketContactSummary(ticket: TicketType) {
+  const parts = [ticket.phoneNumber?.trim(), ticket.email?.trim()].filter(
+    Boolean,
+  ) as string[];
+  return parts.length > 0 ? parts.join(" · ") : "—";
+}
+
 function TicketCustomer({
   ticket,
   linkUser = false,
@@ -149,9 +156,13 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
       <TableCell className="px-4 py-3">
         <TicketCustomer ticket={ticket} linkUser />
       </TableCell>
-      <TableCell className="max-w-[8rem] px-4 py-3">
-        <span className="block truncate text-muted-foreground">
-          {ticket.tenant?.name ?? "—"}
+      <TableCell className="max-w-[12rem] px-4 py-3">
+        <span
+          className="block truncate text-muted-foreground"
+          dir="ltr"
+          title={ticketContactSummary(ticket)}
+        >
+          {ticketContactSummary(ticket)}
         </span>
       </TableCell>
       <TableCell className="max-w-xs px-4 py-3">
@@ -162,11 +173,6 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
       <TableCell className="max-w-xs px-4 py-3">
         <span className="block truncate text-muted-foreground">
           {TICKET_SERVICE_LABELS[ticket.section]}
-        </span>
-      </TableCell>
-      <TableCell className="px-4 py-3">
-        <span className="block truncate text-sm text-muted-foreground">
-          {ticket.assigneeName?.trim() || "بدون مسئول"}
         </span>
       </TableCell>
       <TableCell className="px-4 py-3">
@@ -196,11 +202,9 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
         <TicketCustomer ticket={ticket} />
       </div>
 
-      {ticket.tenant?.name ? (
-        <p className="mt-2 line-clamp-1 text-xs text-muted-foreground">
-          مستأجر: {ticket.tenant.name}
-        </p>
-      ) : null}
+      <p className="mt-2 line-clamp-1 text-xs text-muted-foreground" dir="ltr">
+        {ticketContactSummary(ticket)}
+      </p>
 
       <p className="mt-3 line-clamp-1 text-sm text-muted-foreground">
         <strong>بخش: </strong>
@@ -211,7 +215,6 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
       </p>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-        <span>{ticket.assigneeName?.trim() || "بدون مسئول"}</span>
         {ticket.priority ? (
           <span>{TICKET_PRIORITY_LABELS[ticket.priority]}</span>
         ) : null}
@@ -368,16 +371,13 @@ export function TicketsView({
                 مشتری
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
-                مستأجر
+                تلفن/ایمیل
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
                 موضوع
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
                 بخش
-              </TableHead>
-              <TableHead className="px-4 py-3 text-right font-medium">
-                مسئول
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
                 وضعیت
@@ -395,7 +395,7 @@ export function TicketsView({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={7}
                   className="px-4 py-10 text-center text-muted-foreground"
                 >
                   {emptyMessage}

@@ -29,7 +29,7 @@ type AdminTicketListRecord = Ticket & {
   website: TicketWebsite | null;
   tenant: Pick<Tenant, 'id' | 'name' | 'displayName' | 'status'>;
   assignee: Pick<User, 'id' | 'fullName'> | null;
-  createdBy: Pick<User, 'id' | 'fullName' | 'phoneNumber'>;
+  createdBy: Pick<User, 'id' | 'fullName' | 'phoneNumber' | 'email'>;
 };
 
 type AdminTicketDetailRecord = AdminTicketListRecord & {
@@ -165,6 +165,7 @@ export function mapAdminTicketListItem(ticket: AdminTicketListRecord) {
       id: ticket.createdBy.id,
       fullName: ticket.createdBy.fullName,
       phoneNumber: ticket.createdBy.phoneNumber,
+      email: ticket.createdBy.email,
     },
     resolvedAt: ticket.resolvedAt?.toISOString() ?? null,
     autoCloseAt: ticket.autoCloseAt?.toISOString() ?? null,

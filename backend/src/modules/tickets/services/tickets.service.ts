@@ -381,7 +381,12 @@ export class TicketsService {
           website: { select: websiteSelect },
           assignee: { select: { id: true, fullName: true } },
           createdBy: {
-            select: { id: true, fullName: true, phoneNumber: true },
+            select: {
+              id: true,
+              fullName: true,
+              phoneNumber: true,
+              email: true,
+            },
           },
         },
         orderBy: { createdAt: 'desc' },
@@ -404,7 +409,12 @@ export class TicketsService {
         website: { select: websiteSelect },
         assignee: { select: { id: true, fullName: true } },
         createdBy: {
-          select: { id: true, fullName: true, phoneNumber: true },
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+            email: true,
+          },
         },
         messages: {
           orderBy: { createdAt: 'asc' },
