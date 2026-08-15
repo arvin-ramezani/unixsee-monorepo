@@ -350,6 +350,9 @@ Reconnect must refetch REST as source of truth.
 - Payments / checkout / refunds
 - Customer domain/DNS
 - CMS, impersonation, microservices
+- Customer `assistant` module (tools + pgvector RAG; no route table until
+  implement) — [`../product/customer-assistant-prd.md`](../product/customer-assistant-prd.md),
+  [`customer-assistant.md`](./customer-assistant.md)
 
 ---
 

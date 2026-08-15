@@ -17,6 +17,7 @@ and engineering conventions.
 | Work on the Phase 1 VPS agent | [`agent/README.md`](./agent/README.md) + [`agent/setup.md`](./agent/setup.md) + [`prd.md`](./agent/prd.md) |
 | Work on monitoring-agent (later) | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) |
 | Change product behavior | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md) |
+| Plan customer dashboard AI assistant (deferred) | [`product/customer-assistant-prd.md`](./product/customer-assistant-prd.md) → ADR [`0013`](./architecture/decisions/0013-customer-assistant-nest-pgvector-rag.md) → [`backend/customer-assistant.md`](./backend/customer-assistant.md) |
 | Git / PR / Cursor review workflow | [`quality/git-and-pr-workflow.md`](./quality/git-and-pr-workflow.md) |
 | Sync monorepo apps to server deploy repos | [`quality/deployment-remotes.md`](./quality/deployment-remotes.md) |
 | Record a structural decision | [`architecture/decisions/`](./architecture/decisions/) |

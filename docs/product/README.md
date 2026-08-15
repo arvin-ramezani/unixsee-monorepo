@@ -18,12 +18,19 @@ yet exist.
 |---|---|
 | [`phase-1-application-features.md`](./phase-1-application-features.md) | Required outcomes, actors, boundaries, feature areas |
 
+## Deferred / future product
+
+| Doc | Purpose |
+|---|---|
+| [`customer-assistant-prd.md`](./customer-assistant-prd.md) | Customer dashboard AI assistant (tools + pgvector RAG); Proposed, not Phase 1 |
+
 ## Notes
 
 Operational clarifications that support Phase 1 and UX flows:
 
 | Doc | Topic |
 |---|---|
+| [`notes/customer-assistant.md`](./notes/customer-assistant.md) | Thin pointer to customer assistant PRD / ADR (deferred) |
 | [`notes/servers-agent-data-flow.md`](./notes/servers-agent-data-flow.md) | Server → enrollment → agent → NestJS → admin assignment |
 | [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md) | احراز هویت: signup ≠ tenant; certifications → staff approve tenant |
 | [`notes/onboarding-paths-and-handoffs.md`](./notes/onboarding-paths-and-handoffs.md) | Onboarding path handoffs |

@@ -73,3 +73,4 @@ What becomes easier, harder, or forbidden?
 | [0010](./0010-client-hybrid-auth-data-fetching.md) | Client hybrid auth and data fetching | Accepted |
 | [0011](./0011-client-nest-auth-integration.md) | Client Nest auth integration | Accepted |
 | [0012](./0012-admin-nest-auth-integration.md) | Admin Nest auth integration | Accepted |
+| [0013](./0013-customer-assistant-nest-pgvector-rag.md) | Customer assistant in Nest with pgvector RAG | Proposed |

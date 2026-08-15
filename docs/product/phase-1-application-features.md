@@ -139,6 +139,9 @@ Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
 - A general-purpose content-management system.
 - Microservice decomposition and infrastructure implementation inside the
   frontend.
+- Customer dashboard AI assistant (Nest-owned tools + PostgreSQL pgvector RAG;
+  later confirmed actions). Requirements:
+  [`customer-assistant-prd.md`](./customer-assistant-prd.md).
 
 Later Phase 1 and deferred features may appear as unavailable or coming-soon
 destinations, but they must not imply that a transaction or operation is

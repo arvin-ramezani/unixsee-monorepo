@@ -62,6 +62,9 @@ them under [`contracts/`](./contracts/) before or with the Nest change.
 - Stack: [`../architecture/decisions/0002-stack-choices.md`](../architecture/decisions/0002-stack-choices.md)
 - Agent: [`../agent/README.md`](../agent/README.md)
 - Phase 1 features: [`../product/phase-1-application-features.md`](../product/phase-1-application-features.md)
+- Customer assistant (deferred): [`../product/customer-assistant-prd.md`](../product/customer-assistant-prd.md),
+  ADR [`0013`](../architecture/decisions/0013-customer-assistant-nest-pgvector-rag.md),
+  engineering [`customer-assistant.md`](./customer-assistant.md)
 - Local design notes under `backend/docs/` are secondary; where they conflict
   with monorepo ADRs or [`modules-and-routes.md`](./modules-and-routes.md), the
   monorepo docs win.
