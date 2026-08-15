@@ -444,21 +444,36 @@ export function WebsiteDetailsView({
           </div>
 
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">WordPress</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.wordpress}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">PHP</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.php}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">Imagick</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.imagick}
               </p>
             </div>
@@ -467,7 +482,9 @@ export function WebsiteDetailsView({
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">به‌روزرسانی وردپرس</p>
+                <p className="text-sm text-muted-foreground font-medium">
+                  به‌روزرسانی وردپرس
+                </p>
                 <CheckCircle2 className="size-4 text-emerald-600" />
               </div>
               <p className="mt-2 text-lg font-semibold">
@@ -479,7 +496,9 @@ export function WebsiteDetailsView({
             </div>
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">اسکن امنیتی</p>
+                <p className="text-sm text-muted-foreground font-medium">
+                  اسکن امنیتی
+                </p>
                 <ShieldCheck className="size-4 text-emerald-600" />
               </div>
               <p className="mt-2 text-lg font-semibold">
@@ -498,14 +517,14 @@ export function WebsiteDetailsView({
             <h3 className="font-semibold">ترافیک و فعالیت</h3>
           </div>
 
-          <div className="mt-4 space-y-3">
-            <div className={cn(mutedSurfaceClassName, "p-4")}>
+          <div className="mt-4 space-y-3 sm:flex gap-4 sm:space-y-0">
+            <div className={cn(mutedSurfaceClassName, "p-4 flex-1")}>
               <p className="text-sm text-muted-foreground">فعال در حال حاضر</p>
               <p className="mt-2 text-2xl font-semibold">
                 {website.activeVisitors}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-4")}>
+            <div className={cn(mutedSurfaceClassName, "p-4 flex-1")}>
               <p className="text-sm text-muted-foreground">
                 بازدیدکنندگان ۲۴ ساعت اخیر
               </p>
@@ -517,7 +536,7 @@ export function WebsiteDetailsView({
         </section>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
+      <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <section className={cn(surfaceClassName, "p-4 shadow-sm")}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -552,7 +571,7 @@ export function WebsiteDetailsView({
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {WEBSITE_SERVICE_FIELDS.map((field) => {
               const value = field.getValue(website);
               const href = "href" in field ? field.href(website) : undefined;
@@ -594,7 +613,7 @@ export function WebsiteDetailsView({
             <h3 className="font-semibold">Agent / Monitoring</h3>
           </div>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-3 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <p className="text-sm text-muted-foreground">Agent</p>
               <p className="mt-2 flex items-center gap-2 text-lg font-semibold">
