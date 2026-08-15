@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
+import {
+  useState,
+  type ComponentProps,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { AlertTriangle, Info, MailCheck, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -204,13 +209,13 @@ export function CustomerCreateForm({
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">ایمیل</dt>
-                <dd className="mt-1 text-sm font-medium" dir="ltr">
+                <dd className="mt-1 text-sm font-medium w-fit" dir="ltr">
                   {email.trim() || "—"}
                 </dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">موبایل</dt>
-                <dd className="mt-1 text-sm font-medium" dir="ltr">
+                <dd className="mt-1 text-sm font-medium w-fit" dir="ltr">
                   {normalizeMobile(mobile) || "—"}
                 </dd>
               </div>
@@ -234,8 +239,8 @@ export function CustomerCreateForm({
             <MailCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p>
               حساب به‌صورت دعوت‌نامه‌ای ساخته می‌شود: تا تکمیل دعوت توسط مشتری،
-              ایمیل و موبایل تأییدشده در نظر گرفته نمی‌شود و هیچ رمز یا کد
-              ورودی در پنل نمایش داده نمی‌شود.
+              ایمیل و موبایل تأییدشده در نظر گرفته نمی‌شود و هیچ رمز یا کد ورودی
+              در پنل نمایش داده نمی‌شود.
             </p>
           </div>
 
@@ -251,7 +256,7 @@ export function CustomerCreateForm({
           </div>
         </div>
 
-        <FormActions>
+        <FormActions className="xl:flex-row">
           <Button type="button" autoFocus onClick={handleConfirm}>
             تأیید و ایجاد مشتری
           </Button>
@@ -325,7 +330,10 @@ export function CustomerCreateForm({
         )}
 
         <div className="space-y-2">
-          <label htmlFor="customer-display-name" className="text-sm font-medium">
+          <label
+            htmlFor="customer-display-name"
+            className="text-sm font-medium"
+          >
             نام مشتری
           </label>
           <Input
@@ -406,7 +414,10 @@ export function CustomerCreateForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="customer-tenant-name" className="text-sm font-medium">
+            <label
+              htmlFor="customer-tenant-name"
+              className="text-sm font-medium"
+            >
               نام مستأجر
             </label>
             <Input
@@ -471,7 +482,10 @@ export function CustomerCreateForm({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="customer-internal-note" className="text-sm font-medium">
+          <label
+            htmlFor="customer-internal-note"
+            className="text-sm font-medium"
+          >
             یادداشت داخلی (اختیاری)
           </label>
           <Textarea
@@ -491,7 +505,7 @@ export function CustomerCreateForm({
         </div>
       </div>
 
-      <FormActions>
+      <FormActions className="xl:flex-row">
         <Button type="submit">بازبینی و ادامه</Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           {cancelLabel}

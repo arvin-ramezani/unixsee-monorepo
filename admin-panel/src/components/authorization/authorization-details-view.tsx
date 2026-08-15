@@ -95,8 +95,7 @@ export function AuthorizationDetailsView({
   const canViewDocument = hasCapability(
     STAFF_CAPABILITY.VIEW_AUTHORIZATION_DOCUMENT,
   );
-  const isPending =
-    authCase.status === AUTHORIZATION_STATUS.PENDING_REVIEW;
+  const isPending = authCase.status === AUTHORIZATION_STATUS.PENDING_REVIEW;
 
   function refreshFromRuntime() {
     const latest = getRuntimeAuthorizationCase(authCase.id);
@@ -238,7 +237,10 @@ export function AuthorizationDetailsView({
           </div>
         </div>
         {flash ? (
-          <p className="text-success-foreground dark:text-success mt-3 text-sm" role="status">
+          <p
+            className="text-success-foreground dark:text-success mt-3 text-sm"
+            role="status"
+          >
             {flash}
           </p>
         ) : null}
@@ -254,7 +256,7 @@ export function AuthorizationDetailsView({
               <div key={field.key} className="rounded-xl border px-3 py-2">
                 <dt className="text-muted-foreground text-xs">{field.label}</dt>
                 <dd
-                  className="mt-1 text-sm font-medium"
+                  className="mt-1 text-sm w-fit font-medium"
                   dir={"ltr" in field && field.ltr ? "ltr" : undefined}
                 >
                   {String(value)}
@@ -322,8 +324,7 @@ export function AuthorizationDetailsView({
             مستأجر تأییدشده
           </p>
           <p className="mt-1">
-            {authCase.tenantName}{" "}
-            <span dir="ltr">({authCase.tenantId})</span>
+            {authCase.tenantName} <span dir="ltr">({authCase.tenantId})</span>
           </p>
           <p className="text-muted-foreground mt-1 text-xs">
             تصمیم‌گیرنده: {authCase.decidedBy} · {authCase.decidedAt}
@@ -424,7 +425,11 @@ export function AuthorizationDetailsView({
             >
               انصراف
             </Button>
-            <Button type="button" disabled={busy} onClick={() => void handleApprove()}>
+            <Button
+              type="button"
+              disabled={busy}
+              onClick={() => void handleApprove()}
+            >
               {busy ? (
                 <>
                   <LoaderCircle className="size-4 animate-spin" />
@@ -449,7 +454,10 @@ export function AuthorizationDetailsView({
             </DialogHeader>
             <div className="mt-4 space-y-3">
               <div className="space-y-2">
-                <label htmlFor="needs-info-reason" className="text-sm font-medium">
+                <label
+                  htmlFor="needs-info-reason"
+                  className="text-sm font-medium"
+                >
                   دلیل
                 </label>
                 <Textarea
@@ -461,7 +469,9 @@ export function AuthorizationDetailsView({
                 />
               </div>
               <fieldset className="space-y-2">
-                <legend className="text-sm font-medium">فیلدهای نیازمند اصلاح</legend>
+                <legend className="text-sm font-medium">
+                  فیلدهای نیازمند اصلاح
+                </legend>
                 {FIX_FIELD_OPTIONS.map((field) => {
                   const checked = fieldsToFix.includes(field);
                   return (
