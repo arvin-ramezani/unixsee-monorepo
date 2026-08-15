@@ -2,10 +2,7 @@ import Link from "next/link";
 
 import { AuthorizationQueueView } from "@/components/authorization/authorization-queue-view";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  mapApiError,
-  STAFF_API_ERROR_MESSAGES,
-} from "@/lib/api/map-api-error";
+import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
 import {
   mapAdminAuthorizationCaseToUi,
@@ -52,12 +49,6 @@ export default async function AuthorizationQueuePage() {
           <h1 className="text-2xl font-semibold tracking-tight">
             بررسی احراز هویت (مدارک)
           </h1>
-          <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-            صف پرونده‌هایی که مشتری مدارک هویتی (از جمله عکس کارت ملی) را ارسال
-            کرده است. ارسال مدارک به‌معنای تأیید نیست — کارکنان باید فایل و
-            اطلاعات را ببینند و فقط پس از بررسی دستی تأیید، رد، یا درخواست اصلاح
-            کنند. تأیید دستی مستأجر می‌سازد.
-          </p>
         </div>
         <Link
           href="/users"
@@ -66,24 +57,6 @@ export default async function AuthorizationQueuePage() {
           فهرست کاربران
         </Link>
       </div>
-
-      {nestWarning ? (
-        <div
-          className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
-          role="status"
-        >
-          <p className="font-medium">Nest در دسترس نیست — نمونه‌های محلی</p>
-          <p className="mt-1 text-muted-foreground">{nestWarning}</p>
-        </div>
-      ) : usedNest ? (
-        <div
-          className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground"
-          role="status"
-        >
-          پرونده‌های زنده Nest در بالای صف؛ نمونه‌های محلی فقط وقتی کاربر متناظر
-          پرونده Nest ندارد نمایش داده می‌شوند.
-        </div>
-      ) : null}
 
       <div
         className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"

@@ -452,7 +452,7 @@ export function AuthorizationDetailsView({
                 دلیل و فیلدهای نیازمند اصلاح برای مشتری نمایش داده می‌شود.
               </DialogDescription>
             </DialogHeader>
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-3 px-4">
               <div className="space-y-2">
                 <label
                   htmlFor="needs-info-reason"
@@ -529,7 +529,7 @@ export function AuthorizationDetailsView({
                 نمی‌شود.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="mt-3 space-y-2">
+            <div className="mt-3 space-y-2 px-4">
               <label htmlFor="reject-reason" className="text-sm font-medium">
                 دلیل رد
               </label>
