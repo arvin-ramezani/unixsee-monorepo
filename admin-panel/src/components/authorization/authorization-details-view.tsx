@@ -253,10 +253,15 @@ export function AuthorizationDetailsView({
             const value =
               authCase.package[field.key as keyof typeof authCase.package];
             return (
-              <div key={field.key} className="rounded-xl border px-3 py-2">
-                <dt className="text-muted-foreground text-xs">{field.label}</dt>
+              <div
+                key={field.key}
+                className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2"
+              >
+                <dt className="text-muted-foreground shrink-0 text-xs">
+                  {field.label}
+                </dt>
                 <dd
-                  className="mt-1 text-sm w-fit font-medium"
+                  className="min-w-0 text-sm font-medium text-start"
                   dir={"ltr" in field && field.ltr ? "ltr" : undefined}
                 >
                   {String(value)}
@@ -267,15 +272,15 @@ export function AuthorizationDetailsView({
         </dl>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border px-3 py-2 text-sm">
-            <p className="text-muted-foreground text-xs">تأیید موبایل</p>
-            <p className="mt-1 font-medium">
+          <div className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm">
+            <p className="text-muted-foreground shrink-0 text-xs">تأیید موبایل</p>
+            <p className="min-w-0 font-medium text-start">
               {CONTACT_CHALLENGE_LABELS[authCase.package.mobileChallenge]}
             </p>
           </div>
-          <div className="rounded-xl border px-3 py-2 text-sm">
-            <p className="text-muted-foreground text-xs">تأیید ایمیل</p>
-            <p className="mt-1 font-medium">
+          <div className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm">
+            <p className="text-muted-foreground shrink-0 text-xs">تأیید ایمیل</p>
+            <p className="min-w-0 font-medium text-start">
               {CONTACT_CHALLENGE_LABELS[authCase.package.emailChallenge]}
             </p>
           </div>
