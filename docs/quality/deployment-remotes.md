@@ -4,7 +4,7 @@
 >
 > **Owner:** Engineering and operations
 >
-> **Last verified:** 2026-08-13
+> **Last verified:** 2026-08-14
 >
 > **Audience:** Humans and AI agents syncing deployable apps to real servers
 
@@ -66,8 +66,28 @@ npm install && npm run build
 # restart process manager (pm2/systemd) — see backend host runbook
 ```
 
+### Client → unixsee-web (`staging`)
+
+Default deploy branch for `client/` is **`staging`** (not `main`). Only push
+`client/` to `main` on `unixsee-web` when the user explicitly overrides this doc.
+
+```bash
+# From a clean clone of unixsee-web on staging:
+git clone --branch staging --single-branch \
+  https://github.com/unixseemaster-pixel/unixsee-web.git /tmp/unixsee-web
+# Replace tracked tree with monorepo client/ contents (exclude node_modules, .next, .env*)
+# then:
+cd /tmp/unixsee-web
+git add -A
+git commit -m "Sync client/ from unixsee-monorepo."
+git push origin staging
+```
+
 Surface-specific checklists:
 
+- **Client (staging):** this section; deploy notes under
+  [`../../client/docs/runbooks/staging.md`](../../client/docs/runbooks/staging.md)
+  when present
 - **Admin panel:** [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
 - **Backend:** host env and PM2 entry — [`../../backend/ecosystem.config.cjs`](../../backend/ecosystem.config.cjs) (package `unixsee-api`)
 
