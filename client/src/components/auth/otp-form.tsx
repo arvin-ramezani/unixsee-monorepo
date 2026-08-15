@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -25,7 +25,11 @@ import { useRouter } from "@/i18n/navigation";
 import { isSafeReturnToPath } from "@/lib/auth/auth-utils";
 import type { FormErrorKey } from "@/lib/form-errors";
 import { PLAN_REQUEST_ACCOUNT_EXISTS_TOAST_ID } from "@/lib/plans/plan-request-session";
-import { otpSchema, type OtpSchemaType } from "@/lib/zod-schemas/auth-schemas";
+import {
+  OTP_LENGTH,
+  otpSchema,
+  type OtpSchemaType,
+} from "@/lib/zod-schemas/auth-schemas";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
@@ -42,6 +46,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const autoSubmitCodeRef = useRef<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
   const [success, setSuccess] = useState(false);
@@ -52,6 +57,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
     defaultValues: { code: "" },
   });
 
+  const code = useWatch({ control: form.control, name: "code" });
   const pending = form.formState.isSubmitting || success;
 
   useEffect(() => {
@@ -86,6 +92,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
       } else {
         setFormError(tAuthErrors(result.errorKey));
       }
+      autoSubmitCodeRef.current = null;
       form.setValue("code", "");
       return;
     }
@@ -107,9 +114,25 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
     router.push(destination);
   }
 
+  const submitWhenComplete = useEffectEvent((nextCode: string) => {
+    if (pending) return;
+    if (nextCode.replace(/\D/g, "").length !== OTP_LENGTH) {
+      autoSubmitCodeRef.current = null;
+      return;
+    }
+    if (autoSubmitCodeRef.current === nextCode) return;
+    autoSubmitCodeRef.current = nextCode;
+    void form.handleSubmit(onSubmit)();
+  });
+
+  useEffect(() => {
+    submitWhenComplete(code ?? "");
+  }, [code]);
+
   async function handleResend() {
     if (cooldown > 0 || pending) return;
     setFormError(null);
+    autoSubmitCodeRef.current = null;
     form.setValue("code", "");
 
     const result = await resendLoginOtp();
