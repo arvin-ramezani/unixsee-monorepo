@@ -8,6 +8,16 @@ export const WEBSITE_STATUS = {
 export type WebsiteStatusType =
   (typeof WEBSITE_STATUS)[keyof typeof WEBSITE_STATUS];
 
+/** Fixture billing period labels used for commercial renew math. */
+export const WEBSITE_BILLING_PERIOD = {
+  MONTHLY: "ماهانه",
+  QUARTERLY: "سه‌ماهه",
+  YEARLY: "سالانه",
+} as const;
+
+export type WebsiteBillingPeriodType =
+  (typeof WEBSITE_BILLING_PERIOD)[keyof typeof WEBSITE_BILLING_PERIOD];
+
 export type WebsiteType = {
   id: string;
   domain: string;
@@ -42,8 +52,9 @@ export type WebsiteType = {
     controlPanel: "DirectAdmin";
     webServer: "OpenLiteSpeed";
     serviceStartDate: string;
-    renewalDate: string;
-    billingPeriod: string;
+    /** ISO date (YYYY-MM-DD); display via formatWebsiteRenewalDate. */
+    renewalAt: string;
+    billingPeriod: WebsiteBillingPeriodType | string;
   };
   monitoring: {
     agentStatus: "CONNECTED" | "DISCONNECTED";
@@ -51,6 +62,38 @@ export type WebsiteType = {
     dataFreshness: "UP_TO_DATE" | "STALE";
   };
 };
+
+export function formatWebsiteRenewalDate(isoDate: string): string {
+  const date = new Date(`${isoDate}T12:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return new Intl.DateTimeFormat("fa-IR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+export function billingPeriodMonths(period: string): number {
+  switch (period) {
+    case WEBSITE_BILLING_PERIOD.QUARTERLY:
+      return 3;
+    case WEBSITE_BILLING_PERIOD.YEARLY:
+      return 12;
+    case WEBSITE_BILLING_PERIOD.MONTHLY:
+    default:
+      return 1;
+  }
+}
+
+/** Advance an ISO YYYY-MM-DD by N calendar months (UTC noon anchor). */
+export function advanceIsoDateByMonths(isoDate: string, months: number): string {
+  const date = new Date(`${isoDate}T12:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) {
+    return isoDate;
+  }
+  date.setUTCMonth(date.getUTCMonth() + months);
+  return date.toISOString().slice(0, 10);
+}
 
 export const WEBSITES: WebsiteType[] = [
   {
@@ -87,8 +130,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۱۴ اردیبهشت ۱۴۰۳",
-      renewalDate: "۲۵ شهریور ۱۴۰۶",
-      billingPeriod: "ماهانه",
+      renewalAt: "2027-09-16",
+      billingPeriod: WEBSITE_BILLING_PERIOD.MONTHLY,
     },
     monitoring: {
       agentStatus: "CONNECTED",
@@ -130,8 +173,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۲۱ خرداد ۱۴۰۲",
-      renewalDate: "۱۲ مهر ۱۴۰۶",
-      billingPeriod: "سه‌ماهه",
+      renewalAt: "2027-10-04",
+      billingPeriod: WEBSITE_BILLING_PERIOD.QUARTERLY,
     },
     monitoring: {
       agentStatus: "CONNECTED",
@@ -173,8 +216,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۱۰ مرداد ۱۴۰۶",
-      renewalDate: "۱۰ شهریور ۱۴۰۶",
-      billingPeriod: "ماهانه",
+      renewalAt: "2027-09-01",
+      billingPeriod: WEBSITE_BILLING_PERIOD.MONTHLY,
     },
     monitoring: {
       agentStatus: "DISCONNECTED",
@@ -216,8 +259,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۸ اسفند ۱۴۰۲",
-      renewalDate: "۲۸ آذر ۱۴۰۶",
-      billingPeriod: "سه‌ماهه",
+      renewalAt: "2027-12-19",
+      billingPeriod: WEBSITE_BILLING_PERIOD.QUARTERLY,
     },
     monitoring: {
       agentStatus: "CONNECTED",
@@ -259,8 +302,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۱۷ فروردین ۱۴۰۳",
-      renewalDate: "۲۲ آذر ۱۴۰۶",
-      billingPeriod: "ماهانه",
+      renewalAt: "2027-12-13",
+      billingPeriod: WEBSITE_BILLING_PERIOD.MONTHLY,
     },
     monitoring: {
       agentStatus: "CONNECTED",
@@ -302,8 +345,8 @@ export const WEBSITES: WebsiteType[] = [
       controlPanel: "DirectAdmin",
       webServer: "OpenLiteSpeed",
       serviceStartDate: "۲۸ تیر ۱۴۰۱",
-      renewalDate: "۵ آبان ۱۴۰۶",
-      billingPeriod: "سالانه",
+      renewalAt: "2027-10-27",
+      billingPeriod: WEBSITE_BILLING_PERIOD.YEARLY,
     },
     monitoring: {
       agentStatus: "CONNECTED",

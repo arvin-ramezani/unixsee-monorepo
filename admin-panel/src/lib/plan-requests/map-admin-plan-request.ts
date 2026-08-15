@@ -3,11 +3,6 @@ import {
   type PlanRequestStatusType,
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
-import {
-  resolvePlanRequestIntake,
-  PLAN_REQUEST_INTAKE,
-  type PlanRequestIntakeType,
-} from "@/lib/plan-requests/plan-request-intake";
 
 export type NestPlanRequestStatus =
   | "SUBMITTED"
@@ -81,10 +76,7 @@ function mapNestStatusToUi(status: string): PlanRequestStatusType {
   }
 }
 
-function nextActionFor(
-  item: AdminPlanRequestDto,
-  intakeType: PlanRequestIntakeType,
-): string {
+function nextActionFor(item: AdminPlanRequestDto): string {
   const status = mapNestStatusToUi(item.status);
   if (status === PLAN_REQUEST_STATUS.ENABLED) {
     return "مشاهده وب‌سایت فعال";
@@ -93,9 +85,7 @@ function nextActionFor(
     return "بایگانی";
   }
   if (!item.linkedUserId || !item.tenantId) {
-    return intakeType === PLAN_REQUEST_INTAKE.PUBLIC
-      ? "یافتن کاربر موجود و اتصال"
-      : "تکمیل اتصال حساب مشتری";
+    return "تکمیل اتصال حساب مشتری";
   }
   if (!item.websiteId) {
     return "انتخاب وب‌سایت هدف";
@@ -114,13 +104,11 @@ export function mapAdminPlanRequestToUi(
     item.plan?.nameFa?.trim() ||
     item.plan?.code ||
     "—";
-  const intakeType = resolvePlanRequestIntake(item);
 
   return {
     id: item.id,
     chosenPlanId: item.plan?.code ?? item.planId,
     chosenPlanName: planName,
-    intakeType,
     contactName: item.contactName,
     contactEmail: item.contactEmail,
     contactMobile: item.contactPhone,
@@ -133,7 +121,7 @@ export function mapAdminPlanRequestToUi(
     targetWebsiteId: item.websiteId,
     targetWebsiteDomain: item.website?.domain ?? null,
     status: mapNestStatusToUi(item.status),
-    nextAction: nextActionFor(item, intakeType),
+    nextAction: nextActionFor(item),
     submittedAt: formatFaDate(item.createdAt),
     updatedAt: formatFaDate(item.updatedAt),
     terminalReason: item.declineReason,

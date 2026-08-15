@@ -9,7 +9,6 @@ import {
   Filter,
   SearchX,
   TimerReset,
-  UserRound,
 } from "lucide-react";
 
 import SearchInput from "@/components/common/search-input";
@@ -38,16 +37,10 @@ import {
 } from "@/lib/data/plan-requests-data";
 import { cn } from "@/lib/utils";
 import {
-  resolvePlanRequestAccountLabel,
   resolvePlanRequestContactPrimary,
   resolvePlanRequestContactSecondary,
   resolvePlanRequestWebsiteLabel,
 } from "@/lib/plan-requests/plan-request-display";
-import {
-  PLAN_REQUEST_INTAKE,
-  PLAN_REQUEST_INTAKE_LABELS,
-} from "@/lib/plan-requests/plan-request-intake";
-import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
 export const STATUS_FILTER = {
@@ -61,25 +54,6 @@ export type StatusFilterType =
 
 const PLAN_FILTER_ALL = "ALL";
 type PlanFilterType = typeof PLAN_FILTER_ALL | PlanIdType | string;
-
-const INTAKE_FILTER = {
-  ALL: "ALL",
-  ...PLAN_REQUEST_INTAKE,
-} as const;
-
-type IntakeFilterType = (typeof INTAKE_FILTER)[keyof typeof INTAKE_FILTER];
-
-const INTAKE_FILTER_OPTIONS: { value: IntakeFilterType; label: string }[] = [
-  { value: INTAKE_FILTER.ALL, label: "همه منابع" },
-  {
-    value: PLAN_REQUEST_INTAKE.LOGGED_IN,
-    label: PLAN_REQUEST_INTAKE_LABELS[PLAN_REQUEST_INTAKE.LOGGED_IN],
-  },
-  {
-    value: PLAN_REQUEST_INTAKE.PUBLIC,
-    label: PLAN_REQUEST_INTAKE_LABELS[PLAN_REQUEST_INTAKE.PUBLIC],
-  },
-];
 
 const STATUS_FILTER_OPTIONS: { value: StatusFilterType; label: string }[] = [
   { value: STATUS_FILTER.ALL, label: "همه وضعیت‌ها" },
@@ -132,9 +106,6 @@ export function PlanRequestsView({
   const [statusFilter, setStatusFilter] =
     useState<StatusFilterType>(initialStatus);
   const [planFilter, setPlanFilter] = useState<PlanFilterType>(PLAN_FILTER_ALL);
-  const [intakeFilter, setIntakeFilter] = useState<IntakeFilterType>(
-    INTAKE_FILTER.ALL,
-  );
   const [filtersOpen, setFiltersOpen] = useState(false);
   const router = useRouter();
 
@@ -150,12 +121,6 @@ export function PlanRequestsView({
       enabled: requests.filter(
         (request) => request.status === PLAN_REQUEST_STATUS.ENABLED,
       ).length,
-      guestUnlinked: requests.filter(
-        (request) =>
-          request.intakeType === PLAN_REQUEST_INTAKE.PUBLIC &&
-          !request.linkedUserId &&
-          ACTIONABLE_STATUSES.has(request.status),
-      ).length,
     };
   }, [requests]);
 
@@ -168,17 +133,6 @@ export function PlanRequestsView({
       icon: TimerReset,
       emphasis: true,
       filter: STATUS_FILTER.ACTIONABLE as StatusFilterType,
-      filterKind: "status" as const,
-    },
-    {
-      key: "guest",
-      label: "مهمان بدون اتصال",
-      value: summary.guestUnlinked,
-      hint: "درخواست وب عمومی؛ کاربر هنوز متصل نشده",
-      icon: UserRound,
-      emphasis: false,
-      filter: PLAN_REQUEST_INTAKE.PUBLIC as IntakeFilterType,
-      filterKind: "intake" as const,
     },
     {
       key: "ready",
@@ -188,7 +142,6 @@ export function PlanRequestsView({
       icon: CheckCircle2,
       emphasis: false,
       filter: PLAN_REQUEST_STATUS.READY_TO_ENABLE as StatusFilterType,
-      filterKind: "status" as const,
     },
     {
       key: "enabled",
@@ -198,7 +151,6 @@ export function PlanRequestsView({
       icon: CheckCircle2,
       emphasis: false,
       filter: PLAN_REQUEST_STATUS.ENABLED as StatusFilterType,
-      filterKind: "status" as const,
     },
     {
       key: "total",
@@ -208,7 +160,6 @@ export function PlanRequestsView({
       icon: ClipboardList,
       emphasis: false,
       filter: STATUS_FILTER.ALL as StatusFilterType,
-      filterKind: "status" as const,
     },
   ];
 
@@ -223,10 +174,7 @@ export function PlanRequestsView({
           : request.status === statusFilter);
       const planOk =
         planFilter === PLAN_FILTER_ALL || request.chosenPlanId === planFilter;
-      const intakeOk =
-        intakeFilter === INTAKE_FILTER.ALL ||
-        request.intakeType === intakeFilter;
-      if (!statusOk || !planOk || !intakeOk) return false;
+      if (!statusOk || !planOk) return false;
       if (!q) return true;
 
       const haystack = [
@@ -240,14 +188,13 @@ export function PlanRequestsView({
         request.linkedTenantName ?? "",
         request.targetWebsiteDomain ?? "",
         request.nextAction,
-        PLAN_REQUEST_INTAKE_LABELS[request.intakeType],
       ]
         .join(" ")
         .toLowerCase();
 
       return haystack.includes(q);
     });
-  }, [requests, search, statusFilter, planFilter, intakeFilter]);
+  }, [requests, search, statusFilter, planFilter]);
 
   const openRequest = (requestId: string) => {
     router.push(`/plan-requests/${requestId}`);
@@ -265,28 +212,18 @@ export function PlanRequestsView({
       ) : null}
 
       <section
-        className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"
+        className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
         aria-label="خلاصه درخواست‌های پلن"
       >
         {summaryItems.map((item) => {
           const Icon = item.icon;
-          const isSelected =
-            item.filterKind === "intake"
-              ? intakeFilter === item.filter
-              : statusFilter === item.filter;
+          const isSelected = statusFilter === item.filter;
 
           return (
             <button
               key={item.key}
               type="button"
-              onClick={() => {
-                if (item.filterKind === "intake") {
-                  setIntakeFilter(item.filter as IntakeFilterType);
-                  setStatusFilter(STATUS_FILTER.ACTIONABLE);
-                  return;
-                }
-                setStatusFilter(item.filter as StatusFilterType);
-              }}
+              onClick={() => setStatusFilter(item.filter)}
               aria-pressed={isSelected}
               className={cn(
                 "rounded-xl border p-4 text-start transition-colors",
@@ -362,31 +299,10 @@ export function PlanRequestsView({
           </Button>
           <div
             className={cn(
-              "grid gap-3 sm:grid-cols-2 lg:grid-cols-3",
+              "grid gap-3 sm:grid-cols-2",
               filtersOpen ? "grid" : "hidden lg:grid",
             )}
           >
-            <Select
-              value={intakeFilter}
-              onValueChange={(value) => {
-                if (value) setIntakeFilter(value as IntakeFilterType);
-              }}
-            >
-              <SelectTrigger aria-label="فیلتر منبع درخواست">
-                <SelectValue>
-                  {INTAKE_FILTER_OPTIONS.find(
-                    (option) => option.value === intakeFilter,
-                  )?.label ?? "همه منابع"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent alignItemWithTrigger={false}>
-                {INTAKE_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Select
               value={statusFilter}
               onValueChange={(value) => {
@@ -437,9 +353,8 @@ export function PlanRequestsView({
             <TableHeader>
               <TableRow>
                 <TableHead className="px-4 py-3 text-right">پلن</TableHead>
-                <TableHead className="px-4 py-3 text-right">منبع</TableHead>
-                <TableHead className="px-4 py-3 text-right">تماس / حساب</TableHead>
-                <TableHead className="px-4 py-3 text-right">اتصال</TableHead>
+                <TableHead className="px-4 py-3 text-right">نام</TableHead>
+                <TableHead className="px-4 py-3 text-right">تلفن/ایمیل</TableHead>
                 <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
                 <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
                 <TableHead className="px-4 py-3 text-right">
@@ -451,7 +366,7 @@ export function PlanRequestsView({
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={6}
                     className="px-4 py-10 text-center text-muted-foreground"
                   >
                     <div className="inline-flex items-center gap-2">
@@ -490,19 +405,12 @@ export function PlanRequestsView({
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-3">
-                      <PlanRequestIntakeBadge intakeType={request.intakeType} />
+                      {resolvePlanRequestContactPrimary(request)}
                     </TableCell>
                     <TableCell className="px-4 py-3">
-                      <div>{resolvePlanRequestContactPrimary(request)}</div>
-                      <div
-                        className="text-xs text-muted-foreground w-fit"
-                        dir="ltr"
-                      >
+                      <p className="w-fit" dir="ltr">
                         {resolvePlanRequestContactSecondary(request)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      {resolvePlanRequestAccountLabel(request)}
+                      </p>
                     </TableCell>
                     <TableCell className="px-4 py-3">
                       <p className="w-fit" dir="ltr">
@@ -538,12 +446,9 @@ export function PlanRequestsView({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold" dir="ltr">
-                        {request.chosenPlanName}
-                      </p>
-                      <PlanRequestIntakeBadge intakeType={request.intakeType} />
-                    </div>
+                    <p className="font-semibold" dir="ltr">
+                      {request.chosenPlanName}
+                    </p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {resolvePlanRequestContactPrimary(request)}
                     </p>
@@ -552,8 +457,10 @@ export function PlanRequestsView({
                 </div>
                 <dl className="mt-3 grid gap-2 text-xs text-muted-foreground">
                   <div className="flex justify-between gap-3">
-                    <dt>اتصال</dt>
-                    <dd>{resolvePlanRequestAccountLabel(request)}</dd>
+                    <dt>تلفن/ایمیل</dt>
+                    <dd dir="ltr">
+                      {resolvePlanRequestContactSecondary(request)}
+                    </dd>
                   </div>
                   <div className="flex justify-between gap-3">
                     <dt>وب‌سایت</dt>

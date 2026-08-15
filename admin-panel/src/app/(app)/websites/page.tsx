@@ -1,5 +1,6 @@
 import { WebsitesView } from "@/components/websites/websites-view";
-import { WEBSITE_STATUS, WEBSITES } from "@/lib/data/websites-data";
+import { WEBSITE_STATUS } from "@/lib/data/websites-data";
+import { listRuntimeWebsites } from "@/lib/data/websites-runtime";
 import { readEnumParam } from "@/lib/url-search-params";
 
 const WEBSITE_STATUS_FILTER_VALUES = [
@@ -25,7 +26,10 @@ export default async function WebsitesPage({ searchParams }: WebsitesPageProps) 
         </p>
       </div>
 
-      <WebsitesView websites={WEBSITES} initialStatus={initialStatus} />
+      <WebsitesView
+        websites={listRuntimeWebsites()}
+        initialStatus={initialStatus}
+      />
     </div>
   );
 }

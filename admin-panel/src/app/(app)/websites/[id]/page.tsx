@@ -1,5 +1,5 @@
 import { WebsiteDetailsView } from "@/components/websites/website-details-view";
-import { WEBSITES } from "@/lib/data/websites-data";
+import { getRuntimeWebsite } from "@/lib/data/websites-runtime";
 
 export type WebsiteDetailsPageProps = {
   params: Promise<{ id: string }>;
@@ -9,7 +9,7 @@ export default async function WebsiteDetailsPage({
   params,
 }: WebsiteDetailsPageProps) {
   const { id } = await params;
-  const website = WEBSITES.find((item) => item.id === id);
+  const website = getRuntimeWebsite(id);
 
   if (!website) {
     return (

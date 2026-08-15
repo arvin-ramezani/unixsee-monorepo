@@ -15,7 +15,6 @@ import {
   ChevronDown,
   Globe2,
   LoaderCircle,
-  UserRound,
   XCircle,
 } from "lucide-react";
 
@@ -45,15 +44,10 @@ import {
 } from "@/lib/data/plan-requests-data";
 import { findAuthorizationCaseByUserId } from "@/lib/data/authorization-runtime";
 import { STAFF_CAPABILITY } from "@/lib/data/users-data";
-import {
-  isPublicPlanRequest,
-  PLAN_REQUEST_INTAKE_HINTS,
-} from "@/lib/plan-requests/plan-request-intake";
 import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { PlanRequestIntakeBadge } from "./plan-request-intake-badge";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
 type PlanRequestDetailsViewProps = {
@@ -141,13 +135,11 @@ export function PlanRequestDetailsView({
           <span className="w-fit" dir="ltr">
             {request.chosenPlanName}
           </span>
-          <PlanRequestIntakeBadge intakeType={request.intakeType} />
           <PlanRequestStatusBadge status={request.status} />
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {isPublicPlanRequest(request)
-            ? "درخواست مهمان — ابتدا کاربر موجود را پیدا کنید، سپس وب‌سایت را انتخاب و پلن را فعال کنید."
-            : "درخواست از داشبورد مشتری — حساب متصل است؛ وب‌سایت را انتخاب و پلن را فعال کنید."}
+          حساب مشتری پس از تأیید تماس ساخته شده؛ وب‌سایت را انتخاب و پلن را فعال
+          کنید.
         </p>
       </header>
 
@@ -159,117 +151,60 @@ export function PlanRequestDetailsView({
 }
 
 function PlanRequestSummary({ request }: { request: PlanRequestType }) {
-  const intakeHint = PLAN_REQUEST_INTAKE_HINTS[request.intakeType];
-
   return (
     <div className="flex flex-col gap-4">
-      <section
-        className={cn(
-          "rounded-xl border p-4 text-sm",
-          isPublicPlanRequest(request)
-            ? "border-amber-500/30 bg-amber-500/5"
-            : "border-primary/20 bg-primary/5",
-        )}
-      >
+      <section className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
         <div className="flex items-start gap-3">
-          {isPublicPlanRequest(request) ? (
-            <UserRound className="mt-0.5 size-4 shrink-0 text-amber-700 dark:text-amber-300" />
-          ) : (
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
-          )}
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
           <div>
-            <p className="font-medium">
-              {isPublicPlanRequest(request)
-                ? "درخواست مهمان (وب عمومی)"
-                : "درخواست کاربر واردشده"}
-            </p>
+            <p className="font-medium">درخواست با حساب مشتری</p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              {intakeHint}
+              پس از تأیید تلفن یا ایمیل، حساب ساخته شده و درخواست به همان حساب
+              متصل است.
             </p>
           </div>
         </div>
       </section>
 
-      {isPublicPlanRequest(request) ? (
-        <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
-          <h3 className="text-sm font-semibold">اطلاعات تماس مهمان</h3>
-          <p className="text-xs text-muted-foreground">
-            برای اتصال درخواست، همین شماره یا ایمیل را در{" "}
-            <Link href="/users" className="underline underline-offset-2">
-              کاربران
-            </Link>{" "}
-            جستجو کنید.
-          </p>
-          <dl className="grid gap-3 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-xs text-muted-foreground">نام</dt>
-              <dd className="mt-1">{request.contactName}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">موبایل</dt>
-              <dd className="mt-1 w-fit" dir="ltr">
-                {request.contactMobile ?? "—"}
-              </dd>
-            </div>
+      <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
+        <h3 className="text-sm font-semibold">حساب مشتری</h3>
+        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-xs text-muted-foreground">نام حساب</dt>
+            <dd className="mt-1">
+              {request.linkedUserName ?? request.contactName}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">موبایل ثبت‌شده</dt>
+            <dd className="mt-1 w-fit" dir="ltr">
+              {request.contactMobile ? maskMobile(request.contactMobile) : "—"}
+            </dd>
+          </div>
+          {request.contactEmail ? (
             <div>
               <dt className="text-xs text-muted-foreground">ایمیل</dt>
               <dd className="mt-1 w-fit" dir="ltr">
-                {request.contactEmail ?? "—"}
+                {maskEmail(request.contactEmail)}
               </dd>
             </div>
-            {request.domainHint ? (
-              <div>
-                <dt className="text-xs text-muted-foreground">دامنه اعلامی</dt>
-                <dd className="mt-1 w-fit" dir="ltr">
-                  {request.domainHint}
-                </dd>
-              </div>
-            ) : null}
-            {request.notes ? (
-              <div className="sm:col-span-2">
-                <dt className="text-xs text-muted-foreground">یادداشت مشتری</dt>
-                <dd className="mt-1 whitespace-pre-wrap">{request.notes}</dd>
-              </div>
-            ) : null}
-          </dl>
-        </section>
-      ) : (
-        <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
-          <h3 className="text-sm font-semibold">حساب مشتری</h3>
-          <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          ) : null}
+          {request.domainHint ? (
             <div>
-              <dt className="text-xs text-muted-foreground">نام حساب</dt>
-              <dd className="mt-1">
-                {request.linkedUserName ?? request.contactName}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">موبایل ثبت‌شده</dt>
+              <dt className="text-xs text-muted-foreground">دامنه اعلامی</dt>
               <dd className="mt-1 w-fit" dir="ltr">
-                {request.contactMobile
-                  ? maskMobile(request.contactMobile)
-                  : "—"}
+                {request.domainHint}
               </dd>
             </div>
-            {request.contactEmail ? (
-              <div>
-                <dt className="text-xs text-muted-foreground">ایمیل</dt>
-                <dd className="mt-1 w-fit" dir="ltr">
-                  {maskEmail(request.contactEmail)}
-                </dd>
-              </div>
-            ) : null}
-            {request.domainHint ? (
-              <div>
-                <dt className="text-xs text-muted-foreground">دامنه اعلامی</dt>
-                <dd className="mt-1 w-fit" dir="ltr">
-                  {request.domainHint}
-                </dd>
-              </div>
-            ) : null}
-          </dl>
-        </section>
-      )}
+          ) : null}
+          {request.notes ? (
+            <div className="sm:col-span-2">
+              <dt className="text-xs text-muted-foreground">یادداشت مشتری</dt>
+              <dd className="mt-1 whitespace-pre-wrap">{request.notes}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </section>
 
       <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
         <h3 className="text-sm font-semibold">وضعیت فعال‌سازی</h3>
@@ -573,24 +508,11 @@ function PlanRequestDetailsBody({
               </ul>
               {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_USER) && (
                 <p className="text-xs text-destructive/90">
-                  {isPublicPlanRequest(request) ? (
-                    <>
-                      برای درخواست مهمان، کاربر موجود را با موبایل/ایمیل بالا در{" "}
-                      <Link href="/users" className="underline underline-offset-2">
-                        کاربران
-                      </Link>{" "}
-                      پیدا کنید و به درخواست متصل کنید؛ این صفحه کاربر جدید
-                      نمی‌سازد.
-                    </>
-                  ) : (
-                    <>
-                      اگر حساب مالک وب‌سایت وجود ندارد، ابتدا در{" "}
-                      <Link href="/users" className="underline underline-offset-2">
-                        کاربران
-                      </Link>{" "}
-                      ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
-                    </>
-                  )}
+                  اگر حساب مالک وب‌سایت وجود ندارد، ابتدا در{" "}
+                  <Link href="/users" className="underline underline-offset-2">
+                    کاربران
+                  </Link>{" "}
+                  ایجاد کنید؛ این صفحه کاربر جدید نمی‌سازد.
                 </p>
               )}
               {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_TENANT) && (
@@ -746,9 +668,8 @@ function PlanRequestDetailsBody({
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  {isPublicPlanRequest(request)
-                    ? "پس از اتصال کاربر موجود، وب‌سایت‌های او اینجا نمایش داده می‌شود."
-                    : "برای نمایش وب‌سایت‌ها، درخواست باید به کاربر یا مستأجر متصل باشد."}
+                  برای نمایش وب‌سایت‌ها، درخواست باید به کاربر یا مستأجر متصل
+                  باشد.
                 </p>
               )}
             </section>

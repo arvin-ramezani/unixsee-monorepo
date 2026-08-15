@@ -1,6 +1,4 @@
 import { PLAN_ID } from "@/lib/data/plans-data";
-import type { PlanRequestIntakeType } from "@/lib/plan-requests/plan-request-intake";
-import { PLAN_REQUEST_INTAKE } from "@/lib/plan-requests/plan-request-intake";
 
 export const PLAN_REQUEST_STATUS = {
   PENDING: "pending",
@@ -59,8 +57,6 @@ export type PlanRequestType = {
   /** Nest plan code (preferred) or plan UUID when code is missing. */
   chosenPlanId: string;
   chosenPlanName: string;
-  /** Logged-in dashboard vs public web intake. */
-  intakeType: PlanRequestIntakeType;
   contactName: string;
   contactEmail: string | null;
   contactMobile: string | null;
@@ -85,7 +81,6 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-001",
     chosenPlanId: PLAN_ID.UNIX_CORE,
     chosenPlanName: "UNIX CORE",
-    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
     notes: null,
     contactName: "نیما فرهادی",
     contactEmail: "nima.farhadi@example.com",
@@ -106,16 +101,9 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-001",
         at: "۱۶ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
-        note: "پلن UNIX CORE انتخاب شد.",
-      },
-      {
-        id: "prh-001b",
-        at: "۱۶ مرداد ۱۴۰۵",
-        action: "اتصال کاربر موجود",
-        actorName: "آرش نیک‌پور",
-        note: "نیما فرهادی — بدون مستأجر؛ احراز هویت در انتظار بررسی",
+        note: "پلن UNIX CORE انتخاب شد؛ حساب پس از تأیید تماس ایجاد شد.",
       },
     ],
   },
@@ -123,7 +111,6 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-002",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
-    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
     notes: null,
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
@@ -144,14 +131,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-002",
         at: "۱۵ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
-      },
-      {
-        id: "prh-003",
-        at: "۱۵ مرداد ۱۴۰۵",
-        action: "اتصال کاربر موجود",
-        actorName: "سارا کریمی",
         note: "علی رضایی / فروشگاه آرتین",
       },
     ],
@@ -160,7 +141,6 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-003",
     chosenPlanId: PLAN_ID.UNIX_PEAK,
     chosenPlanName: "UNIX PEAK",
-    intakeType: PLAN_REQUEST_INTAKE.LOGGED_IN,
     notes: null,
     contactName: "مریم حسینی",
     contactEmail: "maryam.hosseini@habibeh.ir",
@@ -181,13 +161,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-004",
         at: "۱۴ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
         id: "prh-005",
         at: "۱۴ مرداد ۱۴۰۵",
-        action: "اتصال کاربر و وب‌سایت",
+        action: "اتصال وب‌سایت",
         actorName: "سارا کریمی",
         note: "habibeh.ir بدون پلن فعال",
       },
@@ -197,7 +177,6 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-004",
     chosenPlanId: PLAN_ID.UNIX_ENTERPRISE,
     chosenPlanName: "UNIX ENTERPRISE",
-    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
     notes: "دامنه فروشگاه اصلی",
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
@@ -218,13 +197,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-006",
         at: "۱۳ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
         id: "prh-007",
         at: "۱۳ مرداد ۱۴۰۵",
-        action: "اتصال کاربر و وب‌سایت",
+        action: "اتصال وب‌سایت",
         actorName: "سارا کریمی",
         note: "greenario.com از قبل UNIX SCALE دارد",
       },
@@ -234,7 +213,6 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-005",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
-    intakeType: PLAN_REQUEST_INTAKE.LOGGED_IN,
     notes: null,
     contactName: "سارا محمدی",
     contactEmail: "sara.mohammadi@parsmod.com",
@@ -255,7 +233,7 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-008",
         at: "۱۰ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
@@ -271,14 +249,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-006",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
-    intakeType: PLAN_REQUEST_INTAKE.PUBLIC,
     notes: null,
     contactName: "حامد کاظمی",
     contactEmail: null,
     contactMobile: "09351234567",
     domainHint: null,
-    linkedUserId: null,
-    linkedUserName: null,
+    linkedUserId: "user-210",
+    linkedUserName: "حامد کاظمی",
     linkedTenantId: null,
     linkedTenantName: null,
     targetWebsiteId: null,
@@ -292,7 +269,7 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-010",
         at: "۸ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {

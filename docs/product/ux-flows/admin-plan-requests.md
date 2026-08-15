@@ -6,10 +6,10 @@
 |---|---|
 | Project | Unixsee Admin Panel |
 | Flow or service | Administrator plan-request enablement (`درخواست‌های پلن`) |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
-| Date | 2026-08-08 |
-| Prepared from | Stakeholder scope clarification (2026-08-08): public plan choice → external validation → admin enablement on an existing user/website with one active plan per website; prior draft 0.1; related users and servers/websites flows; current `/plan-requests` placeholder |
+| Date | 2026-08-15 |
+| Prepared from | Stakeholder scope clarification (2026-08-08); guest OTP → account before submit (2026-08-14 / customer-public-plan-request v0.4); prior draft 0.2 |
 | Primary owner | Product and operations |
 | Reviewers required | Product, operations, backend engineering, QA, accessibility |
 
@@ -29,8 +29,8 @@
 - **Primary user:** Authorized staff working درخواست‌های پلن.
 - **Goal:** Enable a customer-requested plan on exactly one website that already has a usable existing **tenant** (authorized customer).
 - **Current problem:** `/plan-requests` historically lacked an in-product enablement path; enablement also must respect احراز هویت.
-- **Proposed change:** Provide a thin queue and detail flow: review the requested plan, confirm an existing user and **tenant**, choose the target website, and enable the plan.
-- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time; **request submission is allowed before tenant approval**, but **enablement is not**.
+- **Proposed change:** Provide a thin queue and detail flow: review the requested plan on an already user-linked request, confirm **tenant**, choose the target website, and enable the plan. Do **not** surface guest vs logged-in intake badges — public visitors get an account on OTP verify before submit (see `customer-public-plan-request.md`).
+- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time; **request submission is allowed before tenant approval**, but **enablement is not**; admin treats all requests as account-linked (no “درخواست مهمان” queue distinction).
 - **Completion state:** Request is `enabled` (plan active on the target website) or a simple terminal alternative (`declined` / `cancelled`) with history retained.
 - **Highest-risk failure:** Enabling a plan without a tenant, or putting a second active plan on a website that already has one.
 - **Accessibility risk:** Enable confirmation and blocking reasons may be silent for keyboard or screen-reader users.
@@ -408,7 +408,7 @@ Exclude free-text notes, raw contact values, and secrets.
 | ID | Question | Decision | Users | Method | Priority |
 |---|---|---|---|---|---|
 | RQ-001 | If a website already has an active plan, does enablement hard-block or offer an explicit replace path? | U-003 | Product/ops | Decision | Critical |
-| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | Resolved for intent: guest OTP creates/authenticates user before submit so requests should arrive user-linked; Nest sync still needed | High |
+| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | **Resolved:** guest OTP creates/authenticates the user before submit; admin UI no longer distinguishes guest intake. Nest sync still needed for legacy anonymous create | High |
 | RQ-003 | Which decline/cancel reasons are required in Phase 1? | U-002 | Ops | Short list | Medium |
 
 ## Risks and dependencies
