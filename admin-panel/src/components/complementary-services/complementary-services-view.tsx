@@ -113,20 +113,29 @@ function SummaryCard({
   hint,
   icon: Icon,
   emphasis = false,
+  selected = false,
+  onClick,
 }: {
   label: string;
   value: number;
   hint: string;
   icon: typeof Inbox;
   emphasis?: boolean;
+  selected?: boolean;
+  onClick: () => void;
 }) {
   return (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
       className={cn(
-        "rounded-xl border p-4",
+        "rounded-xl border p-4 text-start transition-colors",
         emphasis
           ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card",
+          : "border-border bg-card hover:bg-muted/30",
+        selected && !emphasis && "ring-2 ring-primary/30",
+        selected && emphasis && "ring-2 ring-primary-foreground/40",
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -139,7 +148,7 @@ function SummaryCard({
           >
             {label}
           </p>
-          <p className="mt-2 text-2xl font-semibold">
+          <p className="mt-2 text-2xl font-semibold tabular-nums">
             {value.toLocaleString("fa-IR")}
           </p>
           <p
@@ -160,7 +169,7 @@ function SummaryCard({
           <Icon className="size-5" aria-hidden="true" />
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -270,12 +279,25 @@ export function ComplementaryServicesView({
     useState<RequestStatusFilterType>(initialStatus);
   const [familyFilter, setFamilyFilter] =
     useState<FamilyFilterType>(FAMILY_FILTER_ALL);
+  const [activeAssignmentsOnly, setActiveAssignmentsOnly] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+
+  function selectRequestSummary(filter: RequestStatusFilterType) {
+    setViewMode(VIEW_MODE.REQUESTS);
+    setStatusFilter(filter);
+    setActiveAssignmentsOnly(false);
+  }
+
+  function selectActiveAssignmentsSummary() {
+    setViewMode(VIEW_MODE.ASSIGNMENTS);
+    setActiveAssignmentsOnly(true);
+  }
 
   function handleStaffCreateSuccess(payload: CreateServiceSuccessPayload) {
     setCreateOpen(false);
     setViewMode(VIEW_MODE.ASSIGNMENTS);
+    setActiveAssignmentsOnly(false);
     setListVersion((current) => current + 1);
     toast.success(
       `سرویس «${payload.title}» برای ${payload.websiteDomain} ایجاد و متصل شد.`,
@@ -334,8 +356,11 @@ export function ComplementaryServicesView({
         .includes(normalizedQuery);
     const matchesFamily =
       familyFilter === FAMILY_FILTER_ALL || assignment.family === familyFilter;
+    const matchesActive =
+      !activeAssignmentsOnly ||
+      assignment.status === SERVICE_ASSIGNMENT_STATUS.ACTIVE;
 
-    return matchesQuery && matchesFamily;
+    return matchesQuery && matchesFamily && matchesActive;
   });
 
   const statusFilterLabel =
@@ -400,24 +425,43 @@ export function ComplementaryServicesView({
           hint="برای بررسی یا ادامه فرایند"
           icon={Inbox}
           emphasis
+          selected={
+            viewMode === VIEW_MODE.REQUESTS &&
+            statusFilter === REQUEST_STATUS_FILTER.ACTIONABLE
+          }
+          onClick={() => selectRequestSummary(REQUEST_STATUS_FILTER.ACTIONABLE)}
         />
         <SummaryCard
           label="منتظر مشتری"
           value={waitingCount}
           hint="اطلاعات یا تصمیم مشتری"
           icon={Clock3}
+          selected={
+            viewMode === VIEW_MODE.REQUESTS &&
+            statusFilter === REQUEST_STATUS_FILTER.WAITING
+          }
+          onClick={() => selectRequestSummary(REQUEST_STATUS_FILTER.WAITING)}
         />
         <SummaryCard
           label="آماده ایجاد سرویس"
           value={acceptedRequests.length}
           hint="پیشنهاد تأیید شده"
           icon={CheckCircle2}
+          selected={
+            viewMode === VIEW_MODE.REQUESTS &&
+            statusFilter === REQUEST_STATUS_FILTER.READY
+          }
+          onClick={() => selectRequestSummary(REQUEST_STATUS_FILTER.READY)}
         />
         <SummaryCard
           label="سرویس‌های فعال"
           value={activeAssignmentCount}
           hint="در حال ارائه به مشتری"
           icon={BriefcaseBusiness}
+          selected={
+            viewMode === VIEW_MODE.ASSIGNMENTS && activeAssignmentsOnly
+          }
+          onClick={selectActiveAssignmentsSummary}
         />
       </section>
 
@@ -432,7 +476,10 @@ export function ComplementaryServicesView({
               size="sm"
               variant={viewMode === VIEW_MODE.REQUESTS ? "secondary" : "ghost"}
               aria-pressed={viewMode === VIEW_MODE.REQUESTS}
-              onClick={() => setViewMode(VIEW_MODE.REQUESTS)}
+              onClick={() => {
+                setViewMode(VIEW_MODE.REQUESTS);
+                setActiveAssignmentsOnly(false);
+              }}
             >
               درخواست‌ها
               <span className="rounded-full bg-background px-1.5 py-0.5 text-xs">
@@ -446,7 +493,10 @@ export function ComplementaryServicesView({
                 viewMode === VIEW_MODE.ASSIGNMENTS ? "secondary" : "ghost"
               }
               aria-pressed={viewMode === VIEW_MODE.ASSIGNMENTS}
-              onClick={() => setViewMode(VIEW_MODE.ASSIGNMENTS)}
+              onClick={() => {
+                setViewMode(VIEW_MODE.ASSIGNMENTS);
+                setActiveAssignmentsOnly(false);
+              }}
             >
               سرویس‌ها
               <span className="rounded-full bg-background px-1.5 py-0.5 text-xs">
