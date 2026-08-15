@@ -50,13 +50,23 @@ const WEBSITE_NONE_VALUE = "__none__";
 const MAX_ATTACHMENTS = 20;
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 
+type SelectedAttachment = {
+  id: string;
+  file: File;
+};
+
+const attachmentEase = [0.22, 1, 0.36, 1] as const;
+const attachmentExitEase = [0.4, 0, 1, 1] as const;
+
 function buildPendingStorageKey(fileName: string) {
   const safeName = fileName.replace(/[^\w.\-+() ]/g, "_").slice(0, 180);
   return `tickets/pending/${crypto.randomUUID()}/${safeName || "file"}`;
 }
 
-function toAttachmentInputs(files: File[]): CreateTicketAttachmentInput[] {
-  return files.map((file) => ({
+function toAttachmentInputs(
+  attachments: SelectedAttachment[],
+): CreateTicketAttachmentInput[] {
+  return attachments.map(({ file }) => ({
     fileName: file.name.slice(0, 255),
     contentType: (file.type || "application/octet-stream").slice(0, 128),
     sizeBytes: file.size,
@@ -85,7 +95,7 @@ export function NewTicketForm({
   const [website, setWebsite] = useState(initialWebsiteId ?? "");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -101,13 +111,21 @@ export function NewTicketForm({
   }
 
   function addFiles(fileList: FileList | null) {
-    const next = Array.from(fileList ?? []);
-    if (next.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
+    const nextFiles = Array.from(fileList ?? []);
+    if (nextFiles.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
       setAttachmentError(t("attachments.tooLarge"));
       return;
     }
     setAttachmentError(null);
-    setAttachments((current) => [...current, ...next].slice(0, MAX_ATTACHMENTS));
+    setAttachments((current) =>
+      [
+        ...current,
+        ...nextFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        })),
+      ].slice(0, MAX_ATTACHMENTS),
+    );
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -357,11 +375,16 @@ export function NewTicketForm({
                 }}
               />
             </Label>
-            <ul className={cn("space-y-2", attachments.length > 0 && "mt-3")}>
+            <ul
+              className={cn(
+                "relative flex w-full min-w-0 max-w-full flex-col gap-2",
+                attachments.length > 0 && "mt-3",
+              )}
+            >
               <AnimatePresence initial={false} mode="popLayout">
-                {attachments.map((file, index) => (
+                {attachments.map(({ id, file }, index) => (
                   <motion.li
-                    key={`${file.name}-${file.size}-${index}`}
+                    key={id}
                     layout={!prefersReducedMotion}
                     initial={
                       prefersReducedMotion
@@ -370,47 +393,68 @@ export function NewTicketForm({
                     }
                     animate={
                       prefersReducedMotion
-                        ? { opacity: 1 }
-                        : { opacity: 1, y: 0, scale: 1 }
+                        ? {
+                            opacity: 1,
+                            transition: { duration: 0.12, delay: index * 0.03 },
+                          }
+                        : {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: {
+                              duration: 0.28,
+                              ease: attachmentEase,
+                              delay: index * 0.03,
+                            },
+                          }
                     }
                     exit={
                       prefersReducedMotion
-                        ? { opacity: 0, height: 0, marginBottom: 0 }
+                        ? {
+                            opacity: 0,
+                            transition: { duration: 0.12, delay: 0 },
+                          }
                         : {
                             opacity: 0,
-                            height: 0,
-                            marginBottom: 0,
-                            scale: 0.98,
+                            scale: 0.96,
+                            y: -4,
+                            transition: {
+                              duration: 0.2,
+                              ease: attachmentExitEase,
+                              delay: 0,
+                            },
                           }
                     }
                     transition={
                       prefersReducedMotion
-                        ? { duration: 0.15 }
+                        ? { duration: 0.12 }
                         : {
-                            duration: 0.28,
-                            ease: [0.22, 1, 0.36, 1],
-                            delay: index * 0.03,
+                            layout: {
+                              duration: 0.28,
+                              ease: attachmentEase,
+                            },
                           }
                     }
-                    className="border-border bg-muted/40 flex min-h-11 items-center gap-3 rounded-xl border px-3 text-sm"
+                    className="border-border bg-muted/40 flex min-h-11 w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-xl border px-3 text-sm sm:gap-3"
                   >
                     <Paperclip
                       aria-hidden="true"
                       className="text-muted-foreground size-4 shrink-0"
                     />
-                    <span className="min-w-0 flex-1 truncate" dir="auto">
+                    <span className="min-w-0 flex-1 truncate" title={file.name}>
                       {file.name}
                     </span>
-                    <span className="text-muted-foreground text-xs tabular-nums">
+                    <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
                       {Math.ceil(file.size / 1024)} KB
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon-sm"
+                      className="shrink-0"
                       onClick={() =>
-                        setAttachments((files) =>
-                          files.filter((item) => item !== file),
+                        setAttachments((current) =>
+                          current.filter((item) => item.id !== id),
                         )
                       }
                       aria-label={t("attachments.remove", { name: file.name })}
