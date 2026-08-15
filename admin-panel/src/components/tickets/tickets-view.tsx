@@ -156,9 +156,9 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
       <TableCell className="px-4 py-3">
         <TicketCustomer ticket={ticket} linkUser />
       </TableCell>
-      <TableCell className="max-w-[12rem] px-4 py-3">
+      <TableCell className="max-w-48 px-4 py-3">
         <span
-          className="block truncate text-muted-foreground"
+          className="block truncate text-muted-foreground w-fit"
           dir="ltr"
           title={ticketContactSummary(ticket)}
         >
