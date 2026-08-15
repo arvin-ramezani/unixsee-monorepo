@@ -86,11 +86,19 @@ export type TicketServicesResponse = {
   items: TicketServiceCatalogItem[];
 };
 
+export type CreateTicketAttachmentInput = {
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  storageKey: string;
+};
+
 export type CreateTicketInput = {
   service: TicketServiceCategory;
   subject: string;
   description: string;
   websiteId?: string;
+  attachments?: CreateTicketAttachmentInput[];
 };
 
 export type NestWebsiteListItem = {

@@ -21,7 +21,7 @@ export default function ServicesQuickActions({
 
       <nav
         aria-label={t("quickActions.label")}
-        className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-1"
+        className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1"
       >
         {complementaryServicesQuickActions.map(({ key, tab, icon: Icon }) => (
           <DashboardButtonLink

@@ -138,7 +138,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
           <h2 className="text-lg font-semibold tracking-tight">{t("title")}</h2>
           <Link
             href="dashboard/websites"
-            className="hover:bg-muted focus-visible:ring-ring flex h-10 items-center gap-2 rounded-lg px-2 text-xs font-medium focus-visible:ring-2"
+            className="hover:bg-muted text-link focus-visible:ring-ring flex h-10 items-center gap-2 rounded-lg px-2 text-xs font-medium focus-visible:ring-2"
           >
             {t("viewAll")}{" "}
             <span aria-hidden="true" className="rtl:rotate-180">

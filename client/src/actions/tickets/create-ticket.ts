@@ -24,6 +24,9 @@ export async function createTicketAction(
         subject: input.subject.trim(),
         description: input.description.trim(),
         ...(input.websiteId ? { websiteId: input.websiteId } : {}),
+        ...(input.attachments?.length
+          ? { attachments: input.attachments }
+          : {}),
       }),
     });
 

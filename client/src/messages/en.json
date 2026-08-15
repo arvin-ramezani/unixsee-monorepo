@@ -3672,11 +3672,12 @@
       },
       "attachments": {
         "label": "Attachments",
-        "hint": "Optional screenshots or documents.",
+        "hint": "Optional screenshots or documents (max 10 MB per file).",
         "unavailable": "File upload coming soon",
         "unavailableHint": "Attachments will be available after Nest-owned S3 upload is enabled.",
         "choose": "Choose files",
-        "remove": "Remove {name}"
+        "remove": "Remove {name}",
+        "tooLarge": "Each file must be 10 MB or smaller."
       },
       "errors": {
         "service": "Select a service.",

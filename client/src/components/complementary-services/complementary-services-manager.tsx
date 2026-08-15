@@ -47,6 +47,7 @@ import type {
   ConsultationRequest,
   ServiceWebsite,
 } from "@/lib/data/complementary-services/complementary-services-data";
+import { DashboardButtonLink } from "../dashboard/dashboard-button-link";
 
 export type ComplementaryServicesTab = "active" | "requests" | "history";
 export type ComplementaryServicesState =
@@ -62,13 +63,15 @@ export function ComplementaryServicesHeader() {
           {t("description")}
         </p>
       </div>
-      <Link
+      <DashboardButtonLink
         href="/dashboard/complementary-services/request"
-        className="bg-primary text-primary-foreground hover:bg-primary/85 focus-visible:ring-ring inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium focus-visible:ring-2 sm:w-auto"
+        variant="primary"
+        size="lg"
+        className="h-11 w-full shrink-0"
       >
         <Plus aria-hidden="true" className="size-4" />
         {t("requestService")}
-      </Link>
+      </DashboardButtonLink>
     </header>
   );
 }

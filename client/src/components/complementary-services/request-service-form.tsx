@@ -348,9 +348,8 @@ export function RequestServiceForm({
             error={errors.service}
           />
           <div className="lg:grid lg:grid-cols-2 lg:gap-4">
-            {" "}
             <Label className="inline-block w-full flex-1 gap-2 text-sm font-medium">
-              {t("form.website.label")}{" "}
+              {t("form.website.label")}
               <span className="text-destructive">*</span>
               <Select
                 value={website}
@@ -383,7 +382,7 @@ export function RequestServiceForm({
               )}
             </Label>
             <ServiceSpecificFields
-              className="mt-6 flex-1"
+              className="mt-6 flex-1 lg:mt-0"
               service={service}
               value={scope}
               onChange={setScope}
@@ -452,7 +451,6 @@ export function RequestServiceForm({
               value={description}
               maxLength={800}
               rows={6}
-              data-lenis-prevent
               onChange={(event) => {
                 setDescription(event.target.value);
                 setErrors((current) => ({ ...current, description: "" }));

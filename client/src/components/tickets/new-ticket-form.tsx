@@ -7,7 +7,9 @@ import {
   LoaderCircle,
   MessageSquareText,
   Paperclip,
+  X,
 } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 import {
@@ -16,6 +18,8 @@ import {
 } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 import { createTicketAction } from "@/actions/tickets/create-ticket";
 import { Panel } from "@/components/dashboard/panel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import {
@@ -28,6 +32,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation";
 import type {
+  CreateTicketAttachmentInput,
   TicketServiceCatalogItem,
   TicketServiceCategory,
   TicketWebsiteRef,
@@ -42,6 +47,23 @@ const controlClassName =
   "w-full h-11! border border-border bg-background px-4 text-base shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground)_6%,transparent)] outline-none transition-[border-color,box-shadow,background-color] hover:border-ring/55 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/10 sm:text-sm";
 
 const WEBSITE_NONE_VALUE = "__none__";
+const MAX_ATTACHMENTS = 20;
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+
+function buildPendingStorageKey(fileName: string) {
+  const safeName = fileName.replace(/[^\w.\-+() ]/g, "_").slice(0, 180);
+  return `tickets/pending/${crypto.randomUUID()}/${safeName || "file"}`;
+}
+
+function toAttachmentInputs(files: File[]): CreateTicketAttachmentInput[] {
+  return files.map((file) => ({
+    fileName: file.name.slice(0, 255),
+    contentType: (file.type || "application/octet-stream").slice(0, 128),
+    sizeBytes: file.size,
+    // Nest accepts opaque storageKey; binary S3 upload remains deferred.
+    storageKey: buildPendingStorageKey(file.name),
+  }));
+}
 
 export function NewTicketForm({
   services,
@@ -58,10 +80,13 @@ export function NewTicketForm({
   const serviceT = useTranslations("Tickets.services");
   const tApiErrors = useTranslations("ApiErrors");
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
   const [service, setService] = useState<"" | TicketServiceCategory>("");
   const [website, setWebsite] = useState(initialWebsiteId ?? "");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -75,6 +100,16 @@ export function NewTicketForm({
     return Object.keys(nextErrors).length === 0;
   }
 
+  function addFiles(fileList: FileList | null) {
+    const next = Array.from(fileList ?? []);
+    if (next.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
+      setAttachmentError(t("attachments.tooLarge"));
+      return;
+    }
+    setAttachmentError(null);
+    setAttachments((current) => [...current, ...next].slice(0, MAX_ATTACHMENTS));
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validate() || !service) return;
@@ -86,6 +121,9 @@ export function NewTicketForm({
       subject,
       description,
       ...(website ? { websiteId: website } : {}),
+      ...(attachments.length
+        ? { attachments: toAttachmentInputs(attachments) }
+        : {}),
     });
 
     if (!result.ok) {
@@ -303,12 +341,86 @@ export function NewTicketForm({
           </Field>
           <Field
             label={t("attachments.label")}
-            hint={t("attachments.unavailableHint")}
+            hint={t("attachments.hint")}
+            error={attachmentError ?? undefined}
           >
-            <div className="border-border bg-muted/20 text-muted-foreground flex min-h-16 w-fit items-center justify-center gap-2 rounded-[12px] border border-dashed px-4 text-sm font-medium opacity-70">
+            <Label className="border-border bg-muted/20 hover:border-ring/55 hover:bg-muted/50 dark:hover:bg-accent/50 focus-within:border-ring focus-within:ring-ring/15 relative flex min-h-16 w-fit cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed px-4 text-sm font-medium transition-[border-color,background-color] focus-within:ring-3">
               <Paperclip aria-hidden="true" className="size-4" />
-              {t("attachments.unavailable")}
-            </div>
+              {t("attachments.choose")}
+              <Input
+                type="file"
+                multiple
+                className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
+                onChange={(event) => {
+                  addFiles(event.target.files);
+                  event.target.value = "";
+                }}
+              />
+            </Label>
+            <ul className={cn("space-y-2", attachments.length > 0 && "mt-3")}>
+              <AnimatePresence initial={false} mode="popLayout">
+                {attachments.map((file, index) => (
+                  <motion.li
+                    key={`${file.name}-${file.size}-${index}`}
+                    layout={!prefersReducedMotion}
+                    initial={
+                      prefersReducedMotion
+                        ? { opacity: 0 }
+                        : { opacity: 0, y: 8, scale: 0.98 }
+                    }
+                    animate={
+                      prefersReducedMotion
+                        ? { opacity: 1 }
+                        : { opacity: 1, y: 0, scale: 1 }
+                    }
+                    exit={
+                      prefersReducedMotion
+                        ? { opacity: 0, height: 0, marginBottom: 0 }
+                        : {
+                            opacity: 0,
+                            height: 0,
+                            marginBottom: 0,
+                            scale: 0.98,
+                          }
+                    }
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0.15 }
+                        : {
+                            duration: 0.28,
+                            ease: [0.22, 1, 0.36, 1],
+                            delay: index * 0.03,
+                          }
+                    }
+                    className="border-border bg-muted/40 flex min-h-11 items-center gap-3 rounded-xl border px-3 text-sm"
+                  >
+                    <Paperclip
+                      aria-hidden="true"
+                      className="text-muted-foreground size-4 shrink-0"
+                    />
+                    <span className="min-w-0 flex-1 truncate" dir="auto">
+                      {file.name}
+                    </span>
+                    <span className="text-muted-foreground text-xs tabular-nums">
+                      {Math.ceil(file.size / 1024)} KB
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() =>
+                        setAttachments((files) =>
+                          files.filter((item) => item !== file),
+                        )
+                      }
+                      aria-label={t("attachments.remove", { name: file.name })}
+                    >
+                      <X aria-hidden="true" className="size-4" />
+                    </Button>
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
           </Field>
         </div>
         <div className="border-border bg-muted/10 flex flex-col gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:px-6">
@@ -332,7 +444,7 @@ export function NewTicketForm({
             size="xl"
             href="/dashboard/tickets"
             revealClassName="bg-accent"
-            className="border-border hover:bg-muted focus-visible:ring-ring/20 inline-flex w-full items-center justify-center border px-5 text-sm font-medium transition-colors focus-visible:ring-3 sm:w-auto"
+            className="border-border focus-visible:ring-ring/20 hover:text-accent-foreground! hover:border-accent inline-flex h-11! w-full items-center justify-center border px-5 text-sm font-medium transition-colors focus-visible:ring-3 sm:w-auto"
           >
             {t("cancel")}
           </DashboardButtonLink>

@@ -73,6 +73,7 @@ export default function SmoothScrollProvider({
           wheelMultiplier: 1.7,
           lerp: 0.15,
           smoothWheel: true,
+          allowNestedScroll: true,
         }}
       />
 

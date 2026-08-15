@@ -13,6 +13,7 @@ import { useScroll } from "@/hooks/use-scroll";
 import type { NotificationItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 import { GridIcon } from "../common/grid-icon";
+import { ModeToggle } from "../ui/theme-toggle";
 
 type ActiveItem =
   | "Activities"
@@ -83,6 +84,7 @@ export function Header({
             </Button>
           )}
           <NotificationCenter notifications={notifications} />
+          <ModeToggle triggerClassName="size-9" />
           <LocaleSwitcher />
           <AccountMenu userName={userName} />
         </div>
