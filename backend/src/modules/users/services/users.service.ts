@@ -33,6 +33,15 @@ export class UsersService {
     private readonly mailService: MailService,
   ) {}
 
+  /** Never expose hashedRt/password; surface session presence only. */
+  private toAdminUserView<T extends { hashedRt: string | null }>(user: T) {
+    const { hashedRt, ...safe } = user;
+    return {
+      ...safe,
+      hasActiveSession: Boolean(hashedRt),
+    };
+  }
+
   async findOneByPhoneNumber(phoneNumber: string) {
     return this.prisma.user.findUnique({
       where: { phoneNumber },
@@ -428,10 +437,10 @@ export class UsersService {
       ...searchWhere,
     };
 
-    const [items, total] = await this.prisma.$transaction([
+    const [rows, total] = await this.prisma.$transaction([
       this.prisma.user.findMany({
         where,
-        omit: userPublicOmit,
+        omit: { password: true },
         include: {
           memberships: {
             include: {
@@ -459,13 +468,16 @@ export class UsersService {
       this.prisma.user.count({ where }),
     ]);
 
-    return { items, total };
+    return {
+      items: rows.map((row) => this.toAdminUserView(row)),
+      total,
+    };
   }
 
   async getAdmin(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      omit: userPublicOmit,
+      omit: { password: true },
       include: {
         memberships: { include: { tenant: true } },
       },
@@ -475,7 +487,7 @@ export class UsersService {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
 
-    return user;
+    return this.toAdminUserView(user);
   }
 
   async createAdmin(input: {
@@ -503,30 +515,39 @@ export class UsersService {
     },
   ) {
     await this.getAdmin(userId);
-    return this.prisma.user.update({
+    const updated = await this.prisma.user.update({
       where: { id: userId },
       data,
-      omit: userPublicOmit,
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
     });
+    return this.toAdminUserView(updated);
   }
 
-  async suspend(userId: string, reason?: string) {
+  async suspend(userId: string, reason: string) {
+    await this.getAdmin(userId);
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
         status: UserAccountStatus.SUSPENDED,
         suspendedAt: new Date(),
-        suspendedReason: reason ?? null,
+        suspendedReason: reason,
         hashedRt: null,
       },
-      omit: userPublicOmit,
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
     });
 
-    this.logger.log('user.suspended', { userId, reason: reason ?? null });
-    return user;
+    this.logger.log('user.suspended', { userId, reason });
+    return this.toAdminUserView(user);
   }
 
-  async restore(userId: string) {
+  async restore(userId: string, reason?: string) {
+    await this.getAdmin(userId);
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
@@ -534,10 +555,105 @@ export class UsersService {
         suspendedAt: null,
         suspendedReason: null,
       },
-      omit: userPublicOmit,
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
     });
 
-    this.logger.log('user.restored', { userId });
-    return user;
+    this.logger.log('user.restored', { userId, reason: reason ?? null });
+    return this.toAdminUserView(user);
+  }
+
+  async revokeSessions(userId: string, reason: string) {
+    await this.getAdmin(userId);
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: { hashedRt: null },
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
+    });
+
+    this.logger.log('user.sessions.revoked', { userId, reason });
+    return this.toAdminUserView(user);
+  }
+
+  /**
+   * Starts a controlled re-auth challenge on a verified contact channel.
+   * Never returns OTP / recovery secrets to staff.
+   */
+  async startRecovery(userId: string, reason: string) {
+    const current = await this.prisma.user.findUnique({
+      where: { id: userId },
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
+    });
+    if (!current) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    const phone =
+      current.phoneVerifiedAt && current.phoneNumber
+        ? current.phoneNumber
+        : null;
+    const email =
+      current.emailVerifiedAt && current.email ? current.email : null;
+
+    if (!phone && !email) {
+      throw new BadRequestException({
+        code: 'RECOVERY_CHANNEL_UNAVAILABLE',
+        message: 'No verified contact channel is available for recovery.',
+      });
+    }
+
+    let channel: 'phone' | 'email';
+    if (phone) {
+      channel = 'phone';
+      const otp = await this.otpService.createAndOverwrite({
+        length: 6,
+        phoneNumber: phone,
+        context: 'LOGIN',
+      });
+      await this.mailService.sendPhoneOtpMockEmail({
+        phoneNumber: phone,
+        otp: otp.otp,
+      });
+    } else {
+      channel = 'email';
+      const otp = await this.otpService.createAndOverwriteByIdentifier({
+        length: 6,
+        identifier: email!,
+        context: 'LOGIN',
+      });
+      await this.mailService.sendEmailOtpMockEmail({
+        email: email!,
+        otp: otp.otp,
+      });
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: { hashedRt: null },
+      omit: { password: true },
+      include: {
+        memberships: { include: { tenant: true } },
+      },
+    });
+
+    this.logger.log('user.recovery.started', {
+      userId,
+      reason,
+      channel,
+    });
+
+    return {
+      channel,
+      delivered: true as const,
+      user: this.toAdminUserView(user),
+    };
   }
 }

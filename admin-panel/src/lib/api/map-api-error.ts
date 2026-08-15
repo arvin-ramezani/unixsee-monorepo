@@ -17,6 +17,7 @@ export type MappedApiError = {
 };
 
 const ERROR_CODE_TO_KEY: Record<string, MappedApiErrorKey> = {
+  RECOVERY_CHANNEL_UNAVAILABLE: "validation",
   VALIDATION_ERROR: "validation",
   BAD_REQUEST: "validation",
   UNAUTHORIZED: "unauthorized",

@@ -93,8 +93,12 @@ Module: `auth`. No redesign.
 | PATCH | `/api/v1/admin/users/:id` | Admin |
 | POST | `/api/v1/admin/users/:id/suspend` | Admin |
 | POST | `/api/v1/admin/users/:id/restore` | Admin |
+| POST | `/api/v1/admin/users/:id/revoke-sessions` | Admin |
+| POST | `/api/v1/admin/users/:id/start-recovery` | Admin |
 
 Never return passwords, OTP codes, recovery secrets, refresh hashes, or agent keys.
+Admin user payloads may include `hasActiveSession` (boolean) derived from refresh
+state without exposing the hash.
 
 ### Authorization cases (احراز هویت) — add `authorization-cases`
 

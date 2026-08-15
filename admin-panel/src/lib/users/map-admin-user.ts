@@ -53,6 +53,9 @@ export type AdminUserDto = {
   locale: string;
   suspendedAt: string | null;
   suspendedReason: string | null;
+  phoneVerifiedAt?: string | null;
+  emailVerifiedAt?: string | null;
+  hasActiveSession?: boolean;
   createdAt: string;
   updatedAt: string;
   memberships?: AdminUserMembershipDto[];
@@ -197,17 +200,20 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
       dto.phoneNumber,
     email: dto.email,
     emailVerification: dto.email
-      ? CONTACT_VERIFICATION.VERIFIED
+      ? dto.emailVerifiedAt
+        ? CONTACT_VERIFICATION.VERIFIED
+        : CONTACT_VERIFICATION.PENDING
       : CONTACT_VERIFICATION.NOT_PROVIDED,
     mobile: dto.phoneNumber,
-    // Nest does not expose contact OTP state on admin users; stay neutral.
-    mobileVerification: CONTACT_VERIFICATION.VERIFIED,
+    mobileVerification: dto.phoneVerifiedAt
+      ? CONTACT_VERIFICATION.VERIFIED
+      : CONTACT_VERIFICATION.PENDING,
     locale: mapLocale(dto.locale),
     accountState: mapAccountState(dto.status),
     origin: ACCOUNT_ORIGIN.PUBLIC_SIGNUP,
     inviteStatus: INVITE_STATUS.ACCEPTED,
     twoFactorEnabled: false,
-    activeSessionCount: 0,
+    activeSessionCount: dto.hasActiveSession ? 1 : 0,
     createdAt: formatFaDateTime(dto.createdAt) ?? "—",
     lastSignInAt: null,
     stateReason: dto.suspendedReason,

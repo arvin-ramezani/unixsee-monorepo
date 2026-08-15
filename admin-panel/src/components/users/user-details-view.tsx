@@ -16,6 +16,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { applyNestUserSecurityAction } from "@/actions/users/user-security-actions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -180,8 +181,10 @@ const SECURITY_ACTION_CONFIGS: SecurityActionConfigType[] = [
     capability: STAFF_CAPABILITY.START_RECOVERY,
     icon: LifeBuoy,
     variant: "outline",
-    isAvailable: () => true,
-    unavailableReason: "",
+    isAvailable: (user) =>
+      user.mobileVerification === CONTACT_VERIFICATION.VERIFIED ||
+      user.emailVerification === CONTACT_VERIFICATION.VERIFIED,
+    unavailableReason: "کانال تأییدشده‌ای برای شروع بازیابی وجود ندارد.",
   },
 ];
 
@@ -230,6 +233,7 @@ export function UserDetailsView({
   );
   const [securityAction, setSecurityAction] =
     useState<SecurityActionType | null>(null);
+  const [securityBusy, setSecurityBusy] = useState(false);
   const [memberTenant, setMemberTenant] = useState<TenantType | null>(null);
 
   const notes = nestBacked ? [] : listUserNotes(user.id);
@@ -307,14 +311,33 @@ export function UserDetailsView({
     );
   };
 
-  const handleSecurityAction = (action: SecurityActionType, reason: string) => {
+  const handleSecurityAction = async (
+    action: SecurityActionType,
+    reason: string,
+  ) => {
     if (nestBacked) {
-      setStatusMessage({
-        text: "اقدام امنیتی هنوز به NestJS وصل نشده است.",
-        isBlocked: true,
+      setSecurityBusy(true);
+      const result = await applyNestUserSecurityAction({
+        userId: user.id,
+        action,
+        reason,
       });
+      setSecurityBusy(false);
+      if (!result.ok) {
+        setStatusMessage({ text: result.message, isBlocked: true });
+        return;
+      }
+      setUser(result.user);
+      setUsers((current) =>
+        current.map((entry) =>
+          entry.id === result.user.id ? result.user : entry,
+        ),
+      );
+      setStatusMessage({ text: result.message, isBlocked: false });
+      setSecurityAction(null);
       return;
     }
+
     const result = applySecurityAction({ userId: user.id, action, reason });
     if (!result) return;
 
@@ -322,6 +345,7 @@ export function UserDetailsView({
     setUsers(listRuntimeUsers());
     setAuditEntries(listUserAuditEntries(user.id));
     setStatusMessage({ text: result.message, isBlocked: false });
+    setSecurityAction(null);
   };
 
   return (
@@ -461,51 +485,46 @@ export function UserDetailsView({
           <h2 className="font-semibold">امنیت حساب</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {nestBacked
-            ? "اقدام‌های امنیتی (تعلیق، بازیابی، پایان نشست) هنوز از این صفحه به Nest وصل نشده‌اند. رمز، OTP و توکن هرگز نمایش داده نمی‌شوند."
-            : "هر اقدام امنیتی نیازمند دلیل است. رمز عبور، کد یک‌بارمصرف و اطلاعات بازیابی هرگز نمایش داده نمی‌شوند."}
+          هر اقدام امنیتی نیازمند دلیل است. رمز عبور، کد یک‌بارمصرف و اطلاعات
+          بازیابی هرگز نمایش داده نمی‌شوند.
         </p>
 
-        {!nestBacked && (
-          <>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {SECURITY_ACTION_CONFIGS.map((config) => {
-                const Icon = config.icon;
-                const isPermitted = hasCapability(config.capability);
-                const isAvailable = config.isAvailable(user);
+        <div className="mt-4 flex flex-wrap gap-2">
+          {SECURITY_ACTION_CONFIGS.map((config) => {
+            const Icon = config.icon;
+            const isPermitted = hasCapability(config.capability);
+            const isAvailable = config.isAvailable(user);
 
-                return (
-                  <Button
-                    key={config.action}
-                    type="button"
-                    size="sm"
-                    variant={config.variant}
-                    className="gap-2"
-                    disabled={!isPermitted || !isAvailable}
-                    onClick={() => setSecurityAction(config.action)}
-                  >
-                    <Icon className="size-4" aria-hidden="true" />
-                    {SECURITY_ACTION_LABELS[config.action]}
-                  </Button>
-                );
-              })}
-            </div>
+            return (
+              <Button
+                key={config.action}
+                type="button"
+                size="sm"
+                variant={config.variant}
+                className="gap-2"
+                disabled={!isPermitted || !isAvailable || securityBusy}
+                onClick={() => setSecurityAction(config.action)}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+                {SECURITY_ACTION_LABELS[config.action]}
+              </Button>
+            );
+          })}
+        </div>
 
-            <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
-              {SECURITY_ACTION_CONFIGS.filter(
-                (config) =>
-                  !hasCapability(config.capability) || !config.isAvailable(user),
-              ).map((config) => (
-                <li key={config.action}>
-                  {SECURITY_ACTION_LABELS[config.action]}:{" "}
-                  {hasCapability(config.capability)
-                    ? config.unavailableReason
-                    : "برای نقش فعلی فعال نیست و باید به همکار دارای این دسترسی ارجاع شود."}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+        <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
+          {SECURITY_ACTION_CONFIGS.filter(
+            (config) =>
+              !hasCapability(config.capability) || !config.isAvailable(user),
+          ).map((config) => (
+            <li key={config.action}>
+              {SECURITY_ACTION_LABELS[config.action]}:{" "}
+              {hasCapability(config.capability)
+                ? config.unavailableReason
+                : "برای نقش فعلی فعال نیست و باید به همکار دارای این دسترسی ارجاع شود."}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className={cn(surfaceClassName, "p-4 shadow-sm")}>
@@ -679,8 +698,9 @@ export function UserDetailsView({
         open={!!securityAction}
         action={securityAction}
         user={user}
+        busy={securityBusy}
         onOpenChange={(open) => {
-          if (!open) setSecurityAction(null);
+          if (!open && !securityBusy) setSecurityAction(null);
         }}
         onConfirm={handleSecurityAction}
       />

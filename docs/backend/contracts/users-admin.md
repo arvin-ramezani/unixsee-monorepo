@@ -7,7 +7,7 @@
 > **Product:** [`../../product/notes/customer-authorization-and-tenant.md`](../../product/notes/customer-authorization-and-tenant.md)
 > · UX [`../../product/ux-flows/admin-users.md`](../../product/ux-flows/admin-users.md)
 >
-> **Last verified:** 2026-08-13
+> **Last verified:** 2026-08-15
 
 Staff directory for **customer** accounts (`role` ∈ `USER` | `TENANT`). Staff
 roles (`ADMIN` | `OPERATOR`) are excluded from the list.
@@ -60,8 +60,18 @@ binaries or authorization package fields here.
 |---|---|---|
 | `POST` | `/api/v1/admin/users` | Create customer account (tenant create is separate) |
 | `PATCH` | `/api/v1/admin/users/:id` | Profile/role/locale |
-| `POST` | `/api/v1/admin/users/:id/suspend` | Optional `reason` |
-| `POST` | `/api/v1/admin/users/:id/restore` | Clears suspension |
+| `POST` | `/api/v1/admin/users/:id/suspend` | Required `reason`; clears refresh session |
+| `POST` | `/api/v1/admin/users/:id/restore` | Required `reason`; clears suspension |
+| `POST` | `/api/v1/admin/users/:id/revoke-sessions` | Required `reason`; clears refresh session |
+| `POST` | `/api/v1/admin/users/:id/start-recovery` | Required `reason`; OTP to verified contact only; never returns secrets; clears refresh session |
+
+Admin user payloads include `hasActiveSession: boolean` (derived; hash never
+returned). `phoneVerifiedAt` / `emailVerifiedAt` remain available for recovery
+eligibility.
+
+Suspend / restore / revoke / recovery responses return the updated admin user
+shape (same omit rules). Start-recovery wraps `{ channel, delivered, user }`
+where `channel` is `phone` | `email`.
 
 ## Related
 

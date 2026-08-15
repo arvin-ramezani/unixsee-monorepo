@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { AlertTriangle, ShieldCheck } from "lucide-react";
+import { AlertTriangle, LoaderCircle, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -43,8 +43,12 @@ type SecurityActionDialogProps = {
   open: boolean;
   action: SecurityActionType | null;
   user: CustomerUserType;
+  busy?: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (action: SecurityActionType, reason: string) => void;
+  onConfirm: (
+    action: SecurityActionType,
+    reason: string,
+  ) => void | Promise<void>;
 };
 
 function SecurityActionForm({
@@ -52,6 +56,7 @@ function SecurityActionForm({
   actionLabel,
   isDestructive,
   reason,
+  busy,
   onReasonChange,
   onCancel,
   onSubmit,
@@ -60,6 +65,7 @@ function SecurityActionForm({
   actionLabel: string;
   isDestructive: boolean;
   reason: string;
+  busy: boolean;
   onReasonChange: (value: string) => void;
   onCancel: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -94,6 +100,7 @@ function SecurityActionForm({
             aria-describedby="security-action-reason-hint"
             className="min-h-28"
             placeholder="مثلاً درخواست واحد امنیت یا تماس تأییدشده مشتری"
+            disabled={busy}
           />
           <p
             id="security-action-reason-hint"
@@ -111,7 +118,7 @@ function SecurityActionForm({
           />
           <p>
             رمز عبور، کد یک‌بارمصرف و اطلاعات بازیابی هرگز در پنل نمایش داده
-            نمی‌شوند. در نسخه نهایی، NestJS اقدام را اعتبارسنجی و اعمال می‌کند.
+            نمی‌شوند. NestJS اقدام را اعتبارسنجی و اعمال می‌کند.
           </p>
         </div>
       </div>
@@ -120,11 +127,23 @@ function SecurityActionForm({
         <Button
           type="submit"
           variant={isDestructive ? "destructive" : "default"}
-          disabled={!reason.trim()}
+          disabled={busy || !reason.trim()}
         >
-          تأیید {actionLabel}
+          {busy ? (
+            <>
+              <LoaderCircle className="size-4 animate-spin" />
+              در حال اعمال…
+            </>
+          ) : (
+            <>تأیید {actionLabel}</>
+          )}
         </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={busy}
+        >
           انصراف
         </Button>
       </Footer>
@@ -136,22 +155,24 @@ export function SecurityActionDialog({
   open,
   action,
   user,
+  busy = false,
   onOpenChange,
   onConfirm,
 }: SecurityActionDialogProps) {
   const [reason, setReason] = useState("");
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (busy) return;
     onOpenChange(nextOpen);
     if (!nextOpen) setReason("");
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!action || !reason.trim()) return;
+    if (!action || !reason.trim() || busy) return;
 
-    onConfirm(action, reason.trim());
-    handleOpenChange(false);
+    await onConfirm(action, reason.trim());
+    setReason("");
   };
 
   const actionLabel = action ? SECURITY_ACTION_LABELS[action] : "";
@@ -164,6 +185,7 @@ export function SecurityActionDialog({
         actionLabel={actionLabel}
         isDestructive={isDestructive}
         reason={reason}
+        busy={busy}
         onReasonChange={setReason}
         onCancel={() => handleOpenChange(false)}
         onSubmit={handleSubmit}
