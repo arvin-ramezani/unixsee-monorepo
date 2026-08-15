@@ -214,7 +214,7 @@ export function AuthorizationDetailsView({
               {authCase.userDisplayName}
               <AuthorizationStatusBadge status={authCase.status} />
             </h1>
-            <p className="text-muted-foreground mt-1 text-sm" dir="ltr">
+            <p className="text-muted-foreground mt-1 text-sm w-fit" dir="ltr">
               {authCase.id} · {authCase.userId}
             </p>
           </div>
@@ -236,32 +236,41 @@ export function AuthorizationDetailsView({
             ))}
           </div>
         </div>
-        {flash ? (
+        {!!flash && (
           <p
             className="text-success-foreground dark:text-success mt-3 text-sm"
             role="status"
           >
             {flash}
           </p>
-        ) : null}
+        )}
       </header>
 
       <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <h2 className="mb-3 text-sm font-semibold">بسته هویتی</h2>
-        <dl className="grid gap-3 sm:grid-cols-2">
+        <dl className="grid gap-3 sm:grid-cols-2 sm:items-start">
           {PACKAGE_FIELDS.map((field) => {
             const value =
               authCase.package[field.key as keyof typeof authCase.package];
+            const isAddress = field.key === "address";
             return (
               <div
                 key={field.key}
-                className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2"
+                className={
+                  isAddress
+                    ? "flex flex-col gap-1 rounded-xl border px-3 py-2"
+                    : "flex items-center justify-between gap-3 rounded-xl border px-3 py-2"
+                }
               >
                 <dt className="text-muted-foreground shrink-0 text-xs">
                   {field.label}
                 </dt>
                 <dd
-                  className="min-w-0 text-sm font-medium text-start"
+                  className={
+                    isAddress
+                      ? "text-sm font-medium leading-6"
+                      : "min-w-0 text-sm font-medium text-start"
+                  }
                   dir={"ltr" in field && field.ltr ? "ltr" : undefined}
                 >
                   {String(value)}
@@ -273,13 +282,17 @@ export function AuthorizationDetailsView({
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm">
-            <p className="text-muted-foreground shrink-0 text-xs">تأیید موبایل</p>
+            <p className="text-muted-foreground shrink-0 text-xs">
+              تأیید موبایل
+            </p>
             <p className="min-w-0 font-medium text-start">
               {CONTACT_CHALLENGE_LABELS[authCase.package.mobileChallenge]}
             </p>
           </div>
           <div className="flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm">
-            <p className="text-muted-foreground shrink-0 text-xs">تأیید ایمیل</p>
+            <p className="text-muted-foreground shrink-0 text-xs">
+              تأیید ایمیل
+            </p>
             <p className="min-w-0 font-medium text-start">
               {CONTACT_CHALLENGE_LABELS[authCase.package.emailChallenge]}
             </p>
