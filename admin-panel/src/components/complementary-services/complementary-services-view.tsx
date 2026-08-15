@@ -55,6 +55,7 @@ import {
   type CreateServiceSuccessPayload,
 } from "./create-service-dialog";
 import { ServiceStatusBadge } from "./service-status-badge";
+import { WebsiteDomainLink } from "./website-domain-link";
 
 const VIEW_MODE = {
   REQUESTS: "REQUESTS",
@@ -182,7 +183,7 @@ function RequestCard({
     <article className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs text-muted-foreground" dir="ltr">
+          <p className="text-xs text-muted-foreground w-fit" dir="ltr">
             {request.id}
           </p>
           <h3 className="mt-1 font-medium">{request.title}</h3>
@@ -197,8 +198,11 @@ function RequestCard({
         </div>
         <div>
           <dt className="text-xs text-muted-foreground">وب‌سایت</dt>
-          <dd className="mt-1 truncate font-medium" dir="ltr">
-            {request.websiteDomain}
+          <dd className="mt-1 w-fit">
+            <WebsiteDomainLink
+              domain={request.websiteDomain}
+              className="block"
+            />
           </dd>
         </div>
         <div>
@@ -251,8 +255,11 @@ function AssignmentCard({
         <ServiceStatusBadge kind="assignment" status={assignment.status} />
       </div>
       <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-        <Globe2 className="size-4" aria-hidden="true" />
-        <span dir="ltr">{assignment.websiteDomain}</span>
+        <Globe2 className="size-4 shrink-0" aria-hidden="true" />
+        <WebsiteDomainLink
+          domain={assignment.websiteDomain}
+          className="min-w-0"
+        />
       </div>
       <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
         <UserRound className="size-4" aria-hidden="true" />
@@ -458,9 +465,7 @@ export function ComplementaryServicesView({
           value={activeAssignmentCount}
           hint="در حال ارائه به مشتری"
           icon={BriefcaseBusiness}
-          selected={
-            viewMode === VIEW_MODE.ASSIGNMENTS && activeAssignmentsOnly
-          }
+          selected={viewMode === VIEW_MODE.ASSIGNMENTS && activeAssignmentsOnly}
           onClick={selectActiveAssignmentsSummary}
         />
       </section>
@@ -526,7 +531,7 @@ export function ComplementaryServicesView({
               placeholder="جستجو در درخواست، مشتری یا وب‌سایت..."
             />
 
-            <div className="hidden contents lg:contents">{filterControls}</div>
+            <div className="hidden lg:contents">{filterControls}</div>
 
             <Button
               type="button"
@@ -584,7 +589,7 @@ export function ComplementaryServicesView({
                         <TableCell className="max-w-64 px-4 py-3">
                           <p className="font-medium">{request.title}</p>
                           <p
-                            className="mt-1 text-xs text-muted-foreground"
+                            className="mt-1 text-xs text-muted-foreground w-fit"
                             dir="ltr"
                           >
                             {request.id}
@@ -597,7 +602,10 @@ export function ComplementaryServicesView({
                           </p>
                         </TableCell>
                         <TableCell className="px-4 py-3">
-                          <p dir="ltr">{request.websiteDomain}</p>
+                          <WebsiteDomainLink
+                            domain={request.websiteDomain}
+                            className="block w-fit"
+                          />
                           <p className="mt-1 text-xs text-muted-foreground">
                             {request.websiteTitle}
                           </p>
@@ -705,7 +713,10 @@ export function ComplementaryServicesView({
                           </p>
                         </TableCell>
                         <TableCell className="px-4 py-3">
-                          <p dir="ltr">{assignment.websiteDomain}</p>
+                          <WebsiteDomainLink
+                            domain={assignment.websiteDomain}
+                            className="block w-fit"
+                          />
                           <p className="mt-1 text-xs text-muted-foreground">
                             {assignment.customerName}
                           </p>

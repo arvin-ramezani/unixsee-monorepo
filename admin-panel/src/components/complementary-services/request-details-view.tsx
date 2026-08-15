@@ -27,6 +27,7 @@ import {
   type CreateServiceSuccessPayload,
 } from "./create-service-dialog";
 import { ServiceStatusBadge } from "./service-status-badge";
+import { WebsiteDomainLink } from "./website-domain-link";
 
 type RequestDetailsViewProps = {
   initialRequest: ComplementaryServiceRequestType;
@@ -127,12 +128,10 @@ export function RequestDetailsView({
             </span>
             <div>
               <p className="font-medium">{request.websiteTitle}</p>
-              <p
-                className="mt-1 w-fit text-sm text-muted-foreground"
-                dir="ltr"
-              >
-                {request.websiteDomain}
-              </p>
+              <WebsiteDomainLink
+                domain={request.websiteDomain}
+                className="mt-1 block w-fit text-sm"
+              />
               <p className="mt-2 text-xs text-muted-foreground">
                 {request.customerName}
               </p>
