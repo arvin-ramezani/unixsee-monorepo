@@ -17,5 +17,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ForgotPasswordPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+
   return <ForgotPasswordForm />;
 }
