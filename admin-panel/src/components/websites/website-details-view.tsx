@@ -120,9 +120,7 @@ const WEBSITE_SERVICE_FIELDS = [
     key: "plan",
     label: "پلن",
     getValue: (website: WebsiteType) =>
-      websiteHasActivePlan(website.service.plan)
-        ? website.service.plan
-        : "—",
+      websiteHasActivePlan(website.service.plan) ? website.service.plan : "—",
   },
   {
     key: "server",
@@ -214,7 +212,9 @@ export function WebsiteDetailsView({
   const hasActivePlan = websiteHasActivePlan(website.service.plan);
   const nextRenewalAt = previewRenewalAt(website);
   const nextRenewalLabel = formatWebsiteRenewalDate(nextRenewalAt);
-  const currentRenewalLabel = formatWebsiteRenewalDate(website.service.renewalAt);
+  const currentRenewalLabel = formatWebsiteRenewalDate(
+    website.service.renewalAt,
+  );
 
   const handleStatusChange = (value: string | null) => {
     if (value === null) {
@@ -256,10 +256,7 @@ export function WebsiteDetailsView({
       return;
     }
 
-    const result = await changeWebsitePlanAction(
-      website.id,
-      selectedPlanName,
-    );
+    const result = await changeWebsitePlanAction(website.id, selectedPlanName);
     if (!result.ok) {
       toast.error(result.message);
       setChangeOpen(false);
@@ -316,7 +313,9 @@ export function WebsiteDetailsView({
                   src="/avatars/ali-rezaei.jpg"
                   alt={website.tenantName}
                 />
-                <AvatarFallback>{website.tenantName.slice(0, 1)}</AvatarFallback>
+                <AvatarFallback>
+                  {website.tenantName.slice(0, 1)}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">{website.tenantName}</p>
@@ -559,7 +558,10 @@ export function WebsiteDetailsView({
               const href = "href" in field ? field.href(website) : undefined;
 
               return (
-                <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
+                <div
+                  key={field.key}
+                  className={cn(mutedSurfaceClassName, "p-3")}
+                >
                   <p className="text-xs text-muted-foreground">{field.label}</p>
                   {href ? (
                     <Link
@@ -571,7 +573,10 @@ export function WebsiteDetailsView({
                     </Link>
                   ) : (
                     <p
-                      className="mt-1 font-medium"
+                      className={cn(
+                        "mt-1 font-medium",
+                        field.key === "plan" && "w-fit",
+                      )}
                       dir={field.key === "plan" ? "ltr" : undefined}
                     >
                       {value}
@@ -660,7 +665,9 @@ export function WebsiteDetailsView({
             </p>
             <p>
               دوره:{" "}
-              <span className="font-medium">{website.service.billingPeriod}</span>
+              <span className="font-medium">
+                {website.service.billingPeriod}
+              </span>
             </p>
             <p>
               تاریخ تمدید فعلی:{" "}
@@ -691,12 +698,15 @@ export function WebsiteDetailsView({
           <div className="space-y-3 px-4">
             <div>
               <p className="text-xs text-muted-foreground">پلن فعلی</p>
-              <p className="mt-1 font-medium" dir="ltr">
+              <p className="mt-1 font-medium w-fit" dir="ltr">
                 {hasActivePlan ? website.service.plan : "بدون پلن"}
               </p>
             </div>
             <div className="space-y-2">
-              <label className="text-xs text-muted-foreground" htmlFor="change-plan">
+              <label
+                className="text-xs text-muted-foreground"
+                htmlFor="change-plan"
+              >
                 پلن جدید
               </label>
               <Select

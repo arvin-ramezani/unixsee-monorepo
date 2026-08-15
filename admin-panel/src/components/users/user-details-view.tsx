@@ -206,7 +206,16 @@ export function UserDetailsView({
   nestBacked = false,
 }: UserDetailsViewProps) {
   const [user, setUser] = useState(initialUser);
-  const [users, setUsers] = useState(listRuntimeUsers);
+  const [users, setUsers] = useState(() => {
+    const runtimeUsers = listRuntimeUsers();
+    if (!nestBacked) return runtimeUsers;
+    if (runtimeUsers.some((entry) => entry.id === initialUser.id)) {
+      return runtimeUsers.map((entry) =>
+        entry.id === initialUser.id ? initialUser : entry,
+      );
+    }
+    return [initialUser, ...runtimeUsers];
+  });
   const [tenants] = useState(
     () => initialTenants ?? listRuntimeTenants(),
   );

@@ -141,6 +141,29 @@ function mapTenantState(status: NestTenantStatus): TenantStateType {
   return TENANT_STATE.ACTIVE;
 }
 
+/** Personal tenants created via OTP often store the phone as name/displayName. */
+function isPhoneLabel(value: string): boolean {
+  const normalized = value.replace(/[\s\-()]/g, "");
+  return /^\+?\d{8,15}$/.test(normalized);
+}
+
+function resolveTenantDisplayName(
+  tenantDto: AdminUserTenantDto,
+  owner: Pick<AdminUserDto, "fullName" | "username" | "phoneNumber">,
+): string {
+  const candidates = [
+    tenantDto.displayName?.trim(),
+    tenantDto.name?.trim(),
+    owner.fullName?.trim(),
+    owner.username?.trim(),
+  ].filter((value): value is string => Boolean(value));
+
+  const humanName = candidates.find((value) => !isPhoneLabel(value));
+  if (humanName) return humanName;
+
+  return candidates[0] || owner.phoneNumber?.trim() || tenantDto.id;
+}
+
 export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
   const membershipsDto = dto.memberships ?? [];
   const tenants: TenantType[] = [];
@@ -151,7 +174,7 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
     if (tenantDto) {
       tenants.push({
         id: tenantDto.id,
-        name: tenantDto.displayName?.trim() || tenantDto.name,
+        name: resolveTenantDisplayName(tenantDto, dto),
         state: mapTenantState(tenantDto.status),
         createdAt: formatFaDateTime(membership.createdAt) ?? "—",
         stateReason: null,
@@ -168,7 +191,10 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
 
   const user: CustomerUserType = {
     id: dto.id,
-    displayName: dto.fullName?.trim() || dto.username || dto.phoneNumber,
+    displayName:
+      dto.fullName?.trim() ||
+      dto.username?.trim() ||
+      dto.phoneNumber,
     email: dto.email,
     emailVerification: dto.email
       ? CONTACT_VERIFICATION.VERIFIED

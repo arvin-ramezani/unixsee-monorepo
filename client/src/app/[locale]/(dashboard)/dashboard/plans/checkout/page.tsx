@@ -55,19 +55,21 @@ export default async function CheckoutPage({
       <section className="flex min-h-27 -translate-y-1 flex-col justify-center gap-2 px-1.5">
         <Link
           href="/dashboard/plans"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground mt-4 inline-flex w-fit items-center gap-1.5 text-sm transition-colors"
         >
           <ArrowLeft aria-hidden="true" className="size-4 rtl:-scale-x-100" />
           {t("back")}
         </Link>
-        <h1 className="text-[2rem] font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("description")}</p>
+        <h1 className="text-[2rem] font-semibold tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground text-sm">{t("description")}</p>
       </section>
 
       <div className="grid max-w-4xl items-start gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Panel className="order-2 p-5 sm:p-6 lg:order-1">
           <h2 className="text-lg font-semibold">{t("contactTitle")}</h2>
-          <p className="mt-1 mb-5 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-1 mb-5 text-sm">
             {t("contactDescription")}
           </p>
           <CheckoutForm

@@ -2,14 +2,9 @@ import Link from "next/link";
 
 import { UserDetailsView } from "@/components/users/user-details-view";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  mapApiError,
-  STAFF_API_ERROR_MESSAGES,
-} from "@/lib/api/map-api-error";
+import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
-import {
-  type AdminAuthorizationListResponse,
-} from "@/lib/authorization/map-admin-authorization-case";
+import { type AdminAuthorizationListResponse } from "@/lib/authorization/map-admin-authorization-case";
 import { findAuthorizationCaseByUserId } from "@/lib/data/authorization-runtime";
 import {
   getRuntimeUser,
@@ -124,14 +119,15 @@ export default async function UserDetailsPage({
   if (fixtureBundle) {
     return (
       <div className="flex flex-1 flex-col gap-6 pt-4">
-        {nestWarning ? (
+        {nestWarning && (
           <div
             className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
             role="status"
           >
-            Nest این شناسه را برنگرداند ({nestWarning}). در حال نمایش نمونه محلی.
+            Nest این شناسه را برنگرداند ({nestWarning}). در حال نمایش نمونه
+            محلی.
           </div>
-        ) : null}
+        )}
         <UserDetailsView
           key={fixtureBundle.user.id}
           initialUser={fixtureBundle.user}

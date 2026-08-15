@@ -25,10 +25,27 @@ import {
   getTenantMembers,
   getTenantWebsites,
   isLastOwnerMembership,
+  looksLikePhoneLabel,
   type TenantMembershipType,
 } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { TenantStateBadge } from "./account-status-badge";
+
+function resolveTenantCardTitle(
+  tenant: TenantType,
+  pageUser: CustomerUserType,
+): string {
+  if (!looksLikePhoneLabel(tenant.name)) {
+    return tenant.name;
+  }
+  if (
+    pageUser.displayName.trim() &&
+    !looksLikePhoneLabel(pageUser.displayName)
+  ) {
+    return pageUser.displayName;
+  }
+  return tenant.name;
+}
 
 const MEMBERSHIP_ROLE_OPTIONS = [
   {
@@ -105,7 +122,9 @@ export function TenantMembershipsSection({
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <p className="font-medium">{tenant.name}</p>
+                    <p className="font-medium">
+                      {resolveTenantCardTitle(tenant, user)}
+                    </p>
                     <p
                       className="mt-1 text-xs text-muted-foreground w-fit"
                       dir="ltr"

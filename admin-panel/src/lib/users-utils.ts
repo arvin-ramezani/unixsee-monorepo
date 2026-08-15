@@ -74,6 +74,12 @@ export function getCustomerInitials(name: string): string {
   return `${parts[0].slice(0, 1)}${parts[1].slice(0, 1)}`;
 }
 
+/** True when a label is essentially a phone number (e.g. OTP personal tenant). */
+export function looksLikePhoneLabel(value: string): boolean {
+  const normalized = value.replace(/[\s\-()]/g, "");
+  return /^\+?\d{8,15}$/.test(normalized);
+}
+
 export function maskEmail(email: string): string {
   const [localPart, domain] = email.split("@");
   if (!domain) return email;
