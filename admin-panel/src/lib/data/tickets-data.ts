@@ -24,6 +24,8 @@ export type TicketType = {
   number?: string;
   userId: string;
   fullName: string;
+  /** Customer phone from Nest createdBy; never a secret. */
+  phoneNumber?: string | null;
   subject: string;
   section: TicketServiceType;
   website?: {

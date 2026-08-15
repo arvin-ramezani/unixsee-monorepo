@@ -648,7 +648,7 @@ describe('TicketsService', () => {
             status: 'ACTIVE',
           },
           assignee: null,
-          createdBy: { id: USER_ID, fullName: 'Customer' },
+          createdBy: { id: USER_ID, fullName: 'Customer', phoneNumber: '+989121234567' },
           messages: [
             {
               id: 'msg-1',

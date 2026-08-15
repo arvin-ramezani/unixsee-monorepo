@@ -30,6 +30,7 @@ export type AdminTicketListItemDto = {
   createdBy: {
     id: string;
     fullName: string | null;
+    phoneNumber?: string | null;
   };
   resolvedAt: string | null;
   autoCloseAt: string | null;
@@ -88,6 +89,7 @@ function mapListItemToTicket(item: AdminTicketListItemDto): TicketType {
     number: item.number,
     userId: item.createdBy.id,
     fullName,
+    phoneNumber: item.createdBy.phoneNumber?.trim() || null,
     subject: item.subject,
     section: item.service,
     website: item.website

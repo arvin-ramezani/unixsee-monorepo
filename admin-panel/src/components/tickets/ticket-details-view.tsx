@@ -102,6 +102,11 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
           <div>
             <p className="text-sm text-muted-foreground">مشتری</p>
             <p className="font-semibold">{ticket.fullName}</p>
+            {ticket.phoneNumber ? (
+              <p className="text-muted-foreground mt-0.5 w-fit text-sm" dir="ltr">
+                {ticket.phoneNumber}
+              </p>
+            ) : null}
             <Link
               href={`/users/${ticket.userId}`}
               className="text-sm text-primary underline-offset-4 hover:underline"
@@ -121,7 +126,7 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {ticketSectionLabels[ticket.section]}
             </p>
           </div>
-          {ticket.website ? (
+          {ticket.website && (
             <div className="rounded-xl bg-muted/40 p-3">
               <p className="text-muted-foreground">وب‌سایت</p>
               <p className="mt-1 font-medium">{ticket.website.name}</p>
@@ -129,7 +134,7 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
                 {ticket.website.domain}
               </p>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 
@@ -142,26 +147,22 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {TICKET_STATUS_CONFIG[ticket.status].label}
             </span>
           </div>
-          {ticket.priority ? (
+          {ticket.priority && (
             <div className="flex items-center justify-between gap-2">
               <span className="text-muted-foreground">اولویت</span>
               <span className="font-medium">
                 {TICKET_PRIORITY_LABELS[ticket.priority]}
               </span>
             </div>
-          ) : null}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">مسئول</span>
-            <span className="font-medium">
-              {ticket.assigneeName?.trim() || "بدون مسئول"}
-            </span>
-          </div>
-          {ticket.tenant?.name ? (
+          )}
+          {ticket.tenant?.name && (
             <div className="flex items-center justify-between gap-2">
               <span className="text-muted-foreground">مستأجر</span>
-              <span className="font-medium">{ticket.tenant.name}</span>
+              <span className="max-w-[60%] truncate font-medium" dir="ltr">
+                {ticket.tenant.name}
+              </span>
             </div>
-          ) : null}
+          )}
           <div className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">ایجاد شد</span>
             <span className="font-medium">
@@ -205,7 +206,8 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canAssign = ticket.status === TICKET_STATUS.SUBMITTED || !ticket.assigneeId;
+  const canAssign =
+    ticket.status === TICKET_STATUS.SUBMITTED || !ticket.assigneeId;
   const canResolve =
     ticket.status !== TICKET_STATUS.RESOLVED &&
     ticket.status !== TICKET_STATUS.CLOSED;
@@ -298,7 +300,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <TicketStatusBadge status={ticket.status} />
-            {canAssign ? (
+            {canAssign && (
               <Button
                 type="button"
                 size="sm"
@@ -312,20 +314,22 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
               >
                 تخصیص به من
               </Button>
-            ) : null}
-            {canResolve ? (
+            )}
+            {canResolve && (
               <Button
                 type="button"
                 size="sm"
                 disabled={pendingAction !== null}
                 onClick={() =>
-                  void runAction("resolve", () => resolveTicketAction(ticket.id))
+                  void runAction("resolve", () =>
+                    resolveTicketAction(ticket.id),
+                  )
                 }
               >
                 حل‌شده
               </Button>
-            ) : null}
-            {canReopen ? (
+            )}
+            {canReopen && (
               <Button
                 type="button"
                 size="sm"
@@ -336,7 +340,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
               >
                 بازگشایی
               </Button>
-            ) : null}
+            )}
           </div>
         </div>
       </header>
@@ -404,7 +408,9 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                         <Avatar size="sm">
                           <AvatarImage
                             src={
-                              isUser ? ticket.userImage.url || undefined : undefined
+                              isUser
+                                ? ticket.userImage.url || undefined
+                                : undefined
                             }
                             alt={isUser ? ticket.userImage.alt : "ادمین"}
                           />
@@ -571,9 +577,7 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                       void handleSend();
                     }}
                     disabled={
-                      !canReply ||
-                      !messageText.trim() ||
-                      pendingAction !== null
+                      !canReply || !messageText.trim() || pendingAction !== null
                     }
                   >
                     <Send className="size-4" />

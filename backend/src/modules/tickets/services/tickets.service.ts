@@ -380,7 +380,9 @@ export class TicketsService {
           tenant: true,
           website: { select: websiteSelect },
           assignee: { select: { id: true, fullName: true } },
-          createdBy: { select: { id: true, fullName: true } },
+          createdBy: {
+            select: { id: true, fullName: true, phoneNumber: true },
+          },
         },
         orderBy: { createdAt: 'desc' },
         skip: params?.skip ?? 0,
@@ -401,7 +403,9 @@ export class TicketsService {
         tenant: true,
         website: { select: websiteSelect },
         assignee: { select: { id: true, fullName: true } },
-        createdBy: { select: { id: true, fullName: true } },
+        createdBy: {
+          select: { id: true, fullName: true, phoneNumber: true },
+        },
         messages: {
           orderBy: { createdAt: 'asc' },
           include: { author: { select: messageAuthorSelect } },
