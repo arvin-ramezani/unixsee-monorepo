@@ -113,6 +113,7 @@ export async function saveAuthorizationDraftAction(
     const result = toResult(response);
     if (result.ok) {
       revalidatePath("/dashboard/authorization");
+      revalidatePath("/dashboard");
     }
     return result;
   } catch {
@@ -137,7 +138,7 @@ export async function submitAuthorizationAction(
     const result = toResult(response);
     if (result.ok) {
       revalidatePath("/dashboard/authorization");
-      revalidatePath("/dashboard", "layout");
+      revalidatePath("/dashboard");
     }
     return result;
   } catch {

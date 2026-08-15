@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import type { NestAuthorizationCaseDto } from "@/actions/authorization/authorization-case";
 import { AuthorizationDashboardBanner } from "@/components/authorization/authorization-dashboard-banner";
 import { ActivityFeedCard } from "@/components/dashboard/activity-feed-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
@@ -9,8 +10,29 @@ import { RightRail } from "@/components/dashboard/right-rail";
 import { WebsiteTable } from "@/components/dashboard/website-table";
 import { getRecentActivities } from "@/lib/data/activity/activity-records";
 import type { Locale } from "@/i18n/routing";
+import { serverFetch } from "@/lib/api/server-fetch";
+import { mapNestAuthorizationCase } from "@/lib/authorization/map-nest-case";
+import {
+  AUTHORIZATION_STATUS,
+  type AuthorizationStatus,
+} from "@/lib/data/authorization/authorization-data";
 import { notifications, websites } from "@/lib/dashboard-data";
 import { DashboardButtonLink } from "./_components/common";
+
+async function loadAuthorizationStatus(): Promise<AuthorizationStatus> {
+  try {
+    const response = await serverFetch<NestAuthorizationCaseDto | null>(
+      "/authorization-cases/me",
+      { method: "GET" },
+    );
+    if (response.success && response.data) {
+      return mapNestAuthorizationCase(response.data).status;
+    }
+  } catch {
+    // Fall through to not_started when Nest is unavailable.
+  }
+  return AUTHORIZATION_STATUS.NOT_STARTED;
+}
 
 export default async function DashboardPage({
   params,
@@ -22,6 +44,7 @@ export default async function DashboardPage({
   const t = await getTranslations("Dashboard");
   const common = await getTranslations("Common");
   const recentActivities = getRecentActivities();
+  const authorizationStatus = await loadAuthorizationStatus();
 
   return (
     <DashboardShell activeItem="Dashboard">
@@ -44,7 +67,7 @@ export default async function DashboardPage({
         </DashboardButtonLink>
       </section>
       <div className="mt-4">
-        <AuthorizationDashboardBanner />
+        <AuthorizationDashboardBanner status={authorizationStatus} />
       </div>
       <div className="mt-8 grid items-start gap-5.5 xl:grid-cols-[minmax(0,1fr)_288px]">
         <div className="min-w-0 space-y-4.5">

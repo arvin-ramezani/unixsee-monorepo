@@ -181,7 +181,7 @@ export function TenantMembershipsSection({
                             {member.user.displayName}
                           </Link>
                           <p
-                            className="mt-1 text-xs text-muted-foreground"
+                            className="mt-1 text-xs w-fit text-muted-foreground"
                             dir="ltr"
                           >
                             {formatContactSummary(member.user)}

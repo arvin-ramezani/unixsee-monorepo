@@ -2,7 +2,6 @@
 
 import { ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -10,7 +9,6 @@ import {
   AUTHORIZATION_STATUS,
   type AuthorizationStatus,
 } from "@/lib/data/authorization/authorization-data";
-import { getAuthorizationStatus } from "@/lib/data/authorization/authorization-runtime";
 
 const BANNER_STATUSES: AuthorizationStatus[] = [
   AUTHORIZATION_STATUS.NOT_STARTED,
@@ -19,9 +17,14 @@ const BANNER_STATUSES: AuthorizationStatus[] = [
   AUTHORIZATION_STATUS.REJECTED,
 ];
 
-export function AuthorizationDashboardBanner() {
+type AuthorizationDashboardBannerProps = {
+  status: AuthorizationStatus;
+};
+
+export function AuthorizationDashboardBanner({
+  status,
+}: AuthorizationDashboardBannerProps) {
   const t = useTranslations("Authorization.banner");
-  const [status] = useState(() => getAuthorizationStatus());
 
   if (!BANNER_STATUSES.includes(status)) {
     return null;
