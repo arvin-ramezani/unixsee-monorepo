@@ -42,7 +42,7 @@ export const HOME_PAGE_SECTION_IDS = [
   "services",
   // "aboutUs",
   "solutionOverview",
-  "numbersOfSuccess",
+  // "numbersOfSuccess",
   "infrastructure",
   "process",
   "consultation",

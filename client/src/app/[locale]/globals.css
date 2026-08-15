@@ -158,7 +158,11 @@
   --radius: 0.75rem;
 
   /* Auth shell surfaces — derived from existing blue tokens */
-  --auth-panel: color-mix(in oklch, var(--background) 88%, var(--blue-light) 12%);
+  --auth-panel: color-mix(
+    in oklch,
+    var(--background) 88%,
+    var(--blue-light) 12%
+  );
   --auth-panel-border: color-mix(in oklch, var(--border) 70%, var(--ring) 30%);
 }
 
@@ -621,7 +625,7 @@
 ========================= */
 @layer components {
   .container {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-4 md:px-8 lg:px-20;
+    @apply 3xl:max-w-384! mx-auto w-full max-w-7xl px-4 sm:px-4 md:px-8 lg:px-20;
   }
 
   .container-header {
