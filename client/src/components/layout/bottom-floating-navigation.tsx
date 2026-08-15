@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
 import { LifeBuoy, Menu, Rocket, ServerCog, X } from "lucide-react";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -21,6 +20,7 @@ import {
 import { useActiveSectionHash } from "@/hooks/use-active-section-hash";
 import { selectIsScrollLocked } from "@/stores/scroll-lock-store";
 import { useScrollLockedStore } from "@/providers/scroll-lock-store-provider";
+import { FloatingNavEyeMark } from "@/components/common/animated-icons/floating-nav-eye-mark";
 
 export type BottomFloatingNavigationProps = object;
 
@@ -429,8 +429,8 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
             { "pointer-events-none": isSpecialMenuOpen },
           )}
         >
-          <div className="bg-primary relative me-1 flex w-10.5 shrink-0 items-center justify-center self-stretch rounded-sm text-white ring-0 lg:me-2 lg:w-13.5">
-            <Image src="/images/eye.gif" alt="" fill />
+          <div className="bg-primary relative me-1 flex w-10.5 shrink-0 items-center justify-center self-stretch overflow-hidden rounded-sm text-white ring-0 lg:me-2 lg:w-13.5">
+            <FloatingNavEyeMark />
           </div>
 
           <motion.div
@@ -541,8 +541,8 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
             { "pointer-events-none": !isSpecialMenuOpen },
           )}
         >
-          <div className="bg-primary relative me-1 flex w-10.5 shrink-0 items-center justify-center self-stretch rounded-sm text-white ring-0 lg:me-2 lg:w-13.5">
-            <Image src="/images/eye.gif" alt="" fill />
+          <div className="bg-primary relative me-1 flex w-10.5 shrink-0 items-center justify-center self-stretch overflow-hidden rounded-sm text-white ring-0 lg:me-2 lg:w-13.5">
+            <FloatingNavEyeMark />
           </div>
 
           <motion.div
