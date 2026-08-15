@@ -5,6 +5,7 @@ import {
   IsUUID,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreatePublicPlanRequestDto {
@@ -16,12 +17,13 @@ export class CreatePublicPlanRequestDto {
   @MaxLength(200)
   contactName!: string;
 
+  @ValidateIf((o: CreatePublicPlanRequestDto) => !o.contactEmail)
   @IsString()
   @MinLength(1)
   @MaxLength(32)
-  contactPhone!: string;
+  contactPhone?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CreatePublicPlanRequestDto) => !o.contactPhone)
   @IsEmail()
   contactEmail?: string;
 

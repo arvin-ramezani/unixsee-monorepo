@@ -35,7 +35,7 @@ type AdminCaseRow = CaseRow & {
     id: string;
     fullName: string | null;
     email: string | null;
-    phoneNumber: string;
+    phoneNumber: string | null;
     phoneVerifiedAt: Date | null;
     emailVerifiedAt: Date | null;
   };

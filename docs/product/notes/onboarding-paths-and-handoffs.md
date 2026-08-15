@@ -11,16 +11,22 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
 
 ```text
 Public plan choice
+  → Guest OTP on phone or email → Nest creates user account (if new) + session
+  → Authenticated plan request submit (linked user)
   → External validation (out of this app)
   → درخواست‌های پلن: review chosen plan
-  → Link existing user; require tenant (احراز هویت approved or staff-created)
+  → Link existing user if needed; require tenant (احراز هویت approved or staff-created)
   → Select target website
   → Enable plan (one active plan per website)
 ```
 
-If the user does not exist yet, resolve identity in `/users` first, then return
-and link. If the user exists but is **not yet a tenant**, complete احراز هویت
-(or staff approve tenant) before enablement. Do not create the user from the
+Guest intake **must** create or authenticate the user on OTP verify **before**
+the plan request is stored. If staff later see a request without a linked user,
+treat that as legacy/conflict data until Nest sync completes—not as the
+intended path.
+
+If the user exists but is **not yet a tenant**, complete احراز هویت (or staff
+approve tenant) before enablement. Do not create the user from the **admin**
 plan-request surface. Do not enable without a tenant.
 
 Plan / consultant **request submission** may happen before tenant approval;
@@ -67,7 +73,8 @@ Plan request for a known user / website context
 ## Rule
 
 Plan-request state and enablement stay in `/plan-requests`.
-Identity and احراز هویت stay in `/users`.
+Identity and احراز هویت stay in `/users` (admin) and Nest auth (public OTP).
 Enrollment, discovery, and website inventory stay in servers/websites.
-User create is never owned by the plan-request surface in this phase.
+**Admin** user create is never owned by the plan-request surface in this phase.
+Public guest plan-request **OTP verify** may create the user before submit.
 Commercial enablement waits on a tenant.

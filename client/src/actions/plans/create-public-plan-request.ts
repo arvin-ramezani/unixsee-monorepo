@@ -22,7 +22,9 @@ export async function createPublicPlanRequestAction(
         body: JSON.stringify({
           planId: input.planId,
           contactName: input.contactName.trim(),
-          contactPhone: input.contactPhone.trim(),
+          ...(input.contactPhone?.trim()
+            ? { contactPhone: input.contactPhone.trim() }
+            : {}),
           ...(input.contactEmail?.trim()
             ? { contactEmail: input.contactEmail.trim() }
             : {}),

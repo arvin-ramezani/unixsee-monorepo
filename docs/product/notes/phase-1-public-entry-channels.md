@@ -15,7 +15,10 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
    ([`customer-authorization-and-tenant.md`](./customer-authorization-and-tenant.md)).
 3. **Send a plan request** by choosing a plan from the public list — allowed
    before tenant approval, with clear messaging that certifications are
-   required before managed services can be delivered.
+   required before managed services can be delivered. Signed-out visitors must
+   verify phone **or** email with OTP; Nest creates the **user account on
+   successful verify before** the request is submitted
+   ([`../ux-flows/customer-public-plan-request.md`](../ux-flows/customer-public-plan-request.md)).
 4. **Send a consultant / complementary-service request** (SEO, design,
    product data entry, social support, and related consultation intake) without
    blocking solely for missing certifications.
@@ -36,6 +39,8 @@ admin enablement is out of this admin application.
 ## Rules kept in sync
 
 - Signup alone does not create a tenant, enable a plan, or activate a website.
+- Public plan-request OTP verify creates a **user** (and session) before the
+  request is stored; it still does not create a tenant or enable a plan.
 - Plan request alone is not payment success and is not enablement.
 - Plan enablement requires an existing **tenant**; create/approve happens in
   `/users` (or discovery assignment return), not from `/plan-requests`.

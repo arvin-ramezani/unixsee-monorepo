@@ -88,7 +88,9 @@ Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
 
 - Authentication and OTP-based sign-in for customers.
 - Customer and tenant administration in the admin panel.
-- User origins: public signup from the web app, or admin create. Admin-created
+- User origins: public signup from the web app, **public plan-request OTP
+  verify** (account created on successful contact verify before the request is
+  stored), or admin create. Admin-created
   accounts start **contact-unverified** until the customer signs in with the
   admin-entered phone or email and passes OTP, after which the contact is
   marked verified. Public signup alone does **not** create a tenant.
@@ -295,7 +297,12 @@ Customers need to:
 Customer accounts enter the system through:
 
 1. **Public signup** on the web app, when that channel is enabled.
-2. **Admin create** in the administrator panel (or during discovery-assignment
+2. **Public plan-request intake OTP** — when a signed-out visitor verifies
+   phone or email on the plan-request form, Nest creates the customer user
+   **immediately on successful OTP**, before the plan request is submitted
+   (see §11.2 and
+   [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md)).
+3. **Admin create** in the administrator panel (or during discovery-assignment
    create-and-return), using the contact details staff enter.
 
 Admin-created accounts are **not contact-verified** at create time. Saving a
@@ -304,8 +311,9 @@ becomes contact-verified after they sign in with the same admin-entered phone
 or email and successfully pass OTP validation. Phase 1 does not require a
 separate invite token for this contact-verification path.
 
-Public signup and successful sign-in create an authenticatable **user**. They
-do not by themselves mean the customer is commercially **authorized**.
+Public signup, plan-request OTP verify, and successful sign-in create an
+authenticatable **user**. They do not by themselves mean the customer is
+commercially **authorized**.
 
 ### 8.1.2 Organizational authorization (احراز هویت)
 
@@ -501,6 +509,13 @@ payment confirmation and is not a sale. Validation outside the admin
 application may occur before staff enablement; that validation is not an
 admin-panel workflow in this phase.
 
+**Unsigned visitors (intended contract):** The guest must provide **phone or
+email** (at least one), complete **OTP verification** for that contact, and Nest
+must **create a customer user account immediately on successful verify**—before
+the plan request is submitted. The request is then created for that
+authenticated user. Contact verification creates a **user**, not a **tenant**.
+UX: [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md).
+
 Customers **may submit** a plan request before احراز هویت / tenant approval.
 The request surface must make clear that they need to send certifications so
 Unixsee can authorize them as a tenant and deliver managed services. Do not
@@ -511,8 +526,10 @@ non-blocking stance applies to consultant-oriented intake; commercial
 The customer supplies at least:
 
 - Selected plan from the published list.
-- Contact details needed to match an existing customer.
+- A verified phone **or** email (OTP), which establishes or matches the user
+  account before submit.
 - Any website or domain hints the intake contract requires.
+- Contact name and optional notes as the intake UX requires.
 
 Broader assessment questionnaires, communication threads, and quotation steps
 are out of the Phase 1 admin plan-request surface described here.
@@ -555,6 +572,9 @@ records; it does not replace them.
 - Submitting a request is allowed before the customer is a tenant; copy must
   state that certifications are required before managed services can be
   delivered.
+- Unsigned public intake verifies phone or email with OTP and creates the
+  customer **user** on successful verify **before** the plan request row is
+  created; this does not create a tenant or enable a plan.
 - Staff cannot enable a plan request without a linked existing **tenant**.
 - Staff cannot leave two active plans on the same website.
 - Enabling a request makes that request’s chosen plan the website’s active plan.

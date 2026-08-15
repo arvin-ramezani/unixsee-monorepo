@@ -408,7 +408,7 @@ Exclude free-text notes, raw contact values, and secrets.
 | ID | Question | Decision | Users | Method | Priority |
 |---|---|---|---|---|---|
 | RQ-001 | If a website already has an active plan, does enablement hard-block or offer an explicit replace path? | U-003 | Product/ops | Decision | Critical |
-| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | High |
+| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | Resolved for intent: guest OTP creates/authenticates user before submit so requests should arrive user-linked; Nest sync still needed | High |
 | RQ-003 | Which decline/cancel reasons are required in Phase 1? | U-002 | Ops | Short list | Medium |
 
 ## Risks and dependencies

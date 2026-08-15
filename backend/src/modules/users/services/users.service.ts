@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -35,6 +36,13 @@ export class UsersService {
   async findOneByPhoneNumber(phoneNumber: string) {
     return this.prisma.user.findUnique({
       where: { phoneNumber },
+      omit: userPublicOmit,
+    });
+  }
+
+  async findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email: email.trim().toLowerCase() },
       omit: userPublicOmit,
     });
   }
@@ -108,20 +116,35 @@ export class UsersService {
     username?: string | null;
     email?: string | null;
     fullName?: string | null;
-    phoneNumber: string;
+    phoneNumber?: string | null;
     password?: string | null;
     role?: Role;
     locale?: string;
+    phoneVerifiedAt?: Date | null;
+    emailVerifiedAt?: Date | null;
   }) {
+    const phoneNumber = input.phoneNumber?.trim() || null;
+    const email = input.email?.trim().toLowerCase() || null;
+
+    if (!phoneNumber && !email) {
+      throw new BadRequestException('Phone number or email is required.');
+    }
+
     const user = await this.prisma.user.create({
       data: {
-        phoneNumber: input.phoneNumber,
+        phoneNumber,
+        email,
         ...(input.password && { password: input.password }),
-        ...(input.email && { email: input.email }),
         ...(input.fullName && { fullName: input.fullName }),
         ...(input.username && { username: input.username }),
         ...(input.role && { role: input.role }),
         ...(input.locale && { locale: input.locale }),
+        ...(input.phoneVerifiedAt !== undefined && {
+          phoneVerifiedAt: input.phoneVerifiedAt,
+        }),
+        ...(input.emailVerifiedAt !== undefined && {
+          emailVerifiedAt: input.emailVerifiedAt,
+        }),
       },
       omit: userPublicOmit,
     });

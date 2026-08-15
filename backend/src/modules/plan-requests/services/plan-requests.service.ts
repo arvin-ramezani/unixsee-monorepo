@@ -34,7 +34,7 @@ export class PlanRequestsService {
   async createPublic(input: {
     planId: string;
     contactName: string;
-    contactPhone: string;
+    contactPhone?: string;
     contactEmail?: string;
     websiteDomain?: string;
     notes?: string;
@@ -67,7 +67,7 @@ export class PlanRequestsService {
     input: {
       planId: string;
       contactName: string;
-      contactPhone: string;
+      contactPhone?: string;
       contactEmail?: string;
       websiteDomain?: string;
       notes?: string;
@@ -155,7 +155,7 @@ export class PlanRequestsService {
   }
 
   private async assertNoExistingCustomerAccount(input: {
-    contactPhone: string;
+    contactPhone?: string;
     contactEmail?: string;
     websiteDomain?: string;
   }) {

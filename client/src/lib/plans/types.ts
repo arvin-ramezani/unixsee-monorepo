@@ -22,7 +22,7 @@ export type NestPlanRequest = {
   planId: string;
   status: string;
   contactName: string;
-  contactPhone: string;
+  contactPhone: string | null;
   contactEmail: string | null;
   websiteDomain: string | null;
   notes: string | null;
@@ -34,7 +34,7 @@ export type NestPlanRequest = {
 export type CreatePlanRequestInput = {
   planId: string;
   contactName: string;
-  contactPhone: string;
+  contactPhone?: string;
   contactEmail?: string;
   websiteDomain?: string;
   notes?: string;

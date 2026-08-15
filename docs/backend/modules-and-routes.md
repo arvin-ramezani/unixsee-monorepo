@@ -191,8 +191,8 @@ Consultant requests are modeled as **complementary-service** public intake
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/v1/public/plan-requests/account-check` | Public (early phone/email/website match; `{ exists, matchedBy }`) |
-| POST | `/api/v1/public/plan-requests` | Public (rejects existing customer phone/email/website with `409 ACCOUNT_EXISTS`) |
-| POST | `/api/v1/plan-requests` | Customer (logged-in create) |
+| POST | `/api/v1/public/plan-requests` | Public (**legacy** anonymous create — superseded guest intent; prefer OTP → user → customer create) |
+| POST | `/api/v1/plan-requests` | Customer (logged-in create; **target** after guest OTP verify) |
 | GET | `/api/v1/plan-requests` | Customer (own) |
 | GET | `/api/v1/plan-requests/:id` | Customer (own) |
 | GET | `/api/v1/admin/plan-requests` | Admin |
@@ -200,6 +200,12 @@ Consultant requests are modeled as **complementary-service** public intake
 | POST | `/api/v1/admin/plan-requests/:id/link` | Admin (existing user/tenant) |
 | POST | `/api/v1/admin/plan-requests/:id/enable` | Admin |
 | POST | `/api/v1/admin/plan-requests/:id/decline` | Admin |
+
+Guest product intent: verify phone **or** email via auth OTP → create user on
+success → `POST /api/v1/plan-requests`. Contracts:
+[`contracts/plan-requests-public.md`](./contracts/plan-requests-public.md)
+(Draft), [`contracts/plan-requests-customer.md`](./contracts/plan-requests-customer.md).
+UX: [`../product/ux-flows/customer-public-plan-request.md`](../product/ux-flows/customer-public-plan-request.md).
 
 Rules: public submit ≠ payment ≠ enablement; enablement links an **existing**
 user/tenant and at most one active plan per website.

@@ -6,6 +6,22 @@ import { errorKey } from "../form-errors";
 const fullNameRegex = /^[\p{L}\p{M}]+(?:[ '\-‌][\p{L}\p{M}]+)+$/u;
 const iranNationalMobileRegex = /^(0?9\d{9}|۰?۹[۰-۹]{9})$/;
 
+export const DATABASE_SIZE_BANDS = [
+  "under_1gb",
+  "1_to_5gb",
+  "5_to_20gb",
+  "over_20gb",
+] as const;
+
+export const MONTHLY_VISITOR_BANDS = [
+  "under_1k",
+  "1k_to_10k",
+  "10k_to_50k",
+  "over_50k",
+] as const;
+
+export const WOOCOMMERCE_OPTIONS = ["yes", "no", "not_sure"] as const;
+
 function normalizeWebsite(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) return trimmed;
@@ -34,22 +50,70 @@ export const guestPlanRequestSchema = z
     phone: z
       .string()
       .trim()
-      .transform((value) => value.replace(/[\s()-]/g, ""))
-      .pipe(
-        z
-          .string()
-          .min(1, errorKey("phoneRequired"))
-          .regex(iranNationalMobileRegex, errorKey("phoneInvalid")),
-      ),
-    email: z
-      .email(errorKey("emailInvalid"))
-      .trim()
-      .min(1, errorKey("emailRequired")),
+      .transform((value) => value.replace(/[\s()-]/g, "")),
+    email: z.string().trim(),
     noWebsiteYet: z.boolean(),
     website: z.string().trim(),
+    databaseSizeBand: z
+      .string()
+      .min(1, errorKey("databaseSizeRequired"))
+      .refine(
+        (value) => (DATABASE_SIZE_BANDS as readonly string[]).includes(value),
+        errorKey("databaseSizeRequired"),
+      ),
+    monthlyVisitorsBand: z
+      .string()
+      .min(1, errorKey("monthlyVisitorsRequired"))
+      .refine(
+        (value) =>
+          (MONTHLY_VISITOR_BANDS as readonly string[]).includes(value),
+        errorKey("monthlyVisitorsRequired"),
+      ),
+    isWooCommerce: z
+      .string()
+      .min(1, errorKey("woocommerceRequired"))
+      .refine(
+        (value) => (WOOCOMMERCE_OPTIONS as readonly string[]).includes(value),
+        errorKey("woocommerceRequired"),
+      ),
     description: z.string().trim().max(2000).optional(),
   })
   .superRefine((data, ctx) => {
+    const phone = data.phone;
+    const email = data.email;
+
+    if (!phone && !email) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("contactRequired"),
+        path: ["phone"],
+      });
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("contactRequired"),
+        path: ["email"],
+      });
+    }
+
+    if (phone && !iranNationalMobileRegex.test(phone)) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("phoneInvalid"),
+        path: ["phone"],
+      });
+    }
+
+    if (email) {
+      const emailResult = z.email().safeParse(email);
+      if (!emailResult.success) {
+        ctx.addIssue({
+          code: "custom",
+          message: errorKey("emailInvalid"),
+          path: ["email"],
+        });
+      }
+    }
+
     if (data.noWebsiteYet) {
       return;
     }
@@ -74,25 +138,42 @@ export const guestPlanRequestSchema = z
 
 export type GuestPlanRequestSchemaType = z.infer<typeof guestPlanRequestSchema>;
 
+export function buildGuestPlanIntakeNotes(
+  data: GuestPlanRequestSchemaType,
+): string {
+  const lines = [
+    "[Plan intake — example fields]",
+    `Database size: ${data.databaseSizeBand}`,
+    `Monthly visitors: ${data.monthlyVisitorsBand}`,
+    `WooCommerce today: ${data.isWooCommerce}`,
+  ];
+
+  if (data.noWebsiteYet) {
+    lines.push("Website: none yet");
+  }
+
+  const freeText = data.description?.trim();
+  if (freeText) {
+    lines.push("", freeText);
+  }
+
+  return lines.join("\n");
+}
+
 export function guestPlanRequestToApiPayload(
   data: GuestPlanRequestSchemaType,
 ) {
-  const notes = data.description?.trim();
-  const noWebsiteNote =
-    data.noWebsiteYet && !notes
-      ? "Customer indicated no website yet."
-      : undefined;
+  const phone = data.phone.trim();
+  const email = data.email.trim();
 
   return {
     contactName: data.fullName.trim(),
-    contactPhone: toE164IranFromNational(data.phone),
-    contactEmail: data.email.trim(),
+    ...(phone ? { contactPhone: toE164IranFromNational(phone) } : {}),
+    ...(email ? { contactEmail: email } : {}),
     ...(data.noWebsiteYet
       ? {}
       : { websiteDomain: normalizeWebsite(data.website) }),
-    ...(notes || noWebsiteNote
-      ? { notes: notes || noWebsiteNote }
-      : {}),
+    notes: buildGuestPlanIntakeNotes(data),
   };
 }
 

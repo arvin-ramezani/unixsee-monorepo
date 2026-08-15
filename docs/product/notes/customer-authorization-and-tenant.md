@@ -10,6 +10,8 @@ and admin enablement. Not a UX or visual specification.
 
 1. Customers can **sign up and sign in** as they do today (OTP / contact
    verification). That creates or authenticates a **customer user account**.
+   Public plan-request intake may also create that account when OTP succeeds on
+   the form contact—**before** the plan request is stored.
 2. A separate step, **احراز هویت** (organizational authorization), is required
    before Unixsee treats the customer as a commercial **tenant**.
 3. In product language, **authorized ≈ became a tenant** (usable tenant record
@@ -42,6 +44,7 @@ and admin enablement. Not a UX or visual specification.
 
 ```text
 Sign up / sign in (account)
+  —or— public plan-request OTP verify (creates account before request)
   → Optional: submit plan or consultant request (allowed without tenant)
   → Submit certifications for احراز هویت
   → Staff review in admin panel

@@ -40,7 +40,8 @@ These are sibling queues with cross-links, not one wizard.
 
 | Origin | Creates | Does not create alone |
 |---|---|---|
-| Plan request | Chosen-plan intake for admin enablement | Auth session, tenant, managed website, enrollment, sale |
+| Plan request (after OTP) | Chosen-plan intake for admin enablement; request linked to existing user | Tenant, managed website, enrollment, sale |
+| Public plan-request OTP verify | Customer **user** account + verified contact + session (before request submit) | Tenant, plan enablement, website assignment |
 | Public signup (if enabled) | User account | Tenant, plan enablement, website assignment |
 | احراز هویت approval | Tenant (authorized customer) | Plan enablement by itself |
 | Admin create / approve (`/users` or assignment return) | User and/or tenant, owner | Website assignment, plan enablement |
@@ -53,14 +54,20 @@ Keep distinct: plan request, user, احراز هویت, tenant, discovery, assig
 enablement.
 
 Never collapse: request→payment, signup→tenant, signup→plan enablement,
-discovery→customer site, admin create→website assignment, plan-request
-surface→user create, request submission→sale.
+discovery→customer site, **admin** plan-request surface→user create,
+request submission→sale.
+
+Public plan-request **OTP verify** is an allowed user-origin (account before
+request). The **admin** `/plan-requests` surface still must not create users;
+link the user that already exists from intake or `/users`.
 
 ## Related
 
 - Authorization note: `customer-authorization-and-tenant.md`
 - Paths and handoffs: `onboarding-paths-and-handoffs.md`
 - Public entry sync: `phase-1-public-entry-channels.md`
+- Public plan-request UX: `../ux-flows/customer-public-plan-request.md`
 - Agent sequence: `servers-agent-data-flow.md`
-- Open: one-plan conflict mode (hard-block vs replace); whether requests arrive
-  pre-linked to a user id; exact certification document set
+- Open: one-plan conflict mode (hard-block vs replace); exact certification
+  document set; Nest sync for guest verify-then-create (see public contract
+  Draft note)

@@ -454,6 +454,18 @@
     font-family: var(--font-yekan-bakh-family);
   }
 
+  label,
+  input,
+  textarea,
+  select,
+  [data-slot="label"],
+  [data-slot="field-label"],
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="select-trigger"] {
+    font-family: var(--font-yekan-bakh-family);
+  }
+
   body[data-scroll-locked] {
     margin-right: 0 !important;
     overflow: visible !important;

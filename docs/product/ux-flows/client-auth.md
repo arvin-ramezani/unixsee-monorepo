@@ -56,6 +56,9 @@ Unixsee can onboard and authenticate customers through the public channel withou
 
 - Phase 1 first-wave includes authentication and OTP-based sign-in.
 - Public signup is a documented account origin consumed by admin flows.
+- Public plan-request OTP verify is another account origin (user created on
+  successful contact verify before the request is stored); see
+  [`customer-public-plan-request.md`](./customer-public-plan-request.md).
 - `admin-users.md` explicitly deferred this journey to a public/customer auth UX document.
 
 ### Scope
@@ -273,6 +276,7 @@ flowchart TD
 | BR-003 | Google is an alternate path, not a replacement for OTP availability until product confirms OAuth | Proposed |
 | BR-004 | Auth errors are non-enumerating for credential/account existence where Phase 1 requires it | Confirmed |
 | BR-005 | Public signup creates a customer **user** account origin; it does not create a tenant, enable a plan, or activate a website | Confirmed |
+| BR-005a | Public plan-request OTP verify also creates a customer **user** (and session) on success before plan-request submit; still not a tenant or enablement | Confirmed (product intent 2026-08-14) |
 | BR-005a | احراز هویت (certifications → staff approve tenant) is outside this auth shell; see `../notes/customer-authorization-and-tenant.md` | Confirmed |
 | BR-006 | Admin-created customers become **contact-verified** after OTP on the recorded phone/email | Confirmed |
 | BR-007 | Password is not the primary Sign-in method; used at Sign-up (secondary credential) and Forgot/Reset | Proposed |
@@ -494,5 +498,6 @@ sentence.
 - Phase 1: [`../phase-1-application-features.md`](../phase-1-application-features.md) §8
 - Authorization / tenant: [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md)
 - Customer authorization UX: [`client-authorization.md`](./client-authorization.md)
+- Public plan-request intake (OTP → account → request): [`customer-public-plan-request.md`](./customer-public-plan-request.md)
 - Admin consumer: [`admin-users.md`](./admin-users.md)
 - UI-only phase: [`../../architecture/decisions/0003-ui-only-phase-boundaries.md`](../../architecture/decisions/0003-ui-only-phase-boundaries.md)

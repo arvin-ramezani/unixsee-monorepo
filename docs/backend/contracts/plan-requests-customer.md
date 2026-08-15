@@ -7,11 +7,16 @@
 > **Product:** [`../../product/phase-1-application-features.md`](../../product/phase-1-application-features.md)
 > §11
 >
-> **Last verified:** 2026-08-11
+> **Last verified:** 2026-08-14
 
 Logged-in dashboard contract for creating and reading the customer’s own plan
-requests. Public anonymous intake remains on
-`POST /api/v1/public/plan-requests`.
+requests.
+
+**Product intent (2026-08-14):** Guest public intake verifies phone or email,
+creates the user on OTP success, then uses **this** authenticated create path
+(not anonymous public create). See
+[`../../product/ux-flows/customer-public-plan-request.md`](../../product/ux-flows/customer-public-plan-request.md)
+and Draft [`plan-requests-public.md`](./plan-requests-public.md).
 
 Auth: customer access JWT. Create always sets `createdByUserId` and
 `linkedUserId` to the caller. When the caller has tenant memberships, the
