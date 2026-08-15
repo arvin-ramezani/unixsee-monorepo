@@ -35,7 +35,6 @@ import {
 import {
   formatTicketNumber,
   getInitials,
-  TICKET_PRIORITY_LABELS,
   TICKET_STATUS_CONFIG,
   toPersianDigits,
 } from "@/lib/tickets-utils";
@@ -87,7 +86,16 @@ type TicketDetailsViewProps = {
   ticket: TicketType;
 };
 
+function ticketContactSummary(ticket: TicketType) {
+  const parts = [ticket.phoneNumber?.trim(), ticket.email?.trim()].filter(
+    Boolean,
+  ) as string[];
+  return parts.length > 0 ? parts.join(" · ") : "—";
+}
+
 function ContextPanel({ ticket }: { ticket: TicketType }) {
+  const contactSummary = ticketContactSummary(ticket);
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-border bg-muted/20 p-4">
@@ -147,22 +155,25 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {TICKET_STATUS_CONFIG[ticket.status].label}
             </span>
           </div>
-          {ticket.priority && (
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground">اولویت</span>
-              <span className="font-medium">
-                {TICKET_PRIORITY_LABELS[ticket.priority]}
-              </span>
-            </div>
-          )}
-          {ticket.tenant?.name && (
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground">مستأجر</span>
-              <span className="max-w-[60%] truncate font-medium" dir="ltr">
-                {ticket.tenant.name}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">نام کاربر</span>
+            <Link
+              href={`/users/${ticket.userId}`}
+              className="max-w-[60%] truncate font-medium hover:underline"
+            >
+              {ticket.fullName}
+            </Link>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">تلفن/ایمیل</span>
+            <span
+              className="max-w-[60%] truncate font-medium w-fit"
+              dir="ltr"
+              title={contactSummary}
+            >
+              {contactSummary}
+            </span>
+          </div>
           <div className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">ایجاد شد</span>
             <span className="font-medium">
