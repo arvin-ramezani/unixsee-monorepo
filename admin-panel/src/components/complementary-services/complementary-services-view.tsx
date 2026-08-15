@@ -49,6 +49,11 @@ import {
   listRuntimeComplementaryRequests,
 } from "@/lib/data/complementary-services-runtime";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import {
+  CreateServiceDialog,
+  type CreateServiceSuccessPayload,
+} from "./create-service-dialog";
 import { ServiceStatusBadge } from "./service-status-badge";
 
 const VIEW_MODE = {
@@ -255,8 +260,10 @@ function AssignmentCard({
 export function ComplementaryServicesView({
   initialStatus = REQUEST_STATUS_FILTER.ALL,
 }: ComplementaryServicesViewProps) {
+  const [listVersion, setListVersion] = useState(0);
   const requests = listRuntimeComplementaryRequests();
   const assignments = listRuntimeComplementaryAssignments();
+  void listVersion;
   const [viewMode, setViewMode] = useState<ViewModeType>(VIEW_MODE.REQUESTS);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] =
@@ -264,6 +271,16 @@ export function ComplementaryServicesView({
   const [familyFilter, setFamilyFilter] =
     useState<FamilyFilterType>(FAMILY_FILTER_ALL);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+
+  function handleStaffCreateSuccess(payload: CreateServiceSuccessPayload) {
+    setCreateOpen(false);
+    setViewMode(VIEW_MODE.ASSIGNMENTS);
+    setListVersion((current) => current + 1);
+    toast.success(
+      `سرویس «${payload.title}» برای ${payload.websiteDomain} ایجاد و متصل شد.`,
+    );
+  }
 
   const acceptedRequests = requests.filter(
     (request) => request.status === SERVICE_REQUEST_STATUS.ACCEPTED,
@@ -328,8 +345,6 @@ export function ComplementaryServicesView({
   const familyFilterLabel =
     FAMILY_FILTER_OPTIONS.find((option) => option.value === familyFilter)
       ?.label ?? "همه سرویس‌ها";
-
-  const firstAcceptedRequest = acceptedRequests[0] ?? null;
 
   const filterControls = (
     <>
@@ -440,24 +455,10 @@ export function ComplementaryServicesView({
             </Button>
           </div>
 
-          {firstAcceptedRequest ? (
-            <Link
-              href={`/complementary-services/${firstAcceptedRequest.id}`}
-              className={buttonVariants()}
-            >
-              <Plus data-icon="inline-start" />
-              ایجاد سرویس
-            </Link>
-          ) : (
-            <Button
-              type="button"
-              disabled
-              title="درخواست تأییدشده‌ای برای ایجاد سرویس وجود ندارد"
-            >
-              <Plus data-icon="inline-start" />
-              ایجاد سرویس
-            </Button>
-          )}
+          <Button type="button" onClick={() => setCreateOpen(true)}>
+            <Plus data-icon="inline-start" />
+            ایجاد و اتصال سرویس
+          </Button>
         </div>
 
         <div className="border-b border-border p-4">
@@ -716,6 +717,13 @@ export function ComplementaryServicesView({
         <CircleDollarSign className="size-4" aria-hidden="true" />
         مبالغ این صفحه عملیاتی هستند و گزارش حسابداری محسوب نمی‌شوند.
       </p>
+
+      <CreateServiceDialog
+        open={createOpen}
+        mode="staff"
+        onOpenChange={setCreateOpen}
+        onSuccess={handleStaffCreateSuccess}
+      />
     </div>
   );
 }

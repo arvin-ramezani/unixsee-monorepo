@@ -2,21 +2,30 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ArrowRight, CalendarClock, Globe2, Plus } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { ArrowRight, CalendarClock, Globe2, Plus, X } from "lucide-react";
 
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   COMPLEMENTARY_SERVICE_FAMILY_LABELS,
   SERVICE_REQUEST_STATUS,
   type ComplementaryServiceRequestType,
 } from "@/lib/data/complementary-services-data";
-import {
-  createRuntimeComplementaryAssignment,
-  hasRuntimeDuplicateAssignment,
-} from "@/lib/data/complementary-services-runtime";
+import { declineRuntimeComplementaryRequest } from "@/lib/data/complementary-services-runtime";
 import { toast } from "sonner";
-import { CreateServiceDialog } from "./create-service-dialog";
+import {
+  CreateServiceDialog,
+  type CreateServiceSuccessPayload,
+} from "./create-service-dialog";
 import { ServiceStatusBadge } from "./service-status-badge";
 
 type RequestDetailsViewProps = {
@@ -29,11 +38,61 @@ export function RequestDetailsView({
   const router = useRouter();
   const [request, setRequest] = useState(initialRequest);
   const [createOpen, setCreateOpen] = useState(false);
-  const canCreate = request.status === SERVICE_REQUEST_STATUS.ACCEPTED;
-  const hasDuplicateAssignment = hasRuntimeDuplicateAssignment(
-    request.websiteId,
-    request.family,
-  );
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectError, setRejectError] = useState("");
+  const [rejecting, setRejecting] = useState(false);
+
+  const canActivate = request.status === SERVICE_REQUEST_STATUS.ACCEPTED;
+  const canReject =
+    request.status !== SERVICE_REQUEST_STATUS.ACTIVATED &&
+    request.status !== SERVICE_REQUEST_STATUS.DECLINED;
+
+  function handleSuccess(payload: CreateServiceSuccessPayload) {
+    setRequest((current) => ({
+      ...current,
+      status: SERVICE_REQUEST_STATUS.ACTIVATED,
+      nextAction: "مشاهده سرویس ایجادشده",
+      updatedAt: "همین حالا",
+    }));
+    setCreateOpen(false);
+    toast.success(
+      `سرویس «${payload.title}» برای ${payload.websiteDomain} فعال شد.`,
+    );
+    router.refresh();
+  }
+
+  function handleReject(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = rejectReason.trim();
+    if (!trimmed) {
+      setRejectError("ثبت دلیل رد الزامی است.");
+      return;
+    }
+
+    setRejecting(true);
+    const result = declineRuntimeComplementaryRequest({
+      requestId: request.id,
+      reason: trimmed,
+    });
+    setRejecting(false);
+
+    if (!result.ok) {
+      setRejectError(
+        result.reason === "not_rejectable"
+          ? "این درخواست در وضعیت قابل رد نیست."
+          : "رد درخواست انجام نشد.",
+      );
+      return;
+    }
+
+    setRequest(result.request);
+    setRejectOpen(false);
+    setRejectReason("");
+    setRejectError("");
+    toast.success("درخواست رد شد.");
+    router.refresh();
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -126,7 +185,11 @@ export function RequestDetailsView({
 
         {request.customerNote && (
           <section className="rounded-xl border border-border p-4">
-            <h2 className="text-sm font-semibold">یادداشت قابل مشاهده مشتری</h2>
+            <h2 className="text-sm font-semibold">
+              {request.status === SERVICE_REQUEST_STATUS.DECLINED
+                ? "دلیل رد"
+                : "یادداشت قابل مشاهده مشتری"}
+            </h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {request.customerNote}
             </p>
@@ -134,15 +197,36 @@ export function RequestDetailsView({
         )}
       </div>
 
-      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:justify-end">
-        {canCreate ? (
+      <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:flex-wrap sm:justify-end">
+        {canActivate && (
           <Button type="button" onClick={() => setCreateOpen(true)}>
             <Plus data-icon="inline-start" />
-            ایجاد سرویس برای این وب‌سایت
+            فعالسازی سرویس
           </Button>
-        ) : (
+        )}
+        {canReject && (
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              setRejectError("");
+              setRejectOpen(true);
+            }}
+          >
+            <X data-icon="inline-start" />
+            رد درخواست
+          </Button>
+        )}
+        {!canActivate && !canReject && (
           <p className="text-xs leading-5 text-muted-foreground sm:me-auto">
-            ایجاد سرویس پس از ثبت پذیرش پیشنهاد در دسترس قرار می‌گیرد.
+            {request.status === SERVICE_REQUEST_STATUS.ACTIVATED
+              ? "سرویس این درخواست قبلاً فعال شده است."
+              : "این درخواست رد شده است."}
+          </p>
+        )}
+        {!canActivate && canReject && (
+          <p className="text-xs leading-5 text-muted-foreground sm:me-auto sm:w-full">
+            فعالسازی پس از ثبت پذیرش پیشنهاد در دسترس قرار می‌گیرد.
           </p>
         )}
         <Link
@@ -155,26 +239,77 @@ export function RequestDetailsView({
 
       <CreateServiceDialog
         open={createOpen}
+        mode="request"
         request={request}
-        hasDuplicateAssignment={hasDuplicateAssignment}
         onOpenChange={setCreateOpen}
-        onCreate={(currentRequest, values) => {
-          const result = createRuntimeComplementaryAssignment({
-            requestId: currentRequest.id,
-            ownerName: values.ownerName,
-            commercialModel: values.commercialModel,
-            startDate: values.startDate,
-            agreedAmount: values.agreedAmount,
-          });
-          if (!result) return;
-          setRequest(result.request);
-          setCreateOpen(false);
-          toast.success(
-            `سرویس «${currentRequest.title}» برای ${currentRequest.websiteDomain} ایجاد و زمان‌بندی شد.`,
-          );
-          router.refresh();
-        }}
+        onSuccess={handleSuccess}
       />
+
+      <AlertDialog
+        open={rejectOpen}
+        onOpenChange={(open) => {
+          setRejectOpen(open);
+          if (!open) {
+            setRejectError("");
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <form onSubmit={handleReject}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>رد درخواست خدمات تکمیلی؟</AlertDialogTitle>
+              <AlertDialogDescription>
+                دلیل رد برای مشتری قابل مشاهده خواهد بود و درخواست بسته می‌شود.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="space-y-2 px-4">
+              <label htmlFor="reject-reason" className="text-sm font-medium">
+                دلیل رد *
+              </label>
+              <Textarea
+                id="reject-reason"
+                value={rejectReason}
+                onChange={(event) => {
+                  setRejectReason(event.target.value);
+                  setRejectError("");
+                }}
+                rows={4}
+                required
+                aria-invalid={Boolean(rejectError)}
+                aria-describedby={
+                  rejectError ? "reject-reason-error" : undefined
+                }
+              />
+              {rejectError ? (
+                <p
+                  id="reject-reason-error"
+                  className="text-sm text-destructive"
+                  role="alert"
+                >
+                  {rejectError}
+                </p>
+              ) : null}
+            </div>
+            <AlertDialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={rejecting}
+                onClick={() => setRejectOpen(false)}
+              >
+                انصراف
+              </Button>
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={rejecting}
+              >
+                {rejecting ? "در حال ثبت..." : "تأیید رد"}
+              </Button>
+            </AlertDialogFooter>
+          </form>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

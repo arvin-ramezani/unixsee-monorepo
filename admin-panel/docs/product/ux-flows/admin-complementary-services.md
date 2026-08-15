@@ -13,6 +13,11 @@
 | Primary owner | Product and operations |
 | Reviewers required | Product, commercial operations, service-delivery leads, engineering, QA, accessibility, security |
 
+> **Canonical updates live under**
+> [`docs/product/ux-flows/`](../../../../docs/product/ux-flows/).
+> Staff create-and-attach (client-form-aligned):
+> [`admin-create-complementary-service-assignment.md`](../../../../docs/product/ux-flows/admin-create-complementary-service-assignment.md).
+
 ## Confidence summary
 
 | Area | Confidence | Reason |

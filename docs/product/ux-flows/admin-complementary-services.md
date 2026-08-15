@@ -63,6 +63,9 @@ Unixsee can operate complementary services consistently while preserving quotati
 
 - Intake queues for submitted requests and waiting work.
 - Request detail at `/complementary-services/[id]`; creating an assignment is a Dialog on that page.
+- Staff create-and-attach (request-bound and staff-initiated) is specified in
+  [`admin-create-complementary-service-assignment.md`](./admin-create-complementary-service-assignment.md);
+  field model aligns to the client complementary-service request form.
 - Customer, tenant, website and request context.
 - Non-blocking intake when the customer is not yet a tenant; commercial
   activation / assignment applyment still requires a tenant per

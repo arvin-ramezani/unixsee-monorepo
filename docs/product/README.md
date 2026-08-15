@@ -57,7 +57,8 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`ux-flows/admin-authorization.md`](./ux-flows/admin-authorization.md) | Staff احراز هویت review → approve tenant |
 | [`ux-flows/admin-plan-requests.md`](./ux-flows/admin-plan-requests.md) | Plan requests (`درخواست‌های پلن`) |
 | [`ux-flows/admin-servers-websites-agents.md`](./ux-flows/admin-servers-websites-agents.md) | Servers, websites, agents |
-| [`ux-flows/admin-complementary-services.md`](./ux-flows/admin-complementary-services.md) | Complementary services |
+| [`ux-flows/admin-complementary-services.md`](./ux-flows/admin-complementary-services.md) | Complementary services (request → quote → assignment lifecycle) |
+| [`ux-flows/admin-create-complementary-service-assignment.md`](./ux-flows/admin-create-complementary-service-assignment.md) | Staff create assignment and attach to website (client-form-aligned) |
 
 UX flow docs use document-control tables, confidence summaries, and evidence
 gaps. Preserve that structure when editing. See
