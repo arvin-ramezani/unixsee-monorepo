@@ -11,12 +11,14 @@ import { WebsiteTable } from "@/components/dashboard/website-table";
 import { getRecentActivities } from "@/lib/data/activity/activity-records";
 import type { Locale } from "@/i18n/routing";
 import { serverFetch } from "@/lib/api/server-fetch";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
 import { mapNestAuthorizationCase } from "@/lib/authorization/map-nest-case";
 import {
   AUTHORIZATION_STATUS,
   type AuthorizationStatus,
 } from "@/lib/data/authorization/authorization-data";
 import { notifications, websites } from "@/lib/dashboard-data";
+import type { SafeAuthUser } from "@/types/auth.types";
 import { DashboardButtonLink } from "./_components/common";
 
 async function loadAuthorizationStatus(): Promise<AuthorizationStatus> {
@@ -34,6 +36,14 @@ async function loadAuthorizationStatus(): Promise<AuthorizationStatus> {
   return AUTHORIZATION_STATUS.NOT_STARTED;
 }
 
+function resolveWelcomeName(user: SafeAuthUser | null, fallback: string) {
+  const fullName = user?.fullName?.trim();
+  if (fullName) {
+    return fullName.split(/\s+/)[0] || fullName;
+  }
+  return user?.username?.trim() || fallback;
+}
+
 export default async function DashboardPage({
   params,
 }: {
@@ -43,15 +53,19 @@ export default async function DashboardPage({
   setRequestLocale(locale);
   const t = await getTranslations("Dashboard");
   const common = await getTranslations("Common");
+  const [user, authorizationStatus] = await Promise.all([
+    getCurrentUser(),
+    loadAuthorizationStatus(),
+  ]);
   const recentActivities = getRecentActivities();
-  const authorizationStatus = await loadAuthorizationStatus();
+  const welcomeName = resolveWelcomeName(user, common("userName"));
 
   return (
-    <DashboardShell activeItem="Dashboard">
+    <DashboardShell activeItem="Dashboard" userName={welcomeName}>
       <section className="flex min-h-27 -translate-y-1 flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
         <div className="ps-2">
           <h1 className="mt-8 text-[1.8rem] font-semibold tracking-tight">
-            {t("hero.title", { name: common("userName") })}
+            {t("hero.title", { name: welcomeName })}
           </h1>
           <p className="text-muted-foreground mt-1.5 text-sm">
             {t("hero.description")}

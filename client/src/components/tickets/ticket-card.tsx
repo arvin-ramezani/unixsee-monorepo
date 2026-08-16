@@ -35,7 +35,10 @@ export function TicketCard({ ticket }: { ticket: TicketListItem }) {
               </Link>
             </h3>
           </div>
-          <p dir="ltr" className="mt-1 text-start text-xs text-muted-foreground">
+          <p
+            dir="ltr"
+            className="text-muted-foreground mt-1 w-fit text-start text-xs"
+          >
             #{ticket.number}
           </p>
         </div>

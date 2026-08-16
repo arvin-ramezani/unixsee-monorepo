@@ -278,7 +278,7 @@ export function ActivityHistory({
               })
             }
           >
-            <SelectTrigger id={`${idPrefix}-service`} className="w-full">
+            <SelectTrigger id={`${idPrefix}-service`} className="h-11! w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -302,7 +302,7 @@ export function ActivityHistory({
                 syncFilters({ ...filters, resource: value })
               }
             >
-              <SelectTrigger id={`${idPrefix}-resource`} className="w-full">
+              <SelectTrigger id={`${idPrefix}-resource`} className="h-11! w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -330,7 +330,7 @@ export function ActivityHistory({
               })
             }
           >
-            <SelectTrigger id={`${idPrefix}-range`} className="w-full">
+            <SelectTrigger id={`${idPrefix}-range`} className="h-11! w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
