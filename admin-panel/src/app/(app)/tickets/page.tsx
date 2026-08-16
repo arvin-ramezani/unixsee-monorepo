@@ -1,8 +1,5 @@
 import { TicketsView } from "@/components/tickets/tickets-view";
-import {
-  mapApiError,
-  STAFF_API_ERROR_MESSAGES,
-} from "@/lib/api/map-api-error";
+import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
 import type { TicketType } from "@/lib/data/tickets-data";
 import { TICKET_STATUS } from "@/lib/data/tickets-data";
@@ -85,7 +82,7 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
         </p>
       </div>
 
-      {loadError ? (
+      {!!loadError ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {loadError}
         </div>

@@ -92,10 +92,6 @@ export function TenantMembershipsSection({
         <Building2 className="size-5" aria-hidden="true" />
         <h2 className="font-semibold">مستأجرها و عضویت‌ها</h2>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        مالکیت وب‌سایت به مستأجر تعلق دارد، نه به کاربر. هر مستأجر باید همیشه
-        حداقل یک مالک داشته باشد.
-      </p>
 
       {tenantMemberships.length === 0 ? (
         <p className="mt-4 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center text-sm text-muted-foreground">
@@ -120,7 +116,7 @@ export function TenantMembershipsSection({
                 key={membership.id}
                 className={cn(mutedSurfaceClassName, "p-4")}
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                   <div className="min-w-0">
                     <p className="font-medium">
                       {resolveTenantCardTitle(tenant, user)}
@@ -171,7 +167,7 @@ export function TenantMembershipsSection({
                     return (
                       <li
                         key={member.membership.id}
-                        className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:items-center sm:justify-between"
+                        className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:items-start"
                       >
                         <div className="min-w-0">
                           <Link
@@ -271,13 +267,6 @@ export function TenantMembershipsSection({
             );
           })}
         </div>
-      )}
-
-      {!canManageMembership && (
-        <p className="mt-4 text-sm text-muted-foreground">
-          دسترسی مدیریت عضویت برای نقش فعلی فعال نیست. تغییر نقش و حذف عضویت
-          نمایش داده نمی‌شود.
-        </p>
       )}
     </section>
   );

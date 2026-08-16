@@ -521,8 +521,8 @@ export function ComplementaryServicesView({
             className={cn(
               "grid gap-2",
               viewMode === VIEW_MODE.REQUESTS
-                ? "lg:grid-cols-[minmax(240px,1fr)_180px_200px]"
-                : "lg:grid-cols-[minmax(240px,1fr)_220px]",
+                ? "lg:grid-cols-[minmax(240px,580px)_180px_200px]"
+                : "lg:grid-cols-[minmax(240px,580px)_220px]",
             )}
           >
             <SearchInput

@@ -58,21 +58,6 @@ export default async function AuthorizationQueuePage() {
         </Link>
       </div>
 
-      <div
-        className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
-        role="note"
-      >
-        <p className="font-medium">تأیید خودکار وجود ندارد</p>
-        <p className="mt-1 text-muted-foreground">
-          وضعیت پیش‌فرض پس از ارسال مشتری «در حال بررسی» است
-          {summary.pending > 0
-            ? ` — هم‌اکنون ${summary.pending.toLocaleString("fa-IR")} پرونده در انتظار بررسی دستی.`
-            : "."}{" "}
-          تا وقتی دکمه «تأیید و ایجاد مستأجر» را نزنید، پرونده تأییدشده محسوب
-          نمی‌شود.
-        </p>
-      </div>
-
       <AuthorizationQueueView initialCases={nestCases} />
     </div>
   );

@@ -127,7 +127,9 @@ function AuthorizationTableRow({
       <TableCell className="text-muted-foreground px-4 py-3 text-xs">
         {contactSummary(authCase)}
       </TableCell>
-      <TableCell className="px-4 py-3 text-sm">{authCase.submittedAt}</TableCell>
+      <TableCell className="px-4 py-3 text-sm">
+        {authCase.submittedAt}
+      </TableCell>
     </TableRow>
   );
 }
@@ -273,7 +275,7 @@ export function AuthorizationQueueView({
           onChange={(event) => setQuery(event.target.value)}
           placeholder="جست‌وجوی نام، موبایل، ایمیل یا کد ملی…"
           aria-label="جست‌وجوی پرونده احراز هویت"
-          className="flex-1"
+          className="flex-1 lg:max-w-lg min-h-11!"
         />
         <Select
           value={statusFilter}

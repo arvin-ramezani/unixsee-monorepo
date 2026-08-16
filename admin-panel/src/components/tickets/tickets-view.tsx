@@ -143,14 +143,14 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
     >
       <TableCell className="px-4 py-3">
         <div className="flex flex-col gap-1">
-          <span dir="ltr" className="font-medium text-foreground">
+          <span dir="ltr" className="font-medium text-foreground w-fit">
             {formatTicketNumber(ticket.id, ticket.number)}
           </span>
-          {ticket.priority ? (
+          {!!ticket.priority && (
             <span className="text-xs text-muted-foreground">
               {TICKET_PRIORITY_LABELS[ticket.priority]}
             </span>
-          ) : null}
+          )}
         </div>
       </TableCell>
       <TableCell className="px-4 py-3">
@@ -333,7 +333,7 @@ export function TicketsView({
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
         <span>{countLabel}</span>
-        {pageCount > 1 ? (
+        {pageCount > 1 && (
           <div className="flex items-center gap-2">
             <Button
               type="button"
@@ -357,7 +357,7 @@ export function TicketsView({
               بعدی
             </Button>
           </div>
-        ) : null}
+        )}
       </div>
 
       <div className="hidden rounded-xl border border-border bg-card lg:block">

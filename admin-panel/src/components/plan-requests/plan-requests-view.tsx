@@ -202,14 +202,14 @@ export function PlanRequestsView({
 
   return (
     <div className="space-y-6">
-      {loadError ? (
+      {!!loadError && (
         <p
           className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
           role="alert"
         >
           {loadError}
         </p>
-      ) : null}
+      )}
 
       <section
         className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
@@ -280,7 +280,7 @@ export function PlanRequestsView({
 
       <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 lg:max-w-lg">
             <SearchInput
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -354,7 +354,9 @@ export function PlanRequestsView({
               <TableRow>
                 <TableHead className="px-4 py-3 text-right">پلن</TableHead>
                 <TableHead className="px-4 py-3 text-right">نام</TableHead>
-                <TableHead className="px-4 py-3 text-right">تلفن/ایمیل</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  تلفن/ایمیل
+                </TableHead>
                 <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
                 <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
                 <TableHead className="px-4 py-3 text-right">
