@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -13,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 export function MobileNav({
   activeItem = "Dashboard",
@@ -29,9 +31,12 @@ export function MobileNav({
 }) {
   const locale = useLocale();
   const t = useTranslations("Navigation");
+  const [open, setOpen] = useState(false);
+
+  useScrollLock(open, "dashboard-mobile-nav");
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           type="button"
@@ -63,7 +68,10 @@ export function MobileNav({
             <X aria-hidden="true" className="size-5" />
           </Button>
         </SheetClose>
-        <SidebarContent activeItem={activeItem} />
+        <SidebarContent
+          activeItem={activeItem}
+          onNavigate={() => setOpen(false)}
+        />
       </SheetContent>
     </Sheet>
   );

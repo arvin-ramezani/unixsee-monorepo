@@ -26,12 +26,15 @@ interface SidebarContentProps {
     | "Websites";
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /** Close overlays (e.g. mobile sheet) as soon as a nav item is activated. */
+  onNavigate?: () => void;
 }
 
 export function SidebarContent({
   activeItem = "Dashboard",
   collapsed = false,
   onCollapsedChange,
+  onNavigate,
 }: SidebarContentProps) {
   const t = useTranslations("Navigation");
 
@@ -100,6 +103,7 @@ export function SidebarContent({
                   ) : (
                     <Link
                       href={item.href}
+                      onClick={onNavigate}
                       aria-current={
                         item.activeItem === activeItem ? "page" : undefined
                       }
