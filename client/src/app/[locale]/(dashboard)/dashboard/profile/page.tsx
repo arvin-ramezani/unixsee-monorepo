@@ -72,15 +72,17 @@ export default async function ProfilePage({
     >
       <>
         <ProfilePageHeader />
-        <AuthorizationProfileLinkCard />
-        {!nestBacked ? (
+
+        <AuthorizationProfileLinkCard className="mb-4" />
+
+        {!nestBacked && (
           <div
-            className="border-amber-500/30 bg-amber-500/5 rounded-xl border px-4 py-3 text-sm"
+            className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
             role="status"
           >
             {t("personal.nestUnavailable")}
           </div>
-        ) : null}
+        )}
         <PersonalInformationCard
           profile={profile}
           nestBacked={nestBacked}

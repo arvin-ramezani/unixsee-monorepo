@@ -41,9 +41,7 @@ export default async function AuthorizationPage({
   const t = await getTranslations("Authorization");
   const raw = Array.isArray(query.status) ? query.status[0] : query.status;
   const previewStatus =
-    raw && PREVIEW_STATUSES.has(raw)
-      ? (raw as AuthorizationStatus)
-      : undefined;
+    raw && PREVIEW_STATUSES.has(raw) ? (raw as AuthorizationStatus) : undefined;
 
   const me = await getCurrentUser();
   const accountContacts: AccountContactSeed = {
@@ -74,10 +72,7 @@ export default async function AuthorizationPage({
       breadcrumbs={[{ label: t("title") }]}
       searchPlaceholder={t("searchHeader")}
     >
-      <div className="space-y-4">
-        <p className="text-muted-foreground max-w-2xl text-sm leading-6">
-          {t("description")}
-        </p>
+      <div className="mt-8">
         <AuthorizationPageClient
           previewStatus={previewStatus}
           accountContacts={accountContacts}

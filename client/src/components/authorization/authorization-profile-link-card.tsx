@@ -6,12 +6,24 @@ import { useTranslations } from "next-intl";
 import { Panel } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 
-export function AuthorizationProfileLinkCard() {
+export type AuthorizationProfileLinkCardProps = {
+  className?: string;
+};
+
+export function AuthorizationProfileLinkCard({
+  className,
+}: AuthorizationProfileLinkCardProps) {
   const t = useTranslations("Authorization.profileLink");
 
   return (
-    <Panel className="mt-4 flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+    <Panel
+      className={cn(
+        "mt-4 flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between",
+        className,
+      )}
+    >
       <div className="flex items-start gap-3">
         <span className="bg-primary/10 text-primary grid size-10 place-items-center rounded-full">
           <ShieldCheck aria-hidden="true" className="size-5" />

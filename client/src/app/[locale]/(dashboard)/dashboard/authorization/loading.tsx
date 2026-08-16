@@ -1,10 +1,10 @@
 import { useTranslations } from "next-intl";
 
+import { AuthorizationLoadingSkeleton } from "@/components/authorization/authorization-loading-skeleton";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
-import { ProfileLoadingSkeleton } from "@/components/profile/profile-loading-skeleton";
 
-export default function ProfileLoading() {
-  const t = useTranslations("Profile");
+export default function AuthorizationLoading() {
+  const t = useTranslations("Authorization");
 
   return (
     <DashboardShell
@@ -12,7 +12,7 @@ export default function ProfileLoading() {
       breadcrumbs={[{ label: t("title") }]}
       searchPlaceholder={t("searchHeader")}
     >
-      <ProfileLoadingSkeleton />
+      <AuthorizationLoadingSkeleton />
     </DashboardShell>
   );
 }

@@ -2052,6 +2052,9 @@
       "copyError": "Could not copy",
       "createTicket": "Create a support ticket",
       "close": "Close support dialog"
+    },
+    "states": {
+      "loading": "Loading dashboard"
     }
   },
   "Notifications": {
@@ -2127,6 +2130,7 @@
   "ActivityHistory": {
     "title": "Unixsee recent activities",
     "description": "The latest meaningful work and service events across your Unixsee account.",
+    "loading": "Loading activity history",
     "allActivity": "All Unixsee activities",
     "resultSummary": "Showing {shown, number} of {total, number} activities",
     "timelineLabel": "Account activity timeline",
@@ -2213,7 +2217,8 @@
     "select": "Choose {plan}",
     "featuresLabel": "What's included",
     "empty": "Plans will be available here soon.",
-    "loadError": "We could not load plans right now. Please try again later."
+    "loadError": "We could not load plans right now. Please try again later.",
+    "loading": "Loading plans"
   },
   "GuestPlanRequestPage": {
     "title": "Submit a plan request",
@@ -3477,6 +3482,9 @@
       "description": "Our support team is here 24/7 to help you succeed.",
       "contact": "Contact Support",
       "center": "Check our Help Center"
+    },
+    "states": {
+      "loading": "Loading websites"
     }
   },
   "Domains": {
@@ -3687,12 +3695,14 @@
       },
       "loadErrorTitle": "New ticket form unavailable",
       "loadErrorDescription": "Service categories could not be loaded. Please try again later.",
+      "loading": "Loading new ticket form",
       "submitting": "Submitting...",
       "submit": "Submit ticket",
       "cancel": "Cancel"
     },
     "detail": {
       "back": "Back to tickets",
+      "loading": "Loading ticket",
       "you": "You",
       "service": "Service",
       "website": "Related website",
@@ -3874,6 +3884,7 @@
     "title": "Organization authorization",
     "description": "Submit identity details and your national ID card so staff can approve you as a commercial tenant. Signing in is not enough.",
     "searchHeader": "Search authorization…",
+    "loading": "Loading authorization",
     "banner": {
       "not_started": "Complete organization authorization to become a tenant before Unixsee can deliver managed services.",
       "draft": "You have an unfinished authorization draft. Continue when ready.",
@@ -4330,6 +4341,7 @@
       "submit": "Submit consultation request",
       "submitting": "Submitting request...",
       "cancel": "Cancel",
+      "loading": "Loading consultation request form",
       "success": {
         "title": "Consultation request submitted",
         "description": "Your local sample request is ready for Unixsee review. No data was sent or uploaded.",
@@ -4338,6 +4350,7 @@
     },
     "detail": {
       "back": "Back to complementary services",
+      "loading": "Loading service details",
       "createTicket": "Create support ticket",
       "additionalWork": "Request additional work",
       "usageTitle": "Current quota",
