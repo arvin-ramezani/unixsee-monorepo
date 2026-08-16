@@ -16,6 +16,7 @@ import {
   DashboardButtonLink,
 } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 import { MobileFilterDisclosure } from "@/components/common/mobile-filter-disclosure";
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { TicketGrid } from "@/components/tickets/ticket-grid";
@@ -360,6 +361,10 @@ export function TicketsManager({
         </MobileFilterDisclosure>
       </div>
 
+      <DashboardFadeIn
+        deferUntilKeyChange
+        animationKey={`${view}-${tab}-${service}-${website}-${status}-${sort}-${page}`}
+      >
       {visibleTickets.length === 0 ? (
         <div className="grid min-h-90 place-items-center px-6 text-center">
           <div>
@@ -555,6 +560,7 @@ export function TicketsManager({
           </div>
         </>
       )}
+      </DashboardFadeIn>
 
       <footer className="border-border text-muted-foreground flex min-h-15 items-center justify-between gap-4 border-t px-5 text-sm sm:px-6">
         <span>

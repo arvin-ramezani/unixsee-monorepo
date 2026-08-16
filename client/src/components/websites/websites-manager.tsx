@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ExternalLink, Search } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { motion, useReducedMotion } from "framer-motion";
 
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import {
@@ -251,6 +252,10 @@ export function WebsitesManager({
         />
       </div>
 
+      <DashboardFadeIn
+        deferUntilKeyChange
+        animationKey={`${view}-${activeTab}-${status}-${plan}-${backup}-${sort}`}
+      >
       {view === "grid" && visibleWebsites.length > 0 && (
         <WebsiteGrid websites={visibleWebsites} />
       )}
@@ -433,6 +438,7 @@ export function WebsitesManager({
           </div>
         </div>
       )}
+      </DashboardFadeIn>
       <div className="text-muted-foreground flex h-15 items-center justify-between px-6 text-sm">
         <span>
           {t("table.summary", {
