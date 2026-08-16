@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -466,6 +467,10 @@ export function ActivityHistory({
         </details>
       </div>
 
+      <DashboardFadeIn
+        deferUntilKeyChange
+        animationKey={`${filters.category}-${filters.resource}-${filters.dateRange}-${filters.startDate}-${filters.endDate}`}
+      >
       {filteredRecords.length === 0 || hasInvalidCustomRange ? (
         <div className="grid min-h-96 place-items-center px-6 py-12 text-center">
           <div className="max-w-md">
@@ -636,6 +641,7 @@ export function ActivityHistory({
           })}
         </div>
       )}
+      </DashboardFadeIn>
 
       {filteredRecords.length > 0 && !hasInvalidCustomRange && (
         <footer className="border-border border-t px-4 py-5 text-center sm:px-6">

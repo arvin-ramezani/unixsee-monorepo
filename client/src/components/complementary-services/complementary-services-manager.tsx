@@ -14,6 +14,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useReducedMotion, motion } from "framer-motion";
 
 import { MobileFilterDisclosure } from "@/components/common/mobile-filter-disclosure";
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import {
   ComplementaryServiceStatusBadge,
@@ -559,30 +560,37 @@ export function ComplementaryServicesManager({
           <LoadingState />
         ) : state === "error" ? (
           <ErrorState onRetry={() => setState("ready")} />
-        ) : state === "empty" || content.length === 0 ? (
-          <ComplementaryServicesEmptyState filtered={filtered} tab={tab} />
-        ) : tab === "active" ? (
-          <div className="grid gap-5 lg:grid-cols-2">
-            {visibleActive.map((item) => (
-              <ActiveServiceCard key={item.id} service={item} />
-            ))}
-          </div>
-        ) : tab === "requests" ? (
-          <div className="grid gap-4 2xl:grid-cols-2">
-            {visibleRequests.map((item) => (
-              <ConsultationRequestCard
-                key={item.id}
-                request={item}
-                onCancel={setCancelTarget}
-              />
-            ))}
-          </div>
         ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
-            {visibleHistory.map((item) => (
-              <ServiceHistoryItem key={item.id} service={item} />
-            ))}
-          </div>
+          <DashboardFadeIn
+            deferUntilKeyChange
+            animationKey={`${tab}-${website}-${serviceType}`}
+          >
+            {state === "empty" || content.length === 0 ? (
+              <ComplementaryServicesEmptyState filtered={filtered} tab={tab} />
+            ) : tab === "active" ? (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {visibleActive.map((item) => (
+                  <ActiveServiceCard key={item.id} service={item} />
+                ))}
+              </div>
+            ) : tab === "requests" ? (
+              <div className="grid gap-4 2xl:grid-cols-2">
+                {visibleRequests.map((item) => (
+                  <ConsultationRequestCard
+                    key={item.id}
+                    request={item}
+                    onCancel={setCancelTarget}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-3 lg:grid-cols-2">
+                {visibleHistory.map((item) => (
+                  <ServiceHistoryItem key={item.id} service={item} />
+                ))}
+              </div>
+            )}
+          </DashboardFadeIn>
         )}
       </div>
 

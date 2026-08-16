@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { Badge } from "@/components/ui/badge";
@@ -147,6 +148,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
           </Link>
         </div>
 
+        <DashboardFadeIn deferUntilKeyChange animationKey={view}>
         {view === "grid" && (
           <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
             {websites.map((site) => (
@@ -405,6 +407,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
             </article>
           ))}
         </div>
+        </DashboardFadeIn>
         <div className="border-border text-muted-foreground flex h-13 items-center justify-between border-t px-5 text-xs">
           <span>
             {t("summary", {
