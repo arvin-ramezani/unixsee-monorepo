@@ -3,14 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
-  ArrowRight,
   CheckCircle2,
   ChevronDown,
   Globe2,
@@ -25,6 +20,7 @@ import {
   listWebsitesForPlanRequestAction,
   type PlanRequestWebsiteOption,
 } from "@/actions/plan-requests/plan-request-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import SearchInput from "@/components/common/search-input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -74,7 +70,9 @@ const REFUSE_OPTIONS = [
 }>;
 
 function getRefuseOption(kind: "declined" | "cancelled") {
-  return REFUSE_OPTIONS.find((option) => option.kind === kind) ?? REFUSE_OPTIONS[0];
+  return (
+    REFUSE_OPTIONS.find((option) => option.kind === kind) ?? REFUSE_OPTIONS[0]
+  );
 }
 
 function isTerminalPlanRequestStatus(status: PlanRequestType["status"]) {
@@ -117,18 +115,13 @@ export function PlanRequestDetailsView({
 }: PlanRequestDetailsViewProps) {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <Link
+      <AdminBackLink
         href="/plan-requests"
-        className={buttonVariants({
-          variant: "ghost",
-          size: "sm",
-          className: "w-fit gap-2",
-        })}
+        className="mt-4"
         aria-label="بازگشت به درخواست‌های پلن"
       >
-        <ArrowRight data-icon="inline-start" />
         بازگشت به درخواست‌های پلن
-      </Link>
+      </AdminBackLink>
 
       <header className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <h1 className="flex flex-wrap items-center gap-2 text-xl font-semibold tracking-tight">
@@ -137,10 +130,6 @@ export function PlanRequestDetailsView({
           </span>
           <PlanRequestStatusBadge status={request.status} />
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          حساب مشتری پس از تأیید تماس ساخته شده؛ وب‌سایت را انتخاب و پلن را فعال
-          کنید.
-        </p>
       </header>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -153,19 +142,6 @@ export function PlanRequestDetailsView({
 function PlanRequestSummary({ request }: { request: PlanRequestType }) {
   return (
     <div className="flex flex-col gap-4">
-      <section className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
-        <div className="flex items-start gap-3">
-          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
-          <div>
-            <p className="font-medium">درخواست با حساب مشتری</p>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              پس از تأیید تلفن یا ایمیل، حساب ساخته شده و درخواست به همان حساب
-              متصل است.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
         <h3 className="text-sm font-semibold">حساب مشتری</h3>
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
@@ -440,7 +416,9 @@ function PlanRequestDetailsBody({
       }
 
       syncRequest(result.request);
-      toast.success(`پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`);
+      toast.success(
+        `پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`,
+      );
     } finally {
       setSubmitting(false);
     }
@@ -638,7 +616,9 @@ function PlanRequestDetailsBody({
                               <button
                                 type="button"
                                 disabled={submitting}
-                                onClick={() => void handleSelectWebsite(website)}
+                                onClick={() =>
+                                  void handleSelectWebsite(website)
+                                }
                                 className={cn(
                                   "flex h-[calc(100%-0.25rem)] w-full flex-col justify-center rounded-md px-3 py-2 text-start transition-colors hover:bg-muted/60 disabled:opacity-60",
                                   isSelected && "bg-primary/10 text-primary",
@@ -827,7 +807,10 @@ function PlanRequestRefusePanel({
           </p>
         </div>
 
-        <label className="flex flex-col gap-1.5 text-sm" htmlFor={reasonFieldId}>
+        <label
+          className="flex flex-col gap-1.5 text-sm"
+          htmlFor={reasonFieldId}
+        >
           <span>دلیل</span>
           <textarea
             id={reasonFieldId}
@@ -841,7 +824,11 @@ function PlanRequestRefusePanel({
             aria-required
           />
           {refuseError ? (
-            <p id={reasonErrorId} className="text-xs text-destructive" role="alert">
+            <p
+              id={reasonErrorId}
+              className="text-xs text-destructive"
+              role="alert"
+            >
               {refuseError}
             </p>
           ) : null}

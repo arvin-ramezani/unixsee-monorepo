@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  ArrowRight,
   ClipboardList,
   Globe2,
   History,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { applyNestUserSecurityAction } from "@/actions/users/user-security-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -351,16 +351,7 @@ export function UserDetailsView({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href="/users"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "gap-2",
-          )}
-        >
-          <ArrowRight data-icon="inline-start" />
-          بازگشت به کاربران
-        </Link>
+        <AdminBackLink href="/users">بازگشت به کاربران</AdminBackLink>
       </div>
 
       <div

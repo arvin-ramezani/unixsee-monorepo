@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  ChevronDown,
-  Download,
-  Paperclip,
-  Send,
-  X,
-} from "lucide-react";
+import { ChevronDown, Download, Paperclip, Send, X } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 
 import {
@@ -18,6 +11,7 @@ import {
   reopenTicketAction,
   resolveTicketAction,
 } from "@/actions/tickets/ticket-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -110,11 +104,14 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
           <div>
             <p className="text-sm text-muted-foreground">مشتری</p>
             <p className="font-semibold">{ticket.fullName}</p>
-            {ticket.phoneNumber ? (
-              <p className="text-muted-foreground mt-0.5 w-fit text-sm" dir="ltr">
+            {!!ticket.phoneNumber && (
+              <p
+                className="text-muted-foreground mt-0.5 w-fit text-sm"
+                dir="ltr"
+              >
                 {ticket.phoneNumber}
               </p>
-            ) : null}
+            )}
             <Link
               href={`/users/${ticket.userId}`}
               className="text-sm text-primary underline-offset-4 hover:underline"
@@ -175,7 +172,7 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
             </span>
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">ایجاد شد</span>
+            <span className="text-muted-foreground">ایجاد شده</span>
             <span className="font-medium">
               {formatPersianDate(ticket.createdAt)}
             </span>
@@ -186,14 +183,14 @@ function ContextPanel({ ticket }: { ticket: TicketType }) {
               {formatPersianDate(ticket.updatedAt)}
             </span>
           </div>
-          {ticket.resolvedAt ? (
+          {!!ticket.resolvedAt && (
             <div className="flex items-center justify-between gap-2">
               <span className="text-muted-foreground">زمان حل</span>
               <span className="font-medium">
                 {formatPersianDateTime(ticket.resolvedAt)}
               </span>
             </div>
-          ) : null}
+          )}
           {ticket.status === TICKET_STATUS.RESOLVED && ticket.autoCloseAt ? (
             <div className="flex items-center justify-between gap-2">
               <span className="text-muted-foreground">بستن خودکار</span>
@@ -280,32 +277,22 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
 
   return (
     <div className="flex flex-1 flex-col gap-4 pt-4">
+      <AdminBackLink href="/tickets" aria-label="بازگشت به لیست تیکت‌ها">
+        بازگشت به تیکت‌ها
+      </AdminBackLink>
+
       <header className="rounded-2xl border border-border bg-card/90 p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <Link
-              href="/tickets"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-muted"
-              aria-label="بازگشت به لیست تیکت‌ها"
-            >
-              <ArrowRight className="size-4" />
-            </Link>
-            <div className="min-w-0">
-              <p className="text-sm text-muted-foreground">تیکت‌ها</p>
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  dir="ltr"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  {formatTicketNumber(ticket.id, ticket.number)}
-                </span>
-                <span className="hidden text-muted-foreground sm:inline">
-                  •
-                </span>
-                <h1 className="truncate text-base font-semibold text-foreground">
-                  {ticket.subject}
-                </h1>
-              </div>
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">تیکت‌ها</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <span dir="ltr" className="text-sm font-semibold text-foreground">
+                {formatTicketNumber(ticket.id, ticket.number)}
+              </span>
+              <span className="hidden text-muted-foreground sm:inline">•</span>
+              <h1 className="truncate text-base font-semibold text-foreground">
+                {ticket.subject}
+              </h1>
             </div>
           </div>
 

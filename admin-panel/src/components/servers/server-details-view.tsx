@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
-  ArrowRight,
   Globe2,
   KeyRound,
   Monitor,
@@ -20,6 +18,7 @@ import {
   deleteServerAction,
   type EnrollmentRevealPayload,
 } from "@/actions/servers/server-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Table,
@@ -53,9 +52,9 @@ const mutedSurfaceClassName = "rounded-2xl border border-border bg-muted/30";
 
 const SERVER_IDENTITY_FIELDS = [
   {
-    key: "location",
+    key: "ip",
     label: "آدرس IP",
-    getValue: (server: ServerType) => server.location || "—",
+    getValue: (server: ServerType) => server.ip || "—",
     dir: "ltr" as const,
   },
   {
@@ -271,16 +270,7 @@ export function ServerDetailsView({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href="/servers"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "gap-2",
-          )}
-        >
-          <ArrowRight data-icon="inline-start" />
-          بازگشت به سرورها
-        </Link>
+        <AdminBackLink href="/servers">بازگشت به سرورها</AdminBackLink>
         <Button
           type="button"
           size="sm"

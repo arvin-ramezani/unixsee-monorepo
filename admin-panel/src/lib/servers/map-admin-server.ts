@@ -204,7 +204,7 @@ export function mapAdminServerToUi(dto: AdminServerReadModelDto): ServerType {
   return {
     id: dto.id,
     label: dto.label?.trim() || dto.name,
-    location: dto.ipAddress,
+    ip: dto.ipAddress,
     capacitySummary: "",
     notes: dto.notes?.trim() ?? "",
     createdAt: formatFaDate(createdAtIso),

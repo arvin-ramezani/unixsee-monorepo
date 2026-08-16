@@ -90,7 +90,8 @@ export type ServerAgentType = {
 export type ServerType = {
   id: string;
   label: string;
-  location: string;
+  /** Host IP address (Nest `ipAddress`). */
+  ip: string;
   capacitySummary: string;
   notes: string;
   createdAt: string;
@@ -117,7 +118,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-001",
     label: "VPS-DE-03",
-    location: "فرانکفورت، آلمان",
+    ip: "185.199.108.153",
     capacitySummary: "۸ vCPU · ۳۲ GB RAM · ۴۰۰ GB NVMe",
     notes: "سرور اصلی فروشگاه‌های اروپایی",
     createdAt: "۱۲ اردیبهشت ۱۴۰۳",
@@ -164,7 +165,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-002",
     label: "VPS-IR-07",
-    location: "تهران، ایران",
+    ip: "91.107.10.21",
     capacitySummary: "۴ vCPU · ۱۶ GB RAM · ۲۰۰ GB NVMe",
     notes: "ترافیک کمپین اخیر روی این سرور است",
     createdAt: "۲۰ خرداد ۱۴۰۲",
@@ -208,7 +209,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-003",
     label: "VPS-IR-11",
-    location: "مشهد، ایران",
+    ip: "5.34.200.88",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "Agent قطع شده؛ نیاز به صدور مجدد توکن",
     createdAt: "۸ مرداد ۱۴۰۶",
@@ -242,7 +243,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-004",
     label: "VPS-DE-04",
-    location: "فرانکفورت، آلمان",
+    ip: "185.199.110.42",
     capacitySummary: "۸ vCPU · ۳۲ GB RAM · ۵۰۰ GB NVMe",
     notes: "",
     createdAt: "۵ اسفند ۱۴۰۲",
@@ -286,7 +287,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-005",
     label: "VPS-UK-02",
-    location: "لندن، انگلستان",
+    ip: "51.89.42.17",
     capacitySummary: "۱۶ vCPU · ۶۴ GB RAM · ۱ TB NVMe",
     notes: "VIP customers",
     createdAt: "۱۵ فروردین ۱۴۰۳",
@@ -320,7 +321,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-006",
     label: "VPS-IR-09",
-    location: "تهران، ایران",
+    ip: "91.107.22.45",
     capacitySummary: "۴ vCPU · ۱۶ GB RAM · ۲۵۰ GB NVMe",
     notes: "داده‌های Agent قدیمی است",
     createdAt: "۲۵ تیر ۱۴۰۱",
@@ -354,7 +355,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-007",
     label: "VPS-IR-14",
-    location: "تهران، ایران",
+    ip: "91.107.33.90",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "توکن صادر شده؛ در انتظار اولین ارتباط Agent",
     createdAt: "۶ مرداد ۱۴۰۶",
@@ -373,7 +374,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-008",
     label: "VPS-IR-15",
-    location: "اصفهان، ایران",
+    ip: "37.32.11.64",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "سرور جدید؛ هنوز Agent نصب نشده",
     createdAt: "۷ مرداد ۱۴۰۶",

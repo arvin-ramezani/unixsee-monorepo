@@ -1,7 +1,5 @@
-import Link from "next/link";
-
 import { UserDetailsView } from "@/components/users/user-details-view";
-import { buttonVariants } from "@/components/ui/button";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
 import { type AdminAuthorizationListResponse } from "@/lib/authorization/map-admin-authorization-case";
@@ -142,12 +140,7 @@ export default async function UserDetailsPage({
 
   return (
     <div className="flex flex-1 flex-col gap-4 pt-4">
-      <Link
-        href="/users"
-        className={buttonVariants({ variant: "ghost", size: "sm" })}
-      >
-        بازگشت به کاربران
-      </Link>
+      <AdminBackLink href="/users">بازگشت به کاربران</AdminBackLink>
       <div
         className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive"
         role="alert"

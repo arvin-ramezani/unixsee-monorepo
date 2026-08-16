@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
-  ArrowRight,
   CheckCircle2,
   CircleAlert,
   IdCard,
@@ -18,6 +17,7 @@ import {
   rejectAuthorizationCaseAction,
 } from "@/actions/authorization/authorization-case-actions";
 import { AuthorizationStatusBadge } from "@/components/authorization/authorization-status-badge";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -194,18 +194,12 @@ export function AuthorizationDetailsView({
 
   return (
     <div className="flex flex-1 flex-col gap-4 pb-24">
-      <Link
+      <AdminBackLink
         href="/users/authorization"
-        className={buttonVariants({
-          variant: "ghost",
-          size: "sm",
-          className: "w-fit gap-2",
-        })}
         aria-label="بازگشت به صف احراز هویت"
       >
-        <ArrowRight data-icon="inline-start" />
         بازگشت به صف احراز هویت
-      </Link>
+      </AdminBackLink>
 
       <header className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">

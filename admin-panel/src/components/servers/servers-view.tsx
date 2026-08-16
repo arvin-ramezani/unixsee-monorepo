@@ -131,7 +131,9 @@ function ServerTableRow({ server }: { server: ServerType }) {
     navigateToServer();
   };
 
-  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+  const handleRowKeyDown = (
+    event: React.KeyboardEvent<HTMLTableRowElement>,
+  ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
 
     event.preventDefault();
@@ -149,20 +151,20 @@ function ServerTableRow({ server }: { server: ServerType }) {
     >
       <TableCell className="px-4 py-3">
         <Link href={serverHref} className="block min-w-0">
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Server className="size-5" aria-hidden="true" />
             </span>
-            <div className="min-w-0">
-              <p className="truncate font-medium text-foreground" dir="ltr">
-                {server.label}
-              </p>
-              <p className="truncate text-sm text-muted-foreground" dir="ltr">
-                {server.location}
-              </p>
-            </div>
+            <span className="truncate font-medium text-foreground" dir="ltr">
+              {server.label}
+            </span>
           </div>
         </Link>
+      </TableCell>
+      <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground">
+        <span dir="ltr" className="w-fit">
+          {server.ip || "—"}
+        </span>
       </TableCell>
       <TableCell className="px-4 py-3">
         <ServerStatusBadge state={server.agent.state} />
@@ -179,9 +181,6 @@ function ServerTableRow({ server }: { server: ServerType }) {
             {unassignedCount.toLocaleString("fa-IR")} کشف‌نشده
           </span>
         )}
-      </TableCell>
-      <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground" dir="ltr">
-        {server.location || "—"}
       </TableCell>
     </TableRow>
   );
@@ -201,7 +200,7 @@ function ServerCard({ server }: { server: ServerType }) {
             {server.label}
           </p>
           <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
-            {server.location}
+            {server.ip}
           </p>
         </div>
         <ServerStatusBadge state={server.agent.state} />
@@ -254,7 +253,7 @@ export function ServersView({
     return servers.filter((server) => {
       const matchesQuery =
         normalizedQuery.length === 0 ||
-        [server.label, server.location, server.notes]
+        [server.label, server.ip, server.notes]
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
@@ -333,14 +332,14 @@ export function ServersView({
 
   return (
     <div className="flex flex-col gap-4">
-      {loadError ? (
+      {!!loadError && (
         <div
           className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           role="alert"
         >
           {loadError}
         </div>
-      ) : null}
+      )}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {summaryItems.map((item) => {
           const Icon = item.icon;
@@ -434,7 +433,7 @@ export function ServersView({
           </div>
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[minmax(220px,1fr)_minmax(180px,220px)]">
+        <div className="grid gap-2 lg:grid-cols-[minmax(220px,580px)_minmax(180px,220px)]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -511,10 +510,10 @@ export function ServersView({
               <TableHeader>
                 <TableRow className="bg-muted/40 hover:bg-muted/40">
                   <TableHead className="px-4 py-3">سرور</TableHead>
+                  <TableHead className="px-4 py-3">آدرس IP</TableHead>
                   <TableHead className="px-4 py-3">وضعیت Agent</TableHead>
                   <TableHead className="px-4 py-3">آخرین ارتباط</TableHead>
                   <TableHead className="px-4 py-3">وب‌سایت‌ها</TableHead>
-                  <TableHead className="px-4 py-3">آدرس IP</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

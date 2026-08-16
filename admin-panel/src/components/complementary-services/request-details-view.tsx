@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, CalendarClock, Globe2, Plus, X } from "lucide-react";
+import { CalendarClock, Globe2, Plus, X } from "lucide-react";
 
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   COMPLEMENTARY_SERVICE_FAMILY_LABELS,
@@ -97,18 +97,12 @@ export function RequestDetailsView({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <Link
+      <AdminBackLink
         href="/complementary-services"
-        className={buttonVariants({
-          variant: "ghost",
-          size: "sm",
-          className: "w-fit gap-2",
-        })}
         aria-label="بازگشت به خدمات تکمیلی"
       >
-        <ArrowRight data-icon="inline-start" />
         بازگشت به خدمات تکمیلی
-      </Link>
+      </AdminBackLink>
 
       <header className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="mb-2">
@@ -228,12 +222,7 @@ export function RequestDetailsView({
             فعالسازی پس از ثبت پذیرش پیشنهاد در دسترس قرار می‌گیرد.
           </p>
         )}
-        <Link
-          href="/complementary-services"
-          className={buttonVariants({ variant: "outline" })}
-        >
-          بازگشت
-        </Link>
+        <AdminBackLink href="/complementary-services">بازگشت</AdminBackLink>
       </div>
 
       <CreateServiceDialog

@@ -6,7 +6,6 @@ import { useState } from "react";
 import {
   Activity,
   AlertTriangle,
-  ArrowRight,
   CalendarClock,
   CheckCircle2,
   Clock3,
@@ -24,6 +23,7 @@ import {
   changeWebsitePlanAction,
   renewWebsitePlanAction,
 } from "@/actions/websites/website-plan-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   AlertDialog,
@@ -273,31 +273,26 @@ export function WebsiteDetailsView({
 
   return (
     <div className="flex flex-1 flex-col gap-4 pt-4">
+      <AdminBackLink href="/websites" aria-label="بازگشت به لیست وب‌سایت‌ها">
+        بازگشت به وب‌سایت‌ها
+      </AdminBackLink>
+
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-end gap-3">
-            <Link
-              href="/websites"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-muted"
-              aria-label="بازگشت به لیست وب‌سایت‌ها"
-            >
-              <ArrowRight className="size-4" />
-            </Link>
-            <div>
-              <p className="text-sm lg:text-base mb-2 text-muted-foreground">
-                وب‌سایت‌ها
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <WebsiteNavicon
-                    className="size-9"
-                    status={website.status}
-                    icon={website.domain.slice(0, 1)}
-                  />
-                  <h1 className="text-lg font-semibold">{website.domain}</h1>
-                </div>
-                {formatStatusBadge(adminStatus)}
+          <div className="min-w-0">
+            <p className="text-sm lg:text-base mb-2 text-muted-foreground">
+              وب‌سایت‌ها
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
+                <WebsiteNavicon
+                  className="size-9"
+                  status={website.status}
+                  icon={website.domain.slice(0, 1)}
+                />
+                <h1 className="text-lg font-semibold">{website.domain}</h1>
               </div>
+              {formatStatusBadge(adminStatus)}
             </div>
           </div>
 

@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
-import { buttonVariants } from "@/components/ui/button";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { CustomerCreateForm } from "@/components/users/customer-create-form";
 import type { CreateCustomerResultType } from "@/lib/data/users-runtime";
 
@@ -40,18 +38,9 @@ export function NewCustomerPageClient({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <Link
-        href={cancelHref}
-        className={buttonVariants({
-          variant: "ghost",
-          size: "sm",
-          className: "w-fit gap-2",
-        })}
-        aria-label="بازگشت"
-      >
-        <ArrowRight data-icon="inline-start" />
+      <AdminBackLink href={cancelHref} aria-label="بازگشت">
         بازگشت
-      </Link>
+      </AdminBackLink>
 
       <header className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <h1 className="text-xl font-semibold tracking-tight">
