@@ -12,14 +12,22 @@ import {
   UnixseeMessageStatus,
 } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { StorageService } from '#/modules/storage/storage.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
 import type {
   CreateUnixseeMessageDto,
   UpdateUnixseeMessageDto,
-  UnixseeMessageAttachmentItemDto,
   UnixseeMessageLinkDto,
 } from '../dto/unixsee-messages.dto.js';
+import {
+  buildUnixseeMessageAttachmentStorageKey,
+  sanitizeUnixseeMessageAttachmentFileName,
+  UNIXSEE_MESSAGE_ATTACHMENT_ALLOWED_CONTENT_TYPES,
+  UNIXSEE_MESSAGE_ATTACHMENT_MAX_BYTES,
+  UNIXSEE_MESSAGE_ATTACHMENT_MAX_COUNT,
+  UNIXSEE_MESSAGE_ATTACHMENT_SIGNED_URL_TTL_SECONDS,
+} from '../unixsee-message-attachments.js';
 
 const messageInclude = {
   attachments: true,
@@ -31,6 +39,8 @@ type MessageWithRelations = Prisma.UnixseeMessageGetPayload<{
   include: typeof messageInclude;
 }>;
 
+type AttachmentRow = MessageWithRelations['attachments'][number];
+
 @Injectable()
 export class UnixseeMessagesService {
   private readonly logger = createAppLogger(UnixseeMessagesService.name);
@@ -38,6 +48,7 @@ export class UnixseeMessagesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
+    private readonly storage: StorageService,
   ) {}
 
   async resolveRecipientPreferredLocale(tenantId: string): Promise<{
@@ -119,7 +130,10 @@ export class UnixseeMessagesService {
     }
 
     await this.tenantAccess.requireMembership(userId, message.tenantId);
-    return this.toCustomerItem(message);
+    return this.toCustomerItem(
+      message,
+      await this.buildAttachmentDownloadUrls(message.attachments),
+    );
   }
 
   async markRead(userId: string, messageId: string) {
@@ -181,7 +195,10 @@ export class UnixseeMessagesService {
       message.tenantId,
     );
     return {
-      ...this.toAdminItem(message),
+      ...this.toAdminItem(
+        message,
+        await this.buildAttachmentDownloadUrls(message.attachments),
+      ),
       ...preferred,
     };
   }
@@ -231,13 +248,6 @@ export class UnixseeMessagesService {
         websiteId: input.websiteId,
         links: input.links?.length ? this.toLinksJson(input.links) : undefined,
         status: UnixseeMessageStatus.DRAFT,
-        attachments: input.attachments?.length
-          ? {
-              create: input.attachments.map((attachment) =>
-                this.mapAttachmentCreate(attachment),
-              ),
-            }
-          : undefined,
       },
       include: messageInclude,
     });
@@ -257,43 +267,32 @@ export class UnixseeMessagesService {
 
     const websiteId =
       input.websiteId === undefined ? existing.websiteId : input.websiteId;
-    await this.assertWebsiteBelongsToTenant(websiteId ?? undefined, existing.tenantId);
+    await this.assertWebsiteBelongsToTenant(
+      websiteId ?? undefined,
+      existing.tenantId,
+    );
 
-    const message = await this.prisma.$transaction(async (tx) => {
-      if (input.attachments) {
-        await tx.unixseeMessageAttachment.deleteMany({
-          where: { messageId: id },
-        });
-      }
-
-      return tx.unixseeMessage.update({
-        where: { id },
-        data: {
-          ...(input.title !== undefined && { title: input.title.trim() }),
-          ...(input.body !== undefined && { body: input.body.trim() }),
-          ...(input.contentLocale !== undefined && {
-            contentLocale: input.contentLocale,
-          }),
-          ...(input.websiteId !== undefined && { websiteId: input.websiteId }),
-          ...(input.links !== undefined && {
-            links: this.toLinksJson(input.links),
-          }),
-          ...(input.attachments
-            ? {
-                attachments: {
-                  create: input.attachments.map((attachment) =>
-                    this.mapAttachmentCreate(attachment),
-                  ),
-                },
-              }
-            : {}),
-        },
-        include: messageInclude,
-      });
+    const message = await this.prisma.unixseeMessage.update({
+      where: { id },
+      data: {
+        ...(input.title !== undefined && { title: input.title.trim() }),
+        ...(input.body !== undefined && { body: input.body.trim() }),
+        ...(input.contentLocale !== undefined && {
+          contentLocale: input.contentLocale,
+        }),
+        ...(input.websiteId !== undefined && { websiteId: input.websiteId }),
+        ...(input.links !== undefined && {
+          links: this.toLinksJson(input.links),
+        }),
+      },
+      include: messageInclude,
     });
 
     this.logger.log('unixsee_message.updated', { messageId: id });
-    return this.toAdminItem(message);
+    return this.toAdminItem(
+      message,
+      await this.buildAttachmentDownloadUrls(message.attachments),
+    );
   }
 
   async publish(id: string) {
@@ -347,6 +346,211 @@ export class UnixseeMessagesService {
     return this.toAdminItem(message);
   }
 
+  async uploadAttachmentForAdmin(
+    messageId: string,
+    file: Express.Multer.File | undefined,
+  ) {
+    await this.requireMessage(messageId);
+    return this.uploadAttachment(messageId, file);
+  }
+
+  async createDownloadUrlForAdmin(messageId: string, attachmentId: string) {
+    await this.requireMessage(messageId);
+    return this.createDownloadUrl(messageId, attachmentId);
+  }
+
+  async createDownloadUrlForUser(
+    userId: string,
+    messageId: string,
+    attachmentId: string,
+  ) {
+    const message = await this.prisma.unixseeMessage.findFirst({
+      where: {
+        id: messageId,
+        status: UnixseeMessageStatus.PUBLISHED,
+      },
+      select: { id: true, tenantId: true },
+    });
+    if (!message) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    await this.tenantAccess.requireMembership(userId, message.tenantId);
+    return this.createDownloadUrl(messageId, attachmentId);
+  }
+
+  async removeAttachmentForAdmin(messageId: string, attachmentId: string) {
+    await this.requireMessage(messageId);
+
+    const attachment = await this.prisma.unixseeMessageAttachment.findFirst({
+      where: { id: attachmentId, messageId },
+    });
+    if (!attachment) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    await this.prisma.unixseeMessageAttachment.delete({
+      where: { id: attachment.id },
+    });
+
+    try {
+      await this.storage.remove([attachment.storageKey]);
+    } catch (error) {
+      this.logger.error(
+        'unixsee_message.attachment.remove_cleanup_failed',
+        error as Error,
+        { messageId, attachmentId, storageKey: attachment.storageKey },
+      );
+    }
+
+    this.logger.log('unixsee_message.attachment.removed', {
+      messageId,
+      attachmentId,
+    });
+
+    return { id: attachment.id };
+  }
+
+  private async uploadAttachment(
+    messageId: string,
+    file: Express.Multer.File | undefined,
+  ) {
+    if (!file?.buffer?.length) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.ticketAttachmentRequired);
+    }
+
+    if (file.size > UNIXSEE_MESSAGE_ATTACHMENT_MAX_BYTES) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.ticketAttachmentTooLarge);
+    }
+
+    const contentType = (file.mimetype || '').trim().toLowerCase();
+    if (
+      !contentType ||
+      !UNIXSEE_MESSAGE_ATTACHMENT_ALLOWED_CONTENT_TYPES.has(contentType)
+    ) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.ticketAttachmentInvalid);
+    }
+
+    const existingCount = await this.prisma.unixseeMessageAttachment.count({
+      where: { messageId },
+    });
+    if (existingCount >= UNIXSEE_MESSAGE_ATTACHMENT_MAX_COUNT) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.ticketAttachmentLimit);
+    }
+
+    const originalName = sanitizeUnixseeMessageAttachmentFileName(
+      file.originalname || 'file',
+    );
+    const storageKey = buildUnixseeMessageAttachmentStorageKey(
+      messageId,
+      originalName,
+    );
+
+    await this.storage.upload(storageKey, file.buffer, {
+      contentType,
+      upsert: false,
+    });
+
+    try {
+      const attachment = await this.prisma.unixseeMessageAttachment.create({
+        data: {
+          messageId,
+          fileName: originalName.slice(0, 255),
+          contentType: contentType.slice(0, 128),
+          sizeBytes: file.size,
+          storageKey,
+        },
+      });
+
+      const downloadUrl = await this.signAttachmentDownload(storageKey);
+
+      this.logger.log('unixsee_message.attachment.uploaded', {
+        messageId,
+        attachmentId: attachment.id,
+        sizeBytes: attachment.sizeBytes,
+        contentType: attachment.contentType,
+      });
+
+      return {
+        id: attachment.id,
+        fileName: attachment.fileName,
+        contentType: attachment.contentType,
+        sizeBytes: attachment.sizeBytes,
+        storageKey: attachment.storageKey,
+        downloadUrl,
+        createdAt: attachment.createdAt.toISOString(),
+      };
+    } catch (error) {
+      try {
+        await this.storage.remove([storageKey]);
+      } catch (cleanupError) {
+        this.logger.error(
+          'unixsee_message.attachment.upload_cleanup_failed',
+          cleanupError as Error,
+          { messageId, storageKey },
+        );
+      }
+      throw error;
+    }
+  }
+
+  private async createDownloadUrl(messageId: string, attachmentId: string) {
+    const attachment = await this.prisma.unixseeMessageAttachment.findFirst({
+      where: { id: attachmentId, messageId },
+    });
+    if (!attachment) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    const downloadUrl = await this.signAttachmentDownload(
+      attachment.storageKey,
+    );
+    if (!downloadUrl) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    return {
+      id: attachment.id,
+      fileName: attachment.fileName,
+      contentType: attachment.contentType,
+      sizeBytes: attachment.sizeBytes,
+      storageKey: attachment.storageKey,
+      downloadUrl,
+      expiresInSeconds: UNIXSEE_MESSAGE_ATTACHMENT_SIGNED_URL_TTL_SECONDS,
+    };
+  }
+
+  private async buildAttachmentDownloadUrls(
+    attachments: AttachmentRow[],
+  ): Promise<Map<string, string | null>> {
+    const entries = await Promise.all(
+      attachments.map(async (attachment) => {
+        const downloadUrl = await this.signAttachmentDownload(
+          attachment.storageKey,
+        );
+        return [attachment.id, downloadUrl] as const;
+      }),
+    );
+    return new Map(entries);
+  }
+
+  private async signAttachmentDownload(
+    storageKey: string,
+  ): Promise<string | null> {
+    try {
+      const { signedUrl } = await this.storage.createSignedUrl(
+        storageKey,
+        UNIXSEE_MESSAGE_ATTACHMENT_SIGNED_URL_TTL_SECONDS,
+      );
+      return signedUrl;
+    } catch (error) {
+      this.logger.warn('unixsee_message.attachment.signed_url_failed', {
+        storageKey,
+        message: error instanceof Error ? error.message : 'unknown',
+      });
+      return null;
+    }
+  }
+
   private async requireMessage(id: string): Promise<MessageWithRelations> {
     const message = await this.prisma.unixseeMessage.findUnique({
       where: { id },
@@ -386,15 +590,6 @@ export class UnixseeMessagesService {
     }
   }
 
-  private mapAttachmentCreate(attachment: UnixseeMessageAttachmentItemDto) {
-    return {
-      fileName: attachment.fileName,
-      contentType: attachment.contentType,
-      sizeBytes: attachment.sizeBytes,
-      storageKey: attachment.storageKey,
-    };
-  }
-
   private toLinksJson(
     links: UnixseeMessageLinkDto[] | undefined,
   ): Prisma.InputJsonValue {
@@ -432,7 +627,25 @@ export class UnixseeMessagesService {
     });
   }
 
-  private toAdminItem(message: MessageWithRelations) {
+  private mapAttachment(
+    attachment: AttachmentRow,
+    downloadUrl?: string | null,
+  ) {
+    return {
+      id: attachment.id,
+      fileName: attachment.fileName,
+      contentType: attachment.contentType,
+      sizeBytes: attachment.sizeBytes,
+      storageKey: attachment.storageKey,
+      downloadUrl: downloadUrl ?? null,
+      createdAt: attachment.createdAt.toISOString(),
+    };
+  }
+
+  private toAdminItem(
+    message: MessageWithRelations,
+    downloadUrls?: Map<string, string | null>,
+  ) {
     return {
       id: message.id,
       tenantId: message.tenantId,
@@ -449,13 +662,9 @@ export class UnixseeMessagesService {
       updatedAt: message.updatedAt,
       tenant: message.tenant,
       website: message.website,
-      attachments: message.attachments.map((attachment) => ({
-        id: attachment.id,
-        fileName: attachment.fileName,
-        contentType: attachment.contentType,
-        sizeBytes: attachment.sizeBytes,
-        storageKey: attachment.storageKey,
-      })),
+      attachments: message.attachments.map((attachment) =>
+        this.mapAttachment(attachment, downloadUrls?.get(attachment.id)),
+      ),
     };
   }
 
@@ -463,6 +672,7 @@ export class UnixseeMessagesService {
     message: MessageWithRelations & {
       reads?: Array<{ readAt: Date }>;
     },
+    downloadUrls?: Map<string, string | null>,
   ) {
     const readAt = message.reads?.[0]?.readAt ?? null;
     return {
@@ -476,13 +686,9 @@ export class UnixseeMessagesService {
       publishedAt: message.publishedAt,
       createdAt: message.createdAt,
       website: message.website,
-      attachments: message.attachments.map((attachment) => ({
-        id: attachment.id,
-        fileName: attachment.fileName,
-        contentType: attachment.contentType,
-        sizeBytes: attachment.sizeBytes,
-        storageKey: attachment.storageKey,
-      })),
+      attachments: message.attachments.map((attachment) =>
+        this.mapAttachment(attachment, downloadUrls?.get(attachment.id)),
+      ),
       isRead: Boolean(readAt),
       readAt,
     };

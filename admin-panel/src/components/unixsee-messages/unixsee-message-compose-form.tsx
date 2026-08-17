@@ -7,7 +7,9 @@ import { toast } from "sonner";
 import {
   createUnixseeMessageAction,
   publishUnixseeMessageAction,
+  removeUnixseeMessageAttachmentAction,
   updateUnixseeMessageAction,
+  uploadUnixseeMessageAttachmentAction,
 } from "@/actions/unixsee-messages/unixsee-message-actions";
 import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import {
@@ -53,6 +55,11 @@ const ALLOWED_TYPES = new Set([
 const MAX_FILES = 5;
 const MAX_BYTES = 5 * 1024 * 1024;
 
+type PendingFile = {
+  id: string;
+  file: File;
+};
+
 export function UnixseeMessageComposeForm({
   mode,
   tenants,
@@ -73,9 +80,10 @@ export function UnixseeMessageComposeForm({
   const [links, setLinks] = useState<UnixseeMessageLinkType[]>(
     initialMessage?.links ?? [],
   );
-  const [attachments, setAttachments] = useState<UnixseeMessageAttachmentType[]>(
-    initialMessage?.attachments ?? [],
-  );
+  const [existingAttachments, setExistingAttachments] = useState<
+    UnixseeMessageAttachmentType[]
+  >(initialMessage?.attachments ?? []);
+  const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [preferredLocale, setPreferredLocale] = useState<UnixseeContentLocaleType>(
     initialMessage?.recipientPreferredLocale ?? UNIXSEE_CONTENT_LOCALE.fa,
   );
@@ -144,21 +152,16 @@ export function UnixseeMessageComposeForm({
 
   const onPickFiles = (fileList: FileList | null) => {
     if (!fileList) return;
-    const next = [...attachments];
+    const next = [...pendingFiles];
     for (const file of Array.from(fileList)) {
-      if (next.length >= MAX_FILES) break;
+      if (existingAttachments.length + next.length >= MAX_FILES) break;
       if (!ALLOWED_TYPES.has(file.type) || file.size > MAX_BYTES) {
         toast.error("نوع یا حجم فایل مجاز نیست");
         continue;
       }
-      next.push({
-        fileName: file.name,
-        contentType: file.type,
-        sizeBytes: file.size,
-        storageKey: `local://${crypto.randomUUID()}/${file.name}`,
-      });
+      next.push({ id: crypto.randomUUID(), file });
     }
-    setAttachments(next);
+    setPendingFiles(next);
   };
 
   const save = (andPublish: boolean) => {
@@ -170,7 +173,6 @@ export function UnixseeMessageComposeForm({
         contentLocale,
         websiteId: websiteId || null,
         links: links.filter((link) => link.url.trim()),
-        attachments,
       };
 
       const result =
@@ -187,7 +189,46 @@ export function UnixseeMessageComposeForm({
       }
 
       const id = result.id ?? initialMessage?.id;
-      if (andPublish && id) {
+      if (!id) {
+        toast.error("شناسه پیام در دسترس نیست");
+        return;
+      }
+
+      if (mode === "edit" && initialMessage) {
+        const keptIds = new Set(
+          existingAttachments
+            .map((attachment) => attachment.id)
+            .filter((value): value is string => Boolean(value)),
+        );
+        for (const attachment of initialMessage.attachments) {
+          if (!attachment.id || keptIds.has(attachment.id)) continue;
+          const removed = await removeUnixseeMessageAttachmentAction(
+            id,
+            attachment.id,
+          );
+          if (!removed.ok) {
+            toastApiErrorMessage(removed.message);
+            router.push(`/unixsee-messages/${id}`);
+            return;
+          }
+        }
+      }
+
+      for (const pendingFile of pendingFiles) {
+        const formData = new FormData();
+        formData.append("file", pendingFile.file);
+        const uploaded = await uploadUnixseeMessageAttachmentAction(
+          id,
+          formData,
+        );
+        if (!uploaded.ok) {
+          toastApiErrorMessage(uploaded.message);
+          router.push(`/unixsee-messages/${id}`);
+          return;
+        }
+      }
+
+      if (andPublish) {
         const published = await publishUnixseeMessageAction(id);
         if (!published.ok) {
           toastApiErrorMessage(published.message);
@@ -199,10 +240,8 @@ export function UnixseeMessageComposeForm({
         toast.success(mode === "create" ? "پیش‌نویس ذخیره شد" : "پیام به‌روز شد");
       }
 
-      if (id) {
-        router.push(`/unixsee-messages/${id}`);
-        router.refresh();
-      }
+      router.push(`/unixsee-messages/${id}`);
+      router.refresh();
     });
   };
 
@@ -399,14 +438,14 @@ export function UnixseeMessageComposeForm({
           onChange={(event) => onPickFiles(event.target.files)}
         />
         <p className="text-xs text-muted-foreground">
-          حداکثر ۵ فایل، هر کدام تا ۵ مگابایت (png/jpeg/webp/pdf). آپلود واقعی
-          S3 هنوز متصل نیست؛ فقط metadata ذخیره می‌شود.
+          حداکثر ۵ فایل، هر کدام تا ۵ مگابایت (png/jpeg/webp/pdf). فایل‌ها پس از
+          ذخیره به فضای ابری آپلود می‌شوند.
         </p>
-        {attachments.length > 0 && (
+        {(existingAttachments.length > 0 || pendingFiles.length > 0) && (
           <ul className="space-y-1 text-sm">
-            {attachments.map((attachment, index) => (
+            {existingAttachments.map((attachment) => (
               <li
-                key={`${attachment.storageKey}-${index}`}
+                key={attachment.id ?? attachment.storageKey}
                 className="flex items-center justify-between gap-2"
               >
                 <span>{attachment.fileName}</span>
@@ -416,7 +455,30 @@ export function UnixseeMessageComposeForm({
                   size="sm"
                   aria-label={`حذف ${attachment.fileName}`}
                   onClick={() =>
-                    setAttachments(attachments.filter((_, i) => i !== index))
+                    setExistingAttachments((current) =>
+                      current.filter((item) => item.id !== attachment.id),
+                    )
+                  }
+                >
+                  حذف
+                </Button>
+              </li>
+            ))}
+            {pendingFiles.map((pendingFile) => (
+              <li
+                key={pendingFile.id}
+                className="flex items-center justify-between gap-2"
+              >
+                <span>{pendingFile.file.name}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-label={`حذف ${pendingFile.file.name}`}
+                  onClick={() =>
+                    setPendingFiles((current) =>
+                      current.filter((item) => item.id !== pendingFile.id),
+                    )
                   }
                 >
                   حذف

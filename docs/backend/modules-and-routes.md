@@ -321,16 +321,20 @@ Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
 |---|---|---|
 | GET | `/api/v1/unixsee-messages` | Customer (`items`, `total`, `hasUnread`) |
 | GET | `/api/v1/unixsee-messages/:id` | Customer |
+| GET | `/api/v1/unixsee-messages/:id/attachments/:attachmentId/download` | Customer (signed URL) |
 | POST | `/api/v1/unixsee-messages/:id/read` | Customer |
 | GET/POST | `/api/v1/admin/unixsee-messages` | Admin |
 | GET | `/api/v1/admin/unixsee-messages/tenants/:tenantId/compose-context` | Admin |
 | GET/PATCH | `/api/v1/admin/unixsee-messages/:id` | Admin |
 | POST | `/api/v1/admin/unixsee-messages/:id/publish` | Admin |
 | POST | `/api/v1/admin/unixsee-messages/:id/withdraw` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
+| GET | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId/download` | Admin (signed URL) |
+| DELETE | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId` | Admin |
 
 Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
-`websiteId`, `links[]`, attachment `storageKey` metadata
-(`StorageModule` / Supabase; unixsee-message binary upload still deferred).
+`websiteId`, `links[]`. Attachments upload after create via
+`StorageModule` / Supabase (max 5 × 5 MB; png/jpeg/webp/pdf).
 
 ### Activities — add `activities`
 

@@ -4,12 +4,10 @@ import {
   IsArray,
   IsEnum,
   IsIn,
-  IsInt,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
-  Min,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -29,24 +27,6 @@ export class UnixseeMessageLinkDto {
 
   @IsIn(['external', 'dashboard'])
   kind!: 'external' | 'dashboard';
-}
-
-export class UnixseeMessageAttachmentItemDto {
-  @IsString()
-  @MaxLength(255)
-  fileName!: string;
-
-  @IsString()
-  @MaxLength(128)
-  contentType!: string;
-
-  @IsInt()
-  @Min(0)
-  sizeBytes!: number;
-
-  @IsString()
-  @MaxLength(512)
-  storageKey!: string;
 }
 
 export class CreateUnixseeMessageDto {
@@ -76,13 +56,6 @@ export class CreateUnixseeMessageDto {
   @ValidateNested({ each: true })
   @Type(() => UnixseeMessageLinkDto)
   links?: UnixseeMessageLinkDto[];
-
-  @IsOptional()
-  @IsArray()
-  @ArrayMaxSize(5)
-  @ValidateNested({ each: true })
-  @Type(() => UnixseeMessageAttachmentItemDto)
-  attachments?: UnixseeMessageAttachmentItemDto[];
 }
 
 export class UpdateUnixseeMessageDto {
@@ -112,13 +85,6 @@ export class UpdateUnixseeMessageDto {
   @ValidateNested({ each: true })
   @Type(() => UnixseeMessageLinkDto)
   links?: UnixseeMessageLinkDto[];
-
-  @IsOptional()
-  @IsArray()
-  @ArrayMaxSize(5)
-  @ValidateNested({ each: true })
-  @Type(() => UnixseeMessageAttachmentItemDto)
-  attachments?: UnixseeMessageAttachmentItemDto[];
 }
 
 export class AdminListUnixseeMessagesQueryDto {

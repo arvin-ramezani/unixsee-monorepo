@@ -20,9 +20,7 @@ function formatSizeBytes(sizeBytes: number): string {
 }
 
 /**
- * Attachment list ready for S3: when `downloadUrl` is present, render a real
- * download control; otherwise show the file as unavailable-to-download until
- * storage signing ships (metadata / storageKey already on the item).
+ * Attachment list with signed downloads when Nest returns `downloadUrl`.
  */
 export function UnixseeMessageAttachments({
   attachments,

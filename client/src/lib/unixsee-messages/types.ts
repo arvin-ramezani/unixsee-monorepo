@@ -11,8 +11,8 @@ export type UnixseeMessageAttachment = {
   sizeBytes: number;
   storageKey: string;
   /**
-   * Signed or public download URL when object storage is wired.
-   * Absent / null while S3 upload+signing is deferred — UI stays ready.
+   * Short-lived signed download URL from Nest / Supabase.
+   * Absent / null when signing fails (e.g. legacy local:// keys).
    */
   downloadUrl?: string | null;
 };

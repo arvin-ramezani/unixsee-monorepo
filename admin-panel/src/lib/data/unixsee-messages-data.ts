@@ -44,6 +44,7 @@ export type UnixseeMessageAttachmentType = {
   contentType: string;
   sizeBytes: number;
   storageKey: string;
+  downloadUrl?: string | null;
 };
 
 export type UnixseeMessageType = {

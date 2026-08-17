@@ -32,13 +32,23 @@ describe('UnixseeMessagesService', () => {
     requireMembership: vi.fn(),
   };
 
+  const storage = {
+    upload: vi.fn(),
+    createSignedUrl: vi.fn(),
+    remove: vi.fn(),
+  };
+
   let service: UnixseeMessagesService;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    storage.createSignedUrl.mockResolvedValue({
+      signedUrl: 'https://signed.example/file',
+    });
     service = new UnixseeMessagesService(
       prisma as never,
       tenantAccess as never,
+      storage as never,
     );
   });
 

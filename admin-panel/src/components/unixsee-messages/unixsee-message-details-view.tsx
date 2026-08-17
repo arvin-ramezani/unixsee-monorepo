@@ -151,10 +151,23 @@ export function UnixseeMessageDetailsView({
           {message.attachments.length > 0 && (
             <div>
               <p className="mb-2 text-sm font-medium">پیوست‌ها</p>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <ul className="space-y-1 text-sm">
                 {message.attachments.map((attachment, index) => (
                   <li key={attachment.id ?? `${attachment.storageKey}-${index}`}>
-                    {attachment.fileName}
+                    {attachment.downloadUrl ? (
+                      <a
+                        href={attachment.downloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground hover:underline"
+                      >
+                        {attachment.fileName}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        {attachment.fileName}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

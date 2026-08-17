@@ -54,6 +54,7 @@ export type AdminUnixseeMessageDto = {
     contentType: string;
     sizeBytes: number;
     storageKey: string;
+    downloadUrl?: string | null;
   }>;
   recipientPreferredLocale?: string;
   recipientPreferredLocaleLabel?: string;
@@ -121,6 +122,7 @@ function mapAttachments(
     contentType: attachment.contentType,
     sizeBytes: attachment.sizeBytes,
     storageKey: attachment.storageKey,
+    downloadUrl: attachment.downloadUrl ?? null,
   }));
 }
 

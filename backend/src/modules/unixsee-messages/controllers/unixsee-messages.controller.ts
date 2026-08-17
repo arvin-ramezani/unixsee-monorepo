@@ -40,6 +40,20 @@ export class UnixseeMessagesController {
     return ApiResponseBuilder.ok(data);
   }
 
+  @Get(':id/attachments/:attachmentId/download')
+  async downloadAttachment(
+    @CurrentUser() user: CurrentUserType,
+    @Param('id') id: string,
+    @Param('attachmentId') attachmentId: string,
+  ) {
+    const data = await this.unixseeMessagesService.createDownloadUrlForUser(
+      user.id,
+      id,
+      attachmentId,
+    );
+    return ApiResponseBuilder.ok(data);
+  }
+
   @Post(':id/read')
   @HttpCode(HttpStatus.OK)
   async markRead(

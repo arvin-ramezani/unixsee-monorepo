@@ -9,7 +9,6 @@ import {
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
 import type {
   UnixseeContentLocaleType,
-  UnixseeMessageAttachmentType,
   UnixseeMessageLinkType,
 } from "@/lib/data/unixsee-messages-data";
 
@@ -24,7 +23,6 @@ export type UnixseeMessageWriteInput = {
   contentLocale: UnixseeContentLocaleType;
   websiteId?: string | null;
   links?: UnixseeMessageLinkType[];
-  attachments?: UnixseeMessageAttachmentType[];
 };
 
 function revalidateUnixseeMessages(id?: string) {
@@ -49,16 +47,6 @@ export async function createUnixseeMessageAction(
           contentLocale: input.contentLocale,
           ...(input.websiteId ? { websiteId: input.websiteId } : {}),
           ...(input.links?.length ? { links: input.links } : {}),
-          ...(input.attachments?.length
-            ? {
-                attachments: input.attachments.map((attachment) => ({
-                  fileName: attachment.fileName,
-                  contentType: attachment.contentType,
-                  sizeBytes: attachment.sizeBytes,
-                  storageKey: attachment.storageKey,
-                })),
-              }
-            : {}),
         }),
       },
     );
@@ -87,12 +75,6 @@ export async function updateUnixseeMessageAction(
         contentLocale: input.contentLocale,
         websiteId: input.websiteId ?? null,
         links: input.links ?? [],
-        attachments: (input.attachments ?? []).map((attachment) => ({
-          fileName: attachment.fileName,
-          contentType: attachment.contentType,
-          sizeBytes: attachment.sizeBytes,
-          storageKey: attachment.storageKey,
-        })),
       }),
     });
 
@@ -102,6 +84,47 @@ export async function updateUnixseeMessageAction(
 
     revalidateUnixseeMessages(id);
     return { ok: true, id };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+export async function uploadUnixseeMessageAttachmentAction(
+  messageId: string,
+  formData: FormData,
+): Promise<UnixseeMessageMutationResult> {
+  try {
+    const response = await serverActionFetch(
+      `/admin/unixsee-messages/${messageId}/attachments/upload`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+    if (!response.success) {
+      return { ok: false, message: resolveStaffApiErrorMessage(response) };
+    }
+    revalidateUnixseeMessages(messageId);
+    return { ok: true, id: messageId };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+export async function removeUnixseeMessageAttachmentAction(
+  messageId: string,
+  attachmentId: string,
+): Promise<UnixseeMessageMutationResult> {
+  try {
+    const response = await serverActionFetch(
+      `/admin/unixsee-messages/${messageId}/attachments/${attachmentId}`,
+      { method: "DELETE" },
+    );
+    if (!response.success) {
+      return { ok: false, message: resolveStaffApiErrorMessage(response) };
+    }
+    revalidateUnixseeMessages(messageId);
+    return { ok: true, id: messageId };
   } catch {
     return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
   }
