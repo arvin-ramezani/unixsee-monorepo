@@ -45,11 +45,7 @@ export async function createRequestAssessmentAction(
 
     await sendRequestAssessmentEmails({
       requestId,
-      fullName: parsed.data.fullName,
-      workEmail: parsed.data.businessEmail,
-      description: parsed.data.aboutProject ?? "",
-      serviceType: parsed.data.services,
-      locale: parsed.data.locale,
+      payload: parsed.data,
     });
   } catch (error) {
     console.error("Request assessment submission failed.", {

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { useActionState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
@@ -22,7 +22,10 @@ import {
 } from "@/components/ui/popover-improved";
 import { FormErrorKey } from "@/lib/form-errors";
 import {
+  getDefaultServiceDetails,
+  getRequestAssessmentDefaultValues,
   requestAssessmentSchema,
+  SERVICE_VALUES,
   RequestAssessmentSchemaType,
 } from "@/lib/zod-schemas/request-assessment-schema";
 
@@ -53,23 +56,16 @@ import { X } from "lucide-react";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { initialServerActionState } from "@/types/server-action-state";
 import { RadialRevealButton } from "../common/radial-reveal/radial-reveal-button";
+import { RequestAssessmentFileUpload } from "@/app/[locale]/(website)/_components/others/request-assessment-file-upload";
+import { RequestAssessmentServiceFields } from "@/app/[locale]/(website)/_components/others/request-assessment-service-fields";
+import {
+  RequestAssessmentContactTabs,
+  type ContactOtpChannel,
+} from "@/app/[locale]/(website)/_components/others/request-assessment-contact-tabs";
 
-const SERVICE_KEYS = [
-  "managedServer",
-  "migrationOptimization",
-  "woocommerceSupport",
-  "seo",
-  "graphicDesign",
-  "productDataEntry",
-  "socialMedia",
-] as const;
+const SERVICE_KEYS = SERVICE_VALUES;
 
-const requestAssessmentDefaultValues: RequestAssessmentSchemaType = {
-  fullName: "",
-  businessEmail: "",
-  aboutProject: "",
-  services: "managedServer",
-};
+const requestAssessmentDefaultValues = getRequestAssessmentDefaultValues();
 
 export default function RequestAssessmentDialogMobile() {
   const tNavigation = useTranslations("Layout.Navigation.primaryCta");
@@ -80,8 +76,13 @@ export default function RequestAssessmentDialogMobile() {
   const tActionMessages = useTranslations(
     "ServerActionMessages.requestAssessment",
   );
+  const tContact = useTranslations(
+    "HomePage.ConsultationSection.requestAssessment.form.contact",
+  );
 
   const [open, setOpen] = useState(false);
+  const [verifiedChannel, setVerifiedChannel] =
+    React.useState<ContactOtpChannel | null>(null);
 
   const locale = useLocale();
 
@@ -91,6 +92,21 @@ export default function RequestAssessmentDialogMobile() {
     resolver: zodResolver(requestAssessmentSchema),
     defaultValues: requestAssessmentDefaultValues,
   });
+
+  const selectedService = useWatch({
+    control: form.control,
+    name: "services",
+  });
+  const previousServiceRef = React.useRef(selectedService);
+
+  React.useEffect(() => {
+    if (previousServiceRef.current === selectedService) {
+      return;
+    }
+    form.setValue("serviceDetails", getDefaultServiceDetails());
+    form.clearErrors("serviceDetails");
+    previousServiceRef.current = selectedService;
+  }, [form, selectedService]);
 
   const [actionState, submitRequestAssessment, isActionPending] =
     useActionState(createRequestAssessmentAction, initialServerActionState);
@@ -114,6 +130,7 @@ export default function RequestAssessmentDialogMobile() {
     if (actionState.ok) {
       toast.success(message);
       form.reset(requestAssessmentDefaultValues);
+      setVerifiedChannel(null);
       queueMicrotask(() => setOpen(false));
       return;
     }
@@ -122,6 +139,14 @@ export default function RequestAssessmentDialogMobile() {
   }, [actionState, form, setOpen, tActionMessages]);
 
   function onSubmit(data: RequestAssessmentSchemaType) {
+    if (!verifiedChannel) {
+      toast.error(tContact("verifyContactFirst"));
+      return;
+    }
+    if (verifiedChannel !== data.preferredContact) {
+      toast.error(tContact("verifyPreferredContact"));
+      return;
+    }
     React.startTransition(() => {
       submitRequestAssessment({ ...data, locale });
     });
@@ -220,10 +245,12 @@ export default function RequestAssessmentDialogMobile() {
             </PopoverClose>
           </div>
 
+          <FormProvider {...form}>
           <form
             className="flex flex-col gap-4 text-xs [&_input::placeholder]:text-sm [&_textarea::placeholder]:text-sm"
             id="request-assessment-form-dialog-mobile"
             onSubmit={form.handleSubmit(onSubmit)}
+            noValidate
           >
             <FieldGroup>
               <Controller
@@ -257,36 +284,12 @@ export default function RequestAssessmentDialogMobile() {
                 )}
               />
 
-              <Controller
-                name="businessEmail"
+              <RequestAssessmentContactTabs
                 control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="request-assessment-form-business-email"
-                      className="sr-only"
-                    >
-                      {t("fields.email.label")}
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="request-assessment-form-business-email"
-                      aria-invalid={fieldState.invalid}
-                      placeholder={t("fields.email.placeholder")}
-                      type="email"
-                      autoComplete="email"
-                    />
-                    {fieldState.error?.message && (
-                      <FieldError
-                        errors={[
-                          {
-                            message: translateError(fieldState.error.message),
-                          },
-                        ]}
-                      />
-                    )}
-                  </Field>
-                )}
+                disabled={isSubmitting}
+                translateError={translateError}
+                verifiedChannel={verifiedChannel}
+                onVerifiedChannelChange={setVerifiedChannel}
               />
 
               <Controller
@@ -369,7 +372,7 @@ export default function RequestAssessmentDialogMobile() {
                       >
                         <SelectValue
                           className="dark:text-white"
-                          placeholder={t("fields.budget.placeholder")}
+                          placeholder={t("fields.service.placeholder")}
                         />
                       </SelectTrigger>
                       <SelectContent position="popper" className="rounded-md">
@@ -383,6 +386,37 @@ export default function RequestAssessmentDialogMobile() {
                   </Field>
                 )}
               />
+
+              <RequestAssessmentServiceFields
+                control={form.control}
+                service={selectedService}
+                disabled={isSubmitting}
+                translateError={translateError}
+              />
+
+              <Controller
+                name="attachments"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <RequestAssessmentFileUpload
+                      files={field.value ?? []}
+                      disabled={isSubmitting}
+                      error={translateError(fieldState.error?.message)}
+                      onChange={field.onChange}
+                    />
+                    {fieldState.error?.message && (
+                      <FieldError
+                        errors={[
+                          {
+                            message: translateError(fieldState.error.message),
+                          },
+                        ]}
+                      />
+                    )}
+                  </Field>
+                )}
+              />
             </FieldGroup>
 
             <div className="flex flex-col gap-2">
@@ -392,11 +426,13 @@ export default function RequestAssessmentDialogMobile() {
                 className="h-10 w-full rounded-md text-xs"
                 loading={isSubmitting}
                 loadingLabel={t("actions.submitting")}
+                disabled={isSubmitting || !verifiedChannel}
               >
                 {t("actions.sendMessage")}
               </RadialRevealButton>
             </div>
           </form>
+          </FormProvider>
         </motion.div>
       </PopoverContent>
     </Popover>

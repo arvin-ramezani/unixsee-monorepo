@@ -1209,6 +1209,39 @@
       "requestAssessment": {
         "form": {
           "title": "Contact Information",
+          "common": {
+            "yes": "Yes",
+            "no": "No",
+            "unknown": "I don't know"
+          },
+          "contact": {
+            "tabsLabel": "Verify contact",
+            "hint": "Choose and verify either phone or email. The other field stays optional.",
+            "phoneTab": "Phone",
+            "emailTab": "Email",
+            "phoneLabel": "Mobile number",
+            "phonePlaceholder": "912 345 6789",
+            "emailLabel": "Work email",
+            "emailPlaceholder": "name@example.com",
+            "optionalEmailLabel": "Email (optional)",
+            "optionalPhoneLabel": "Phone (optional)",
+            "verifyPhone": "Verify phone",
+            "verifyEmail": "Verify email",
+            "phoneVerified": "Phone verified",
+            "emailVerified": "Email verified",
+            "otpPhoneHint": "Enter the code sent to your phone.",
+            "otpEmailHint": "Enter the code sent to your email.",
+            "confirmOtp": "Confirm code",
+            "resendOtp": "Resend code",
+            "resendIn": "Resend in {seconds}s",
+            "cancelOtp": "Cancel",
+            "otpRateLimited": "Too many attempts. Please wait.",
+            "otpUnavailable": "Verification is temporarily unavailable.",
+            "otpGenericError": "Verification is unavailable right now.",
+            "otpWrongCode": "Incorrect code.",
+            "verifyContactFirst": "Verify your phone or email before submitting.",
+            "verifyPreferredContact": "Verify the contact method selected in the tab."
+          },
           "fields": {
             "name": {
               "label": "Name",
@@ -1218,36 +1251,328 @@
               "label": "Email",
               "placeholder": "Work email"
             },
+            "phone": {
+              "label": "Phone",
+              "placeholder": "Phone / WhatsApp (optional)"
+            },
             "aboutProject": {
               "label": "Tell us about your project",
               "placeholder": "Tell us about your project"
             },
-            "budget": {
-              "label": "Budget",
-              "placeholder": "Select...",
-              "options": {
-                "under_5k": "Less than 300 million tomans",
-                "5k_10k": "300 to 600 million tomans",
-                "10k_25k": "600 million to 1.5 billion tomans",
-                "25k_plus": "More than 1.5 billion tomans",
-                "not_sure": "I’m not sure yet"
-              }
-            },
-            "traffic": {
-              "label": "Traffic / Order Volume",
-              "placeholder": "Select..."
-            },
             "service": {
               "label": "How can we help you?",
+              "placeholder": "Select...",
               "options": {
                 "managedServer": "Managed Server",
-                "migrationOptimization": "Managed Server",
-                "woocommerceSupport": "WooCommerce SEO",
+                "woocommerceSupport": "WooCommerce Support",
                 "seo": "SEO",
                 "graphicDesign": "Graphic Design",
-                "productDataEntry": "Product Data Entry",
+                "productDataEntry": "Data Entry / Content",
                 "socialMedia": "Social Media Support"
               }
+            },
+            "attachments": {
+              "label": "Related files",
+              "hint": "Add project files, error screenshots, reports, Excel files, or design references. (PDF, PNG, JPG, DOCX, XLSX, CSV, ZIP)",
+              "empty": "Drag and drop files here or use the button below",
+              "selected": "{count} file(s) selected",
+              "browse": "Choose files",
+              "remove": "Remove {name}",
+              "tooMany": "Maximum {max} files allowed",
+              "tooLarge": "Each file must be under {maxMb} MB",
+              "invalidType": "Unsupported file type"
+            }
+          },
+          "options": {
+            "cms": {
+              "wordpress": "WordPress",
+              "woocommerce": "WooCommerce",
+              "custom": "Custom",
+              "other": "Other"
+            },
+            "hostingType": {
+              "shared": "Shared",
+              "vps": "VPS",
+              "dedicated": "Dedicated",
+              "cloud": "Cloud",
+              "unknown": "I don't know"
+            },
+            "websiteCount": {
+              "1": "1 website",
+              "2_5": "2 to 5",
+              "6_10": "6 to 10",
+              "over_10": "More than 10"
+            },
+            "storage": {
+              "under_10gb": "Under 10 GB",
+              "10_50gb": "10–50 GB",
+              "50_100gb": "50–100 GB",
+              "over_100gb": "Over 100 GB",
+              "unknown": "I don't know"
+            },
+            "database": {
+              "under_1gb": "Under 1 GB",
+              "1_5gb": "1–5 GB",
+              "5_20gb": "5–20 GB",
+              "over_20gb": "Over 20 GB",
+              "unknown": "I don't know"
+            },
+            "dailyVisits": {
+              "under_100": "Under 100",
+              "100_to_500": "100–500",
+              "500_to_2k": "500–2,000",
+              "over_2k": "Over 2,000"
+            },
+            "projectType": {
+              "shop": "Shop",
+              "corporate": "Corporate",
+              "content": "Content",
+              "app": "Application",
+              "other": "Other"
+            },
+            "launchTime": {
+              "under_1_month": "Under 1 month",
+              "1_3_months": "1–3 months",
+              "3_6_months": "3–6 months",
+              "over_6_months": "Over 6 months",
+              "unknown": "Not sure"
+            },
+            "managedServerProblems": {
+              "slow": "Slow performance",
+              "downtime": "Downtime",
+              "security": "Security",
+              "lowResources": "Low resources",
+              "hardToManage": "Hard to manage",
+              "poorSupport": "Poor support",
+              "other": "Other"
+            },
+            "productCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "orderCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "woocommerceIssues": {
+              "bugFix": "Bug fixes",
+              "speed": "Speed",
+              "payment": "Payments",
+              "orders": "Orders",
+              "theme": "Theme",
+              "plugin": "Plugins",
+              "featureDev": "Feature development",
+              "security": "Security",
+              "other": "Other"
+            },
+            "seoGoals": {
+              "increaseSales": "Increase sales",
+              "increaseTraffic": "Increase traffic",
+              "keywordRankings": "Keyword rankings",
+              "localSeo": "Local SEO",
+              "technicalFixes": "Technical fixes"
+            },
+            "designTypes": {
+              "banner": "Banner",
+              "social": "Social media",
+              "ads": "Ads",
+              "logo": "Logo",
+              "other": "Other"
+            },
+            "designCount": {
+              "1": "1 design",
+              "2_5": "2–5",
+              "6_10": "6–10",
+              "11_20": "11–20",
+              "over_20": "Over 20",
+              "unknown": "Not sure"
+            },
+            "aspectRatios": {
+              "1_1": "1:1 (square)",
+              "4_5": "4:5 (portrait)",
+              "9_16": "9:16 (story/reels)",
+              "16_9": "16:9 (landscape/banner)",
+              "3_2": "3:2",
+              "2_3": "2:3",
+              "4_3": "4:3",
+              "21_9": "21:9 (ultra-wide)",
+              "other": "Other"
+            },
+            "deliveryTime": {
+              "under_1_week": "Under 1 week",
+              "1_2_weeks": "1–2 weeks",
+              "2_4_weeks": "2–4 weeks",
+              "over_4_weeks": "Over 4 weeks",
+              "flexible": "Flexible"
+            },
+            "dataEntryWork": {
+              "productEntry": "Product entry",
+              "articleEntry": "Article entry",
+              "infoEntry": "Information entry",
+              "contentMigration": "Content migration",
+              "contentCreation": "Content creation"
+            },
+            "dataSources": {
+              "excel": "Excel",
+              "csv": "CSV",
+              "pdf": "PDF",
+              "website": "Website",
+              "images": "Images",
+              "other": "Other"
+            },
+            "itemCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "socialPlatforms": {
+              "instagram": "Instagram",
+              "linkedin": "LinkedIn",
+              "telegram": "Telegram",
+              "x": "X",
+              "youtube": "YouTube",
+              "other": "Other"
+            },
+            "socialGoals": {
+              "sales": "Sales",
+              "brandAwareness": "Brand awareness",
+              "engagement": "Engagement",
+              "leadGen": "Lead generation",
+              "dailyManagement": "Daily management"
+            },
+            "postCount": {
+              "under_4": "Under 4",
+              "4_8": "4–8",
+              "8_16": "8–16",
+              "over_16": "Over 16",
+              "unknown": "I don't know"
+            }
+          },
+          "services": {
+            "managedServer": {
+              "title": "Managed server details",
+              "selectPlaceholder": "Select...",
+              "hasActiveWebsite": "Do you currently have an active website?",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "https://example.com",
+              "cms": "Content management system",
+              "currentHosting": "Current hosting provider",
+              "currentHostingPlaceholder": "Optional",
+              "currentServiceType": "Current service type",
+              "websiteCount": "Number of websites to host",
+              "storageUsage": "Current storage usage",
+              "databaseSize": "Approximate database size",
+              "monthlyVisits": "Approximate daily visits",
+              "hasWooCommerce": "Do you use WooCommerce?",
+              "hasPeakTraffic": "Do you have peak traffic or heavy campaigns?",
+              "peakTrafficDetails": "Peak traffic details",
+              "peakTrafficDetailsPlaceholder": "Optional — timing, campaign type, etc.",
+              "needsMigration": "Do you need to migrate to Unixsee?",
+              "currentProblems": "Main issues with current service",
+              "additionalDetails": "Additional details",
+              "additionalDetailsPlaceholder": "Optional",
+              "projectType": "Project type",
+              "expectedTraffic": "Expected daily visits",
+              "expectedStorage": "Expected storage",
+              "willUseWooCommerce": "Will you use WooCommerce?",
+              "expectedLaunchTime": "Expected launch timeline"
+            },
+            "woocommerceSupport": {
+              "title": "WooCommerce support details",
+              "selectPlaceholder": "Select...",
+              "storeUrl": "Store URL",
+              "storeUrlPlaceholder": "https://shop.example.com",
+              "storeActive": "Is the store active?",
+              "productCount": "Approximate product count",
+              "monthlyOrders": "Monthly orders",
+              "monthlyVisits": "Daily visits",
+              "mainIssues": "Main issue or need",
+              "paymentGateways": "Payment gateways in use",
+              "paymentGatewaysPlaceholder": "Optional",
+              "hasUrgentIssue": "Is there an urgent issue or outage?",
+              "issueDescription": "Issue description / expected outcome",
+              "issueDescriptionPlaceholder": "Describe the current issue and the outcome you expect"
+            },
+            "seo": {
+              "title": "SEO details",
+              "selectPlaceholder": "Select...",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "https://example.com",
+              "businessArea": "Business area",
+              "businessAreaPlaceholder": "e.g. home appliances retail",
+              "mainGoal": "Primary goal",
+              "targetCountry": "Target country / market",
+              "targetCountryPlaceholder": "e.g. Iran",
+              "targetLanguages": "Target languages",
+              "targetLanguagesPlaceholder": "e.g. Persian, English",
+              "organicTraffic": "Approximate daily organic traffic",
+              "hasSearchConsole": "Do you have Google Search Console?",
+              "hasAnalytics": "Do you have Google Analytics?",
+              "importantKeywords": "Important keywords",
+              "importantKeywordsPlaceholder": "Optional",
+              "mainCompetitors": "Main competitors",
+              "mainCompetitorsPlaceholder": "Competitor URLs (optional)",
+              "mainSeoProblem": "Most important current SEO problem",
+              "mainSeoProblemPlaceholder": "Describe your most important current SEO challenge"
+            },
+            "graphicDesign": {
+              "title": "Graphic design details",
+              "selectPlaceholder": "Select...",
+              "designTypes": "Design type",
+              "designCount": "Number of designs needed",
+              "designCountPlaceholder": "e.g. 5 banners",
+              "dimensionsOrPlatform": "Aspect ratios",
+              "dimensionsOrPlatformPlaceholder": "Optional",
+              "hasBrandGuideline": "Do you have brand guidelines?",
+              "contentReady": "Is copy/content ready?",
+              "expectedDelivery": "Expected delivery time",
+              "styleDescription": "Style description or references",
+              "styleDescriptionPlaceholder": "Describe the style, mood, or share reference links"
+            },
+            "productDataEntry": {
+              "title": "Data entry details",
+              "selectPlaceholder": "Select...",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "Optional",
+              "workType": "Type of work",
+              "siteSystem": "Site system",
+              "itemCount": "Approximate item count",
+              "dataSources": "Information source",
+              "contentLanguage": "Content language",
+              "contentLanguagePlaceholder": "e.g. Persian",
+              "needsImageProcessing": "Do images also need processing/upload?",
+              "expectedCompletion": "Expected completion time",
+              "specialInstructions": "Special instructions",
+              "specialInstructionsPlaceholder": "Any extra instructions or details"
+            },
+            "socialMedia": {
+              "title": "Social media support details",
+              "selectPlaceholder": "Select...",
+              "platforms": "Platforms",
+              "accountLinks": "Account links",
+              "accountLinksPlaceholder": "https://instagram.com/...",
+              "addLink": "Add link",
+              "removeLink": "Remove link",
+              "mainGoal": "Primary goal",
+              "businessArea": "Business area",
+              "businessAreaPlaceholder": "e.g. online store",
+              "targetMarket": "Target market / country",
+              "targetMarketPlaceholder": "e.g. Iran",
+              "monthlyPosts": "Approximate posts needed per month",
+              "needsGraphicDesign": "Need graphic design?",
+              "needsCaptionContent": "Need caption/content creation?",
+              "needsCommunityManagement": "Need community management?",
+              "needsAdManagement": "Need ad management?",
+              "additionalDetails": "Additional details",
+              "additionalDetailsPlaceholder": "Any additional context about your needs"
             }
           },
           "actions": {
@@ -1706,8 +2031,74 @@
         "requestId": "Request ID",
         "fullName": "Full name",
         "email": "Email",
+        "phone": "Phone",
         "service": "Requested service",
-        "description": "Project description"
+        "description": "Project description",
+        "serviceDetails": "Service details"
+      },
+      "detailLabels": {
+        "hasActiveWebsite": "Active website",
+        "websiteUrl": "Website URL",
+        "cms": "CMS",
+        "currentHosting": "Current hosting",
+        "currentServiceType": "Current service type",
+        "websiteCount": "Website count",
+        "storageUsage": "Storage usage",
+        "databaseSize": "Database size",
+        "monthlyVisits": "Daily visits",
+        "hasWooCommerce": "WooCommerce",
+        "hasPeakTraffic": "Peak traffic",
+        "peakTrafficDetails": "Peak traffic details",
+        "needsMigration": "Migration needed",
+        "currentProblems": "Current problems",
+        "additionalDetails": "Additional details",
+        "projectType": "Project type",
+        "expectedTraffic": "Expected daily visits",
+        "expectedStorage": "Expected storage",
+        "willUseWooCommerce": "Will use WooCommerce",
+        "expectedLaunchTime": "Launch timeline",
+        "storeUrl": "Store URL",
+        "storeActive": "Store active",
+        "productCount": "Product count",
+        "monthlyOrders": "Monthly orders",
+        "mainIssues": "Main issues",
+        "paymentGateways": "Payment gateways",
+        "hasUrgentIssue": "Urgent issue",
+        "issueDescription": "Issue description",
+        "businessArea": "Business area",
+        "mainGoal": "Primary goal",
+        "targetCountry": "Target country",
+        "targetLanguages": "Target languages",
+        "organicTraffic": "Organic traffic",
+        "hasSearchConsole": "Search Console",
+        "hasAnalytics": "Analytics",
+        "importantKeywords": "Keywords",
+        "mainCompetitors": "Competitors",
+        "mainSeoProblem": "SEO problem",
+        "designTypes": "Design types",
+        "designCount": "Design count",
+        "dimensionsOrPlatform": "Aspect ratios",
+        "hasBrandGuideline": "Brand guidelines",
+        "contentReady": "Content ready",
+        "expectedDelivery": "Delivery time",
+        "styleDescription": "Style brief",
+        "workType": "Work type",
+        "siteSystem": "Site system",
+        "itemCount": "Item count",
+        "dataSources": "Data sources",
+        "contentLanguage": "Content language",
+        "needsImageProcessing": "Image processing",
+        "expectedCompletion": "Completion time",
+        "specialInstructions": "Instructions",
+        "platforms": "Platforms",
+        "accountLinks": "Account links",
+        "targetMarket": "Target market",
+        "monthlyPosts": "Monthly posts",
+        "needsGraphicDesign": "Graphic design",
+        "needsCaptionContent": "Caption/content",
+        "needsCommunityManagement": "Community management",
+        "needsAdManagement": "Ad management",
+        "attachments": "Attachments"
       },
       "notProvided": "Not provided"
     },

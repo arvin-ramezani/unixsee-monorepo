@@ -23,6 +23,8 @@ export type PhoneFieldProps = {
   autoComplete?: string;
   /** Override default Auth.common.phoneLabel; pass empty string to hide. */
   label?: string;
+  /** Override default Auth.common.phonePlaceholder */
+  placeholder?: string;
   id?: string;
   required?: boolean;
   onBlur?: () => void;
@@ -38,6 +40,7 @@ export function PhoneField({
   autoComplete = "tel",
   label,
   id: idProp,
+  placeholder: placeholderProp,
   required,
   onBlur,
 }: PhoneFieldProps) {
@@ -47,6 +50,7 @@ export function PhoneField({
   const errorId = `${id}-error`;
   const invalid = !!error;
   const resolvedLabel = label === undefined ? t("phoneLabel") : label;
+  const resolvedPlaceholder = placeholderProp ?? t("phonePlaceholder");
 
   function handleChange(raw: string) {
     const parsed = parseIranPhoneInput(raw);
@@ -81,7 +85,7 @@ export function PhoneField({
           inputMode="numeric"
           autoComplete={autoComplete}
           enterKeyHint="next"
-          placeholder={t("phonePlaceholder")}
+          placeholder={resolvedPlaceholder}
           value={value}
           disabled={disabled}
           aria-invalid={invalid || undefined}

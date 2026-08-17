@@ -1219,6 +1219,39 @@
       "requestAssessment": {
         "form": {
           "title": "اطلاعات تماس",
+          "common": {
+            "yes": "بله",
+            "no": "خیر",
+            "unknown": "نمی‌دانم"
+          },
+          "contact": {
+            "tabsLabel": "تأیید تماس",
+            "hint": "یکی از موبایل یا ایمیل را انتخاب و تأیید کنید. روش دیگر اختیاری است.",
+            "phoneTab": "موبایل",
+            "emailTab": "ایمیل",
+            "phoneLabel": "شماره موبایل",
+            "phonePlaceholder": "۰۹۱۲ ۳۴۵ ۶۷۸۹",
+            "emailLabel": "ایمیل کاری",
+            "emailPlaceholder": "name@example.com",
+            "optionalEmailLabel": "ایمیل (اختیاری)",
+            "optionalPhoneLabel": "شماره موبایل (اختیاری)",
+            "verifyPhone": "تأیید موبایل",
+            "verifyEmail": "تأیید ایمیل",
+            "phoneVerified": "موبایل تأیید شد",
+            "emailVerified": "ایمیل تأیید شد",
+            "otpPhoneHint": "کد ارسال‌شده به موبایل را وارد کنید.",
+            "otpEmailHint": "کد ارسال‌شده به ایمیل را وارد کنید.",
+            "confirmOtp": "تأیید کد",
+            "resendOtp": "ارسال مجدد",
+            "resendIn": "ارسال مجدد تا {seconds} ثانیه",
+            "cancelOtp": "انصراف",
+            "otpRateLimited": "تلاش‌های زیاد. کمی صبر کنید.",
+            "otpUnavailable": "تأیید موقتاً در دسترس نیست.",
+            "otpGenericError": "الان امکان تأیید نیست.",
+            "otpWrongCode": "کد نادرست است.",
+            "verifyContactFirst": "قبل از ارسال، موبایل یا ایمیل را تأیید کنید.",
+            "verifyPreferredContact": "همان روشی را که در زبانه انتخاب کرده‌اید تأیید کنید."
+          },
           "fields": {
             "name": {
               "label": "نام",
@@ -1228,36 +1261,328 @@
               "label": "ایمیل",
               "placeholder": "ایمیل کاری"
             },
+            "phone": {
+              "label": "شماره تماس",
+              "placeholder": "شماره تماس / واتساپ (اختیاری)"
+            },
             "aboutProject": {
               "label": "درباره پروژه خود به ما بگویید",
               "placeholder": "درباره پروژه خود به ما بگویید"
             },
-            "budget": {
-              "label": "بودجه",
-              "placeholder": "انتخاب کنید...",
-              "options": {
-                "under_5k": "کمتر از ۳۰۰ میلیون تومان",
-                "5k_10k": "۳۰۰ تا ۶۰۰ میلیون تومان",
-                "10k_25k": "۶۰۰ میلیون تا ۱.۵ میلیارد تومان",
-                "25k_plus": "بیش از ۱.۵ میلیارد تومان",
-                "not_sure": "هنوز مطمئن نیستم"
-              }
-            },
-            "traffic": {
-              "label": "ترافیک / حجم سفارش",
-              "placeholder": "انتخاب کنید..."
-            },
             "service": {
               "label": "چگونه می‌توانیم به شما کمک کنیم؟",
+              "placeholder": "انتخاب کنید...",
               "options": {
                 "managedServer": "سرور مدیریت‌شده",
-                "migrationOptimization": "مهاجرت و بهینه‌سازی",
                 "woocommerceSupport": "پشتیبانی تخصصی ووکامرس",
                 "seo": "سئو",
                 "graphicDesign": "طراحی گرافیک",
-                "productDataEntry": "ورود اطلاعات محصول",
+                "productDataEntry": "ورود اطلاعات / تولید محتوا",
                 "socialMedia": "پشتیبانی شبکه‌های اجتماعی"
               }
+            },
+            "attachments": {
+              "label": "فایل‌های مرتبط",
+              "hint": "فایل‌های مرتبط با پروژه، اسکرین‌شات خطا، گزارش، فایل Excel یا نمونه طراحی را اینجا قرار دهید. (PDF, PNG, JPG, DOCX, XLSX, CSV, ZIP)",
+              "empty": "فایل‌ها را بکشید و رها کنید یا از دکمه زیر استفاده کنید",
+              "selected": "{count} فایل انتخاب شد",
+              "browse": "انتخاب فایل",
+              "remove": "حذف {name}",
+              "tooMany": "حداکثر {max} فایل مجاز است",
+              "tooLarge": "حجم هر فایل باید کمتر از {maxMb} مگابایت باشد",
+              "invalidType": "فرمت فایل پشتیبانی نمی‌شود"
+            }
+          },
+          "options": {
+            "cms": {
+              "wordpress": "وردپرس",
+              "woocommerce": "ووکامرس",
+              "custom": "اختصاصی",
+              "other": "سایر"
+            },
+            "hostingType": {
+              "shared": "Shared",
+              "vps": "VPS",
+              "dedicated": "Dedicated",
+              "cloud": "Cloud",
+              "unknown": "نمی‌دانم"
+            },
+            "websiteCount": {
+              "1": "۱ وب‌سایت",
+              "2_5": "۲ تا ۵",
+              "6_10": "۶ تا ۱۰",
+              "over_10": "بیش از ۱۰"
+            },
+            "storage": {
+              "under_10gb": "کمتر از ۱۰ گیگابایت",
+              "10_50gb": "۱۰ تا ۵۰ گیگابایت",
+              "50_100gb": "۵۰ تا ۱۰۰ گیگابایت",
+              "over_100gb": "بیش از ۱۰۰ گیگابایت",
+              "unknown": "نمی‌دانم"
+            },
+            "database": {
+              "under_1gb": "کمتر از ۱ گیگابایت",
+              "1_5gb": "۱ تا ۵ گیگابایت",
+              "5_20gb": "۵ تا ۲۰ گیگابایت",
+              "over_20gb": "بیش از ۲۰ گیگابایت",
+              "unknown": "نمی‌دانم"
+            },
+            "dailyVisits": {
+              "under_100": "کمتر از ۱۰۰",
+              "100_to_500": "۱۰۰ تا ۵۰۰",
+              "500_to_2k": "۵۰۰ تا ۲٬۰۰۰",
+              "over_2k": "بیش از ۲٬۰۰۰"
+            },
+            "projectType": {
+              "shop": "فروشگاه",
+              "corporate": "شرکتی",
+              "content": "محتوا",
+              "app": "اپلیکیشن",
+              "other": "سایر"
+            },
+            "launchTime": {
+              "under_1_month": "کمتر از ۱ ماه",
+              "1_3_months": "۱ تا ۳ ماه",
+              "3_6_months": "۳ تا ۶ ماه",
+              "over_6_months": "بیش از ۶ ماه",
+              "unknown": "نامشخص"
+            },
+            "managedServerProblems": {
+              "slow": "کندی",
+              "downtime": "قطعی",
+              "security": "امنیت",
+              "lowResources": "منابع کم",
+              "hardToManage": "مدیریت سخت",
+              "poorSupport": "پشتیبانی ضعیف",
+              "other": "سایر"
+            },
+            "productCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "orderCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "woocommerceIssues": {
+              "bugFix": "رفع خطا",
+              "speed": "سرعت",
+              "payment": "پرداخت",
+              "orders": "سفارش‌ها",
+              "theme": "قالب",
+              "plugin": "افزونه",
+              "featureDev": "توسعه قابلیت",
+              "security": "امنیت",
+              "other": "سایر"
+            },
+            "seoGoals": {
+              "increaseSales": "افزایش فروش",
+              "increaseTraffic": "افزایش ترافیک",
+              "keywordRankings": "رتبه کلمات",
+              "localSeo": "سئو محلی",
+              "technicalFixes": "رفع مشکلات فنی"
+            },
+            "designTypes": {
+              "banner": "بنر",
+              "social": "شبکه اجتماعی",
+              "ads": "تبلیغات",
+              "logo": "لوگو",
+              "other": "سایر"
+            },
+            "designCount": {
+              "1": "۱ طرح",
+              "2_5": "۲ تا ۵",
+              "6_10": "۶ تا ۱۰",
+              "11_20": "۱۱ تا ۲۰",
+              "over_20": "بیش از ۲۰",
+              "unknown": "نامشخص"
+            },
+            "aspectRatios": {
+              "1_1": "۱:۱ (مربعی)",
+              "4_5": "۴:۵ (پرتره)",
+              "9_16": "۹:۱۶ (استوری/ریلز)",
+              "16_9": "۱۶:۹ (افقی/بنر)",
+              "3_2": "۳:۲",
+              "2_3": "۲:۳",
+              "4_3": "۴:۳",
+              "21_9": "۲۱:۹ (فوق‌عریض)",
+              "other": "سایر"
+            },
+            "deliveryTime": {
+              "under_1_week": "کمتر از ۱ هفته",
+              "1_2_weeks": "۱ تا ۲ هفته",
+              "2_4_weeks": "۲ تا ۴ هفته",
+              "over_4_weeks": "بیش از ۴ هفته",
+              "flexible": "انعطاف‌پذیر"
+            },
+            "dataEntryWork": {
+              "productEntry": "ورود محصول",
+              "articleEntry": "ورود مقاله",
+              "infoEntry": "ورود اطلاعات",
+              "contentMigration": "انتقال محتوا",
+              "contentCreation": "تولید محتوا"
+            },
+            "dataSources": {
+              "excel": "Excel",
+              "csv": "CSV",
+              "pdf": "PDF",
+              "website": "Website",
+              "images": "Images",
+              "other": "Other"
+            },
+            "itemCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "socialPlatforms": {
+              "instagram": "Instagram",
+              "linkedin": "LinkedIn",
+              "telegram": "Telegram",
+              "x": "X",
+              "youtube": "YouTube",
+              "other": "Other"
+            },
+            "socialGoals": {
+              "sales": "فروش",
+              "brandAwareness": "آگاهی برند",
+              "engagement": "تعامل",
+              "leadGen": "تولید لید",
+              "dailyManagement": "مدیریت روزانه"
+            },
+            "postCount": {
+              "under_4": "کمتر از ۴",
+              "4_8": "۴ تا ۸",
+              "8_16": "۸ تا ۱۶",
+              "over_16": "بیش از ۱۶",
+              "unknown": "نمی‌دانم"
+            }
+          },
+          "services": {
+            "managedServer": {
+              "title": "جزئیات سرور مدیریت‌شده",
+              "selectPlaceholder": "انتخاب کنید...",
+              "hasActiveWebsite": "آیا در حال حاضر وب‌سایت فعالی دارید؟",
+              "websiteUrl": "آدرس وب‌سایت",
+              "websiteUrlPlaceholder": "https://example.com",
+              "cms": "سیستم مدیریت محتوا",
+              "currentHosting": "شرکت هاستینگ فعلی",
+              "currentHostingPlaceholder": "اختیاری",
+              "currentServiceType": "نوع سرویس فعلی",
+              "websiteCount": "تعداد وب‌سایت‌هایی که باید میزبانی شوند",
+              "storageUsage": "فضای مصرفی فعلی",
+              "databaseSize": "حجم تقریبی دیتابیس",
+              "monthlyVisits": "بازدید روزانه تقریبی",
+              "hasWooCommerce": "آیا WooCommerce دارید؟",
+              "hasPeakTraffic": "آیا ترافیک پیک یا کمپین‌های سنگین دارید؟",
+              "peakTrafficDetails": "جزئیات ترافیک پیک",
+              "peakTrafficDetailsPlaceholder": "اختیاری — زمان، نوع کمپین و…",
+              "needsMigration": "آیا نیاز به انتقال سایت به سرور Unixsee دارید؟",
+              "currentProblems": "مشکل اصلی سرویس فعلی",
+              "additionalDetails": "توضیحات تکمیلی",
+              "additionalDetailsPlaceholder": "اختیاری",
+              "projectType": "نوع پروژه",
+              "expectedTraffic": "بازدید روزانه مورد انتظار",
+              "expectedStorage": "فضای مورد انتظار",
+              "willUseWooCommerce": "آیا WooCommerce خواهد بود؟",
+              "expectedLaunchTime": "زمان تقریبی راه‌اندازی"
+            },
+            "woocommerceSupport": {
+              "title": "جزئیات پشتیبانی ووکامرس",
+              "selectPlaceholder": "انتخاب کنید...",
+              "storeUrl": "آدرس فروشگاه",
+              "storeUrlPlaceholder": "https://shop.example.com",
+              "storeActive": "فروشگاه فعال است؟",
+              "productCount": "تعداد تقریبی محصولات",
+              "monthlyOrders": "تعداد سفارش ماهانه",
+              "monthlyVisits": "بازدید روزانه",
+              "mainIssues": "مشکل یا نیاز اصلی",
+              "paymentGateways": "درگاه‌های پرداخت مورد استفاده",
+              "paymentGatewaysPlaceholder": "اختیاری",
+              "hasUrgentIssue": "آیا مشکل فوری یا اختلال فعلی وجود دارد؟",
+              "issueDescription": "توضیح مشکل / نتیجه مورد انتظار",
+              "issueDescriptionPlaceholder": "مشکل فعلی و نتیجه‌ای که انتظار دارید را توضیح دهید"
+            },
+            "seo": {
+              "title": "جزئیات سئو",
+              "selectPlaceholder": "انتخاب کنید...",
+              "websiteUrl": "آدرس وب‌سایت",
+              "websiteUrlPlaceholder": "https://example.com",
+              "businessArea": "حوزه فعالیت",
+              "businessAreaPlaceholder": "مثلاً فروش لوازم خانگی",
+              "mainGoal": "هدف اصلی",
+              "targetCountry": "کشور / بازار هدف",
+              "targetCountryPlaceholder": "مثلاً ایران",
+              "targetLanguages": "زبان‌های هدف",
+              "targetLanguagesPlaceholder": "مثلاً فارسی، انگلیسی",
+              "organicTraffic": "ترافیک ارگانیک روزانه تقریبی",
+              "hasSearchConsole": "Google Search Console دارید؟",
+              "hasAnalytics": "Google Analytics دارید؟",
+              "importantKeywords": "کلمات کلیدی مهم",
+              "importantKeywordsPlaceholder": "اختیاری",
+              "mainCompetitors": "رقبای اصلی",
+              "mainCompetitorsPlaceholder": "آدرس وب‌سایت رقبا (اختیاری)",
+              "mainSeoProblem": "مهم‌ترین مشکل فعلی سئو",
+              "mainSeoProblemPlaceholder": "مهم‌ترین چالش سئوی فعلی خود را توضیح دهید"
+            },
+            "graphicDesign": {
+              "title": "جزئیات طراحی گرافیک",
+              "selectPlaceholder": "انتخاب کنید...",
+              "designTypes": "نوع طراحی",
+              "designCount": "تعداد طرح مورد نیاز",
+              "designCountPlaceholder": "مثلاً ۵ بنر",
+              "dimensionsOrPlatform": "نسبت‌های تصویر",
+              "dimensionsOrPlatformPlaceholder": "اختیاری",
+              "hasBrandGuideline": "آیا Brand Guideline دارید؟",
+              "contentReady": "متن/محتوای مورد نیاز آماده است؟",
+              "expectedDelivery": "زمان تحویل مورد انتظار",
+              "styleDescription": "توضیح سبک یا نمونه موردنظر",
+              "styleDescriptionPlaceholder": "سبک، حس/visual یا لینک نمونه را توضیح دهید"
+            },
+            "productDataEntry": {
+              "title": "جزئیات ورود اطلاعات",
+              "selectPlaceholder": "انتخاب کنید...",
+              "websiteUrl": "آدرس سایت",
+              "websiteUrlPlaceholder": "اختیاری",
+              "workType": "نوع کار",
+              "siteSystem": "سیستم سایت",
+              "itemCount": "تعداد تقریبی آیتم‌ها",
+              "dataSources": "منبع اطلاعات",
+              "contentLanguage": "زبان محتوا",
+              "contentLanguagePlaceholder": "مثلاً فارسی",
+              "needsImageProcessing": "آیا تصاویر هم نیاز به پردازش/آپلود دارند؟",
+              "expectedCompletion": "زمان مورد انتظار برای تکمیل",
+              "specialInstructions": "توضیحات یا دستورالعمل خاص",
+              "specialInstructionsPlaceholder": "دستورالعمل‌ها یا جزئیات اضافی"
+            },
+            "socialMedia": {
+              "title": "جزئیات پشتیبانی شبکه‌های اجتماعی",
+              "selectPlaceholder": "انتخاب کنید...",
+              "platforms": "پلتفرم‌ها",
+              "accountLinks": "لینک اکانت‌ها",
+              "accountLinksPlaceholder": "https://instagram.com/...",
+              "addLink": "افزودن لینک",
+              "removeLink": "حذف لینک",
+              "mainGoal": "هدف اصلی",
+              "businessArea": "حوزه فعالیت",
+              "businessAreaPlaceholder": "مثلاً فروشگاه آنلاین",
+              "targetMarket": "بازار / کشور هدف",
+              "targetMarketPlaceholder": "مثلاً ایران",
+              "monthlyPosts": "تعداد تقریبی پست مورد نیاز در ماه",
+              "needsGraphicDesign": "نیاز به طراحی گرافیک؟",
+              "needsCaptionContent": "نیاز به تولید کپشن/محتوا؟",
+              "needsCommunityManagement": "نیاز به پاسخگویی به کاربران؟",
+              "needsAdManagement": "نیاز به مدیریت تبلیغات؟",
+              "additionalDetails": "توضیحات تکمیلی",
+              "additionalDetailsPlaceholder": "جزئیات بیشتر درباره نیاز شما"
             }
           },
           "actions": {
@@ -1701,8 +2026,74 @@
         "requestId": "شناسه درخواست",
         "fullName": "نام و نام خانوادگی",
         "email": "ایمیل",
+        "phone": "شماره تماس",
         "service": "سرویس درخواستی",
-        "description": "توضیحات پروژه"
+        "description": "توضیحات پروژه",
+        "serviceDetails": "جزئیات سرویس"
+      },
+      "detailLabels": {
+        "hasActiveWebsite": "وب‌سایت فعال",
+        "websiteUrl": "آدرس وب‌سایت",
+        "cms": "سیستم مدیریت محتوا",
+        "currentHosting": "هاستینگ فعلی",
+        "currentServiceType": "نوع سرویس فعلی",
+        "websiteCount": "تعداد وب‌سایت",
+        "storageUsage": "فضای مصرفی",
+        "databaseSize": "حجم دیتابیس",
+        "monthlyVisits": "بازدید روزانه",
+        "hasWooCommerce": "ووکامرس",
+        "hasPeakTraffic": "ترافیک پیک",
+        "peakTrafficDetails": "جزئیات ترافیک پیک",
+        "needsMigration": "نیاز به مهاجرت",
+        "currentProblems": "مشکلات فعلی",
+        "additionalDetails": "توضیحات تکمیلی",
+        "projectType": "نوع پروژه",
+        "expectedTraffic": "بازدید روزانه مورد انتظار",
+        "expectedStorage": "فضای مورد انتظار",
+        "willUseWooCommerce": "استفاده از ووکامرس",
+        "expectedLaunchTime": "زمان راه‌اندازی",
+        "storeUrl": "آدرس فروشگاه",
+        "storeActive": "فروشگاه فعال",
+        "productCount": "تعداد محصولات",
+        "monthlyOrders": "سفارش ماهانه",
+        "mainIssues": "مشکلات اصلی",
+        "paymentGateways": "درگاه‌های پرداخت",
+        "hasUrgentIssue": "مشکل فوری",
+        "issueDescription": "توضیح مشکل",
+        "businessArea": "حوزه فعالیت",
+        "mainGoal": "هدف اصلی",
+        "targetCountry": "کشور هدف",
+        "targetLanguages": "زبان‌های هدف",
+        "organicTraffic": "ترافیک ارگانیک",
+        "hasSearchConsole": "Search Console",
+        "hasAnalytics": "Analytics",
+        "importantKeywords": "کلمات کلیدی",
+        "mainCompetitors": "رقبا",
+        "mainSeoProblem": "مشکل سئو",
+        "designTypes": "نوع طراحی",
+        "designCount": "تعداد طرح",
+        "dimensionsOrPlatform": "نسبت‌های تصویر",
+        "hasBrandGuideline": "Brand Guideline",
+        "contentReady": "محتوا آماده",
+        "expectedDelivery": "زمان تحویل",
+        "styleDescription": "سبک/design brief",
+        "workType": "نوع کار",
+        "siteSystem": "سیستم سایت",
+        "itemCount": "تعداد آیتم",
+        "dataSources": "منبع اطلاعات",
+        "contentLanguage": "زبان محتوا",
+        "needsImageProcessing": "پردازش تصاویر",
+        "expectedCompletion": "زمان تکمیل",
+        "specialInstructions": "دستورالعمل‌ها",
+        "platforms": "پلتفرم‌ها",
+        "accountLinks": "لینک اکانت‌ها",
+        "targetMarket": "بازار هدف",
+        "monthlyPosts": "پست ماهانه",
+        "needsGraphicDesign": "طراحی گرافیک",
+        "needsCaptionContent": "تولید کپشن",
+        "needsCommunityManagement": "پاسخگویی",
+        "needsAdManagement": "مدیریت تبلیغات",
+        "attachments": "فایل‌های پیوست"
       },
       "notProvided": "وارد نشده است"
     },

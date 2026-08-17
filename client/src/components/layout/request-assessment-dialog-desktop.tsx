@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { useActionState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -21,7 +21,10 @@ import {
 } from "@/components/ui/popover-improved";
 import { FormErrorKey } from "@/lib/form-errors";
 import {
+  getDefaultServiceDetails,
+  getRequestAssessmentDefaultValues,
   requestAssessmentSchema,
+  SERVICE_VALUES,
   RequestAssessmentSchemaType,
 } from "@/lib/zod-schemas/request-assessment-schema";
 import {
@@ -51,23 +54,16 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { RadialRevealButton } from "../common/radial-reveal/radial-reveal-button";
 import { useLightHeaderStore } from "@/providers/light-header-provider";
 import { initialServerActionState } from "@/types/server-action-state";
+import { RequestAssessmentFileUpload } from "@/app/[locale]/(website)/_components/others/request-assessment-file-upload";
+import { RequestAssessmentServiceFields } from "@/app/[locale]/(website)/_components/others/request-assessment-service-fields";
+import {
+  RequestAssessmentContactTabs,
+  type ContactOtpChannel,
+} from "@/app/[locale]/(website)/_components/others/request-assessment-contact-tabs";
 
-const SERVICE_KEYS = [
-  "managedServer",
-  "migrationOptimization",
-  "woocommerceSupport",
-  "seo",
-  "graphicDesign",
-  "productDataEntry",
-  "socialMedia",
-] as const;
+const SERVICE_KEYS = SERVICE_VALUES;
 
-const requestAssessmentDefaultValues: RequestAssessmentSchemaType = {
-  fullName: "",
-  businessEmail: "",
-  aboutProject: "",
-  services: "managedServer",
-};
+const requestAssessmentDefaultValues = getRequestAssessmentDefaultValues();
 
 export type RequestAssessmentDialogDesktopProps = {
   open: boolean;
@@ -86,8 +82,13 @@ export default function RequestAssessmentDialogDesktop({
   const tActionMessages = useTranslations(
     "ServerActionMessages.requestAssessment",
   );
+  const tContact = useTranslations(
+    "HomePage.ConsultationSection.requestAssessment.form.contact",
+  );
 
   const locale = useLocale();
+  const [verifiedChannel, setVerifiedChannel] =
+    React.useState<ContactOtpChannel | null>(null);
 
   const headerTone = useLightHeaderStore((state) => state.tone);
 
@@ -97,6 +98,21 @@ export default function RequestAssessmentDialogDesktop({
     resolver: zodResolver(requestAssessmentSchema),
     defaultValues: requestAssessmentDefaultValues,
   });
+
+  const selectedService = useWatch({
+    control: form.control,
+    name: "services",
+  });
+  const previousServiceRef = React.useRef(selectedService);
+
+  React.useEffect(() => {
+    if (previousServiceRef.current === selectedService) {
+      return;
+    }
+    form.setValue("serviceDetails", getDefaultServiceDetails());
+    form.clearErrors("serviceDetails");
+    previousServiceRef.current = selectedService;
+  }, [form, selectedService]);
 
   const [actionState, submitRequestAssessment, isActionPending] =
     useActionState(createRequestAssessmentAction, initialServerActionState);
@@ -120,6 +136,7 @@ export default function RequestAssessmentDialogDesktop({
     if (actionState.ok) {
       toast.success(message);
       form.reset(requestAssessmentDefaultValues);
+      setVerifiedChannel(null);
       setOpen(false);
       return;
     }
@@ -128,6 +145,14 @@ export default function RequestAssessmentDialogDesktop({
   }, [actionState, form, setOpen, tActionMessages]);
 
   function onSubmit(data: RequestAssessmentSchemaType) {
+    if (!verifiedChannel) {
+      toast.error(tContact("verifyContactFirst"));
+      return;
+    }
+    if (verifiedChannel !== data.preferredContact) {
+      toast.error(tContact("verifyPreferredContact"));
+      return;
+    }
     React.startTransition(() => {
       submitRequestAssessment({ ...data, locale });
     });
@@ -208,10 +233,12 @@ export default function RequestAssessmentDialogDesktop({
             </PopoverTitle>
           </div>
 
+          <FormProvider {...form}>
           <form
             className="flex flex-col gap-4"
             id="request-assessment-form-dialog-desktop"
             onSubmit={form.handleSubmit(onSubmit)}
+            noValidate
           >
             <FieldGroup>
               <Controller
@@ -245,36 +272,12 @@ export default function RequestAssessmentDialogDesktop({
                 )}
               />
 
-              <Controller
-                name="businessEmail"
+              <RequestAssessmentContactTabs
                 control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel
-                      htmlFor="request-assessment-form-business-email"
-                      className="sr-only"
-                    >
-                      {t("fields.email.label")}
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="request-assessment-form-business-email"
-                      aria-invalid={fieldState.invalid}
-                      placeholder={t("fields.email.placeholder")}
-                      type="email"
-                      autoComplete="email"
-                    />
-                    {fieldState.error?.message && (
-                      <FieldError
-                        errors={[
-                          {
-                            message: translateError(fieldState.error.message),
-                          },
-                        ]}
-                      />
-                    )}
-                  </Field>
-                )}
+                disabled={isSubmitting}
+                translateError={translateError}
+                verifiedChannel={verifiedChannel}
+                onVerifiedChannelChange={setVerifiedChannel}
               />
 
               <Controller
@@ -301,7 +304,7 @@ export default function RequestAssessmentDialogDesktop({
                         <InputGroupAddon align="block-end">
                           <InputGroupText className="tabular-nums">
                             {formatNumberByLocale(field.value?.length, locale)}/
-                            {formatNumberByLocale(100, locale)}
+                            {formatNumberByLocale(1000, locale)}
                           </InputGroupText>
                         </InputGroupAddon>
                       )}
@@ -359,7 +362,7 @@ export default function RequestAssessmentDialogDesktop({
                       >
                         <SelectValue
                           className="dark:text-white"
-                          placeholder={t("fields.budget.placeholder")}
+                          placeholder={t("fields.service.placeholder")}
                         />
                       </SelectTrigger>
                       <SelectContent
@@ -378,6 +381,37 @@ export default function RequestAssessmentDialogDesktop({
                   </Field>
                 )}
               />
+
+              <RequestAssessmentServiceFields
+                control={form.control}
+                service={selectedService}
+                disabled={isSubmitting}
+                translateError={translateError}
+              />
+
+              <Controller
+                name="attachments"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <RequestAssessmentFileUpload
+                      files={field.value ?? []}
+                      disabled={isSubmitting}
+                      error={translateError(fieldState.error?.message)}
+                      onChange={field.onChange}
+                    />
+                    {fieldState.error?.message && (
+                      <FieldError
+                        errors={[
+                          {
+                            message: translateError(fieldState.error.message),
+                          },
+                        ]}
+                      />
+                    )}
+                  </Field>
+                )}
+              />
             </FieldGroup>
 
             <div className="flex flex-col gap-2">
@@ -387,6 +421,7 @@ export default function RequestAssessmentDialogDesktop({
                 className="h-12 w-full"
                 loading={isSubmitting}
                 loadingLabel={t("actions.submitting")}
+                disabled={isSubmitting || !verifiedChannel}
               >
                 {t("actions.sendMessage")}
               </RadialRevealButton>
@@ -403,6 +438,7 @@ export default function RequestAssessmentDialogDesktop({
               </PopoverClose>
             </div>
           </form>
+          </FormProvider>
         </motion.div>
       </PopoverContent>
     </Popover>
