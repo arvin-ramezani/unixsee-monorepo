@@ -112,6 +112,13 @@ Same fields as a list item, plus:
 Messages include **internal notes** (`isInternal: true`). `sender` is `USER` |
 `SUPPORT`.
 
+### Mark in progress
+
+`POST /api/v1/admin/tickets/:id/in-progress`
+
+`SUBMITTED` → `IN_PROGRESS` without requiring an assignee. Rejected when status
+is not `SUBMITTED` (`409`).
+
 ### Assign
 
 `POST /api/v1/admin/tickets/:id/assign`
@@ -121,6 +128,8 @@ Messages include **internal notes** (`isInternal: true`). `sender` is `USER` |
 ```
 
 When status is `SUBMITTED`, Nest also moves the ticket to `IN_PROGRESS`.
+Staff UI does not expose assign-to-me in Phase 1; prefer
+`/in-progress` for pickup.
 
 ### Resolve
 
@@ -155,11 +164,20 @@ the composer on those statuses. See
 | `isInternal` | No | Default `false`; `true` = internal note (never customer-visible) |
 | `idempotencyKey` | No | Reserved; admin path may ignore until parity with customer |
 
-## Out of scope (this contract)
+### Attachments
+
+`POST /api/v1/admin/tickets/:id/attachments/upload` → `201`
+
+Same multipart rules as the customer upload route (`file` field, type/size/count
+limits, Supabase via `StorageModule`). Rejected when the ticket is `CLOSED`.
+
+`GET /api/v1/admin/tickets/:id/attachments/:attachmentId/download` → `200`
+
+Returns a short-lived signed `downloadUrl`. Ticket detail attachments also
+include `downloadUrl` when signing succeeds.
 
 - Admin create ticket (customers create)
 - Generic PATCH
-- Attachment HTTP upload/download routes (Supabase `StorageModule` exists;
-  wire upload-intent / signed download later)
+- Message-scoped attachments (ticket-scoped upload/download only)
 - Transfer UI beyond assign by `assigneeId`
 - Fine-grained capability matrices beyond `ADMIN` / `OPERATOR`

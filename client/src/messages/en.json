@@ -3739,12 +3739,13 @@
       },
       "attachments": {
         "label": "Attachments",
-        "hint": "Optional screenshots or documents (max 10 MB per file).",
+        "hint": "Images, PDF, ZIP, or text (max 10 MB per file).",
         "unavailable": "File upload coming soon",
         "unavailableHint": "Attachments will be available after Nest-owned S3 upload is enabled.",
         "choose": "Choose files",
         "remove": "Remove {name}",
-        "tooLarge": "Each file must be 10 MB or smaller."
+        "tooLarge": "Each file must be 10 MB or smaller.",
+        "invalidType": "Only images, PDF, ZIP, CSV, or plain text are allowed."
       },
       "errors": {
         "service": "Select a service.",
@@ -3769,6 +3770,9 @@
       "updated": "Last updated",
       "ticketNumber": "Ticket number",
       "summary": "Ticket summary",
+      "attachments": "Attachments",
+      "noAttachments": "No attachments",
+      "download": "Download",
       "reply": "Reply",
       "reopen": "Reopen ticket",
       "close": "Close ticket",

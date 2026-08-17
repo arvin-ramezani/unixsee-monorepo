@@ -281,24 +281,27 @@ Shared service taxonomy:
 | GET/POST | `/api/v1/tickets` | Customer |
 | GET | `/api/v1/tickets/:id` | Customer |
 | POST | `/api/v1/tickets/:id/messages` | Customer |
-| POST | `/api/v1/tickets/:id/attachments` | Customer |
+| POST | `/api/v1/tickets/:id/attachments/upload` | Customer (multipart `file` → Supabase) |
+| GET | `/api/v1/tickets/:id/attachments/:attachmentId/download` | Customer (signed download URL) |
 | POST | `/api/v1/tickets/:id/close` | Customer (`RESOLVED` → `CLOSED`) |
 | POST | `/api/v1/tickets/:id/reopen` | Customer (`CLOSED` → `IN_PROGRESS`) |
 | GET | `/api/v1/admin/tickets` | Admin |
 | GET | `/api/v1/admin/tickets/:id` | Admin (incl. internal notes) |
+| POST | `/api/v1/admin/tickets/:id/in-progress` | Admin (`SUBMITTED` → `IN_PROGRESS`) |
 | POST | `/api/v1/admin/tickets/:id/assign` | Admin |
 | POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
 | POST | `/api/v1/admin/tickets/:id/reopen` | Admin (`RESOLVED` → `IN_PROGRESS`) |
 | POST | `/api/v1/admin/tickets/:id/messages` | Admin (blocked when `RESOLVED`/`CLOSED`) |
+| POST | `/api/v1/admin/tickets/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
+| GET | `/api/v1/admin/tickets/:id/attachments/:attachmentId/download` | Admin (signed download URL) |
 
 Staff shapes:
 [`contracts/tickets-admin.md`](./contracts/tickets-admin.md).
 
 Create body includes required `service`, optional `websiteId`, `subject`,
-`description`, and optional `attachments[]`. Default status is `SUBMITTED`
-(customer «ارسال‌شده»). Object storage provider is
-[`StorageModule`](../../backend/src/modules/storage/) (Supabase); attachment
-HTTP upload/signing routes are still deferred — keep opaque `storageKey` shape.
+`description`. Default status is `SUBMITTED` (customer «ارسال‌شده»). Do **not**
+send attachment metadata on create — upload bytes after create via
+`POST /api/v1/tickets/:id/attachments/upload` (`StorageModule` / Supabase).
 
 ### Notifications — add `notifications`
 
@@ -327,7 +330,7 @@ Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
 
 Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
 `websiteId`, `links[]`, attachment `storageKey` metadata
-(`StorageModule` / Supabase; HTTP upload/signing still deferred).
+(`StorageModule` / Supabase; unixsee-message binary upload still deferred).
 
 ### Activities — add `activities`
 

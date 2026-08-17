@@ -261,6 +261,54 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
                   <TicketStatusBadge status={status} />
                 </dd>
               </div>
+              <div>
+                <dt className="text-muted-foreground text-xs">
+                  {t("detail.attachments")}
+                </dt>
+                <dd className="mt-2">
+                  {ticket.attachments.length > 0 ? (
+                    <ul className="space-y-2">
+                      {ticket.attachments.map((attachment) => (
+                        <li key={attachment.id} className="min-w-0">
+                          {attachment.downloadUrl ? (
+                            <a
+                              href={attachment.downloadUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-link hover:underline inline-flex max-w-full items-center gap-1.5 text-sm"
+                            >
+                              <Paperclip
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0"
+                              />
+                              <span className="truncate">
+                                {attachment.fileName}
+                              </span>
+                              <span className="text-muted-foreground sr-only">
+                                {t("detail.download")}
+                              </span>
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground inline-flex max-w-full items-center gap-1.5 text-sm">
+                              <Paperclip
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0"
+                              />
+                              <span className="truncate">
+                                {attachment.fileName}
+                              </span>
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      {t("detail.noAttachments")}
+                    </p>
+                  )}
+                </dd>
+              </div>
             </dl>
           </Panel>
         </aside>

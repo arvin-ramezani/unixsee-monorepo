@@ -51,6 +51,12 @@ export type TicketType = {
     }[];
     createdAt: string;
   }[];
+  /** Ticket-scoped attachments (not message-scoped). */
+  attachments?: {
+    url: string;
+    name: string;
+    type: string;
+  }[];
   status: TicketStatusType;
   priority?: TicketPriorityType;
   tenant?: {

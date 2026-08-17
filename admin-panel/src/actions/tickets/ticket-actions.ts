@@ -7,28 +7,10 @@ import {
   STAFF_API_ERROR_MESSAGES,
 } from "@/lib/api/map-api-error";
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
-import { isStaffRole, type SafeAuthUser } from "@/types/auth.types";
 
 export type TicketMutationResult =
   | { ok: true }
   | { ok: false; message: string };
-
-async function getStaffUserForAction(): Promise<SafeAuthUser | null> {
-  try {
-    const response = await serverActionFetch<SafeAuthUser>("/users/me", {
-      method: "GET",
-    });
-    if (!response.success || !response.data?.id) {
-      return null;
-    }
-    if (!isStaffRole(response.data.role)) {
-      return null;
-    }
-    return response.data;
-  } catch {
-    return null;
-  }
-}
 
 async function mutateTicket(
   ticketId: string,
@@ -52,17 +34,11 @@ async function mutateTicket(
   }
 }
 
-export async function assignTicketToMeAction(
+export async function markTicketInProgressAction(
   ticketId: string,
 ): Promise<TicketMutationResult> {
-  const user = await getStaffUserForAction();
-  if (!user) {
-    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unauthorized };
-  }
-
-  return mutateTicket(ticketId, `/admin/tickets/${ticketId}/assign`, {
+  return mutateTicket(ticketId, `/admin/tickets/${ticketId}/in-progress`, {
     method: "POST",
-    body: JSON.stringify({ assigneeId: user.id }),
   });
 }
 
@@ -98,5 +74,15 @@ export async function addTicketMessageAction(input: {
       body,
       isInternal: input.isInternal ?? false,
     }),
+  });
+}
+
+export async function uploadTicketAttachmentAction(
+  ticketId: string,
+  formData: FormData,
+): Promise<TicketMutationResult> {
+  return mutateTicket(ticketId, `/admin/tickets/${ticketId}/attachments/upload`, {
+    method: "POST",
+    body: formData,
   });
 }

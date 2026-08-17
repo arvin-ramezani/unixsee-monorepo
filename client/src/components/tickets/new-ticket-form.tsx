@@ -17,6 +17,7 @@ import {
   DashboardButtonLink,
 } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 import { createTicketAction } from "@/actions/tickets/create-ticket";
+import { uploadTicketAttachmentAction } from "@/actions/tickets/upload-ticket-attachment";
 import { Panel } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +33,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation";
 import type {
-  CreateTicketAttachmentInput,
   TicketServiceCatalogItem,
   TicketServiceCategory,
   TicketWebsiteRef,
@@ -49,6 +49,17 @@ const controlClassName =
 const WEBSITE_NONE_VALUE = "__none__";
 const MAX_ATTACHMENTS = 20;
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "application/pdf",
+  "application/zip",
+  "application/x-zip-compressed",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "text/csv",
+  "text/plain",
+]);
 
 type SelectedAttachment = {
   id: string;
@@ -57,23 +68,6 @@ type SelectedAttachment = {
 
 const attachmentEase = [0.22, 1, 0.36, 1] as const;
 const attachmentExitEase = [0.4, 0, 1, 1] as const;
-
-function buildPendingStorageKey(fileName: string) {
-  const safeName = fileName.replace(/[^\w.\-+() ]/g, "_").slice(0, 180);
-  return `tickets/pending/${crypto.randomUUID()}/${safeName || "file"}`;
-}
-
-function toAttachmentInputs(
-  attachments: SelectedAttachment[],
-): CreateTicketAttachmentInput[] {
-  return attachments.map(({ file }) => ({
-    fileName: file.name.slice(0, 255),
-    contentType: (file.type || "application/octet-stream").slice(0, 128),
-    sizeBytes: file.size,
-    // Nest accepts opaque storageKey; binary S3 upload remains deferred.
-    storageKey: buildPendingStorageKey(file.name),
-  }));
-}
 
 export function NewTicketForm({
   services,
@@ -116,6 +110,14 @@ export function NewTicketForm({
       setAttachmentError(t("attachments.tooLarge"));
       return;
     }
+    if (
+      nextFiles.some(
+        (file) => !file.type || !ALLOWED_ATTACHMENT_TYPES.has(file.type),
+      )
+    ) {
+      setAttachmentError(t("attachments.invalidType"));
+      return;
+    }
     setAttachmentError(null);
     setAttachments((current) =>
       [
@@ -139,15 +141,28 @@ export function NewTicketForm({
       subject,
       description,
       ...(website ? { websiteId: website } : {}),
-      ...(attachments.length
-        ? { attachments: toAttachmentInputs(attachments) }
-        : {}),
     });
 
     if (!result.ok) {
       toastMappedApiError(result.error, tApiErrors);
       setSubmitting(false);
       return;
+    }
+
+    for (const attachment of attachments) {
+      const formData = new FormData();
+      formData.append("file", attachment.file);
+      const uploadResult = await uploadTicketAttachmentAction(
+        result.data.id,
+        formData,
+      );
+      if (!uploadResult.ok) {
+        toastMappedApiError(uploadResult.error, tApiErrors);
+        router.push(`/dashboard/tickets/${result.data.id}`);
+        router.refresh();
+        setSubmitting(false);
+        return;
+      }
     }
 
     router.push(`/dashboard/tickets/${result.data.id}`);
@@ -368,6 +383,7 @@ export function NewTicketForm({
               <Input
                 type="file"
                 multiple
+                accept=".pdf,.zip,.gif,.jpg,.jpeg,.png,.webp,.csv,.txt,application/pdf,application/zip,image/gif,image/jpeg,image/png,image/webp,text/csv,text/plain"
                 className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
                 onChange={(event) => {
                   addFiles(event.target.files);

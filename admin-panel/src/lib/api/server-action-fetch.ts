@@ -12,11 +12,14 @@ export async function serverActionFetch<T>(
     throw new Error("Unauthorized");
   }
 
+  const isFormData =
+    typeof FormData !== "undefined" && options?.body instanceof FormData;
+
   const response = await fetch(`${getServerCoreApiBaseUrl()}${endpoint}`, {
     ...options,
     cache: "no-store",
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(options?.headers ?? {}),
       Authorization: `Bearer ${accessToken}`,
     },

@@ -57,13 +57,17 @@ function mapSender(
   return 'USER';
 }
 
-function mapAttachment(attachment: TicketAttachment) {
+function mapAttachment(
+  attachment: TicketAttachment,
+  downloadUrl?: string | null,
+) {
   return {
     id: attachment.id,
     fileName: attachment.fileName,
     contentType: attachment.contentType,
     sizeBytes: attachment.sizeBytes,
     storageKey: attachment.storageKey,
+    downloadUrl: downloadUrl ?? null,
     createdAt: attachment.createdAt.toISOString(),
   };
 }
@@ -121,7 +125,10 @@ export function mapTicketListItem(ticket: TicketListRecord) {
   };
 }
 
-export function mapTicketDetail(ticket: TicketDetailRecord) {
+export function mapTicketDetail(
+  ticket: TicketDetailRecord,
+  downloadUrls?: Map<string, string | null>,
+) {
   return {
     id: ticket.id,
     number: ticket.number,
@@ -137,7 +144,9 @@ export function mapTicketDetail(ticket: TicketDetailRecord) {
       ...mapMessage(message),
       attachments: [],
     })),
-    attachments: ticket.attachments.map(mapAttachment),
+    attachments: ticket.attachments.map((attachment) =>
+      mapAttachment(attachment, downloadUrls?.get(attachment.id)),
+    ),
   };
 }
 
@@ -174,10 +183,22 @@ export function mapAdminTicketListItem(ticket: AdminTicketListRecord) {
   };
 }
 
-export function mapAdminTicketDetail(ticket: AdminTicketDetailRecord) {
+export function mapAdminTicketDetail(
+  ticket: AdminTicketDetailRecord,
+  downloadUrls?: Map<string, string | null>,
+) {
   return {
     ...mapAdminTicketListItem(ticket),
     messages: ticket.messages.map(mapAdminMessage),
-    attachments: ticket.attachments.map(mapAttachment),
+    attachments: ticket.attachments.map((attachment) =>
+      mapAttachment(attachment, downloadUrls?.get(attachment.id)),
+    ),
   };
+}
+
+export function mapTicketAttachment(
+  attachment: TicketAttachment,
+  downloadUrl?: string | null,
+) {
+  return mapAttachment(attachment, downloadUrl);
 }

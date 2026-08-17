@@ -59,6 +59,7 @@ export type AdminTicketMessageDto = {
     contentType: string;
     sizeBytes: number;
     storageKey: string;
+    downloadUrl?: string | null;
     createdAt: string;
   }>;
   createdAt: string;
@@ -72,6 +73,7 @@ export type AdminTicketDetailDto = AdminTicketListItemDto & {
     contentType: string;
     sizeBytes: number;
     storageKey: string;
+    downloadUrl?: string | null;
     createdAt: string;
   }>;
 };
@@ -140,11 +142,16 @@ export function mapAdminTicketDetailToUi(
       sender: message.sender === "SUPPORT" ? "ADMIN" : "USER",
       isInternal: message.isInternal,
       files: message.attachments.map((file) => ({
-        url: `#${file.storageKey}`,
+        url: file.downloadUrl || `#${file.storageKey}`,
         name: file.fileName,
         type: file.contentType,
       })),
       createdAt: message.createdAt,
+    })),
+    attachments: detail.attachments.map((file) => ({
+      url: file.downloadUrl || `#${file.storageKey}`,
+      name: file.fileName,
+      type: file.contentType,
     })),
   };
 }

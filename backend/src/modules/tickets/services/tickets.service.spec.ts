@@ -16,6 +16,7 @@ import {
   TicketStatus,
 } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { StorageService } from '#/modules/storage/storage.service.js';
 import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -87,6 +88,8 @@ describe('TicketsService', () => {
     },
     ticketAttachment: {
       create: vi.fn(),
+      count: vi.fn(),
+      findFirst: vi.fn(),
     },
     website: {
       findUnique: vi.fn(),
@@ -112,6 +115,12 @@ describe('TicketsService', () => {
     allocate: vi.fn(),
   };
 
+  const storage = {
+    upload: vi.fn(),
+    createSignedUrl: vi.fn(),
+    remove: vi.fn(),
+  };
+
   const config = {
     get: vi.fn(),
   };
@@ -125,6 +134,10 @@ describe('TicketsService', () => {
         autoCloseGraceDays: 7,
         autoCloseCronExpression: '0 * * * *',
       },
+    });
+
+    storage.createSignedUrl.mockResolvedValue({
+      signedUrl: 'https://signed.example/file',
     });
 
     prisma.$transaction.mockImplementation(
@@ -143,6 +156,7 @@ describe('TicketsService', () => {
         { provide: TenantAccessService, useValue: tenantAccess },
         { provide: TenantsService, useValue: tenantsService },
         { provide: TicketNumberService, useValue: ticketNumbers },
+        { provide: StorageService, useValue: storage },
         { provide: ConfigService, useValue: config },
       ],
     }).compile();
@@ -511,7 +525,7 @@ describe('TicketsService', () => {
     });
   });
 
-  describe('addAttachment', () => {
+  describe('uploadAttachmentForUser', () => {
     it('rejects when ticket is CLOSED', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({ status: TicketStatus.CLOSED }),
@@ -519,38 +533,58 @@ describe('TicketsService', () => {
       tenantAccess.requireMembership.mockResolvedValue({});
 
       await expect(
-        service.addAttachment(USER_ID, TICKET_ID, {
-          fileName: 'log.txt',
-          contentType: 'text/plain',
-          sizeBytes: 12,
-          storageKey: 'tickets/ticket-1/log.txt',
+        service.uploadAttachmentForUser(USER_ID, TICKET_ID, {
+          fieldname: 'file',
+          originalname: 'log.txt',
+          encoding: '7bit',
+          mimetype: 'text/plain',
+          size: 12,
+          buffer: Buffer.from('hello world!'),
+          destination: '',
+          filename: '',
+          path: '',
+          stream: undefined as never,
         }),
       ).rejects.toBeInstanceOf(ConflictException);
     });
 
-    it('persists metadata row for member', async () => {
+    it('uploads to object storage and persists attachment row', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({ status: TicketStatus.IN_PROGRESS }),
       );
       tenantAccess.requireMembership.mockResolvedValue({});
+      prisma.ticketAttachment.count = vi.fn().mockResolvedValue(0);
+      storage.upload.mockResolvedValue({
+        path: 'tickets/ticket-1/uuid/log.txt',
+      });
       prisma.ticketAttachment.create.mockResolvedValue({
         id: 'att-1',
         ticketId: TICKET_ID,
         fileName: 'log.txt',
         contentType: 'text/plain',
         sizeBytes: 12,
-        storageKey: 'tickets/ticket-1/log.txt',
+        storageKey: 'tickets/ticket-1/uuid/log.txt',
         createdAt: new Date('2026-07-20T10:00:00.000Z'),
+        updatedAt: new Date('2026-07-20T10:00:00.000Z'),
       });
+      prisma.ticket.update.mockResolvedValue({});
 
-      const result = await service.addAttachment(USER_ID, TICKET_ID, {
-        fileName: 'log.txt',
-        contentType: 'text/plain',
-        sizeBytes: 12,
-        storageKey: 'tickets/ticket-1/log.txt',
+      const result = await service.uploadAttachmentForUser(USER_ID, TICKET_ID, {
+        fieldname: 'file',
+        originalname: 'log.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        size: 12,
+        buffer: Buffer.from('hello world!'),
+        destination: '',
+        filename: '',
+        path: '',
+        stream: undefined as never,
       });
 
       expect(result.id).toBe('att-1');
+      expect(result.downloadUrl).toBe('https://signed.example/file');
+      expect(storage.upload).toHaveBeenCalledOnce();
       expect(prisma.ticketAttachment.create).toHaveBeenCalledOnce();
     });
   });
@@ -638,6 +672,33 @@ describe('TicketsService', () => {
   });
 
   describe('assign / resolve / addAdminMessage', () => {
+    it('markInProgress moves SUBMITTED to IN_PROGRESS', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.SUBMITTED }),
+      );
+      prisma.ticket.update.mockResolvedValue(
+        baseTicket({ status: TicketStatus.IN_PROGRESS }),
+      );
+
+      const result = await service.markInProgress(TICKET_ID);
+      expect(result.status).toBe(TicketStatus.IN_PROGRESS);
+      expect(prisma.ticket.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { status: TicketStatus.IN_PROGRESS },
+        }),
+      );
+    });
+
+    it('markInProgress rejects non-SUBMITTED tickets', async () => {
+      prisma.ticket.findUnique.mockResolvedValue(
+        baseTicket({ status: TicketStatus.IN_PROGRESS }),
+      );
+
+      await expect(service.markInProgress(TICKET_ID)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+    });
+
     it('getAdmin returns ticket with internal messages', async () => {
       prisma.ticket.findUnique.mockResolvedValue(
         baseTicket({

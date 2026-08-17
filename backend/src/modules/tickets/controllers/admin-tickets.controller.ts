@@ -7,8 +7,12 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
@@ -20,6 +24,7 @@ import {
   AssignTicketDto,
   CreateTicketMessageDto,
 } from '../dto/tickets.dto.js';
+import { TICKET_ATTACHMENT_MAX_BYTES } from '../ticket-attachments.js';
 import { TicketsService } from '../services/tickets.service.js';
 
 @Controller('v1/admin/tickets')
@@ -45,6 +50,13 @@ export class AdminTicketsController {
   @Get(':id')
   async get(@Param('id') id: string) {
     const data = await this.ticketsService.getAdmin(id);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Post(':id/in-progress')
+  @HttpCode(HttpStatus.OK)
+  async markInProgress(@Param('id') id: string) {
+    const data = await this.ticketsService.markInProgress(id);
     return ApiResponseBuilder.ok(data);
   }
 
@@ -81,5 +93,33 @@ export class AdminTicketsController {
       isInternal: body.isInternal,
     });
     return ApiResponseBuilder.created(data);
+  }
+
+  @Post(':id/attachments/upload')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: TICKET_ATTACHMENT_MAX_BYTES },
+    }),
+  )
+  async uploadAttachment(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const data = await this.ticketsService.uploadAttachmentForAdmin(id, file);
+    return ApiResponseBuilder.created(data);
+  }
+
+  @Get(':id/attachments/:attachmentId/download')
+  async downloadAttachment(
+    @Param('id') id: string,
+    @Param('attachmentId') attachmentId: string,
+  ) {
+    const data = await this.ticketsService.createDownloadUrlForAdmin(
+      id,
+      attachmentId,
+    );
+    return ApiResponseBuilder.ok(data);
   }
 }

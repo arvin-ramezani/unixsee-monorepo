@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, Download, Paperclip, Send, X } from "lucide-react";
+import { ChevronDown, Download, Paperclip, Send } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 
 import {
   addTicketMessageAction,
-  assignTicketToMeAction,
+  markTicketInProgressAction,
   reopenTicketAction,
   resolveTicketAction,
+  uploadTicketAttachmentAction,
 } from "@/actions/tickets/ticket-actions";
 import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -210,12 +211,10 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
   const [detailsOpen, setDetailsOpen] = useState(true);
   const [messageText, setMessageText] = useState("");
   const [isInternal, setIsInternal] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canAssign =
-    ticket.status === TICKET_STATUS.SUBMITTED || !ticket.assigneeId;
+  const canMarkInProgress = ticket.status === TICKET_STATUS.SUBMITTED;
   const canResolve =
     ticket.status !== TICKET_STATUS.RESOLVED &&
     ticket.status !== TICKET_STATUS.CLOSED;
@@ -224,22 +223,36 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
   const canReply =
     ticket.status !== TICKET_STATUS.RESOLVED &&
     ticket.status !== TICKET_STATUS.CLOSED;
+  const canAttach = ticket.status !== TICKET_STATUS.CLOSED;
   const composerPlaceholder =
     ticket.status === TICKET_STATUS.CLOSED
       ? "تیکت بسته‌شده است و امکان پاسخ وجود ندارد."
       : ticket.status === TICKET_STATUS.RESOLVED
         ? "برای ارسال پاسخ یا یادداشت داخلی، ابتدا تیکت را بازگشایی کنید."
         : "یک پاسخ بنویسید...";
+  const ticketAttachments = ticket.attachments ?? [];
 
-  const handleFileSelection = (event: ChangeEvent<HTMLInputElement>) => {
+  async function handleFileSelection(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
-
-    if (files.length > 0) {
-      setSelectedFiles((currentFiles) => [...currentFiles, ...files]);
+    event.target.value = "";
+    if (!files.length || !canAttach) {
+      return;
     }
 
-    event.target.value = "";
-  };
+    setPendingAction("upload");
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      const result = await uploadTicketAttachmentAction(ticket.id, formData);
+      if (!result.ok) {
+        toastApiErrorMessage(result.message);
+        setPendingAction(null);
+        return;
+      }
+    }
+    setPendingAction(null);
+    router.refresh();
+  }
 
   async function runAction(
     key: string,
@@ -271,7 +284,6 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
     );
 
     setMessageText("");
-    setSelectedFiles([]);
     setIsInternal(false);
   }
 
@@ -298,19 +310,19 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
 
           <div className="flex flex-wrap items-center gap-2">
             <TicketStatusBadge status={ticket.status} />
-            {canAssign && (
+            {canMarkInProgress && (
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 disabled={pendingAction !== null}
                 onClick={() =>
-                  void runAction("assign", () =>
-                    assignTicketToMeAction(ticket.id),
+                  void runAction("in-progress", () =>
+                    markTicketInProgressAction(ticket.id),
                   )
                 }
               >
-                تخصیص به من
+                درحال بررسی
               </Button>
             )}
             {canResolve && (
@@ -476,10 +488,22 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                                   </div>
                                 </div>
 
-                                <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
-                                  <Download className="size-3.5" />
-                                  به‌زودی
-                                </span>
+                                {file.url.startsWith("http") ? (
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                                  >
+                                    <Download className="size-3.5" />
+                                    دانلود
+                                  </a>
+                                ) : (
+                                  <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
+                                    <Download className="size-3.5" />
+                                    ناموجود
+                                  </span>
+                                )}
                               </div>
                             );
                           })}
@@ -492,6 +516,50 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
             </div>
 
             <div className="sticky bottom-0 border-t border-border bg-card/95 p-4 backdrop-blur">
+              {ticketAttachments.length > 0 && (
+                <div className="mb-3 space-y-2 rounded-xl border border-border/60 bg-muted/10 p-3">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    پیوست‌های تیکت
+                  </p>
+                  {ticketAttachments.map((file) => (
+                    <div
+                      key={`${file.name}-${file.url}`}
+                      className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-background/80 px-3 py-2"
+                    >
+                      <div className="flex min-w-0 items-center gap-2">
+                        <div className="rounded-md border border-border bg-muted/70 p-2 text-muted-foreground">
+                          <Paperclip className="size-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {file.type}
+                          </p>
+                        </div>
+                      </div>
+                      {file.url.startsWith("http") ? (
+                        <a
+                          href={file.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                        >
+                          <Download className="size-3.5" />
+                          دانلود
+                        </a>
+                      ) : (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
+                          <Download className="size-3.5" />
+                          ناموجود
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="rounded-2xl border border-border bg-background/90 p-3">
                 <Textarea
                   value={messageText}
@@ -501,60 +569,27 @@ export function TicketDetailsView({ ticket }: TicketDetailsViewProps) {
                   className="max-h-34 w-full resize-none border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
 
-                {selectedFiles.length > 0 && (
-                  <div className="mt-3 space-y-2 rounded-xl border border-border/60 bg-muted/20 p-3">
-                    <p className="text-xs font-medium text-muted-foreground">
-                      آپلود فایل در این نسخه فعال نیست
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedFiles.map((file) => (
-                        <div
-                          key={file.name}
-                          className="flex w-fit items-center justify-between gap-2 rounded-lg border border-border/60 bg-background/80 px-3 py-2 text-sm"
-                        >
-                          <div className="min-w-0">
-                            <p className="truncate">{file.name}</p>
-                          </div>
-                          <Button
-                            size="icon-xs"
-                            variant="ghost"
-                            className="rounded-full"
-                            aria-label={`حذف ${file.name}`}
-                            onClick={() =>
-                              setSelectedFiles((currentFiles) =>
-                                currentFiles.filter(
-                                  (currentFile) =>
-                                    currentFile.name !== file.name,
-                                ),
-                              )
-                            }
-                          >
-                            <X className="size-3.5" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-3">
                     <Input
                       ref={fileInputRef}
                       type="file"
                       multiple
+                      accept=".pdf,.zip,.gif,.jpg,.jpeg,.png,.webp,.csv,.txt,application/pdf,application/zip,image/gif,image/jpeg,image/png,image/webp,text/csv,text/plain"
                       className="hidden"
-                      onChange={handleFileSelection}
+                      onChange={(event) => {
+                        void handleFileSelection(event);
+                      }}
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled
-                      title="آپلود پیوست هنوز به Nest وصل نشده است"
+                      disabled={!canAttach || pendingAction !== null}
+                      onClick={() => fileInputRef.current?.click()}
                     >
                       <Paperclip className="size-4" />
-                      افزودن فایل
+                      {pendingAction === "upload" ? "در حال آپلود..." : "افزودن فایل"}
                     </Button>
                     <label className="flex items-center gap-2 text-sm text-muted-foreground">
                       <input

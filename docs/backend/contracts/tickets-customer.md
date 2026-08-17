@@ -130,22 +130,14 @@ may derive from a sequence; shape is opaque string).
 
 `POST /api/v1/tickets` → `201`
 
-Body mirrors the customer new-ticket form:
+Body mirrors the customer new-ticket form (no binary attachments on create):
 
 ```json
 {
   "service": "WOOCOMMERCE_SUPPORT",
   "websiteId": "uuid-or-omit",
   "subject": "خرابی صفحه پرداخت",
-  "description": "حداقل بیست نویسه توضیح…",
-  "attachments": [
-    {
-      "fileName": "payment-error.png",
-      "contentType": "image/png",
-      "sizeBytes": 842000,
-      "storageKey": "tickets/pending/…"
-    }
-  ]
+  "description": "حداقل بیست نویسه توضیح…"
 }
 ```
 
@@ -155,7 +147,6 @@ Body mirrors the customer new-ticket form:
 | `websiteId` | No | Optional for every service; when present must belong to the ticket tenant and be accessible to the caller |
 | `subject` | Yes | 1–300 chars, trimmed non-empty |
 | `description` | Yes | 20–10000 chars (matches client validation) |
-| `attachments` | No | 0–N; see Attachments |
 
 Server behavior:
 
@@ -163,12 +154,12 @@ Server behavior:
 2. Validate website rules and access.
 3. Create ticket with `status: SUBMITTED`.
 4. Create the first customer-visible message from `description` (`isInternal: false`).
-5. Attach validated attachment rows when `storageKey` values are present.
-6. Return the created ticket detail shape (same as get).
+5. Return the created ticket detail shape (same as get).
+6. Clients upload files afterward via the multipart attachment route.
 
-Do **not** accept customer-supplied `status`, `priority`, or `assigneeId` on
-create in Phase 1. Priority remains server-owned (`NORMAL` default until staff
-rules exist).
+Do **not** accept customer-supplied `status`, `priority`, `assigneeId`, or
+attachment metadata on create in Phase 1. Priority remains server-owned
+(`NORMAL` default until staff rules exist).
 
 ### Get ticket
 
@@ -198,7 +189,17 @@ Response `data` includes messages (customer-visible only) and attachments:
       "createdAt": "…"
     }
   ],
-  "attachments": []
+  "attachments": [
+    {
+      "id": "uuid",
+      "fileName": "payment-error.png",
+      "contentType": "image/png",
+      "sizeBytes": 842000,
+      "storageKey": "tickets/{ticketId}/…",
+      "downloadUrl": "https://…signed…",
+      "createdAt": "…"
+    }
+  ]
 }
 ```
 
@@ -206,7 +207,8 @@ Response `data` includes messages (customer-visible only) and attachments:
 remain on `CLOSED` for history). `autoCloseAt = resolvedAt + grace period`.
 
 Message `sender`: `USER` | `SUPPORT` (map staff authors to `SUPPORT`; never
-leak staff role enums beyond that).
+leak staff role enums beyond that). Attachment `downloadUrl` is a short-lived
+Supabase signed URL (may be `null` if signing fails for legacy keys).
 
 ### Add message
 
@@ -223,29 +225,47 @@ not create a duplicate row.
 
 ### Attachments
 
-`POST /api/v1/tickets/:id/attachments` → `201`
+`POST /api/v1/tickets/:id/attachments/upload` → `201`
+
+Multipart form field `file` (not JSON). Nest validates type/size/count/ownership
+at the trusted boundary, uploads via `StorageService` to
+`tickets/{ticketId}/{uuid}/{safeName}`, then persists the `TicketAttachment`
+row.
+
+Limits (Phase 1):
+
+- Max **20** attachments per ticket
+- Max **10 MB** per file
+- Allowed content types: `image/jpeg`, `image/png`, `image/gif`, `image/webp`,
+  `application/pdf`, `application/zip`, `application/x-zip-compressed`,
+  `text/plain`, `text/csv`
+
+Rejected when the ticket is `CLOSED`.
+
+Response `data`:
 
 ```json
 {
+  "id": "uuid",
   "fileName": "log.txt",
   "contentType": "text/plain",
   "sizeBytes": 1200,
-  "storageKey": "tickets/{ticketId}/…"
+  "storageKey": "tickets/{ticketId}/…",
+  "downloadUrl": "https://…signed…",
+  "createdAt": "…"
 }
 ```
 
-**Object storage provider:** Nest `StorageModule` (Supabase). Attachment HTTP
-upload/signing routes are still deferred:
+`GET /api/v1/tickets/:id/attachments/:attachmentId/download` → `200`
 
-- Keep this wire shape (`storageKey` opaque).
-- Nest validates name/type/size/count/ownership at the trusted boundary.
-- Upload/signing endpoints may be added later without changing ticket create
-  fields; prefer `storageKey` issued by a future upload-intent route that calls
-  `StorageService`.
-- Failed uploads must not leave orphan incomplete messages.
+Returns `{ downloadUrl, expiresInSeconds, … }` after membership check. Prefer
+the `downloadUrl` already embedded on ticket detail when present.
 
-Ticket-scoped attachment list remains on get/create responses. Removing ticket
-access removes attachment access (Phase 1 §15.4).
+Failed uploads must not leave orphan incomplete messages; Nest cleans up the
+object if the DB insert fails after upload.
+
+Ticket-scoped attachment list remains on get responses. Removing ticket access
+removes attachment access (Phase 1 §15.4).
 
 ### Close (customer)
 

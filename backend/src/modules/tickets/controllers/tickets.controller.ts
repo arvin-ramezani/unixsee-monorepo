@@ -7,7 +7,11 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
@@ -16,11 +20,8 @@ import {
   TicketStatus,
 } from '#/generated/prisma/enums.js';
 import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
-import {
-  CreateTicketAttachmentDto,
-  CreateTicketDto,
-  CreateTicketMessageDto,
-} from '../dto/tickets.dto.js';
+import { CreateTicketDto, CreateTicketMessageDto } from '../dto/tickets.dto.js';
+import { TICKET_ATTACHMENT_MAX_BYTES } from '../ticket-attachments.js';
 import { TicketsService } from '../services/tickets.service.js';
 
 @Controller('v1/tickets')
@@ -81,15 +82,39 @@ export class TicketsController {
     return ApiResponseBuilder.created(data);
   }
 
-  @Post(':id/attachments')
+  @Post(':id/attachments/upload')
   @HttpCode(HttpStatus.CREATED)
-  async addAttachment(
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: TICKET_ATTACHMENT_MAX_BYTES },
+    }),
+  )
+  async uploadAttachment(
     @CurrentUser() user: CurrentUserType,
     @Param('id') id: string,
-    @Body() body: CreateTicketAttachmentDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    const data = await this.ticketsService.addAttachment(user.id, id, body);
+    const data = await this.ticketsService.uploadAttachmentForUser(
+      user.id,
+      id,
+      file,
+    );
     return ApiResponseBuilder.created(data);
+  }
+
+  @Get(':id/attachments/:attachmentId/download')
+  async downloadAttachment(
+    @CurrentUser() user: CurrentUserType,
+    @Param('id') id: string,
+    @Param('attachmentId') attachmentId: string,
+  ) {
+    const data = await this.ticketsService.createDownloadUrlForUser(
+      user.id,
+      id,
+      attachmentId,
+    );
+    return ApiResponseBuilder.ok(data);
   }
 
   @Post(':id/close')
