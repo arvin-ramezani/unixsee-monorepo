@@ -7,5 +7,5 @@ type Props = {
 
 export default async function RegisterRedirectPage({ params }: Props) {
   const { locale } = await params;
-  redirect({ href: "/sign-up", locale });
+  redirect({ href: "/auth", locale });
 }

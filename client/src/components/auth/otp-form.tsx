@@ -225,7 +225,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
             ? tCommon("resendIn", { seconds: cooldown })
             : tCommon("resendCode")}
         </Button>
-        <AuthTextLink href="/sign-in">{tCommon("editIdentifier")}</AuthTextLink>
+        <AuthTextLink href="/auth">{tCommon("editIdentifier")}</AuthTextLink>
       </AuthCrossLinks>
     </div>
   );

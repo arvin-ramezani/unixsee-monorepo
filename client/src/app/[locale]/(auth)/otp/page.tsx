@@ -33,7 +33,7 @@ export default async function OtpPage({ params, searchParams }: Props) {
   const mode = resolveMode(query.mode);
 
   if (mode === "email") {
-    redirect({ href: "/sign-in", locale });
+    redirect({ href: "/auth", locale });
   }
 
   const display =

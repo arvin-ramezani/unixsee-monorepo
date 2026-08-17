@@ -20,8 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import RequestAssessmentDialogMobile from "./request-assessment-dialog-mobile";
-import { AuthNavCta } from "./auth-nav-cta";
+import { HeaderAuthControl } from "./header-auth-control";
 
 type NavigationItem = {
   key: string;
@@ -122,28 +121,10 @@ export default function MobileNavigation({
       </Accordion>
 
       <div className="flex flex-col gap-3">
-        <AuthNavCta
-          className="h-12 w-full"
+        <HeaderAuthControl
+          layout="stacked"
           onNavigate={() => setOpen(false)}
         />
-
-        {/* <div className="flex gap-4">
-          <LocaleSwitcher className="ms-0" />
-          <ModeToggle />
-          <LinkButton
-            variant={"outline"}
-            className="ms-auto h-auto text-xs"
-            href="register"
-          >
-            Login
-          </LinkButton>
-        </div> */}
-
-        {/* <RequestAssessmentDialog side="bottom" /> */}
-        <RequestAssessmentDialogMobile />
-        {/* <Button className="h-12 w-full">
-          {tHomePage("HeroSection.primaryCTA")}
-        </Button> */}
       </div>
     </MobileMenu>
   );

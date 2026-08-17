@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { redirect } from "@/i18n/navigation";
+import { AuthEntryForm } from "@/components/auth/auth-entry-form";
 import type { LocaleType } from "@/types/intl.types";
 
 type Props = {
   params: Promise<{ locale: LocaleType }>;
+  searchParams: Promise<{ returnTo?: string; notice?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -14,9 +15,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: t("title") };
 }
 
-export default async function SignUpPage({ params }: Props) {
+export default async function AuthPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const { returnTo, notice } = await searchParams;
 
-  redirect({ href: "/auth", locale });
+  return <AuthEntryForm returnTo={returnTo} notice={notice} />;
 }

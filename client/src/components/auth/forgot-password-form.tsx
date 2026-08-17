@@ -63,7 +63,7 @@ export function ForgotPasswordForm() {
           description={t("openEmail")}
         />
         <AuthCrossLinks>
-          <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+          <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
           <AuthTextLink href="/reset-password">
             {tCommon("continue")}
           </AuthTextLink>
@@ -110,7 +110,7 @@ export function ForgotPasswordForm() {
       </form>
 
       <AuthCrossLinks>
-        <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+        <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
       </AuthCrossLinks>
     </div>
   );

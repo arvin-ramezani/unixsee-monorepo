@@ -18,7 +18,7 @@ const handleI18nRouting = createMiddleware(routing);
 
 const protectedRoutePrefixes = ["/dashboard"];
 
-const guestOnlyAuthRoutes = ["/sign-in", "/sign-up", "/otp", "/register"];
+const guestOnlyAuthRoutes = ["/auth", "/sign-in", "/sign-up", "/otp", "/register"];
 
 function extractLocaleFromPathname(pathname: string) {
   const locale = pathname.split("/")[1];
@@ -58,7 +58,7 @@ function stripLocalePrefix(path: string) {
 function redirectToSignIn(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const locale = extractLocaleFromPathname(pathname) ?? routing.defaultLocale;
-  const signInUrl = new URL(`/${locale}/sign-in`, request.url);
+  const signInUrl = new URL(`/${locale}/auth`, request.url);
   signInUrl.searchParams.set("returnTo", request.nextUrl.pathname);
 
   const response = NextResponse.redirect(signInUrl);

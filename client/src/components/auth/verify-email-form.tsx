@@ -91,7 +91,7 @@ export function VerifyEmailForm({ status, email }: VerifyEmailFormProps) {
         )}
         <AuthCrossLinks>
           <AuthTextLink href="/sign-up">{t("changeEmail")}</AuthTextLink>
-          <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+          <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
         </AuthCrossLinks>
       </div>
     );
@@ -126,7 +126,7 @@ export function VerifyEmailForm({ status, email }: VerifyEmailFormProps) {
       )}
       <AuthCrossLinks>
         <AuthTextLink href="/sign-up">{t("changeEmail")}</AuthTextLink>
-        <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+        <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
         <p className="text-muted-foreground text-xs">{tCommon("prototypeNote")}</p>
       </AuthCrossLinks>
     </div>

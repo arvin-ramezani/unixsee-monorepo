@@ -120,7 +120,7 @@ export function SignUpForm() {
         <AuthSubmitButton
           className="mt-6"
           type="button"
-          onClick={() => router.push("/sign-in")}
+          onClick={() => router.push("/auth")}
         >
           {t("goToSignIn")}
         </AuthSubmitButton>
@@ -237,7 +237,7 @@ export function SignUpForm() {
       <AuthCrossLinks>
         <p>
           {t("haveAccount")}{" "}
-          <AuthTextLink href="/sign-in" className="min-h-0 inline">
+          <AuthTextLink href="/auth" className="min-h-0 inline">
             {t("signInLink")}
           </AuthTextLink>
         </p>

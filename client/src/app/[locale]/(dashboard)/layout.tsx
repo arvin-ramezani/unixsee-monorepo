@@ -16,7 +16,7 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect({
-      href: "/sign-in?returnTo=/dashboard",
+      href: "/auth?returnTo=/dashboard",
       locale,
     });
   }

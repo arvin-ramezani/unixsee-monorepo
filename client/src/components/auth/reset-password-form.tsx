@@ -60,7 +60,7 @@ export function ResetPasswordForm({ expired = false }: ResetPasswordFormProps) {
     await wait(AUTH_MOCK_DELAY_MS);
     setSuccess(true);
     await wait(400);
-    router.push("/sign-in");
+    router.push("/auth");
   }
 
   if (expired) {
@@ -78,7 +78,7 @@ export function ResetPasswordForm({ expired = false }: ResetPasswordFormProps) {
           {tCommon("requestNewLink")}
         </AuthSubmitButton>
         <AuthCrossLinks>
-          <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+          <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
         </AuthCrossLinks>
       </div>
     );
@@ -147,7 +147,7 @@ export function ResetPasswordForm({ expired = false }: ResetPasswordFormProps) {
       </form>
 
       <AuthCrossLinks>
-        <AuthTextLink href="/sign-in">{tCommon("backToSignIn")}</AuthTextLink>
+        <AuthTextLink href="/auth">{tCommon("backToSignIn")}</AuthTextLink>
       </AuthCrossLinks>
     </div>
   );

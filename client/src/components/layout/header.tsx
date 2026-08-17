@@ -18,9 +18,8 @@ import { HeaderNavigation } from "./header-navigation";
 import { NAVIGATION_ITEMS } from "@/lib/translation-keys";
 import MobileNavigation from "./mobile-navigation";
 import Logo from "../common/logo";
-import RequestAssessmentDialogDesktop from "./request-assessment-dialog-desktop";
 import { useLightHeaderStore } from "@/providers/light-header-provider";
-import { AuthNavCta } from "./auth-nav-cta";
+import { HeaderAuthControl } from "./header-auth-control";
 
 export default function Header() {
   const scrolled = useScroll(100);
@@ -30,8 +29,6 @@ export default function Header() {
   const [showShadow, setShowShadow] = useState(
     show && scrollYProgress.get() > 0,
   );
-  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-
   const headerTone = useLightHeaderStore((state) => state.tone);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
@@ -88,7 +85,7 @@ export default function Header() {
         />
 
         <div className="relative z-10">
-          <nav className="container-header mx-auto flex w-full items-center justify-between">
+          <nav className="container-header mx-auto flex w-full items-center justify-between lg:mt-1.5 lg:mb-3">
             <div className="flex items-center gap-5 xl:gap-24 2xl:gap-36">
               <Logo className="w-20 lg:w-32" />
 
@@ -107,14 +104,7 @@ export default function Header() {
                 }}
               />
 
-              <AuthNavCta className="hidden h-10 text-xs lg:inline-flex" />
-
-              <div className="hidden lg:block">
-                <RequestAssessmentDialogDesktop
-                  open={isAssessmentOpen}
-                  setOpen={setIsAssessmentOpen}
-                />
-              </div>
+              <HeaderAuthControl className="hidden text-xs lg:flex" />
             </div>
             <Button
               size="icon"

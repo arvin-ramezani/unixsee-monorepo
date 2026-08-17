@@ -94,6 +94,10 @@
       "noAccount": "Don't have an account?",
       "signUpLink": "Sign up"
     },
+    "entry": {
+      "title": "Access your account",
+      "description": "Enter your phone number. We will sign you in or create an account after you verify the code."
+    },
     "signUp": {
       "title": "Create your account",
       "description": "A few details to get started. We'll verify your contact next.",
@@ -1897,6 +1901,9 @@
     "close": "Close navigation",
     "dashboard": "Dashboard",
     "signIn": "Sign in",
+    "signUp": "Sign up",
+    "authEntry": "Sign in / Sign up",
+    "accountFallback": "Account",
     "activities": "Unixsee activities",
     "domains": "Domains",
     "websites": "Websites",

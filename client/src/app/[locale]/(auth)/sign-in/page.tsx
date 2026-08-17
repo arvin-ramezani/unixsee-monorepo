@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { SignInForm } from "@/components/auth/sign-in-form";
+import { redirect } from "@/i18n/navigation";
 import type { LocaleType } from "@/types/intl.types";
 
 type Props = {
@@ -11,14 +11,26 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Auth.signIn" });
+  const t = await getTranslations({ locale, namespace: "Auth.entry" });
   return { title: t("title") };
 }
 
 export default async function SignInPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { returnTo, notice } = await searchParams;
+  const query = await searchParams;
+  const nextParams = new URLSearchParams();
 
-  return <SignInForm returnTo={returnTo} notice={notice} />;
+  if (query.returnTo) {
+    nextParams.set("returnTo", query.returnTo);
+  }
+  if (query.notice) {
+    nextParams.set("notice", query.notice);
+  }
+
+  const suffix = nextParams.toString();
+  redirect({
+    href: suffix ? `/auth?${suffix}` : "/auth",
+    locale,
+  });
 }

@@ -19,5 +19,5 @@ export function buildAccountExistsSignInHref(phone?: string): string {
     notice: PLAN_REQUEST_ACCOUNT_EXISTS_NOTICE,
   });
 
-  return `/sign-in?${params.toString()}`;
+  return `/auth?${params.toString()}`;
 }
