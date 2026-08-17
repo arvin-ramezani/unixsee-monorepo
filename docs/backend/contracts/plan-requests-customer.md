@@ -7,7 +7,7 @@
 > **Product:** [`../../product/phase-1-application-features.md`](../../product/phase-1-application-features.md)
 > §11
 >
-> **Last verified:** 2026-08-14
+> **Last verified:** 2026-08-16
 
 Logged-in dashboard contract for creating and reading the customer’s own plan
 requests.
@@ -44,10 +44,20 @@ Body:
 |---|---|---|
 | `planId` | UUID | yes (published plan) |
 | `contactName` | string 1–200 | yes |
-| `contactPhone` | string 1–32 | yes |
-| `contactEmail` | email | no |
+| `contactPhone` | string 1–32 | one of phone/email |
+| `contactEmail` | email | one of phone/email |
 | `websiteDomain` | string ≤255 | no |
-| `notes` | string ≤2000 | no |
+| `notes` | string ≤4000 | no |
+
+At least one of `contactPhone` or `contactEmail` is required (Nest
+`ValidateIf`). Guest public intake verifies the preferred channel with OTP,
+then creates via this authenticated path.
+
+`notes` may include serialized intake fields (database size, **daily**
+visitors, WooCommerce today, preferred contact, optional attachment
+**filenames**). Binary file upload / `storageKey` for plan requests is
+deferred (same Phase 1 posture as ticket/authorization uploads); clients
+must not invent a separate attachment route yet.
 
 Response `201`: plan request including `plan` relation. Not a payment
 confirmation.

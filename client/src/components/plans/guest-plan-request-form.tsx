@@ -18,6 +18,7 @@ import { OtpInput } from "@/components/auth/otp-input";
 import { PhoneField } from "@/components/auth/phone-field";
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import { RadialRevealButton } from "@/components/common/radial-reveal/radial-reveal-button";
+import { PlanRequestFileUpload } from "@/components/plans/plan-request-file-upload";
 import { useAuthStore } from "@/components/providers/auth-store-provider";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,10 +29,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  InputGroup,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -40,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "@/i18n/navigation";
 import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import {
@@ -49,9 +48,10 @@ import {
 import type { FormErrorKey } from "@/lib/form-errors";
 import { buildAccountExistsSignInHref } from "@/lib/plans/plan-request-session";
 import type { DashboardPlan } from "@/lib/plans/types";
+import { cn } from "@/lib/utils";
 import {
   DATABASE_SIZE_BANDS,
-  MONTHLY_VISITOR_BANDS,
+  DAILY_VISITOR_BANDS,
   WOOCOMMERCE_OPTIONS,
   guestPlanRequestSchema,
   guestPlanRequestToApiPayload,
@@ -69,11 +69,7 @@ function isLikelyEmail(value: string) {
 
 type OtpChannel = "phone" | "email";
 
-export function GuestPlanRequestForm({
-  plan,
-}: {
-  plan: DashboardPlan;
-}) {
+export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
   const t = useTranslations("GuestPlanRequestPage.form");
   const tApiErrors = useTranslations("ApiErrors");
   const tFormErrors = useTranslations("FormErrors");
@@ -96,14 +92,16 @@ export function GuestPlanRequestForm({
     resolver: zodResolver(guestPlanRequestSchema),
     defaultValues: {
       fullName: "",
+      preferredContact: "phone",
       phone: "",
       email: "",
       noWebsiteYet: false,
       website: "",
       databaseSizeBand: "",
-      monthlyVisitorsBand: "",
+      dailyVisitorsBand: "",
       isWooCommerce: "",
       description: "",
+      attachments: [],
     },
   });
 
@@ -111,11 +109,16 @@ export function GuestPlanRequestForm({
     control: form.control,
     name: "noWebsiteYet",
   });
+  const preferredContact = useWatch({
+    control: form.control,
+    name: "preferredContact",
+  });
   const phone = useWatch({ control: form.control, name: "phone" });
   const email = useWatch({ control: form.control, name: "email" });
   const website = useWatch({ control: form.control, name: "website" });
   const pending = form.formState.isSubmitting;
   const contactLocked = Boolean(verifiedChannel);
+  const sizingDisabled = noWebsiteYet || pending;
 
   function redirectForExistingAccount(matchedPhone: string) {
     if (redirectingRef.current) {
@@ -126,10 +129,17 @@ export function GuestPlanRequestForm({
   }
 
   useEffect(() => {
-    if (noWebsiteYet) {
-      form.setValue("website", "");
-      form.clearErrors("website");
-    }
+    if (!noWebsiteYet) return;
+    form.setValue("website", "");
+    form.setValue("databaseSizeBand", "");
+    form.setValue("dailyVisitorsBand", "");
+    form.setValue("isWooCommerce", "");
+    form.clearErrors([
+      "website",
+      "databaseSizeBand",
+      "dailyVisitorsBand",
+      "isWooCommerce",
+    ]);
   }, [form, noWebsiteYet]);
 
   useEffect(() => {
@@ -165,9 +175,7 @@ export function GuestPlanRequestForm({
             ? { contactPhone: toE164IranFromNational(phone) }
             : {}),
           ...(emailReady ? { contactEmail: email.trim() } : {}),
-          ...(websiteReady
-            ? { websiteDomain: normalizeWebsite(website) }
-            : {}),
+          ...(websiteReady ? { websiteDomain: normalizeWebsite(website) } : {}),
         });
 
         if (result.ok && result.exists) {
@@ -187,6 +195,12 @@ export function GuestPlanRequestForm({
     if (!message) return undefined;
     return tFormErrors(message as FormErrorKey);
   };
+
+  function resetOtpUi() {
+    setOtpChannel(null);
+    setOtpCode("");
+    setOtpError(null);
+  }
 
   async function startOtp(channel: OtpChannel) {
     setOtpError(null);
@@ -237,7 +251,9 @@ export function GuestPlanRequestForm({
 
     if (!result.ok) {
       setOtpError(
-        result.errorKey === "wrongCode" ? t("otpWrongCode") : t("otpGenericError"),
+        result.errorKey === "wrongCode"
+          ? t("otpWrongCode")
+          : t("otpGenericError"),
       );
       setOtpCode("");
       return;
@@ -250,14 +266,18 @@ export function GuestPlanRequestForm({
     });
 
     setVerifiedChannel(result.channel);
-    setOtpChannel(null);
-    setOtpCode("");
+    resetOtpUi();
     toast.success(t("otpVerified"));
   }
 
   async function onSubmit(data: GuestPlanRequestSchemaType) {
     if (!verifiedChannel) {
       toast.error(t("verifyContactFirst"));
+      return;
+    }
+
+    if (verifiedChannel !== data.preferredContact) {
+      toast.error(t("verifyPreferredContact"));
       return;
     }
 
@@ -291,15 +311,10 @@ export function GuestPlanRequestForm({
         transition: { duration: 0.35, ease: "easeOut" as const },
       };
 
-  const phoneRequiredIcon =
-    !verifiedChannel || verifiedChannel === "phone";
-  const emailRequiredIcon =
-    !verifiedChannel || verifiedChannel === "email";
-
   return (
     <motion.div {...motionProps}>
       <form
-        className="rounded-3xl border bg-white p-6 dark:bg-card lg:p-8"
+        className="dark:bg-card rounded-3xl border bg-white p-6 lg:p-8"
         onSubmit={form.handleSubmit(onSubmit)}
         noValidate
         aria-busy={pending || otpPending || undefined}
@@ -323,113 +338,248 @@ export function GuestPlanRequestForm({
                   placeholder={t("fullNamePlaceholder")}
                   disabled={pending}
                 />
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
+                {fieldState.error && (
+                  <FieldError>
+                    {translateError(fieldState.error.message)}
+                  </FieldError>
+                )}
               </Field>
             )}
           />
 
           <div className="space-y-3">
-            <Controller
-              name="phone"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <div className="space-y-2">
-                  <PhoneField
-                    id="guest-plan-phone"
-                    label={t("phoneLabel")}
-                    required={phoneRequiredIcon && !verifiedChannel}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={translateError(fieldState.error?.message)}
-                    disabled={pending || contactLocked || otpPending}
-                  />
-                  {verifiedChannel === "phone" ? (
-                    <p className="flex items-center gap-1.5 text-sm text-success">
-                      <CheckIcon className="size-4" aria-hidden />
-                      {t("phoneVerified")}
-                    </p>
-                  ) : !contactLocked ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="!w-fit"
-                      disabled={
-                        pending ||
-                        otpPending ||
-                        !isCompleteIranNationalMobile(phone ?? "")
-                      }
-                      onClick={() => void startOtp("phone")}
-                    >
-                      {otpPending && otpChannel === "phone" ? (
-                        <LoaderCircle className="size-4 animate-spin" />
-                      ) : null}
-                      {t("verifyPhone")}
-                    </Button>
-                  ) : null}
-                </div>
-              )}
-            />
+            <div>
+              <p className="text-sm font-medium">{t("contactTabsLabel")}</p>
+              <p className="text-muted-foreground mt-1 text-xs">
+                {t("contactHint")}
+              </p>
+            </div>
 
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="guest-plan-email" className="gap-1">
-                    {t("emailLabel")}
-                    {emailRequiredIcon && !verifiedChannel ? (
-                      <RequiredInputIcon />
-                    ) : null}
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="guest-plan-email"
-                    type="email"
-                    dir="ltr"
-                    autoComplete="email"
-                    aria-invalid={fieldState.invalid}
-                    className="h-12"
-                    placeholder={t("emailPlaceholder")}
-                    disabled={pending || contactLocked || otpPending}
-                  />
-                  {fieldState.error ? (
-                    <FieldError>
-                      {translateError(fieldState.error.message)}
-                    </FieldError>
-                  ) : null}
-                  {verifiedChannel === "email" ? (
-                    <p className="mt-2 flex items-center gap-1.5 text-sm text-success">
-                      <CheckIcon className="size-4" aria-hidden />
-                      {t("emailVerified")}
-                    </p>
-                  ) : !contactLocked ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="mt-2 !w-fit"
-                      disabled={
-                        pending || otpPending || !isLikelyEmail(email ?? "")
-                      }
-                      onClick={() => void startOtp("email")}
-                    >
-                      {otpPending && otpChannel === "email" ? (
-                        <LoaderCircle className="size-4 animate-spin" />
-                      ) : null}
-                      {t("verifyEmail")}
-                    </Button>
-                  ) : null}
-                </Field>
-              )}
-            />
+            <Tabs
+              value={preferredContact}
+              onValueChange={(value) => {
+                if (contactLocked) return;
+                form.setValue("preferredContact", value as OtpChannel, {
+                  shouldValidate: true,
+                });
+                resetOtpUi();
+              }}
+            >
+              <TabsList
+                aria-label={t("contactTabsLabel")}
+                className="grid h-11! w-full grid-cols-2"
+              >
+                {(["phone", "email"] as const).map((channel) => (
+                  <TabsTrigger
+                    key={channel}
+                    value={channel}
+                    disabled={contactLocked}
+                    className={cn(
+                      "relative z-0 overflow-hidden",
+                      // Kill default TabsTrigger active chrome — only the
+                      // layoutId pill should paint the selected surface.
+                      "data-active:bg-transparent! data-active:shadow-none!",
+                      "dark:data-active:border-transparent! dark:data-active:bg-transparent!",
+                    )}
+                  >
+                    {preferredContact === channel && (
+                      <motion.span
+                        layoutId="guest-plan-contact-tab-pill"
+                        aria-hidden
+                        className="bg-background pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm dark:bg-input/30"
+                        transition={
+                          shouldReduceMotion
+                            ? { duration: 0 }
+                            : {
+                                type: "spring",
+                                stiffness: 420,
+                                damping: 38,
+                                mass: 0.65,
+                              }
+                        }
+                      />
+                    )}
+                    <span className="relative z-10">
+                      {channel === "phone" ? t("phoneLabel") : t("emailLabel")}
+                    </span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-            {otpChannel && !verifiedChannel ? (
-              <div className="rounded-2xl border bg-muted/30 p-4">
-                <p className="mb-3 text-sm text-muted-foreground">
+              <TabsContent value="phone" className="mt-4 space-y-3" asChild>
+                <motion.div
+                  initial={
+                    shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={
+                    shouldReduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.2, ease: "easeOut" }
+                  }
+                  className="mt-4 space-y-3"
+                >
+                <Controller
+                  name="phone"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <div className="mb-8 space-y-2">
+                      <PhoneField
+                        id="guest-plan-phone"
+                        label={t("phoneLabel")}
+                        required={!verifiedChannel}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        error={translateError(fieldState.error?.message)}
+                        disabled={pending || contactLocked || otpPending}
+                      />
+                      {verifiedChannel === "phone" && (
+                        <p className="text-success flex items-center gap-1.5 text-sm">
+                          <CheckIcon className="size-4" aria-hidden />
+                          {t("phoneVerified")}
+                        </p>
+                      )}
+                      {!contactLocked && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="w-fit!"
+                          disabled={
+                            pending ||
+                            otpPending ||
+                            !isCompleteIranNationalMobile(phone ?? "")
+                          }
+                          onClick={() => void startOtp("phone")}
+                        >
+                          {otpPending && otpChannel === "phone" && (
+                            <LoaderCircle className="size-4 animate-spin" />
+                          )}
+                          {t("verifyPhone")}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="email"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="guest-plan-email-optional">
+                        {t("optionalEmailLabel")}
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="guest-plan-email-optional"
+                        type="email"
+                        dir="ltr"
+                        autoComplete="email"
+                        aria-invalid={fieldState.invalid}
+                        className="h-12"
+                        placeholder={t("emailPlaceholder")}
+                        disabled={pending || contactLocked || otpPending}
+                      />
+                      {fieldState.error && (
+                        <FieldError>
+                          {translateError(fieldState.error.message)}
+                        </FieldError>
+                      )}
+                    </Field>
+                  )}
+                />
+                </motion.div>
+              </TabsContent>
+
+              <TabsContent value="email" asChild>
+                <motion.div
+                  initial={
+                    shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={
+                    shouldReduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.2, ease: "easeOut" }
+                  }
+                  className="mt-4 space-y-3"
+                >
+                <Controller
+                  name="email"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className="mb-8">
+                      <FieldLabel htmlFor="guest-plan-email" className="gap-1">
+                        {t("emailLabel")}
+                        {!verifiedChannel && <RequiredInputIcon />}
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="guest-plan-email"
+                        type="email"
+                        dir="ltr"
+                        autoComplete="email"
+                        aria-invalid={fieldState.invalid}
+                        className="h-12"
+                        placeholder={t("emailPlaceholder")}
+                        disabled={pending || contactLocked || otpPending}
+                      />
+                      {fieldState.error && (
+                        <FieldError>
+                          {translateError(fieldState.error.message)}
+                        </FieldError>
+                      )}
+                      {verifiedChannel === "email" && (
+                        <p className="text-success mt-2 flex items-center gap-1.5 text-sm">
+                          <CheckIcon className="size-4" aria-hidden />
+                          {t("emailVerified")}
+                        </p>
+                      )}
+                      {!contactLocked && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="mt-2 w-fit!"
+                          disabled={
+                            pending || otpPending || !isLikelyEmail(email ?? "")
+                          }
+                          onClick={() => void startOtp("email")}
+                        >
+                          {otpPending && otpChannel === "email" && (
+                            <LoaderCircle className="size-4 animate-spin" />
+                          )}
+                          {t("verifyEmail")}
+                        </Button>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="phone"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <PhoneField
+                      id="guest-plan-phone-optional"
+                      label={t("optionalPhoneLabel")}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      error={translateError(fieldState.error?.message)}
+                      disabled={pending || contactLocked || otpPending}
+                    />
+                  )}
+                />
+                </motion.div>
+              </TabsContent>
+            </Tabs>
+
+            {otpChannel && !verifiedChannel && (
+              <div className="bg-muted/30 rounded-2xl border p-4">
+                <p className="text-muted-foreground mb-3 text-sm">
                   {otpChannel === "phone"
                     ? t("otpPhoneHint")
                     : t("otpEmailHint")}
@@ -445,12 +595,14 @@ export function GuestPlanRequestForm({
                   <Button
                     type="button"
                     size="sm"
-                    disabled={otpPending || otpCode.replace(/\D/g, "").length < 6}
+                    disabled={
+                      otpPending || otpCode.replace(/\D/g, "").length < 6
+                    }
                     onClick={() => void confirmOtp()}
                   >
-                    {otpPending ? (
+                    {otpPending && (
                       <LoaderCircle className="size-4 animate-spin" />
-                    ) : null}
+                    )}
                     {t("confirmOtp")}
                   </Button>
                   <Button
@@ -469,46 +621,14 @@ export function GuestPlanRequestForm({
                     variant="ghost"
                     size="sm"
                     disabled={otpPending}
-                    onClick={() => {
-                      setOtpChannel(null);
-                      setOtpCode("");
-                      setOtpError(null);
-                    }}
+                    onClick={resetOtpUi}
                   >
                     {t("cancelOtp")}
                   </Button>
                 </div>
               </div>
-            ) : null}
-
-            <p className="text-xs text-muted-foreground">{t("contactHint")}</p>
-          </div>
-
-          <Controller
-            name="website"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="guest-plan-website" className="gap-1">
-                  {t("websiteLabel")}
-                  {!noWebsiteYet ? <RequiredInputIcon /> : null}
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="guest-plan-website"
-                  type="url"
-                  dir="ltr"
-                  disabled={noWebsiteYet || pending}
-                  aria-invalid={fieldState.invalid}
-                  className="h-12"
-                  placeholder={t("websitePlaceholder")}
-                />
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
-              </Field>
             )}
-          />
+          </div>
 
           <Controller
             name="noWebsiteYet"
@@ -518,7 +638,9 @@ export function GuestPlanRequestForm({
                 <Checkbox
                   id="guest-plan-no-website"
                   checked={field.value}
-                  onCheckedChange={(checked) => field.onChange(checked === true)}
+                  onCheckedChange={(checked) =>
+                    field.onChange(checked === true)
+                  }
                   className="mt-0.5"
                   aria-describedby="guest-plan-no-website-hint"
                   disabled={pending}
@@ -534,131 +656,197 @@ export function GuestPlanRequestForm({
             )}
           />
 
-          <p className="text-sm font-medium text-foreground">
+          <Controller
+            name="website"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="guest-plan-website" className="gap-1">
+                  {t("websiteLabel")}
+                  {!noWebsiteYet && <RequiredInputIcon />}
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id="guest-plan-website"
+                  type="url"
+                  dir="ltr"
+                  disabled={sizingDisabled}
+                  aria-invalid={fieldState.invalid}
+                  className="h-12"
+                  placeholder={t("websitePlaceholder")}
+                />
+                {fieldState.error && (
+                  <FieldError>
+                    {translateError(fieldState.error.message)}
+                  </FieldError>
+                )}
+              </Field>
+            )}
+          />
+
+          <p className="text-foreground text-sm font-medium">
             {t("intakeSectionTitle")}
           </p>
-          <p className="-mt-3 text-xs text-muted-foreground">
+          <p className="text-muted-foreground -mt-3 text-xs">
             {t("intakeSectionHint")}
           </p>
 
-          <Controller
-            name="databaseSizeBand"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="gap-1">
-                  {t("databaseSizeLabel")}
-                  <RequiredInputIcon />
-                </FieldLabel>
-                <Select
-                  value={field.value || undefined}
-                  onValueChange={field.onChange}
-                  disabled={pending}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Controller
+              name="databaseSizeBand"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel className="gap-1">
+                    {t("databaseSizeLabel")}
+                    {!noWebsiteYet && <RequiredInputIcon />}
+                  </FieldLabel>
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                    disabled={sizingDisabled}
+                  >
+                    <SelectTrigger
+                      className="h-12 w-full"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      <SelectValue placeholder={t("databaseSizePlaceholder")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DATABASE_SIZE_BANDS.map((band) => (
+                        <SelectItem key={band} value={band}>
+                          {t(`databaseSizeOptions.${band}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && (
+                    <FieldError>
+                      {translateError(fieldState.error.message)}
+                    </FieldError>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="dailyVisitorsBand"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel className="gap-1">
+                    {t("dailyVisitorsLabel")}
+                    {!noWebsiteYet && <RequiredInputIcon />}
+                  </FieldLabel>
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                    disabled={sizingDisabled}
+                  >
+                    <SelectTrigger
+                      className="h-12 w-full"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      <SelectValue
+                        placeholder={t("dailyVisitorsPlaceholder")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DAILY_VISITOR_BANDS.map((band) => (
+                        <SelectItem key={band} value={band}>
+                          {t(`dailyVisitorsOptions.${band}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && (
+                    <FieldError>
+                      {translateError(fieldState.error.message)}
+                    </FieldError>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="isWooCommerce"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel className="gap-1">
+                    {t("woocommerceLabel")}
+                    {!noWebsiteYet && <RequiredInputIcon />}
+                  </FieldLabel>
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                    disabled={sizingDisabled}
+                  >
+                    <SelectTrigger
+                      className="h-12 w-full"
+                      aria-invalid={fieldState.invalid}
+                    >
+                      <SelectValue placeholder={t("woocommercePlaceholder")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {WOOCOMMERCE_OPTIONS.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {t(`woocommerceOptions.${option}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && (
+                    <FieldError>
+                      {translateError(fieldState.error.message)}
+                    </FieldError>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="lg:col-span-2"
                 >
-                  <SelectTrigger className="h-12 w-full" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder={t("databaseSizePlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DATABASE_SIZE_BANDS.map((band) => (
-                      <SelectItem key={band} value={band}>
-                        {t(`databaseSizeOptions.${band}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
-              </Field>
-            )}
-          />
+                  <FieldLabel htmlFor="guest-plan-description">
+                    {t("descriptionLabel")}
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupTextarea
+                      {...field}
+                      id="guest-plan-description"
+                      rows={4}
+                      aria-invalid={fieldState.invalid}
+                      placeholder={t("descriptionPlaceholder")}
+                      disabled={pending}
+                      className="h-32"
+                    />
+                  </InputGroup>
+                  {fieldState.error && (
+                    <FieldError>
+                      {translateError(fieldState.error.message)}
+                    </FieldError>
+                  )}
+                </Field>
+              )}
+            />
+          </div>
 
           <Controller
-            name="monthlyVisitorsBand"
+            name="attachments"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="gap-1">
-                  {t("monthlyVisitorsLabel")}
-                  <RequiredInputIcon />
-                </FieldLabel>
-                <Select
-                  value={field.value || undefined}
-                  onValueChange={field.onChange}
-                  disabled={pending}
-                >
-                  <SelectTrigger className="h-12 w-full" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder={t("monthlyVisitorsPlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MONTHLY_VISITOR_BANDS.map((band) => (
-                      <SelectItem key={band} value={band}>
-                        {t(`monthlyVisitorsOptions.${band}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="isWooCommerce"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="gap-1">
-                  {t("woocommerceLabel")}
-                  <RequiredInputIcon />
-                </FieldLabel>
-                <Select
-                  value={field.value || undefined}
-                  onValueChange={field.onChange}
-                  disabled={pending}
-                >
-                  <SelectTrigger className="h-12 w-full" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder={t("woocommercePlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {WOOCOMMERCE_OPTIONS.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {t(`woocommerceOptions.${option}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="description"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="guest-plan-description">
-                  {t("descriptionLabel")}
-                </FieldLabel>
-                <InputGroup>
-                  <InputGroupTextarea
-                    {...field}
-                    id="guest-plan-description"
-                    rows={4}
-                    aria-invalid={fieldState.invalid}
-                    placeholder={t("descriptionPlaceholder")}
-                    disabled={pending}
-                  />
-                </InputGroup>
-                {fieldState.error ? (
-                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
-                ) : null}
-              </Field>
+              <PlanRequestFileUpload
+                files={field.value ?? []}
+                disabled={pending}
+                error={translateError(fieldState.error?.message)}
+                onChange={field.onChange}
+              />
             )}
           />
         </FieldGroup>
@@ -669,16 +857,16 @@ export function GuestPlanRequestForm({
           disabled={pending || !verifiedChannel || Boolean(otpChannel)}
           className="mt-8 h-12 w-full gap-2 text-base font-bold"
         >
-          {pending ? (
+          {pending && (
             <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
-          ) : null}
+          )}
           {pending ? t("processing") : t("submit")}
         </RadialRevealButton>
 
-        <p className="mt-4 flex items-start gap-2 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-4 flex items-start gap-2 text-sm">
           <ShieldCheck
             aria-hidden="true"
-            className="mt-0.5 size-4 shrink-0 text-success"
+            className="text-success mt-0.5 size-4 shrink-0"
           />
           {t("reassurance")}
         </p>

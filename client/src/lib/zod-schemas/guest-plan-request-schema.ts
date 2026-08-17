@@ -13,14 +13,35 @@ export const DATABASE_SIZE_BANDS = [
   "over_20gb",
 ] as const;
 
-export const MONTHLY_VISITOR_BANDS = [
-  "under_1k",
-  "1k_to_10k",
-  "10k_to_50k",
-  "over_50k",
+/** Daily visitor ranges for guest plan intake. */
+export const DAILY_VISITOR_BANDS = [
+  "under_100",
+  "100_to_500",
+  "500_to_2k",
+  "over_2k",
 ] as const;
 
 export const WOOCOMMERCE_OPTIONS = ["yes", "no", "not_sure"] as const;
+
+export const PLAN_REQUEST_UPLOAD = {
+  accept: ".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx",
+  acceptMime: [
+    "application/pdf",
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ] as const,
+  maxFiles: 5,
+  maxBytes: 5 * 1024 * 1024,
+} as const;
+
+export type PlanRequestAttachmentMeta = {
+  name: string;
+  size: number;
+  type: string;
+};
 
 function normalizeWebsite(value: string): string {
   const trimmed = value.trim();
@@ -40,6 +61,20 @@ function isValidWebsite(value: string): boolean {
   }
 }
 
+export function isAcceptedPlanRequestFile(file: File): boolean {
+  if (file.size <= 0 || file.size > PLAN_REQUEST_UPLOAD.maxBytes) {
+    return false;
+  }
+  const lower = file.name.toLowerCase();
+  const byExt = PLAN_REQUEST_UPLOAD.accept
+    .split(",")
+    .some((ext) => lower.endsWith(ext.trim()));
+  const byMime = (PLAN_REQUEST_UPLOAD.acceptMime as readonly string[]).includes(
+    file.type,
+  );
+  return byExt || byMime;
+}
+
 export const guestPlanRequestSchema = z
   .object({
     fullName: z
@@ -47,6 +82,7 @@ export const guestPlanRequestSchema = z
       .trim()
       .min(1, errorKey("fullNameRequired"))
       .regex(fullNameRegex, errorKey("fullNameInvalid")),
+    preferredContact: z.enum(["phone", "email"]),
     phone: z
       .string()
       .trim()
@@ -54,62 +90,70 @@ export const guestPlanRequestSchema = z
     email: z.string().trim(),
     noWebsiteYet: z.boolean(),
     website: z.string().trim(),
-    databaseSizeBand: z
-      .string()
-      .min(1, errorKey("databaseSizeRequired"))
-      .refine(
-        (value) => (DATABASE_SIZE_BANDS as readonly string[]).includes(value),
-        errorKey("databaseSizeRequired"),
-      ),
-    monthlyVisitorsBand: z
-      .string()
-      .min(1, errorKey("monthlyVisitorsRequired"))
-      .refine(
-        (value) =>
-          (MONTHLY_VISITOR_BANDS as readonly string[]).includes(value),
-        errorKey("monthlyVisitorsRequired"),
-      ),
-    isWooCommerce: z
-      .string()
-      .min(1, errorKey("woocommerceRequired"))
-      .refine(
-        (value) => (WOOCOMMERCE_OPTIONS as readonly string[]).includes(value),
-        errorKey("woocommerceRequired"),
-      ),
+    databaseSizeBand: z.string(),
+    dailyVisitorsBand: z.string(),
+    isWooCommerce: z.string(),
     description: z.string().trim().max(2000).optional(),
+    attachments: z
+      .array(
+        z.object({
+          name: z.string().min(1).max(255),
+          size: z.number().int().positive().max(PLAN_REQUEST_UPLOAD.maxBytes),
+          type: z.string().max(120),
+        }),
+      )
+      .max(PLAN_REQUEST_UPLOAD.maxFiles),
   })
   .superRefine((data, ctx) => {
     const phone = data.phone;
     const email = data.email;
 
-    if (!phone && !email) {
-      ctx.addIssue({
-        code: "custom",
-        message: errorKey("contactRequired"),
-        path: ["phone"],
-      });
-      ctx.addIssue({
-        code: "custom",
-        message: errorKey("contactRequired"),
-        path: ["email"],
-      });
-    }
-
-    if (phone && !iranNationalMobileRegex.test(phone)) {
-      ctx.addIssue({
-        code: "custom",
-        message: errorKey("phoneInvalid"),
-        path: ["phone"],
-      });
-    }
-
-    if (email) {
-      const emailResult = z.email().safeParse(email);
-      if (!emailResult.success) {
+    if (data.preferredContact === "phone") {
+      if (!phone) {
         ctx.addIssue({
           code: "custom",
-          message: errorKey("emailInvalid"),
+          message: errorKey("phoneRequired"),
+          path: ["phone"],
+        });
+      } else if (!iranNationalMobileRegex.test(phone)) {
+        ctx.addIssue({
+          code: "custom",
+          message: errorKey("phoneInvalid"),
+          path: ["phone"],
+        });
+      }
+      if (email) {
+        const emailResult = z.email().safeParse(email);
+        if (!emailResult.success) {
+          ctx.addIssue({
+            code: "custom",
+            message: errorKey("emailInvalid"),
+            path: ["email"],
+          });
+        }
+      }
+    } else {
+      if (!email) {
+        ctx.addIssue({
+          code: "custom",
+          message: errorKey("emailRequired"),
           path: ["email"],
+        });
+      } else {
+        const emailResult = z.email().safeParse(email);
+        if (!emailResult.success) {
+          ctx.addIssue({
+            code: "custom",
+            message: errorKey("emailInvalid"),
+            path: ["email"],
+          });
+        }
+      }
+      if (phone && !iranNationalMobileRegex.test(phone)) {
+        ctx.addIssue({
+          code: "custom",
+          message: errorKey("phoneInvalid"),
+          path: ["phone"],
         });
       }
     }
@@ -124,14 +168,41 @@ export const guestPlanRequestSchema = z
         message: errorKey("websiteRequired"),
         path: ["website"],
       });
-      return;
-    }
-
-    if (!isValidWebsite(data.website)) {
+    } else if (!isValidWebsite(data.website)) {
       ctx.addIssue({
         code: "custom",
         message: errorKey("websiteInvalid"),
         path: ["website"],
+      });
+    }
+
+    if (
+      !(DATABASE_SIZE_BANDS as readonly string[]).includes(data.databaseSizeBand)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("databaseSizeRequired"),
+        path: ["databaseSizeBand"],
+      });
+    }
+
+    if (
+      !(DAILY_VISITOR_BANDS as readonly string[]).includes(data.dailyVisitorsBand)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("dailyVisitorsRequired"),
+        path: ["dailyVisitorsBand"],
+      });
+    }
+
+    if (
+      !(WOOCOMMERCE_OPTIONS as readonly string[]).includes(data.isWooCommerce)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("woocommerceRequired"),
+        path: ["isWooCommerce"],
       });
     }
   });
@@ -142,14 +213,26 @@ export function buildGuestPlanIntakeNotes(
   data: GuestPlanRequestSchemaType,
 ): string {
   const lines = [
-    "[Plan intake — example fields]",
-    `Database size: ${data.databaseSizeBand}`,
-    `Monthly visitors: ${data.monthlyVisitorsBand}`,
-    `WooCommerce today: ${data.isWooCommerce}`,
+    "[Plan intake]",
+    `Preferred contact: ${data.preferredContact}`,
   ];
 
   if (data.noWebsiteYet) {
     lines.push("Website: none yet");
+    lines.push("Store sizing: skipped (no website yet)");
+  } else {
+    lines.push(`Website: ${normalizeWebsite(data.website)}`);
+    lines.push(`Database size: ${data.databaseSizeBand}`);
+    lines.push(`Daily visitors: ${data.dailyVisitorsBand}`);
+    lines.push(`WooCommerce today: ${data.isWooCommerce}`);
+  }
+
+  if (data.attachments.length > 0) {
+    lines.push(
+      `Attachments (names only; binary upload deferred): ${data.attachments
+        .map((file) => file.name)
+        .join(", ")}`,
+    );
   }
 
   const freeText = data.description?.trim();
@@ -160,9 +243,7 @@ export function buildGuestPlanIntakeNotes(
   return lines.join("\n");
 }
 
-export function guestPlanRequestToApiPayload(
-  data: GuestPlanRequestSchemaType,
-) {
+export function guestPlanRequestToApiPayload(data: GuestPlanRequestSchemaType) {
   const phone = data.phone.trim();
   const email = data.email.trim();
 
@@ -178,3 +259,6 @@ export function guestPlanRequestToApiPayload(
 }
 
 export { normalizeWebsite, isValidWebsite };
+
+/** @deprecated Use DAILY_VISITOR_BANDS */
+export const MONTHLY_VISITOR_BANDS = DAILY_VISITOR_BANDS;

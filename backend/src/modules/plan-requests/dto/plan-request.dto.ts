@@ -34,7 +34,7 @@ export class CreatePublicPlanRequestDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(2000)
+  @MaxLength(4000)
   notes?: string;
 }
 

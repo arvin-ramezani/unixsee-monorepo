@@ -40,7 +40,9 @@ export default function LocaleSwitcher({
     onLocaleChange?.(next);
 
     startTransition(() => {
-      router.replace(pathname, { locale: next });
+      const search = window.location.search;
+      const hash = window.location.hash;
+      router.replace(`${pathname}${search}${hash}`, { locale: next });
       router.refresh();
     });
   };

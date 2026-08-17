@@ -25,7 +25,9 @@ Guest plan intake is **not** anonymous create-without-account.
 4. The plan request is then created as an **authenticated** customer request
    (`POST /api/v1/plan-requests` — see
    [`plan-requests-customer.md`](./plan-requests-customer.md)). Example intake
-   fields are serialized into `notes` until a dedicated intake DTO exists.
+   fields are serialized into `notes` (≤4000) until a dedicated intake DTO exists
+   (database size, daily visitors, WooCommerce, optional attachment filenames;
+   binary upload deferred).
 5. If the contact already matches a customer, do **not** create a second user;
    guide sign-in (`ACCOUNT_EXISTS` / account-check).
 
