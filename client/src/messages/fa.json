@@ -267,6 +267,10 @@
         "label": "مشتریان",
         "href": "testimonials"
       },
+      "faq": {
+        "label": "سوالات متداول",
+        "href": "faq"
+      },
       "portfolio": {
         "label": "نمونه‌کارها",
         "href": "portfolio"

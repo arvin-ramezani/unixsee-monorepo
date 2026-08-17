@@ -49,7 +49,6 @@ import { initialServerActionState } from "@/types/server-action-state";
 
 const SERVICE_KEYS = [
   "managedServer",
-  "migrationOptimization",
   "woocommerceSupport",
   "seo",
   "graphicDesign",

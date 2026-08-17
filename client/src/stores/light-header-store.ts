@@ -54,5 +54,10 @@ export const createLightHeaderStore = (
 };
 
 function isHomePath(pathname?: string | null) {
-  return pathname === "/" || pathname === "/en" || pathname === "/fa";
+  if (!pathname) {
+    return false;
+  }
+
+  const normalized = pathname.replace(/\/$/, "") || "/";
+  return normalized === "/" || normalized === "/en" || normalized === "/fa";
 }

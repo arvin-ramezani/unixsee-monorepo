@@ -46,7 +46,8 @@ export const HOME_PAGE_SECTION_IDS = [
   "infrastructure",
   "process",
   "consultation",
-  "testimonials",
+  // "testimonials",
+  "faq",
   // "portfolio",
   // "blog",
 ] as const;

@@ -267,6 +267,10 @@
         "label": "Clients",
         "href": "testimonials"
       },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
+      },
       "portfolio": {
         "label": "Portfolio",
         "href": "portfolio"

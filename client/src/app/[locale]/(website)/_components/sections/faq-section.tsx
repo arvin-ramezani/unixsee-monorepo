@@ -11,20 +11,21 @@ import { ScaleTitle } from "@/components/common/motion/scale-title";
 
 const itemKeys = [
   "woocommerceOnly",
+  "managedServer",
   "migration",
   "fixedPlans",
-  "onlyInfrastructure",
+  "complementaryServices",
   "bestFit",
 ] as const;
 
-export type FaqSectionProps = object;
+export type FaqSectionProps = { id?: string };
 // & ComponentWithCmsProps<HomeFaqSectionProps>;
 
-export default function FaqSection({}: FaqSectionProps) {
+export default function FaqSection({ id }: FaqSectionProps) {
   const t = useTranslations("HomePage.FAQSection");
 
   return (
-    <Section className="min-h-auto">
+    <Section className="min-h-auto" id={id}>
       <ScaleTitle
         as={"h2"}
         scaleFrom={0.6}
