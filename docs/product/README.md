@@ -17,6 +17,7 @@ yet exist.
 | Doc | Purpose |
 |---|---|
 | [`phase-1-application-features.md`](./phase-1-application-features.md) | Required outcomes, actors, boundaries, feature areas |
+| [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) | Unixsee messages / پیام‌های یونیکسی (tenant-targeted one-way inbox); Proposed, Phase 1 |
 
 ## Deferred / future product
 

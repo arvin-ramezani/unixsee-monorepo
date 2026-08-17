@@ -71,6 +71,9 @@ Phase 1 must enable these complete outcomes across its delivery waves:
   monitoring status, alerts, usage, and relevant operational history.
 - Later in Phase 1, authorized users can request safe website operations and
   see their progress and result.
+- Staff can send **Unixsee messages** (پیام‌های یونیکسی) to a tenant’s
+  dashboard (popup + inbox); see
+  [`unixsee-messages-prd.md`](./unixsee-messages-prd.md).
 - Later in Phase 1, staff can publish Unixsee News notifications and
   website-specific اعلان‌ها popups; customer-visible activities (including
   resolved operational incidents) and staff-only audit records provide history.
@@ -108,6 +111,10 @@ Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
   progress, and history.
 - Staff-managed commercial records needed by active plans and complementary
   services.
+- **Unixsee messages (پیام‌های یونیکسی):** tenant-targeted one-way staff
+  messages with popup, inbox list, and unread indicator. Canonical PRD:
+  [`unixsee-messages-prd.md`](./unixsee-messages-prd.md). This is **not**
+  Notifications (News) and **not** website notices (اعلان‌ها).
 
 ### 4.2 Later Phase 1 (still in scope, implement after first wave)
 
@@ -267,6 +274,7 @@ stale values and recover through refetch or reconnection.
 | Monitoring and alerts | Health, traffic, checks, warnings | Fleet monitoring and alert handling | Later Phase 1 (beyond inventory) |
 | Operational actions | Request allowed actions | Dispatch, observe, retry, and audit | Later Phase 1 |
 | Activities | Customer-visible timeline of ops outcomes | Inspect/create permitted events; log resolved incidents | Later Phase 1 |
+| Unixsee messages | Tenant-targeted one-way inbox + popup | Compose, publish, edit, withdraw for one tenant | Phase 1 — [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
 | Website notices (اعلان‌ها) | Website-targeted popup/notice | Compose and target a specific website | Later Phase 1 |
 | Notifications (News) | Unixsee news / platform announcements | Compose, target, schedule, and publish news | Later Phase 1 |
 | Admin settings | — | Staff configuration and panel settings | Later Phase 1 |
@@ -1110,15 +1118,28 @@ permission-controlled.
   the customer.
 - Audit records are immutable to ordinary administrator roles.
 
-## 18. Notifications and website notices
+## 18. Notifications, website notices, and Unixsee messages
 
-Phase 1 separates two customer-facing communication products. Do not collapse
-them into one model or one admin queue.
+Phase 1 separates **three** customer-facing communication products. Do not
+collapse them into one model or one admin queue.
 
 | Product | Persian label (when used) | Purpose | Delivery |
 | --- | --- | --- | --- |
+| **Unixsee messages** | پیام‌های یونیکسی | Tenant-targeted one-way staff messages (optional website context) | Phase 1 — see [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
 | Notifications (News) | — / اخبار Unixsee | Platform news and Unixsee announcements in the customer dashboard | Later Phase 1 |
 | Website notices | اعلان‌ها | Admin-authored popup/notice for a **specific website** | Later Phase 1 |
+
+### 18.0 Unixsee messages (پیام‌های یونیکسی)
+
+Unixsee messages are **one-tenant**, staff → customer messages with short
+title/body (FA + EN), optional attachments and links, optional website
+context, dismissible first-see popup, inbox list page, and sidebar unread
+presence indicator. Full intended contract:
+
+[`unixsee-messages-prd.md`](./unixsee-messages-prd.md)
+
+Do not implement this feature as a reuse of News broadcast semantics or as a
+replacement for اعلان‌ها or tickets.
 
 ### 18.1 Notifications (News)
 
@@ -1157,7 +1178,8 @@ high-impact broadcasts.
 - Read state is user-specific and server-backed when cross-device behavior is
   promised.
 - Publishing, audience changes, and withdrawal are audited.
-- News notifications are not used as substitutes for website-specific اعلان‌ها.
+- News notifications are not used as substitutes for website-specific اعلان‌ها
+  or Unixsee messages.
 
 ### 18.4 Website notices (اعلان‌ها)
 
@@ -1187,7 +1209,8 @@ Customers need to:
 
 - A notice targeted at website A is never shown for website B.
 - Customers without access to the website cannot open the notice by ID.
-- اعلان‌ها and News remain separately labeled in admin and customer IA.
+- اعلان‌ها, News, and Unixsee messages remain separately labeled in admin and
+  customer IA.
 - Publish, withdraw, and targeting changes are audited.
 
 ## 19. Search
@@ -1394,7 +1417,8 @@ Phase 1 is functionally complete only when:
   those flows require.
 - Later Phase 1 surfaces (activities, اعلان‌ها, News notifications, admin
   Settings) remain honestly unavailable until delivered and do not falsely
-  appear operational.
+  appear operational. Unixsee messages follow
+  [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) when implemented.
 - Live status and action updates recover safely from disconnects.
 - No customer can access another tenant's records by changing IDs, search
   terms, attachment URLs, or realtime subscriptions.
@@ -1421,6 +1445,10 @@ The following choices must be approved in feature follow-ups or ADRs:
 - Notification audience rules and read-receipt requirements for News.
 - Website-notice (اعلان‌ها) severity, dismissibility, and acknowledgement
   policy.
+- Unixsee messages open items in
+  [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) §10 (attachment
+  policy, multi-unread popup order, withdraw history, Nest route naming vs
+  News).
 - Activity payload contract for server-team incident resolutions.
 - Alert severities, visibility rules, and service-level targets.
 - Attachment storage, scanning, retention, and download policy.

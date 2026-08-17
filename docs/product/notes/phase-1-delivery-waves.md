@@ -6,7 +6,7 @@ Sequences Phase 1 work into a first implementation wave and later Phase 1
 items. Behavioral detail remains in
 `docs/product/phase-1-application-features.md`.
 
-**Last verified:** 2026-08-09
+**Last verified:** 2026-08-16
 
 ## First-wave (first implementation)
 
@@ -18,6 +18,7 @@ items. Behavioral detail remains in
 | Tickets | Customer and staff support workflow |
 | Complementary services | Request, review, activate, deliver |
 | Plan requests | Customer request + staff enablement on a website |
+| Unixsee messages | Tenant-targeted one-way پیام‌های یونیکسی (popup + inbox + unread indicator). Canonical: [`../unixsee-messages-prd.md`](../unixsee-messages-prd.md). Not News, not اعلان‌ها |
 
 ## Later Phase 1 (still in Phase 1)
 
@@ -31,8 +32,10 @@ items. Behavioral detail remains in
 
 ## Hard separation
 
-Do not treat **اعلان‌ها** as the same product as **Notifications (News)**.
+Do not treat **اعلان‌ها**, **Notifications (News)**, and **Unixsee messages**
+as the same product.
 
+- Unixsee messages = one-tenant staff → customer inbox/popup (see PRD).
 - News = platform-wide (or segment) announcements feed.
 - اعلان‌ها = website-targeted operational popup/notice.
 
