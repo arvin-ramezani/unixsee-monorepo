@@ -23,11 +23,13 @@ interface SidebarContentProps {
     | "HelpCenter"
     | "Profile"
     | "Tickets"
+    | "UnixseeMessages"
     | "Websites";
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Close overlays (e.g. mobile sheet) as soon as a nav item is activated. */
   onNavigate?: () => void;
+  hasUnreadUnixseeMessages?: boolean;
 }
 
 export function SidebarContent({
@@ -35,6 +37,7 @@ export function SidebarContent({
   collapsed = false,
   onCollapsedChange,
   onNavigate,
+  hasUnreadUnixseeMessages = false,
 }: SidebarContentProps) {
   const t = useTranslations("Navigation");
 
@@ -112,13 +115,29 @@ export function SidebarContent({
                         item.activeItem === activeItem &&
                           "bg-muted/70 hover:bg-muted/70 text-foreground after:absolute after:inset-y-0 after:-inset-e-3.75 after:w-1 after:rounded-s-sm after:bg-[color-mix(in_oklch,var(--success)_52%,var(--warning))] after:brightness-115 after:saturate-120",
                       )}
-                      aria-label={collapsed ? t(item.key) : undefined}
+                      aria-label={
+                        collapsed
+                          ? hasUnreadUnixseeMessages &&
+                            item.key === "unixseeMessages"
+                            ? `${t(item.key)} — ${t("unreadMessages")}`
+                            : t(item.key)
+                          : undefined
+                      }
                     >
-                      <item.icon
-                        aria-hidden="true"
-                        className="size-[1.3rem] shrink-0"
-                        strokeWidth={1.7}
-                      />
+                      <span className="relative shrink-0">
+                        <item.icon
+                          aria-hidden="true"
+                          className="size-[1.3rem] shrink-0"
+                          strokeWidth={1.7}
+                        />
+                        {hasUnreadUnixseeMessages &&
+                          item.key === "unixseeMessages" && (
+                            <span
+                              className="bg-destructive absolute -top-0.5 -inset-e-0.5 size-2 rounded-full"
+                              aria-hidden="true"
+                            />
+                          )}
+                      </span>
                       {label}
                     </Link>
                   )}
@@ -126,7 +145,10 @@ export function SidebarContent({
                 <TooltipContent sideOffset={10}>
                   {disabled
                     ? `${t(item.key)} — ${t("comingSoon")}`
-                    : t(item.key)}
+                    : hasUnreadUnixseeMessages &&
+                        item.key === "unixseeMessages"
+                      ? `${t(item.key)} — ${t("unreadMessages")}`
+                      : t(item.key)}
                 </TooltipContent>
               </Tooltip>
             );

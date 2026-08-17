@@ -18,6 +18,7 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 export function MobileNav({
   activeItem = "Dashboard",
+  hasUnreadUnixseeMessages = false,
 }: {
   activeItem?:
     | "Activities"
@@ -27,7 +28,9 @@ export function MobileNav({
     | "HelpCenter"
     | "Profile"
     | "Tickets"
+    | "UnixseeMessages"
     | "Websites";
+  hasUnreadUnixseeMessages?: boolean;
 }) {
   const locale = useLocale();
   const t = useTranslations("Navigation");
@@ -71,6 +74,7 @@ export function MobileNav({
         <SidebarContent
           activeItem={activeItem}
           onNavigate={() => setOpen(false)}
+          hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
         />
       </SheetContent>
     </Sheet>

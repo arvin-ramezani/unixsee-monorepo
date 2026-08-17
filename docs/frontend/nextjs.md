@@ -59,6 +59,14 @@ Applies to **both** `admin-panel/` and `client/` (new and touched code).
   touched branches.
 - Agent detail: each app’s `.agents/skills/react-19/SKILL.md`.
 
+## Admin Base UI components (`admin-panel/`)
+
+Staff UI uses shadcn on **Base UI**, not Radix habits. Before Select,
+DropdownMenu, Dialog, AlertDialog, or Sheet, read
+[`../../admin-panel/docs/development/components.md`](../../admin-panel/docs/development/components.md)
+(Select label children + `alignItemWithTrigger={false}`; DropdownMenuLabel
+inside DropdownMenuGroup; overlay choice rules).
+
 ## Authenticated data fetching (`client/`)
 
 Hybrid session + Nest fetch conventions (phone OTP live under ADR 0011):

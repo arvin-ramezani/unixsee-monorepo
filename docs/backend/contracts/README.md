@@ -44,6 +44,7 @@ docs/backend/contracts/
 | [`servers-admin.md`](./servers-admin.md) | `/api/v1/admin/servers/*` | Staff servers, enrollment, agent revoke, server delete |
 | [`users-admin.md`](./users-admin.md) | `/api/v1/admin/users/*` | Staff customer directory + tenant membership summary |
 | [`users-me-contacts.md`](./users-me-contacts.md) | `/api/v1/users/me/contacts/*` | Customer phone/email OTP verification |
+| [`unixsee-messages.md`](./unixsee-messages.md) | Customer + admin | Tenant-targeted one-way Unixsee messages |
 
 ## Writing rules
 

@@ -23,6 +23,7 @@ type ActiveItem =
   | "HelpCenter"
   | "Profile"
   | "Tickets"
+  | "UnixseeMessages"
   | "Websites";
 
 interface HeaderProps {
@@ -30,6 +31,7 @@ interface HeaderProps {
   notifications: readonly NotificationItem[];
   showViewToggle?: boolean;
   userName?: string;
+  hasUnreadUnixseeMessages?: boolean;
 }
 
 /**
@@ -48,6 +50,7 @@ export function Header({
   notifications,
   showViewToggle: showViewToggleOverride,
   userName = "Jane",
+  hasUnreadUnixseeMessages = false,
 }: HeaderProps) {
   const views = useTranslations("Common.views");
   const { view, toggleView } = useDashboardView();
@@ -66,7 +69,10 @@ export function Header({
       )}
     >
       <div className="flex h-full items-center gap-3 px-4 sm:px-6 xl:ps-7.5 xl:pe-6.5">
-        <MobileNav activeItem={activeItem} />
+        <MobileNav
+          activeItem={activeItem}
+          hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
+        />
         <GlobalSearch />
         <div className="ms-auto flex h-full items-center gap-1 sm:gap-3 xl:gap-5">
           {showViewToggle && (

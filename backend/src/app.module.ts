@@ -31,6 +31,7 @@ import { ServersModule } from './modules/servers/servers.module.js';
 import { DiscoveriesModule } from './modules/discoveries/discoveries.module.js';
 import { TicketsModule } from './modules/tickets/tickets.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
+import { UnixseeMessagesModule } from './modules/unixsee-messages/unixsee-messages.module.js';
 import { ActivitiesModule } from './modules/activities/activities.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AdminOverviewModule } from './modules/admin-overview/admin-overview.module.js';
@@ -73,6 +74,7 @@ import { AuthorizationCasesModule } from './modules/authorization-cases/authoriz
     DiscoveriesModule,
     TicketsModule,
     NotificationsModule,
+    UnixseeMessagesModule,
     ActivitiesModule,
     AuditModule,
     AdminOverviewModule,

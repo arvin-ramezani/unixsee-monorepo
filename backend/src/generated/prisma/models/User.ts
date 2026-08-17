@@ -283,6 +283,8 @@ export type UserWhereInput = {
   ticketMessages?: Prisma.TicketMessageListRelationFilter
   notificationReads?: Prisma.NotificationReadListRelationFilter
   authoredNotifications?: Prisma.NotificationListRelationFilter
+  unixseeMessageReads?: Prisma.UnixseeMessageReadListRelationFilter
+  authoredUnixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   auditRecords?: Prisma.AuditRecordListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
 }
@@ -317,6 +319,8 @@ export type UserOrderByWithRelationInput = {
   ticketMessages?: Prisma.TicketMessageOrderByRelationAggregateInput
   notificationReads?: Prisma.NotificationReadOrderByRelationAggregateInput
   authoredNotifications?: Prisma.NotificationOrderByRelationAggregateInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadOrderByRelationAggregateInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageOrderByRelationAggregateInput
   auditRecords?: Prisma.AuditRecordOrderByRelationAggregateInput
   operationalActions?: Prisma.OperationalActionOrderByRelationAggregateInput
 }
@@ -354,6 +358,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   ticketMessages?: Prisma.TicketMessageListRelationFilter
   notificationReads?: Prisma.NotificationReadListRelationFilter
   authoredNotifications?: Prisma.NotificationListRelationFilter
+  unixseeMessageReads?: Prisma.UnixseeMessageReadListRelationFilter
+  authoredUnixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   auditRecords?: Prisma.AuditRecordListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
 }, "id" | "phoneNumber" | "email" | "username">
@@ -432,6 +438,8 @@ export type UserCreateInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -466,6 +474,8 @@ export type UserUncheckedCreateInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -500,6 +510,8 @@ export type UserUpdateInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -534,6 +546,8 @@ export type UserUncheckedUpdateInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -912,6 +926,34 @@ export type UserUpdateOneRequiredWithoutOperationalActionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOperationalActionsInput, Prisma.UserUpdateWithoutOperationalActionsInput>, Prisma.UserUncheckedUpdateWithoutOperationalActionsInput>
 }
 
+export type UserCreateNestedOneWithoutAuthoredUnixseeMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedCreateWithoutAuthoredUnixseeMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredUnixseeMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAuthoredUnixseeMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedCreateWithoutAuthoredUnixseeMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthoredUnixseeMessagesInput
+  upsert?: Prisma.UserUpsertWithoutAuthoredUnixseeMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthoredUnixseeMessagesInput, Prisma.UserUpdateWithoutAuthoredUnixseeMessagesInput>, Prisma.UserUncheckedUpdateWithoutAuthoredUnixseeMessagesInput>
+}
+
+export type UserCreateNestedOneWithoutUnixseeMessageReadsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedCreateWithoutUnixseeMessageReadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUnixseeMessageReadsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUnixseeMessageReadsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedCreateWithoutUnixseeMessageReadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUnixseeMessageReadsInput
+  upsert?: Prisma.UserUpsertWithoutUnixseeMessageReadsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUnixseeMessageReadsInput, Prisma.UserUpdateWithoutUnixseeMessageReadsInput>, Prisma.UserUncheckedUpdateWithoutUnixseeMessageReadsInput>
+}
+
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   phoneNumber?: string | null
@@ -941,6 +983,8 @@ export type UserCreateWithoutMembershipsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -974,6 +1018,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1023,6 +1069,8 @@ export type UserUpdateWithoutMembershipsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1056,6 +1104,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1089,6 +1139,8 @@ export type UserCreateWithoutAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1122,6 +1174,8 @@ export type UserUncheckedCreateWithoutAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1160,6 +1214,8 @@ export type UserCreateWithoutDecidedAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1193,6 +1249,8 @@ export type UserUncheckedCreateWithoutDecidedAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1242,6 +1300,8 @@ export type UserUpdateWithoutAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1275,6 +1335,8 @@ export type UserUncheckedUpdateWithoutAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1319,6 +1381,8 @@ export type UserUpdateWithoutDecidedAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1352,6 +1416,8 @@ export type UserUncheckedUpdateWithoutDecidedAuthorizationCasesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1385,6 +1451,8 @@ export type UserCreateWithoutVpsNodesInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1418,6 +1486,8 @@ export type UserUncheckedCreateWithoutVpsNodesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1467,6 +1537,8 @@ export type UserUpdateWithoutVpsNodesInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1500,6 +1572,8 @@ export type UserUncheckedUpdateWithoutVpsNodesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1533,6 +1607,8 @@ export type UserCreateWithoutWebsitesInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1566,6 +1642,8 @@ export type UserUncheckedCreateWithoutWebsitesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1615,6 +1693,8 @@ export type UserUpdateWithoutWebsitesInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1648,6 +1728,8 @@ export type UserUncheckedUpdateWithoutWebsitesInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1681,6 +1763,8 @@ export type UserCreateWithoutLinkedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1714,6 +1798,8 @@ export type UserUncheckedCreateWithoutLinkedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1752,6 +1838,8 @@ export type UserCreateWithoutCreatedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -1785,6 +1873,8 @@ export type UserUncheckedCreateWithoutCreatedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -1834,6 +1924,8 @@ export type UserUpdateWithoutLinkedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1867,6 +1959,8 @@ export type UserUncheckedUpdateWithoutLinkedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1911,6 +2005,8 @@ export type UserUpdateWithoutCreatedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -1944,6 +2040,8 @@ export type UserUncheckedUpdateWithoutCreatedPlanRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -1977,6 +2075,8 @@ export type UserCreateWithoutComplementaryRequestsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2010,6 +2110,8 @@ export type UserUncheckedCreateWithoutComplementaryRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2059,6 +2161,8 @@ export type UserUpdateWithoutComplementaryRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2092,6 +2196,8 @@ export type UserUncheckedUpdateWithoutComplementaryRequestsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2125,6 +2231,8 @@ export type UserCreateWithoutCreatedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2158,6 +2266,8 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2196,6 +2306,8 @@ export type UserCreateWithoutAssignedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2229,6 +2341,8 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2278,6 +2392,8 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2311,6 +2427,8 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2355,6 +2473,8 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2388,6 +2508,8 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2421,6 +2543,8 @@ export type UserCreateWithoutTicketMessagesInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2454,6 +2578,8 @@ export type UserUncheckedCreateWithoutTicketMessagesInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2503,6 +2629,8 @@ export type UserUpdateWithoutTicketMessagesInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2536,6 +2664,8 @@ export type UserUncheckedUpdateWithoutTicketMessagesInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2569,6 +2699,8 @@ export type UserCreateWithoutAuthoredNotificationsInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2602,6 +2734,8 @@ export type UserUncheckedCreateWithoutAuthoredNotificationsInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2651,6 +2785,8 @@ export type UserUpdateWithoutAuthoredNotificationsInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2684,6 +2820,8 @@ export type UserUncheckedUpdateWithoutAuthoredNotificationsInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2717,6 +2855,8 @@ export type UserCreateWithoutNotificationReadsInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
@@ -2750,6 +2890,8 @@ export type UserUncheckedCreateWithoutNotificationReadsInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
@@ -2799,6 +2941,8 @@ export type UserUpdateWithoutNotificationReadsInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
@@ -2832,6 +2976,8 @@ export type UserUncheckedUpdateWithoutNotificationReadsInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
@@ -2866,6 +3012,8 @@ export type UserCreateWithoutAuditRecordsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
 }
 
@@ -2899,6 +3047,8 @@ export type UserUncheckedCreateWithoutAuditRecordsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
 }
 
@@ -2948,6 +3098,8 @@ export type UserUpdateWithoutAuditRecordsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
 }
 
@@ -2981,6 +3133,8 @@ export type UserUncheckedUpdateWithoutAuditRecordsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
@@ -3014,6 +3168,8 @@ export type UserCreateWithoutOperationalActionsInput = {
   ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
 }
 
@@ -3047,6 +3203,8 @@ export type UserUncheckedCreateWithoutOperationalActionsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
   authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
   auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
 }
 
@@ -3096,6 +3254,8 @@ export type UserUpdateWithoutOperationalActionsInput = {
   ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
 }
 
@@ -3129,7 +3289,321 @@ export type UserUncheckedUpdateWithoutOperationalActionsInput = {
   ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
   authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
   auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutAuthoredUnixseeMessagesInput = {
+  id?: string
+  phoneNumber?: string | null
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadCreateNestedManyWithoutUserInput
+  auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
+}
+
+export type UserUncheckedCreateWithoutAuthoredUnixseeMessagesInput = {
+  id?: string
+  phoneNumber?: string | null
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedCreateNestedManyWithoutUserInput
+  auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type UserCreateOrConnectWithoutAuthoredUnixseeMessagesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedCreateWithoutAuthoredUnixseeMessagesInput>
+}
+
+export type UserUpsertWithoutAuthoredUnixseeMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedUpdateWithoutAuthoredUnixseeMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedCreateWithoutAuthoredUnixseeMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAuthoredUnixseeMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAuthoredUnixseeMessagesInput, Prisma.UserUncheckedUpdateWithoutAuthoredUnixseeMessagesInput>
+}
+
+export type UserUpdateWithoutAuthoredUnixseeMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUpdateManyWithoutUserNestedInput
+  auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAuthoredUnixseeMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  unixseeMessageReads?: Prisma.UnixseeMessageReadUncheckedUpdateManyWithoutUserNestedInput
+  auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserCreateWithoutUnixseeMessageReadsInput = {
+  id?: string
+  phoneNumber?: string | null
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationCreateNestedManyWithoutAuthorInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutRequesterInput
+}
+
+export type UserUncheckedCreateWithoutUnixseeMessageReadsInput = {
+  id?: string
+  phoneNumber?: string | null
+  email?: string | null
+  username?: string | null
+  password?: string | null
+  fullName?: string | null
+  role?: $Enums.Role
+  status?: $Enums.UserAccountStatus
+  locale?: string
+  hashedRt?: string | null
+  suspendedAt?: Date | string | null
+  suspendedReason?: string | null
+  phoneVerifiedAt?: Date | string | null
+  emailVerifiedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutUserInput
+  vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutUserInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutUserInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutDecidedByInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutLinkedUserInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutCreatedByUserInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
+  ticketMessages?: Prisma.TicketMessageUncheckedCreateNestedManyWithoutAuthorInput
+  notificationReads?: Prisma.NotificationReadUncheckedCreateNestedManyWithoutUserInput
+  authoredNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutAuthorInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutAuthorInput
+  auditRecords?: Prisma.AuditRecordUncheckedCreateNestedManyWithoutActorInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type UserCreateOrConnectWithoutUnixseeMessageReadsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedCreateWithoutUnixseeMessageReadsInput>
+}
+
+export type UserUpsertWithoutUnixseeMessageReadsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedUpdateWithoutUnixseeMessageReadsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedCreateWithoutUnixseeMessageReadsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUnixseeMessageReadsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUnixseeMessageReadsInput, Prisma.UserUncheckedUpdateWithoutUnixseeMessageReadsInput>
+}
+
+export type UserUpdateWithoutUnixseeMessageReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUpdateManyWithoutAuthorNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUnixseeMessageReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedRt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  websites?: Prisma.WebsiteUncheckedUpdateManyWithoutUserNestedInput
+  vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutUserNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutUserNestedInput
+  decidedAuthorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutDecidedByNestedInput
+  createdPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  linkedPlanRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutLinkedUserNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+  ticketMessages?: Prisma.TicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  notificationReads?: Prisma.NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+  authoredNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutAuthorNestedInput
+  authoredUnixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  auditRecords?: Prisma.AuditRecordUncheckedUpdateManyWithoutActorNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 
@@ -3151,6 +3625,8 @@ export type UserCountOutputType = {
   ticketMessages: number
   notificationReads: number
   authoredNotifications: number
+  unixseeMessageReads: number
+  authoredUnixseeMessages: number
   auditRecords: number
   operationalActions: number
 }
@@ -3169,6 +3645,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   ticketMessages?: boolean | UserCountOutputTypeCountTicketMessagesArgs
   notificationReads?: boolean | UserCountOutputTypeCountNotificationReadsArgs
   authoredNotifications?: boolean | UserCountOutputTypeCountAuthoredNotificationsArgs
+  unixseeMessageReads?: boolean | UserCountOutputTypeCountUnixseeMessageReadsArgs
+  authoredUnixseeMessages?: boolean | UserCountOutputTypeCountAuthoredUnixseeMessagesArgs
   auditRecords?: boolean | UserCountOutputTypeCountAuditRecordsArgs
   operationalActions?: boolean | UserCountOutputTypeCountOperationalActionsArgs
 }
@@ -3277,6 +3755,20 @@ export type UserCountOutputTypeCountAuthoredNotificationsArgs<ExtArgs extends ru
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountUnixseeMessageReadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnixseeMessageReadWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAuthoredUnixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnixseeMessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountAuditRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuditRecordWhereInput
 }
@@ -3319,6 +3811,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   ticketMessages?: boolean | Prisma.User$ticketMessagesArgs<ExtArgs>
   notificationReads?: boolean | Prisma.User$notificationReadsArgs<ExtArgs>
   authoredNotifications?: boolean | Prisma.User$authoredNotificationsArgs<ExtArgs>
+  unixseeMessageReads?: boolean | Prisma.User$unixseeMessageReadsArgs<ExtArgs>
+  authoredUnixseeMessages?: boolean | Prisma.User$authoredUnixseeMessagesArgs<ExtArgs>
   auditRecords?: boolean | Prisma.User$auditRecordsArgs<ExtArgs>
   operationalActions?: boolean | Prisma.User$operationalActionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -3396,6 +3890,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   ticketMessages?: boolean | Prisma.User$ticketMessagesArgs<ExtArgs>
   notificationReads?: boolean | Prisma.User$notificationReadsArgs<ExtArgs>
   authoredNotifications?: boolean | Prisma.User$authoredNotificationsArgs<ExtArgs>
+  unixseeMessageReads?: boolean | Prisma.User$unixseeMessageReadsArgs<ExtArgs>
+  authoredUnixseeMessages?: boolean | Prisma.User$authoredUnixseeMessagesArgs<ExtArgs>
   auditRecords?: boolean | Prisma.User$auditRecordsArgs<ExtArgs>
   operationalActions?: boolean | Prisma.User$operationalActionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -3419,6 +3915,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     ticketMessages: Prisma.$TicketMessagePayload<ExtArgs>[]
     notificationReads: Prisma.$NotificationReadPayload<ExtArgs>[]
     authoredNotifications: Prisma.$NotificationPayload<ExtArgs>[]
+    unixseeMessageReads: Prisma.$UnixseeMessageReadPayload<ExtArgs>[]
+    authoredUnixseeMessages: Prisma.$UnixseeMessagePayload<ExtArgs>[]
     auditRecords: Prisma.$AuditRecordPayload<ExtArgs>[]
     operationalActions: Prisma.$OperationalActionPayload<ExtArgs>[]
   }
@@ -3846,6 +4344,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   ticketMessages<T extends Prisma.User$ticketMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notificationReads<T extends Prisma.User$notificationReadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationReadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authoredNotifications<T extends Prisma.User$authoredNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authoredNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  unixseeMessageReads<T extends Prisma.User$unixseeMessageReadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$unixseeMessageReadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnixseeMessageReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authoredUnixseeMessages<T extends Prisma.User$authoredUnixseeMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authoredUnixseeMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnixseeMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditRecords<T extends Prisma.User$auditRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operationalActions<T extends Prisma.User$operationalActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$operationalActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperationalActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -4595,6 +5095,54 @@ export type User$authoredNotificationsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.unixseeMessageReads
+ */
+export type User$unixseeMessageReadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UnixseeMessageRead
+   */
+  select?: Prisma.UnixseeMessageReadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UnixseeMessageRead
+   */
+  omit?: Prisma.UnixseeMessageReadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnixseeMessageReadInclude<ExtArgs> | null
+  where?: Prisma.UnixseeMessageReadWhereInput
+  orderBy?: Prisma.UnixseeMessageReadOrderByWithRelationInput | Prisma.UnixseeMessageReadOrderByWithRelationInput[]
+  cursor?: Prisma.UnixseeMessageReadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnixseeMessageReadScalarFieldEnum | Prisma.UnixseeMessageReadScalarFieldEnum[]
+}
+
+/**
+ * User.authoredUnixseeMessages
+ */
+export type User$authoredUnixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UnixseeMessage
+   */
+  select?: Prisma.UnixseeMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UnixseeMessage
+   */
+  omit?: Prisma.UnixseeMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnixseeMessageInclude<ExtArgs> | null
+  where?: Prisma.UnixseeMessageWhereInput
+  orderBy?: Prisma.UnixseeMessageOrderByWithRelationInput | Prisma.UnixseeMessageOrderByWithRelationInput[]
+  cursor?: Prisma.UnixseeMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnixseeMessageScalarFieldEnum | Prisma.UnixseeMessageScalarFieldEnum[]
 }
 
 /**

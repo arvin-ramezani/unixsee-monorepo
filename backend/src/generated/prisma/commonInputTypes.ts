@@ -863,6 +863,23 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
+export type EnumUnixseeMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.UnixseeMessageStatus | Prisma.EnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel> | $Enums.UnixseeMessageStatus
+}
+
+export type EnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UnixseeMessageStatus | Prisma.EnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.UnixseeMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1643,6 +1660,23 @@ export type NestedJsonFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumUnixseeMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.UnixseeMessageStatus | Prisma.EnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel> | $Enums.UnixseeMessageStatus
+}
+
+export type NestedEnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.UnixseeMessageStatus | Prisma.EnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.UnixseeMessageStatus[] | Prisma.ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.UnixseeMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
 }
 
 

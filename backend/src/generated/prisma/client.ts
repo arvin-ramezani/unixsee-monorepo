@@ -226,3 +226,19 @@ export type OperationalAction = Prisma.OperationalActionModel
  * 
  */
 export type IdempotencyRecord = Prisma.IdempotencyRecordModel
+/**
+ * Model UnixseeMessage
+ * Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی).
+ * Distinct from Notification (News) and ticket thread messages.
+ */
+export type UnixseeMessage = Prisma.UnixseeMessageModel
+/**
+ * Model UnixseeMessageAttachment
+ * 
+ */
+export type UnixseeMessageAttachment = Prisma.UnixseeMessageAttachmentModel
+/**
+ * Model UnixseeMessageRead
+ * 
+ */
+export type UnixseeMessageRead = Prisma.UnixseeMessageReadModel

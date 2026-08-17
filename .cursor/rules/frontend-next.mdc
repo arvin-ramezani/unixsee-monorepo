@@ -26,7 +26,15 @@ Applies to `admin-panel/` and `client/`.
   0011); `admin-panel/` may wire staff Nest auth/admin JWT fetch (ADR 0012).
   Shared hybrid transport: ADR 0010 (separate cookie jars; different UX).
 - For version-sensitive Next.js behavior (fetch, cache, Server Actions, Cache Components, etc.), read that app’s `node_modules/next/dist/docs/` — installed docs beat model memory. Details: `docs/frontend/nextjs.md`.
-- Admin Base UI menus: wrap `DropdownMenuLabel` in `DropdownMenuGroup` — see `admin-panel/docs/development/components.md` (DropdownMenu).
+- Admin UI (Base UI shadcn): before Select, DropdownMenu, Dialog, AlertDialog,
+  or Sheet, read
+  [`admin-panel/docs/development/components.md`](../../admin-panel/docs/development/components.md).
+  Do not copy Radix Select habits.
+  - Select: put visible label children in `SelectValue`; set
+    `SelectContent alignItemWithTrigger={false}`.
+  - DropdownMenu: wrap every `DropdownMenuLabel` in `DropdownMenuGroup`.
+  - Overlays: Dialog = short create/pick; AlertDialog = irreversible confirm;
+    Sheet = inspector/filters/mobile nav only (not the default overlay).
 - Nest API failures: map `error.code` first (`lib/api/map-api-error.ts`); show localized copy (client: `ApiErrors` i18n; admin: FA `STAFF_API_ERROR_MESSAGES`); toast failed POST mutations — see [`docs/backend/contracts/api-errors.md`](../../docs/backend/contracts/api-errors.md).
 - Positive-only JSX: `{condition && <Component />}` — never
   `{condition ? <Component /> : null}`. Coerce strings/numbers
@@ -43,4 +51,5 @@ Applies to `admin-panel/` and `client/`.
 - `docs/frontend/state.md`
 - `docs/frontend/styling.md`
 - `docs/architecture/project.md`
+- Admin UI primitives: `admin-panel/docs/development/components.md`
 - Admin product: `docs/product/README.md`

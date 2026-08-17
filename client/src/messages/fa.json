@@ -1796,6 +1796,14 @@
       "title": "تیکت‌ها | یونیکسی",
       "description": "درخواست‌های خود برای خدمات یونیکسی را ایجاد و پیگیری کنید."
     },
+    "unixseeMessages": {
+      "title": "پیام‌های یونیکسی | یونیکسی",
+      "description": "پیام‌های یونیکسی ارسال‌شده به حساب شما را مشاهده کنید."
+    },
+    "unixseeMessageDetails": {
+      "title": "جزئیات پیام | یونیکسی",
+      "description": "متن، پیوندها و پیوست‌های پیام یونیکسی."
+    },
     "newTicket": {
       "title": "تیکت جدید | یونیکسی",
       "description": "درخواست جدیدی برای پشتیبانی یونیکسی ارسال کنید."
@@ -1890,13 +1898,15 @@
     "billing": "صورتحساب",
     "support": "پشتیبانی",
     "tickets": "تیکت‌ها",
+    "unixseeMessages": "پیام‌های یونیکسی",
     "complementaryServices": "خدمات تکمیلی",
     "helpCenter": "مرکز راهنما",
     "profile": "پروفایل",
     "expand": "باز کردن منو",
     "collapse": "جمع کردن منو",
     "collapseLabel": "بستن منو",
-    "comingSoon": "به‌زودی"
+    "comingSoon": "به‌زودی",
+    "unreadMessages": "پیام خوانده‌نشده"
   },
   "Header": {
     "searchLabel": "جست‌وجوی وب‌سایت‌ها، تیکت‌ها، صفحه‌ها و عملیات",
@@ -3164,6 +3174,36 @@
       "errorDescription": "فهرست دامنه‌ها موقتاً در دسترس نیست. هیچ تنظیمی تغییر نکرده است."
     },
     "summary": "نمایش {visible} از {total} دامنه"
+  },
+  "UnixseeMessages": {
+    "title": "پیام‌های یونیکسی",
+    "subtitle": "پیام‌های یک‌طرفه یونیکسی به حساب شما",
+    "details": "جزئیات پیام",
+    "empty": "هنوز پیامی برای شما ارسال نشده است.",
+    "loadError": "بارگذاری پیام‌ها ممکن نشد. دوباره تلاش کنید.",
+    "gotIt": "متوجه شدم",
+    "markReadError": "ثبت خوانده‌شدن ناموفق بود. دوباره تلاش کنید.",
+    "websiteContext": "مرتبط با وب‌سایت {website}",
+    "links": "پیوندها",
+    "attachments": "پیوست‌ها",
+    "attachmentDownload": "دانلود فایل",
+    "attachmentDownloadDeferred": "دانلود فایل به‌زودی در دسترس خواهد بود.",
+    "backToList": "بازگشت به فهرست پیام‌ها",
+    "read": "خوانده‌شده",
+    "unread": "خوانده‌نشده",
+    "loading": "در حال بارگذاری پیام‌های یونیکسی",
+    "loadingDetail": "در حال بارگذاری پیام",
+    "aside": {
+      "label": "میانبرهای پیام یونیکسی",
+      "quickActions": {
+        "title": "اقدامات سریع",
+        "label": "ناوبری مرتبط با پیام",
+        "tickets": "تیکت‌ها",
+        "websites": "وب‌سایت‌های من",
+        "relatedWebsite": "وب‌سایت: {website}",
+        "websiteFallback": "وب‌سایت مرتبط"
+      }
+    }
   },
   "Tickets": {
     "title": "تیکت‌ها",

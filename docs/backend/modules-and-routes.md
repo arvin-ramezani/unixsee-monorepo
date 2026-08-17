@@ -306,6 +306,26 @@ Create body includes required `service`, optional `websiteId`, `subject`,
 | POST | `/api/v1/notifications/:id/read` | Customer |
 | GET/POST/PATCH | `/api/v1/admin/notifications` | Admin (`locales.fa` + `locales.en`) |
 
+### Unixsee messages — add `unixsee-messages`
+
+Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی). Distinct
+from News `notifications` and from ticket thread `/tickets/:id/messages`.
+Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
+
+| Method | Path | Audience |
+|---|---|---|
+| GET | `/api/v1/unixsee-messages` | Customer (`items`, `total`, `hasUnread`) |
+| GET | `/api/v1/unixsee-messages/:id` | Customer |
+| POST | `/api/v1/unixsee-messages/:id/read` | Customer |
+| GET/POST | `/api/v1/admin/unixsee-messages` | Admin |
+| GET | `/api/v1/admin/unixsee-messages/tenants/:tenantId/compose-context` | Admin |
+| GET/PATCH | `/api/v1/admin/unixsee-messages/:id` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/publish` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/withdraw` | Admin |
+
+Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
+`websiteId`, `links[]`, attachment `storageKey` metadata (S3 deferred).
+
 ### Activities — add `activities`
 
 | Method | Path | Audience |

@@ -54,6 +54,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`ux-flows/client-auth.md`](./ux-flows/client-auth.md) | Public customer sign-in, sign-up, verification, password recovery |
 | [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md) | احراز هویت submission → become tenant |
 | [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md) | Guest / dashboard plan request intake |
+| [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md) | Unixsee messages / پیام‌های یونیکسی (popup, unread indicator, inbox) |
 | UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md) | Auth shell, tokens, inputs, RTL, motion |
 
 ## Admin UX flows
@@ -67,6 +68,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`ux-flows/admin-servers-websites-agents.md`](./ux-flows/admin-servers-websites-agents.md) | Servers, websites, agents |
 | [`ux-flows/admin-complementary-services.md`](./ux-flows/admin-complementary-services.md) | Complementary services (request → quote → assignment lifecycle) |
 | [`ux-flows/admin-create-complementary-service-assignment.md`](./ux-flows/admin-create-complementary-service-assignment.md) | Staff create assignment and attach to website (client-form-aligned) |
+| [`ux-flows/admin-unixsee-messages.md`](./ux-flows/admin-unixsee-messages.md) | Unixsee messages / پیام‌های یونیکسی (draft → publish → edit/withdraw) |
 
 UX flow docs use document-control tables, confidence summaries, and evidence
 gaps. Preserve that structure when editing. See

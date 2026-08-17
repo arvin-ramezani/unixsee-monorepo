@@ -24,8 +24,10 @@ this PRD §3.
 
 - Authorized staff can draft, publish, edit, and withdraw a message aimed at
   **one tenant**.
-- Each message has a short title and short body (FA + EN), optional file
-  attachments, and optional links (external and/or in-dashboard).
+- Each message has a short title and short body in one language
+  (`contentLocale`), optional file attachments, and optional links
+  (external and/or in-dashboard). Admin compose surfaces the recipient’s
+  preferred UI language.
 - Staff may optionally **connect** the message to one customer website for
   context; the message still appears in the tenant dashboard inbox.
 - Customers see unread messages as a **dismissible popup** (“got it”) on first
@@ -103,7 +105,7 @@ Related: [`../architecture/overview.md`](../architecture/overview.md),
 |---|---|
 | Title | Required short title; **no** hard max length — editorial soft guidance: keep short |
 | Body | Required short text; **no** hard line/character limit — soft guidance: about **two to three lines** |
-| Locales | Both `locales.fa` and `locales.en` (same bilingual pattern as News) |
+| Locales | Single authored language via `contentLocale` (`fa` \| `en`). Admin shows recipient preferred `User.locale` so staff write in that language. Not bilingual News-style FA+EN pairs. |
 | Attachments | Optional; **multiple** files allowed; types/size/scanning policy **Unknown** until shared attachment policy is decided (reuse tickets approach where possible) |
 | Links | Optional; **many** allowed; each may be external URL or in-dashboard deep link |
 | Website link | Optional single website belonging to the target tenant |
@@ -196,7 +198,7 @@ Related: [`../architecture/overview.md`](../architecture/overview.md),
 | UM-ADM-2 | Staff can edit and withdraw after publish. |
 | UM-ADM-3 | Staff can attach multiple files and add multiple links (external + dashboard). |
 | UM-ADM-4 | Staff can optionally link one website owned by the target tenant. |
-| UM-ADM-5 | Staff compose both FA and EN locales. |
+| UM-ADM-5 | Staff compose in one language (`contentLocale`); admin UI surfaces recipient preferred locale from tenant owner `User.locale`. |
 | UM-CUS-1 | Customer dashboard includes a پیام‌های یونیکسی / Unixsee messages page. |
 | UM-CUS-2 | Unread published messages can appear as a dismissible popup with “got it”. |
 | UM-CUS-3 | Dismiss marks read server-side for that user. |
@@ -217,19 +219,25 @@ Related: [`../architecture/overview.md`](../architecture/overview.md),
 
 ## 13. Acceptance criteria
 
-- [ ] Staff can draft and publish a bilingual message to one tenant with optional attachments, links, and optional website.
+- [ ] Staff can draft and publish a single-language message to one tenant with optional attachments, links, and optional website, guided by recipient preferred locale.
 - [ ] Drafts are invisible to customers; withdrawn messages are not offered as active unread.
 - [ ] Customer sees list page; unread shows sidebar indicator; popup dismiss marks read cross-device.
 - [ ] Another tenant cannot fetch the message by ID.
 - [ ] Product is labeled Unixsee messages / پیام‌های یونیکسی and is not conflated with News or اعلان‌ها.
 - [ ] No email/SMS/push, no customer reply, no schedule-publish in v1.
-- [ ] Backend routes/contracts and UX flows are added when implementation starts (not invented only in UI fixtures).
+- [ ] Backend routes/contracts are added when implementation starts (not invented
+      only in UI fixtures). UX flows:
+      [`ux-flows/admin-unixsee-messages.md`](./ux-flows/admin-unixsee-messages.md),
+      [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md).
 
 ## 14. Delivery notes
 
 1. **This PRD (docs)** — Proposed contract + Phase 1 pointer.
 2. **Implementation** — Nest domain + admin compose + customer popup/list/indicator; add modules/routes and contracts under `docs/backend/` when APIs stabilize.
-3. **UX flows** — Add/adjust admin and client UX flow docs under `docs/product/ux-flows/` during UI work (not required to block this PRD).
+3. **UX flows** — Admin:
+   [`ux-flows/admin-unixsee-messages.md`](./ux-flows/admin-unixsee-messages.md);
+   Customer:
+   [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md).
 4. **Later** — Tenant multi-user accessibility filtering; shared attachment policy hardening; unresolved §10 items.
 
 ## 15. Evidence ledger
@@ -239,7 +247,7 @@ Related: [`../architecture/overview.md`](../architecture/overview.md),
 | Third product, not News or اعلان‌ها | Confirmed | Product clarification 2026-08-16 (Q1 = B) | Keep §3 separation |
 | Target = one tenant; optional website | Confirmed | Product clarification Q2 | Website is context, not اعلان‌ها |
 | Dismissible popup; read on dismiss; sidebar presence only | Confirmed | Product clarification Q3/Q6 | No unread count API |
-| Soft title/body guidance; FA+EN; multi attach; multi links | Confirmed | Product clarification Q4 | No hard length limits |
+| Soft title/body guidance; single language + preferred-locale guidance; multi attach; multi links | Confirmed | Product clarification Q4 + follow-up 2026-08-16 | Prefer `User.locale` |
 | Draft→publish; edit/withdraw; no schedule; one-way; simple roles | Confirmed | Product clarification Q5 | |
 | Phase 1, implement now; English PRD only | Confirmed | Product clarification Q7 | |
 | Email/SMS, tickets, اعلان‌ها, customer replies out | Confirmed | Product clarification Q8 | |
@@ -250,6 +258,8 @@ Related: [`../architecture/overview.md`](../architecture/overview.md),
 ## 16. Related documents
 
 - Phase 1 feature brief: [`phase-1-application-features.md`](./phase-1-application-features.md) (§18 pointer)
+- Admin UX flow: [`ux-flows/admin-unixsee-messages.md`](./ux-flows/admin-unixsee-messages.md)
+- Customer UX flow: [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)
 - Delivery waves: [`notes/phase-1-delivery-waves.md`](./notes/phase-1-delivery-waves.md)
 - Product index: [`README.md`](./README.md)
 - Backend route map (update at implement): [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md)

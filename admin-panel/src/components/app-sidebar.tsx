@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   ChevronRightIcon,
   ChevronLeftIcon,
+  MessageSquareText,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -68,6 +69,11 @@ const data = {
       title: "تیکت‌ها",
       url: "/tickets",
       icon: TicketIcon,
+    },
+    {
+      title: "پیام‌های یونیکسی",
+      url: "/unixsee-messages",
+      icon: MessageSquareText,
     },
     {
       title: "خدمات تکمیلی",

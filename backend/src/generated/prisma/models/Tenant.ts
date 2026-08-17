@@ -197,6 +197,7 @@ export type TenantWhereInput = {
   tickets?: Prisma.TicketListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   authorizationCases?: Prisma.AuthorizationCaseListRelationFilter
 }
 
@@ -214,6 +215,7 @@ export type TenantOrderByWithRelationInput = {
   tickets?: Prisma.TicketOrderByRelationAggregateInput
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  unixseeMessages?: Prisma.UnixseeMessageOrderByRelationAggregateInput
   authorizationCases?: Prisma.AuthorizationCaseOrderByRelationAggregateInput
 }
 
@@ -234,6 +236,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   tickets?: Prisma.TicketListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   authorizationCases?: Prisma.AuthorizationCaseListRelationFilter
 }, "id">
 
@@ -275,6 +278,7 @@ export type TenantCreateInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -292,6 +296,7 @@ export type TenantUncheckedCreateInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -309,6 +314,7 @@ export type TenantUpdateInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -326,6 +332,7 @@ export type TenantUncheckedUpdateInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -513,6 +520,20 @@ export type TenantUpdateOneRequiredWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutActivitiesInput, Prisma.TenantUpdateWithoutActivitiesInput>, Prisma.TenantUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type TenantCreateNestedOneWithoutUnixseeMessagesInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedCreateWithoutUnixseeMessagesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutUnixseeMessagesInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutUnixseeMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedCreateWithoutUnixseeMessagesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutUnixseeMessagesInput
+  upsert?: Prisma.TenantUpsertWithoutUnixseeMessagesInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutUnixseeMessagesInput, Prisma.TenantUpdateWithoutUnixseeMessagesInput>, Prisma.TenantUncheckedUpdateWithoutUnixseeMessagesInput>
+}
+
 export type TenantCreateWithoutMembershipsInput = {
   id?: string
   name: string
@@ -526,6 +547,7 @@ export type TenantCreateWithoutMembershipsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -542,6 +564,7 @@ export type TenantUncheckedCreateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -574,6 +597,7 @@ export type TenantUpdateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -590,6 +614,7 @@ export type TenantUncheckedUpdateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -607,6 +632,7 @@ export type TenantCreateWithoutAuthorizationCasesInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutAuthorizationCasesInput = {
@@ -623,6 +649,7 @@ export type TenantUncheckedCreateWithoutAuthorizationCasesInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutAuthorizationCasesInput = {
@@ -655,6 +682,7 @@ export type TenantUpdateWithoutAuthorizationCasesInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutAuthorizationCasesInput = {
@@ -671,6 +699,7 @@ export type TenantUncheckedUpdateWithoutAuthorizationCasesInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutWebsitesInput = {
@@ -686,6 +715,7 @@ export type TenantCreateWithoutWebsitesInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -702,6 +732,7 @@ export type TenantUncheckedCreateWithoutWebsitesInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -734,6 +765,7 @@ export type TenantUpdateWithoutWebsitesInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -750,6 +782,7 @@ export type TenantUncheckedUpdateWithoutWebsitesInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -766,6 +799,7 @@ export type TenantCreateWithoutPlanRequestsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -782,6 +816,7 @@ export type TenantUncheckedCreateWithoutPlanRequestsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -814,6 +849,7 @@ export type TenantUpdateWithoutPlanRequestsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -830,6 +866,7 @@ export type TenantUncheckedUpdateWithoutPlanRequestsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -846,6 +883,7 @@ export type TenantCreateWithoutComplementaryRequestsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -862,6 +900,7 @@ export type TenantUncheckedCreateWithoutComplementaryRequestsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -894,6 +933,7 @@ export type TenantUpdateWithoutComplementaryRequestsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -910,6 +950,7 @@ export type TenantUncheckedUpdateWithoutComplementaryRequestsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -926,6 +967,7 @@ export type TenantCreateWithoutTicketsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -942,6 +984,7 @@ export type TenantUncheckedCreateWithoutTicketsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -974,6 +1017,7 @@ export type TenantUpdateWithoutTicketsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -990,6 +1034,7 @@ export type TenantUncheckedUpdateWithoutTicketsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1006,6 +1051,7 @@ export type TenantCreateWithoutNotificationsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutTenantInput
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -1022,6 +1068,7 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutTenantInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1054,6 +1101,7 @@ export type TenantUpdateWithoutNotificationsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutTenantNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -1070,6 +1118,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutTenantNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1086,6 +1135,7 @@ export type TenantCreateWithoutActivitiesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutTenantInput
   tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
 }
 
@@ -1102,6 +1152,7 @@ export type TenantUncheckedCreateWithoutActivitiesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutTenantInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutTenantInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1134,6 +1185,7 @@ export type TenantUpdateWithoutActivitiesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutTenantNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
 }
 
@@ -1149,6 +1201,91 @@ export type TenantUncheckedUpdateWithoutActivitiesInput = {
   planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutTenantNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutTenantNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutTenantNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutUnixseeMessagesInput = {
+  id?: string
+  name: string
+  displayName?: string | null
+  status?: $Enums.UserAccountStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.MembershipCreateNestedManyWithoutTenantInput
+  websites?: Prisma.WebsiteCreateNestedManyWithoutTenantInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutTenantInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutTenantInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutTenantInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  authorizationCases?: Prisma.AuthorizationCaseCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutUnixseeMessagesInput = {
+  id?: string
+  name: string
+  displayName?: string | null
+  status?: $Enums.UserAccountStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.MembershipUncheckedCreateNestedManyWithoutTenantInput
+  websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutTenantInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutTenantInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutTenantInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutTenantInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  authorizationCases?: Prisma.AuthorizationCaseUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutUnixseeMessagesInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedCreateWithoutUnixseeMessagesInput>
+}
+
+export type TenantUpsertWithoutUnixseeMessagesInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedUpdateWithoutUnixseeMessagesInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedCreateWithoutUnixseeMessagesInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutUnixseeMessagesInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutUnixseeMessagesInput, Prisma.TenantUncheckedUpdateWithoutUnixseeMessagesInput>
+}
+
+export type TenantUpdateWithoutUnixseeMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.MembershipUpdateManyWithoutTenantNestedInput
+  websites?: Prisma.WebsiteUpdateManyWithoutTenantNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutTenantNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutTenantNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutTenantNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  authorizationCases?: Prisma.AuthorizationCaseUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutUnixseeMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.MembershipUncheckedUpdateManyWithoutTenantNestedInput
+  websites?: Prisma.WebsiteUncheckedUpdateManyWithoutTenantNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutTenantNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutTenantNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutTenantNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   authorizationCases?: Prisma.AuthorizationCaseUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1166,6 +1303,7 @@ export type TenantCountOutputType = {
   tickets: number
   activities: number
   notifications: number
+  unixseeMessages: number
   authorizationCases: number
 }
 
@@ -1177,6 +1315,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   tickets?: boolean | TenantCountOutputTypeCountTicketsArgs
   activities?: boolean | TenantCountOutputTypeCountActivitiesArgs
   notifications?: boolean | TenantCountOutputTypeCountNotificationsArgs
+  unixseeMessages?: boolean | TenantCountOutputTypeCountUnixseeMessagesArgs
   authorizationCases?: boolean | TenantCountOutputTypeCountAuthorizationCasesArgs
 }
 
@@ -1242,6 +1381,13 @@ export type TenantCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.
 /**
  * TenantCountOutputType without action
  */
+export type TenantCountOutputTypeCountUnixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnixseeMessageWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
 export type TenantCountOutputTypeCountAuthorizationCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuthorizationCaseWhereInput
 }
@@ -1261,6 +1407,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   tickets?: boolean | Prisma.Tenant$ticketsArgs<ExtArgs>
   activities?: boolean | Prisma.Tenant$activitiesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
+  unixseeMessages?: boolean | Prisma.Tenant$unixseeMessagesArgs<ExtArgs>
   authorizationCases?: boolean | Prisma.Tenant$authorizationCasesArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
@@ -1301,6 +1448,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   tickets?: boolean | Prisma.Tenant$ticketsArgs<ExtArgs>
   activities?: boolean | Prisma.Tenant$activitiesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
+  unixseeMessages?: boolean | Prisma.Tenant$unixseeMessagesArgs<ExtArgs>
   authorizationCases?: boolean | Prisma.Tenant$authorizationCasesArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1317,6 +1465,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     tickets: Prisma.$TicketPayload<ExtArgs>[]
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    unixseeMessages: Prisma.$UnixseeMessagePayload<ExtArgs>[]
     authorizationCases: Prisma.$AuthorizationCasePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1727,6 +1876,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   tickets<T extends Prisma.Tenant$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.Tenant$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Tenant$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  unixseeMessages<T extends Prisma.Tenant$unixseeMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$unixseeMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnixseeMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authorizationCases<T extends Prisma.Tenant$authorizationCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$authorizationCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthorizationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2321,6 +2471,30 @@ export type Tenant$notificationsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * Tenant.unixseeMessages
+ */
+export type Tenant$unixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UnixseeMessage
+   */
+  select?: Prisma.UnixseeMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UnixseeMessage
+   */
+  omit?: Prisma.UnixseeMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnixseeMessageInclude<ExtArgs> | null
+  where?: Prisma.UnixseeMessageWhereInput
+  orderBy?: Prisma.UnixseeMessageOrderByWithRelationInput | Prisma.UnixseeMessageOrderByWithRelationInput[]
+  cursor?: Prisma.UnixseeMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnixseeMessageScalarFieldEnum | Prisma.UnixseeMessageScalarFieldEnum[]
 }
 
 /**

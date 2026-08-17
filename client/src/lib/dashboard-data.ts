@@ -272,6 +272,12 @@ export const navigation = [
     href: "/dashboard/tickets",
   },
   {
+    key: "unixseeMessages",
+    activeItem: "UnixseeMessages",
+    icon: MessageSquareText,
+    href: "/dashboard/unixsee-messages",
+  },
+  {
     key: "complementaryServices",
     activeItem: "ComplementaryServices",
     icon: Layers3,

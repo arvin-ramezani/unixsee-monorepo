@@ -14,6 +14,9 @@ Before making changes, read in this order as relevant to the task:
    - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md) and
      [`docs/frontend/nextjs.md`](./docs/frontend/nextjs.md) (version-matched
      Next.js docs under each app’s `node_modules/next/dist/docs/`)
+   - Admin panel UI (Select, DropdownMenu, Dialog/AlertDialog/Sheet):
+     [`admin-panel/docs/development/components.md`](./admin-panel/docs/development/components.md)
+     and [`admin-panel/AGENTS.md`](./admin-panel/AGENTS.md)
    - Client auth session / Nest data fetching:
      [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
      (Layer 1) and

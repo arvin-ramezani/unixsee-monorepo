@@ -72,6 +72,14 @@ Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain
 3. Reuse existing components and patterns.
 4. Make the smallest appropriate change.
 
+### Before admin UI (Select / menus / overlays)
+
+When adding or changing forms, menus, or overlays in this app, read
+[Components](docs/development/components.md) **before** writing JSX — especially
+**Select**, **DropdownMenu**, and **Overlays**. Base UI behavior differs from
+common Radix examples (visible `SelectValue` children,
+`alignItemWithTrigger={false}`, `DropdownMenuLabel` inside `DropdownMenuGroup`).
+
 ## Core Rules
 
 - Prefer reuse over duplication.

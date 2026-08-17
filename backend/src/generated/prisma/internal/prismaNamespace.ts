@@ -420,7 +420,10 @@ export const ModelName = {
   Activity: 'Activity',
   AuditRecord: 'AuditRecord',
   OperationalAction: 'OperationalAction',
-  IdempotencyRecord: 'IdempotencyRecord'
+  IdempotencyRecord: 'IdempotencyRecord',
+  UnixseeMessage: 'UnixseeMessage',
+  UnixseeMessageAttachment: 'UnixseeMessageAttachment',
+  UnixseeMessageRead: 'UnixseeMessageRead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -436,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
+    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3178,6 +3181,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UnixseeMessage: {
+      payload: Prisma.$UnixseeMessagePayload<ExtArgs>
+      fields: Prisma.UnixseeMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessage>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    UnixseeMessageAttachment: {
+      payload: Prisma.$UnixseeMessageAttachmentPayload<ExtArgs>
+      fields: Prisma.UnixseeMessageAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessageAttachment>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    UnixseeMessageRead: {
+      payload: Prisma.$UnixseeMessageReadPayload<ExtArgs>
+      fields: Prisma.UnixseeMessageReadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageReadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageReadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageReadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageReadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageReadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageReadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageReadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageReadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageReadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageReadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageReadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageReadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageReadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageReadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageReadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessageRead>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageReadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageReadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageReadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageReadCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3857,6 +4082,49 @@ export const IdempotencyRecordScalarFieldEnum = {
 export type IdempotencyRecordScalarFieldEnum = (typeof IdempotencyRecordScalarFieldEnum)[keyof typeof IdempotencyRecordScalarFieldEnum]
 
 
+export const UnixseeMessageScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  authorId: 'authorId',
+  websiteId: 'websiteId',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  contentLocale: 'contentLocale',
+  links: 'links',
+  publishedAt: 'publishedAt',
+  withdrawnAt: 'withdrawnAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageScalarFieldEnum = (typeof UnixseeMessageScalarFieldEnum)[keyof typeof UnixseeMessageScalarFieldEnum]
+
+
+export const UnixseeMessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  storageKey: 'storageKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageAttachmentScalarFieldEnum = (typeof UnixseeMessageAttachmentScalarFieldEnum)[keyof typeof UnixseeMessageAttachmentScalarFieldEnum]
+
+
+export const UnixseeMessageReadScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  readAt: 'readAt'
+} as const
+
+export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4309,6 +4577,20 @@ export type EnumOperationalActionStatusFieldRefInput<$PrismaModel> = FieldRefInp
 export type ListEnumOperationalActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalActionStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'UnixseeMessageStatus'
+ */
+export type EnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnixseeMessageStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UnixseeMessageStatus[]'
+ */
+export type ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnixseeMessageStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4456,6 +4738,9 @@ export type GlobalOmitConfig = {
   auditRecord?: Prisma.AuditRecordOmit
   operationalAction?: Prisma.OperationalActionOmit
   idempotencyRecord?: Prisma.IdempotencyRecordOmit
+  unixseeMessage?: Prisma.UnixseeMessageOmit
+  unixseeMessageAttachment?: Prisma.UnixseeMessageAttachmentOmit
+  unixseeMessageRead?: Prisma.UnixseeMessageReadOmit
 }
 
 /* Types for Logging */

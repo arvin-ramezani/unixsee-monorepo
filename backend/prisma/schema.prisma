@@ -141,6 +141,12 @@ enum NotificationStatus {
   ARCHIVED
 }
 
+enum UnixseeMessageStatus {
+  DRAFT
+  PUBLISHED
+  WITHDRAWN
+}
+
 enum OperationalActionStatus {
   QUEUED
   RUNNING
@@ -184,6 +190,8 @@ model User {
   ticketMessages             TicketMessage[]
   notificationReads          NotificationRead[]
   authoredNotifications      Notification[]                @relation("NotificationAuthor")
+  unixseeMessageReads        UnixseeMessageRead[]
+  authoredUnixseeMessages    UnixseeMessage[]              @relation("UnixseeMessageAuthor")
   auditRecords               AuditRecord[]                 @relation("AuditActor")
   operationalActions         OperationalAction[]           @relation("OperationalActionRequester")
 
@@ -206,6 +214,7 @@ model Tenant {
   tickets     Ticket[]
   activities  Activity[]
   notifications Notification[]
+  unixseeMessages UnixseeMessage[]
   authorizationCases AuthorizationCase[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -395,6 +404,7 @@ model Website {
   complementaryRequests ComplementaryServiceRequest[]
   tickets              Ticket[]
   activities           Activity[]
+  unixseeMessages      UnixseeMessage[]
   operationalActions   OperationalAction[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -1103,4 +1113,63 @@ model IdempotencyRecord {
   @@unique([scope, key])
   @@index([createdAt])
   @@map("idempotency_records")
+}
+
+/// Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی).
+/// Distinct from Notification (News) and ticket thread messages.
+model UnixseeMessage {
+  id            String              @id @default(uuid()) @db.Uuid
+  tenantId      String              @map("tenant_id") @db.Uuid
+  authorId      String              @map("author_id") @db.Uuid
+  websiteId     String?             @map("website_id") @db.Uuid
+  status        UnixseeMessageStatus @default(DRAFT)
+  title         String
+  body          String
+  contentLocale String              @map("content_locale") @db.VarChar(8)
+  links         Json?
+  publishedAt   DateTime?           @map("published_at") @db.Timestamptz(6)
+  withdrawnAt   DateTime?           @map("withdrawn_at") @db.Timestamptz(6)
+
+  tenant      Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  author      User                       @relation("UnixseeMessageAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  website     Website?                   @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+  attachments UnixseeMessageAttachment[]
+  reads       UnixseeMessageRead[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([tenantId, status])
+  @@index([status, publishedAt])
+  @@map("unixsee_messages")
+}
+
+model UnixseeMessageAttachment {
+  id           String @id @default(uuid()) @db.Uuid
+  messageId    String @map("message_id") @db.Uuid
+  fileName     String @map("file_name")
+  contentType  String @map("content_type")
+  sizeBytes    Int    @map("size_bytes")
+  storageKey   String @map("storage_key")
+
+  message UnixseeMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([messageId])
+  @@map("unixsee_message_attachments")
+}
+
+model UnixseeMessageRead {
+  id        String   @id @default(uuid()) @db.Uuid
+  messageId String   @map("message_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  readAt    DateTime @default(now()) @map("read_at") @db.Timestamptz(6)
+
+  message UnixseeMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@map("unixsee_message_reads")
 }

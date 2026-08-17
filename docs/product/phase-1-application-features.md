@@ -1132,11 +1132,19 @@ collapse them into one model or one admin queue.
 ### 18.0 Unixsee messages (پیام‌های یونیکسی)
 
 Unixsee messages are **one-tenant**, staff → customer messages with short
-title/body (FA + EN), optional attachments and links, optional website
-context, dismissible first-see popup, inbox list page, and sidebar unread
-presence indicator. Full intended contract:
+title/body in **one** language (`contentLocale`), optional attachments and
+links, optional website context, dismissible first-see popup, inbox list page,
+and sidebar unread presence indicator. Admin compose shows the recipient’s
+preferred `User.locale`. Full intended contract:
 
 [`unixsee-messages-prd.md`](./unixsee-messages-prd.md)
+
+UX flows:
+
+- Admin:
+  [`ux-flows/admin-unixsee-messages.md`](./ux-flows/admin-unixsee-messages.md)
+- Customer:
+  [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)
 
 Do not implement this feature as a reuse of News broadcast semantics or as a
 replacement for اعلان‌ها or tickets.

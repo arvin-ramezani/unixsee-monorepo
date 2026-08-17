@@ -200,6 +200,15 @@ export const NotificationStatus = {
 export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus]
 
 
+export const UnixseeMessageStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type UnixseeMessageStatus = (typeof UnixseeMessageStatus)[keyof typeof UnixseeMessageStatus]
+
+
 export const OperationalActionStatus = {
   QUEUED: 'QUEUED',
   RUNNING: 'RUNNING',

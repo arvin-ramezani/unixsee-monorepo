@@ -26,9 +26,12 @@ both unless a doc says otherwise.
 
 ## App-specific UI notes
 
-- **Admin panel** — Base UI shadcn pitfalls (Select, DropdownMenu):
+- **Admin panel** — Base UI shadcn conventions (Select, DropdownMenu, overlays):
   [`../../admin-panel/docs/development/components.md`](../../admin-panel/docs/development/components.md)
-  (`Confirmed` runtime constraints; read before adding menus or selects).
+  (`Confirmed` runtime constraints). Read before admin forms, menus, Dialog /
+  AlertDialog / Sheet. High-frequency adapter:
+  [`.cursor/rules/frontend-next.mdc`](../../.cursor/rules/frontend-next.mdc)
+  and [`../../admin-panel/AGENTS.md`](../../admin-panel/AGENTS.md).
 - **Admin deploy** (includes publishing `public/agents/unixsee-agent.tar.gz`):
   [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
 

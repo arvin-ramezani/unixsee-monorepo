@@ -1801,6 +1801,14 @@
       "title": "Tickets | Unixsee",
       "description": "Create and track requests across Unixsee services."
     },
+    "unixseeMessages": {
+      "title": "Unixsee messages | Unixsee",
+      "description": "View Unixsee messages sent to your account."
+    },
+    "unixseeMessageDetails": {
+      "title": "Message details | Unixsee",
+      "description": "Read the message body, links, and attachments."
+    },
     "newTicket": {
       "title": "New ticket | Unixsee",
       "description": "Send a new request to Unixsee support."
@@ -1895,13 +1903,15 @@
     "billing": "Billing",
     "support": "Support",
     "tickets": "Tickets",
+    "unixseeMessages": "Unixsee messages",
     "complementaryServices": "Complementary Services",
     "helpCenter": "Help Center",
     "profile": "Profile",
     "expand": "Expand menu",
     "collapse": "Collapse menu",
     "collapseLabel": "Collapse Menu",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "unreadMessages": "Unread message"
   },
   "Header": {
     "searchLabel": "Search websites, tickets, pages, and actions",
@@ -3561,6 +3571,36 @@
       "errorDescription": "The domain inventory is temporarily unavailable. No settings were changed."
     },
     "summary": "Showing {visible} of {total} domains"
+  },
+  "UnixseeMessages": {
+    "title": "Unixsee messages",
+    "subtitle": "One-way messages from Unixsee to your account",
+    "details": "Message details",
+    "empty": "No messages have been sent to you yet.",
+    "loadError": "Could not load messages. Please try again.",
+    "gotIt": "Got it",
+    "markReadError": "Could not mark the message as read. Please try again.",
+    "websiteContext": "Related to website {website}",
+    "links": "Links",
+    "attachments": "Attachments",
+    "attachmentDownload": "Download file",
+    "attachmentDownloadDeferred": "File download will be available soon.",
+    "backToList": "Back to messages",
+    "read": "Read",
+    "unread": "Unread",
+    "loading": "Loading Unixsee messages",
+    "loadingDetail": "Loading message",
+    "aside": {
+      "label": "Unixsee message shortcuts",
+      "quickActions": {
+        "title": "Quick actions",
+        "label": "Message-related navigation",
+        "tickets": "Open tickets",
+        "websites": "My websites",
+        "relatedWebsite": "Website: {website}",
+        "websiteFallback": "Related website"
+      }
+    }
   },
   "Tickets": {
     "title": "Tickets",

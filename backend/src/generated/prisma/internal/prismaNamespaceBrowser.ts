@@ -87,7 +87,10 @@ export const ModelName = {
   Activity: 'Activity',
   AuditRecord: 'AuditRecord',
   OperationalAction: 'OperationalAction',
-  IdempotencyRecord: 'IdempotencyRecord'
+  IdempotencyRecord: 'IdempotencyRecord',
+  UnixseeMessage: 'UnixseeMessage',
+  UnixseeMessageAttachment: 'UnixseeMessageAttachment',
+  UnixseeMessageRead: 'UnixseeMessageRead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -744,6 +747,49 @@ export const IdempotencyRecordScalarFieldEnum = {
 } as const
 
 export type IdempotencyRecordScalarFieldEnum = (typeof IdempotencyRecordScalarFieldEnum)[keyof typeof IdempotencyRecordScalarFieldEnum]
+
+
+export const UnixseeMessageScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  authorId: 'authorId',
+  websiteId: 'websiteId',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  contentLocale: 'contentLocale',
+  links: 'links',
+  publishedAt: 'publishedAt',
+  withdrawnAt: 'withdrawnAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageScalarFieldEnum = (typeof UnixseeMessageScalarFieldEnum)[keyof typeof UnixseeMessageScalarFieldEnum]
+
+
+export const UnixseeMessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  storageKey: 'storageKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageAttachmentScalarFieldEnum = (typeof UnixseeMessageAttachmentScalarFieldEnum)[keyof typeof UnixseeMessageAttachmentScalarFieldEnum]
+
+
+export const UnixseeMessageReadScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  readAt: 'readAt'
+} as const
+
+export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
 
 
 export const SortOrder = {
