@@ -17,6 +17,10 @@ Before making changes, read in this order as relevant to the task:
    - Admin panel UI (Select, DropdownMenu, Dialog/AlertDialog/Sheet):
      [`admin-panel/docs/development/components.md`](./admin-panel/docs/development/components.md)
      and [`admin-panel/AGENTS.md`](./admin-panel/AGENTS.md)
+   - Client dashboard pages (co-located `loading.tsx` + structure-matched
+     skeletons; keep skeletons in sync when layout changes):
+     [`client/docs/engineering/ui.md`](./client/docs/engineering/ui.md#customer-dashboard-loading-skeletons)
+     and [`client/AGENTS.md`](./client/AGENTS.md)
    - Client auth session / Nest data fetching:
      [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
      (Layer 1) and

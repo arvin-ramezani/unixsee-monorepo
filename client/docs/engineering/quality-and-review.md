@@ -43,7 +43,10 @@ Review in this order:
 2. Broken behavior, data loss, incorrect state, and contract incompatibility.
 3. Architecture-boundary violations and accidental legacy WordPress expansion.
 4. Accessibility, RTL/LTR, responsive behavior, and interaction regressions.
-5. Missing error, loading, empty, permission, and cleanup states.
+5. Missing error, loading, empty, permission, and cleanup states — for
+   customer-dashboard routes, also verify `loading.tsx` + skeleton structure
+   still match the live page
+   ([`ui.md`](./ui.md#customer-dashboard-loading-skeletons)).
 6. Performance regressions, unnecessary dependencies, and avoidable client work.
 7. Maintainability, duplication, naming, and documentation drift.
 

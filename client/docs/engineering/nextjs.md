@@ -4,7 +4,7 @@
 >
 > **Owner:** Frontend team
 >
-> **Last verified:** 2026-08-10
+> **Last verified:** 2026-08-16
 
 ## Version-matched documentation
 
@@ -44,6 +44,10 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 - Set explicit caching behavior rather than relying on accidental framework defaults.
 - Use parallel data loading when requests are independent and streaming when it materially improves the experience.
 - Provide stable loading, empty, permission-denied, unavailable, and error states.
+- **Customer dashboard routes:** every new or restructured
+  `dashboard/` page must include a co-located `loading.tsx` whose skeleton
+  mirrors the live page structure (grids, rails, max-widths). Canonical
+  rules: [`ui.md`](./ui.md#customer-dashboard-loading-skeletons).
 - Planned hybrid auth session + Nest fetch conventions:
   [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md) and
   ADRs [`../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /

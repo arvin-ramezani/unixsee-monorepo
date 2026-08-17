@@ -43,6 +43,10 @@ Applies to `admin-panel/` and `client/`.
   [`docs/frontend/nextjs.md`](../../docs/frontend/nextjs.md#positive-only-jsx-branches).
   Per-app detail: `admin-panel/.agents/skills/react-19` and
   `client/.agents/skills/react-19`.
+- Client dashboard pages: add co-located `loading.tsx` with a skeleton that
+  mirrors the live layout; when structure changes, update the skeleton in the
+  same change —
+  [`client/docs/engineering/ui.md`](../../client/docs/engineering/ui.md#customer-dashboard-loading-skeletons).
 
 ## Canonical docs
 
@@ -52,4 +56,5 @@ Applies to `admin-panel/` and `client/`.
 - `docs/frontend/styling.md`
 - `docs/architecture/project.md`
 - Admin UI primitives: `admin-panel/docs/development/components.md`
+- Client dashboard loading skeletons: `client/docs/engineering/ui.md`
 - Admin product: `docs/product/README.md`

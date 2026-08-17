@@ -32,6 +32,10 @@ both unless a doc says otherwise.
   AlertDialog / Sheet. High-frequency adapter:
   [`.cursor/rules/frontend-next.mdc`](../../.cursor/rules/frontend-next.mdc)
   and [`../../admin-panel/AGENTS.md`](../../admin-panel/AGENTS.md).
+- **Client dashboard** — co-located `loading.tsx` + structure-matched skeletons
+  for every dashboard page (update skeleton when layout changes):
+  [`../../client/docs/engineering/ui.md`](../../client/docs/engineering/ui.md#customer-dashboard-loading-skeletons)
+  (routed from [`../../client/AGENTS.md`](../../client/AGENTS.md)).
 - **Admin deploy** (includes publishing `public/agents/unixsee-agent.tar.gz`):
   [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
 

@@ -136,7 +136,11 @@ Before wiring a Nest domain into `client/`:
 4. Add typed DTO / mapper; strip fields Client Components must not see.
 5. Implement fetch through `server-fetch` / `client-fetch` / Action helpers—no ad hoc `fetch` to Nest from components.
 6. Map errors with `map-api-error` → `ApiErrors` i18n; toast failed mutations.
-7. Add loading / empty / denied / error UI states.
+7. Add loading / empty / denied / error UI states. For customer-dashboard
+   routes under `client/`, also add co-located `loading.tsx` whose skeleton
+   mirrors the live page structure, and keep that skeleton in sync when the
+   layout changes —
+   [`../../client/docs/engineering/ui.md`](../../client/docs/engineering/ui.md#customer-dashboard-loading-skeletons).
 8. Keep mocks honest for any surface still unwired.
 9. Do not add admin Nest wiring here—use
    [`admin-domain-data-fetching.md`](./admin-domain-data-fetching.md) and ADR 0012.

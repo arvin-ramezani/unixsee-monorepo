@@ -51,6 +51,7 @@ Use the existing stack unless the user explicitly approves a change.
 | File placement in this app | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md) |
 | App Router / data / i18n | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md) |
 | UI / RTL / a11y | [`docs/engineering/ui.md`](docs/engineering/ui.md) |
+| Dashboard page loading skeletons | [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons) — create `loading.tsx` + matching skeleton; update skeleton when layout changes |
 | Review / validation | [`docs/engineering/quality-and-review.md`](docs/engineering/quality-and-review.md) |
 | Local ops | [`docs/runbooks/`](docs/runbooks/) |
 
@@ -75,6 +76,10 @@ Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain
 - Keep business mapping out of low-level UI primitives.
 - Avoid unrelated refactors and premature abstractions.
 - Keep code, comments, file names, and technical docs in English.
+- Customer dashboard pages: add co-located `loading.tsx` with a skeleton that
+  mirrors the live layout; when the page structure changes, update the
+  skeleton in the same change —
+  [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons).
 - Positive-only JSX: write `{condition && <Component />}`; never
   `{condition ? <Component /> : null}`. Coerce strings/numbers first
   (`!!label`, `count > 0`). Keep ternaries only when both branches

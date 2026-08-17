@@ -12,7 +12,11 @@ Use existing boundaries before creating a new architectural layer. This reposito
 
 - `src/app/[locale]/(website)`: public website routes and route-specific components
 - `src/app/[locale]/(auth)`: public authentication shell (sign-in, sign-up, OTP, recovery)
-- `src/app/[locale]/(dashboard)`: customer-dashboard routes and route-specific composition
+- `src/app/[locale]/(dashboard)`: customer-dashboard routes and route-specific composition.
+  Co-locate `loading.tsx` with each async dashboard `page.tsx`; keep feature
+  `*LoadingSkeleton` components under `src/components/<feature>/` and keep them
+  structure-matched to the live page —
+  [`ui.md`](./ui.md#customer-dashboard-loading-skeletons).
 - `src/app/api`: Next.js route handlers
 - Planned `src/app/[locale]/(admin)/admin`: administrator routes
 

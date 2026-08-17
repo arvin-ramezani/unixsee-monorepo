@@ -4,7 +4,7 @@
 >
 > **Owner:** Frontend and design teams
 >
-> **Last verified:** 2026-08-04
+> **Last verified:** 2026-08-16
 
 ## Foundations
 
@@ -67,6 +67,43 @@ Shared across `admin-panel/` and `client/` — see
   `opacity-0`) so content is not visible before hydration finishes.
 - Ensure cleanup for timers, observers, animation frames, subscriptions, and scroll locks.
 - Do not remove existing motion or interaction details unless the task requests it or accessibility requires a change.
+
+## Customer dashboard loading skeletons
+
+**Confirmed (repo convention):** Every customer-dashboard route under
+`src/app/[locale]/(dashboard)/dashboard/` that shows async page content must
+ship a matching loading chrome. Do not ship a page (or change its layout)
+without a skeleton that mirrors that structure.
+
+### When creating a page
+
+1. Add co-located `loading.tsx` next to the route `page.tsx`.
+2. Implement a `*LoadingSkeleton` under `src/components/<feature>/` (same
+   pattern as tickets, websites, complementary services, Unixsee messages).
+3. Have `loading.tsx` wrap the skeleton in `DashboardShell` with the same
+   `activeItem` / breadcrumbs the live page uses.
+4. Mirror the **live layout**, not a generic placeholder:
+   - same grid columns (for example `xl:grid-cols-[minmax(0,1fr)_19rem]`);
+   - same max-widths (`max-w-2xl` / `max-w-5xl`) and sticky aside slots;
+   - same major blocks (header, list rows / detail panel, quick-actions rail);
+   - mobile vs `xl` visibility for secondary rails when the page has them.
+5. Set `aria-busy="true"` and a localized `aria-label` loading string.
+
+### When changing page structure later
+
+Treat skeleton parity as part of the same change:
+
+1. Diff the page / primary view layout against its `*LoadingSkeleton`.
+2. Update the skeleton whenever columns, rails, max-widths, or major sections
+   change.
+3. Do not leave an outdated skeleton that flashes a different structure than
+   the hydrated page.
+
+Reference implementations:
+`tickets-loading-skeleton.tsx`, `ticket-details-loading-skeleton.tsx`,
+`unixsee-messages-loading-skeleton.tsx`,
+`unixsee-message-detail-loading-skeleton.tsx`,
+`request-service-loading-skeleton.tsx`.
 
 ## Accessibility
 
