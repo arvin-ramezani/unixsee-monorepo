@@ -644,6 +644,47 @@
     @apply mx-auto w-full px-4 sm:px-4 md:px-8 xl:px-20;
   }
 
+  /* Account menu on dark website header — inverted surface, subtle item hover */
+  .account-menu-dark
+    [data-slot="dropdown-menu-item"]:not(
+      [data-variant="destructive"]
+    )[data-highlighted],
+  .account-menu-dark
+    [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):focus {
+    background-color: color-mix(
+      in oklab,
+      var(--popover) 14%,
+      transparent
+    ) !important;
+    color: var(--popover) !important;
+  }
+
+  .account-menu-dark
+    [data-slot="dropdown-menu-item"]:not(
+      [data-variant="destructive"]
+    )[data-highlighted]
+    svg,
+  .account-menu-dark
+    [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):focus
+    svg {
+    stroke: var(--popover) !important;
+  }
+
+  .account-menu-dark [data-variant="destructive"][data-highlighted],
+  .account-menu-dark [data-variant="destructive"]:focus {
+    background-color: color-mix(
+      in oklab,
+      var(--destructive) 18%,
+      transparent
+    ) !important;
+    color: var(--destructive) !important;
+  }
+
+  .account-menu-dark [data-variant="destructive"][data-highlighted] svg,
+  .account-menu-dark [data-variant="destructive"]:focus svg {
+    color: var(--destructive) !important;
+  }
+
   .container-lg {
     @apply mx-auto w-full max-w-360 px-4 md:px-8 lg:px-20 lg:min-[1920px]:px-0;
   }

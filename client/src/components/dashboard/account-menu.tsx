@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { useLightHeaderStore } from "@/providers/light-header-provider";
 
 type AccountMenuProps = {
   userName: string;
@@ -30,6 +31,9 @@ export function AccountMenu({ userName }: AccountMenuProps) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const headerTone = useLightHeaderStore((state) => state.tone);
+  const isHeaderDark = headerTone === "dark" || headerTone === "pending";
+
   const initial = userName.trim().slice(0, 1) || "?";
 
   function handleLogout() {
@@ -41,13 +45,15 @@ export function AccountMenu({ userName }: AccountMenuProps) {
     });
   }
 
+  const dropdownItemClass = "gap-2 px-2 py-2";
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
         aria-label={t("open")}
         disabled={isPending}
         className={cn(
-          "focus-visible:ring-ring group flex h-12 items-center gap-2 rounded-lg px-1.5 outline-none",
+          "focus-visible:ring-ring group dark:text-foreground flex h-12 items-center gap-2 rounded-lg px-1.5 outline-none",
           "hover:bg-muted/60 focus-visible:ring-2",
           "disabled:pointer-events-none disabled:opacity-60",
         )}
@@ -73,20 +79,26 @@ export function AccountMenu({ userName }: AccountMenuProps) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="min-w-44 w-auto"
+        className={cn(
+          "w-auto min-w-44",
+          isHeaderDark &&
+            "account-menu-dark bg-popover-foreground text-popover",
+        )}
       >
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="gap-2 px-2 py-2">
+          <DropdownMenuItem asChild className={dropdownItemClass}>
             <Link href="/dashboard/profile">
               <UserRound />
               {t("profile")}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator
+          className={cn(isHeaderDark && "bg-muted-foreground")}
+        />
         <DropdownMenuItem
           variant="destructive"
-          className="gap-2 px-2 py-2"
+          className={dropdownItemClass}
           disabled={isPending}
           onSelect={(event) => {
             event.preventDefault();

@@ -61,9 +61,7 @@ export function HeaderAuthControl({
 
   if (accessToken) {
     return (
-      <AccountMenu
-        userName={resolveDisplayName(user, t("accountFallback"))}
-      />
+      <AccountMenu userName={resolveDisplayName(user, t("accountFallback"))} />
     );
   }
 
