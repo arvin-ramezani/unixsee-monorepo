@@ -14,8 +14,8 @@
 - [ ] Props and state are not mutated.
 - [ ] Components are not declared inside components.
 - [ ] Keys come from stable data.
-- [ ] Positive-only JSX branches use `&&` instead of `condition ? <Component /> : null`.
-- [ ] String and number operands are converted to booleans with `!!value` or an explicit predicate before `&&`; raw `0` cannot leak into the rendered output.
+- [ ] Positive-only JSX branches MUST use `{condition && <Component />}`; NEVER `{condition ? <Component /> : null}` (unless both branches render UI).
+- [ ] String and number operands use `!!value` or an explicit predicate before `&&`; raw `0` cannot leak into the rendered output.
 
 ## State and Effects
 

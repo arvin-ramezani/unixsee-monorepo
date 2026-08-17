@@ -152,7 +152,7 @@ export function MobileProblemSectionCard({
           >
             {/* {subTitle} */}
             {tags.map((tag) => (
-              <span className="flex items-center gap-0.5">
+              <span key={tag} className="flex items-center gap-0.5">
                 <Hash className="size-3" />{" "}
                 <span className="ltr:mt-1">{tag}</span>
               </span>

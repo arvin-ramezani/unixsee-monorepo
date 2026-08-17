@@ -45,6 +45,19 @@
 - Preserve touch target sizes and avoid hover-only access to actions.
 - Test long labels, validation errors, empty states, and dynamic content rather than only ideal fixtures.
 
+## JSX conditionals
+
+Shared across `admin-panel/` and `client/` — see
+[`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md#positive-only-jsx-branches).
+
+- Positive-only branches: `{condition && <Component />}` — never
+  `{condition ? <Component /> : null}`.
+- Coerce strings/numbers before `&&` (`!!label`, `count > 0`) so React
+  does not render `0`.
+- Keep a ternary only when both branches render meaningful UI.
+- Agent detail:
+  [`../../.agents/skills/react-19/SKILL.md`](../../.agents/skills/react-19/SKILL.md).
+
 ## Motion
 
 - Use motion to communicate hierarchy, continuity, or state change.

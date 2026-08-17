@@ -208,7 +208,10 @@ export function ProblemSectionCard({
           >
             {/* {subTitle} */}
             {tags.map((tag) => (
-              <span className="flex items-center gap-0.5 leading-none">
+              <span
+                key={tag}
+                className="flex items-center gap-0.5 leading-none"
+              >
                 <Hash className="size-3" /> {tag}
               </span>
             ))}

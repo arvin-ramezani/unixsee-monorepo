@@ -58,7 +58,7 @@ Framework skills live under [`.agents/skills/`](.agents/skills/) (shared with `c
 | Skill | Use for |
 | --- | --- |
 | [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
-| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 APIs with React Compiler enabled |
+| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 / Compiler, components, Hooks, and JSX conditionals |
 | [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
 | [`clean-code`](.agents/skills/clean-code/SKILL.md) | Readability and maintainability without drive-by refactors |
 | [`ux-flow-designer`](.agents/skills/ux-flow-designer/SKILL.md) | End-to-end UX flow design and review |
@@ -81,6 +81,12 @@ Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain
 - Do not make unrelated changes.
 - Do not use outdated framework patterns.
 - Do not add unnecessary dependencies.
+- Positive-only JSX: write `{condition && <Component />}`; never
+  `{condition ? <Component /> : null}`. Coerce strings/numbers first
+  (`!!label`, `count > 0`). Keep ternaries only when both branches
+  render UI. Shared rule:
+  [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md#positive-only-jsx-branches);
+  detail: [`.agents/skills/react-19`](.agents/skills/react-19/SKILL.md).
 
 ## Next.js version-matched documentation
 

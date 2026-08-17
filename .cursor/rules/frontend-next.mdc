@@ -28,6 +28,13 @@ Applies to `admin-panel/` and `client/`.
 - For version-sensitive Next.js behavior (fetch, cache, Server Actions, Cache Components, etc.), read that app’s `node_modules/next/dist/docs/` — installed docs beat model memory. Details: `docs/frontend/nextjs.md`.
 - Admin Base UI menus: wrap `DropdownMenuLabel` in `DropdownMenuGroup` — see `admin-panel/docs/development/components.md` (DropdownMenu).
 - Nest API failures: map `error.code` first (`lib/api/map-api-error.ts`); show localized copy (client: `ApiErrors` i18n; admin: FA `STAFF_API_ERROR_MESSAGES`); toast failed POST mutations — see [`docs/backend/contracts/api-errors.md`](../../docs/backend/contracts/api-errors.md).
+- Positive-only JSX: `{condition && <Component />}` — never
+  `{condition ? <Component /> : null}`. Coerce strings/numbers
+  (`!!label`, `count > 0`). Ternary only when both branches render UI.
+  Shared canonical:
+  [`docs/frontend/nextjs.md`](../../docs/frontend/nextjs.md#positive-only-jsx-branches).
+  Per-app detail: `admin-panel/.agents/skills/react-19` and
+  `client/.agents/skills/react-19`.
 
 ## Canonical docs
 

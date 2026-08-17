@@ -2,7 +2,7 @@
   "name": "unixsee-monorepo",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n backend,client,admin -c blue,green,magenta \"pnpm --dir backend run start:dev\" \"npm --prefix client run dev -- -p 3001\" \"npm --prefix admin-panel run dev -- -p 3000\""
+    "dev": "concurrently -n backend,client,admin -c blue,green,magenta \"pnpm --dir backend run start:dev\" \"npm --prefix client run dev -- -p 3000\" \"npm --prefix admin-panel run dev -- -p 3001\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

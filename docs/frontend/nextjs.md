@@ -46,6 +46,19 @@ The installed Next.js documentation is authoritative over model knowledge.
   implementing them.
 - Do not guess when framework behavior is uncertain.
 
+## Positive-only JSX branches
+
+Applies to **both** `admin-panel/` and `client/` (new and touched code).
+
+- Write `{condition && <Component />}` — never
+  `{condition ? <Component /> : null}`.
+- Coerce strings/numbers before `&&` (`!!label`, `count > 0`) so React does
+  not render `0`.
+- Keep a ternary only when both branches render meaningful UI.
+- Do not copy nearby `? … : null` when editing a file; follow this rule for
+  touched branches.
+- Agent detail: each app’s `.agents/skills/react-19/SKILL.md`.
+
 ## Authenticated data fetching (`client/`)
 
 Hybrid session + Nest fetch conventions (phone OTP live under ADR 0011):

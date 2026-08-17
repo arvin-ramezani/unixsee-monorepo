@@ -12,7 +12,8 @@ both unless a doc says otherwise.
 
 1. [`../architecture/project.md`](../architecture/project.md) — internal app layout
 2. [`nextjs.md`](./nextjs.md) — Next.js 16.3 / App Router rules, including
-   **version-matched docs** under each app’s `node_modules/next/dist/docs/`
+   **version-matched docs** under each app’s `node_modules/next/dist/docs/`,
+   and shared React JSX conditional conventions for both apps
 3. [`state.md`](./state.md) — Zustand and local state
 4. [`styling.md`](./styling.md) — Tailwind v4, shadcn, Persian RTL-first,
    logical insets (`inset-s-*` not `start-*`)

@@ -1,6 +1,6 @@
 ---
 name: react-19
-description: Build, refactor, review, or debug React 19.x TypeScript code in projects where React Compiler is enabled. Use for components, Hooks, Actions, forms, Suspense, the use API, refs, context, effects, Activity, state design, performance, testing, and React 19 migrations. Do not use as the sole authority for framework-specific routing, caching, data fetching, Server Component boundaries, or deployment; load the relevant framework skill too.
+description: Build, refactor, review, or debug React 19.x TypeScript code where React Compiler is enabled. Use for components, JSX conditionals, Hooks, Actions, forms, Suspense, the use API, refs, context, effects, Activity, state design, performance, testing, and React 19 migrations. Do not use as the sole authority for framework-specific routing, caching, data fetching, Server Component boundaries, or deployment; load the relevant framework skill too.
 ---
 
 # React 19
@@ -21,9 +21,10 @@ Apply modern React 19.x patterns while assuming React Compiler is enabled and co
 1. Inspect the relevant files, package versions, lint rules, compiler configuration, and framework boundary.
 2. Identify whether each edited module runs on the client, server, or both.
 3. Choose the smallest React API that directly models the requirement.
-4. Preserve existing behavior before modernizing syntax.
-5. Run the project’s formatter, type checker, lint command, and focused tests when available.
-6. Report compiler skips, lint violations, unsupported APIs, or framework-specific uncertainty instead of hiding them.
+4. Preserve existing behavior before modernizing syntax — except positive-only JSX branches: always write `condition && <Component />` for new or touched code (do not copy nearby `? … : null`).
+5. Before finishing JSX edits, confirm every positive-only branch uses `&&` with a boolean left operand.
+6. Run the project’s formatter, type checker, lint command, and focused tests when available.
+7. Report compiler skips, lint violations, unsupported APIs, or framework-specific uncertainty instead of hiding them.
 
 ## Core implementation rules
 
@@ -36,9 +37,34 @@ Apply modern React 19.x patterns while assuming React Compiler is enabled and co
 - Do not create component definitions inside other components.
 - Keep render deterministic. Do not call impure APIs such as `Date.now()`, `Math.random()`, `crypto.randomUUID()`, or `performance.now()` during render.
 - Use stable semantic keys from data. Never generate keys during render.
-- For a positive-only JSX branch, replace `condition ? <Component /> : null` with `condition && <Component />` when `condition` is already boolean.
-- When the left operand is a string or number, coerce it first with `!!value` or use an explicit boolean predicate: `!!label && <Component />` or `count > 0 && <Component />`. Never write `count && <Component />`, because React renders `0`.
-- Keep a ternary when both branches render meaningful values. Use an `if` statement or extracted variable when short-circuit rendering would reduce clarity.
+
+#### Positive-only JSX branches (MUST)
+
+For a branch that renders a component or nothing:
+
+- **MUST** write `{condition && <Component />}` when `condition` is already boolean.
+- **NEVER** write `{condition ? <Component /> : null}` for that case.
+- When the left operand is a string or number, coerce first: `{!!label && <Component />}` or `{count > 0 && <Component />}`.
+- **NEVER** write `{count && <Component />}` — React will render `0`.
+- **Keep** a ternary only when both branches render meaningful UI: `{ Cond ? <A /> : <B /> }`.
+- Prefer an `if` / extracted variable when short-circuit rendering hurts clarity.
+
+Correct:
+
+```tsx
+{isOpen && <Panel />}
+{count > 0 && <Badge>{count}</Badge>}
+```
+
+Wrong:
+
+```tsx
+{isOpen ? <Panel /> : null}
+{count && <Badge>{count}</Badge>}
+```
+
+Do not follow generic design-database tips that recommend `? … : null` for positive-only branches; this project rule wins for **both** `admin-panel/` and `client/` (see `docs/frontend/nextjs.md`).
+
 - Prefer composition and explicit props over `cloneElement`, `Children` transformations, or hidden coupling.
 - Preserve controlled versus uncontrolled input behavior for the component’s full lifetime.
 
