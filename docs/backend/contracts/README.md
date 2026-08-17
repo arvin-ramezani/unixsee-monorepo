@@ -52,7 +52,8 @@ docs/backend/contracts/
 - Link [`api-errors.md`](./api-errors.md) for failure shapes; document only
   domain-specific `error.code` values on each contract.
 - Prefer explicit lifecycle actions (`close`, `reopen`) over generic PATCH.
-- Mark deferred providers (for example S3) clearly; keep the wire shape stable.
+- Mark deferred HTTP upload/signing routes clearly when the object-storage
+  provider already exists (`StorageModule`); keep the wire shape stable.
 - When a contract changes persistence enums, call out the Prisma rename in the
   same doc so Nest implementation does not drift.
 - Link product notes for behavioral rules that are not HTTP-shaped.

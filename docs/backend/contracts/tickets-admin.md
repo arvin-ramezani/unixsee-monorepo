@@ -159,6 +159,7 @@ the composer on those statuses. See
 
 - Admin create ticket (customers create)
 - Generic PATCH
-- Attachment upload/download providers
+- Attachment HTTP upload/download routes (Supabase `StorageModule` exists;
+  wire upload-intent / signed download later)
 - Transfer UI beyond assign by `assigneeId`
 - Fine-grained capability matrices beyond `ADMIN` / `OPERATOR`

@@ -40,6 +40,11 @@ const appConfig = registerAs('app', () => {
     port: env.PORT,
     agentApiBaseUrl: env.AGENT_API_BASE_URL.replace(/\/$/, ''),
     databaseUrl: env.DATABASE_URL,
+    storage: {
+      url: env.SUPABASE_URL.replace(/\/$/, ''),
+      secretKey: env.SUPABASE_SECRET_KEY,
+      bucket: env.SUPABASE_STORAGE_BUCKET,
+    },
     corsAllowedOrigins: env.CORS_ALLOWED_ORIGINS,
     otpExpiredTime: env.OTP_EXPIRED_TIME_KEY,
     otpRetryTime: env.OTP_RETRY_TIME,

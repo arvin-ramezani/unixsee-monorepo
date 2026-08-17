@@ -234,12 +234,14 @@ not create a duplicate row.
 }
 ```
 
-**S3 object storage is deferred.** Until the storage provider ships:
+**Object storage provider:** Nest `StorageModule` (Supabase). Attachment HTTP
+upload/signing routes are still deferred:
 
 - Keep this wire shape (`storageKey` opaque).
 - Nest validates name/type/size/count/ownership at the trusted boundary.
 - Upload/signing endpoints may be added later without changing ticket create
-  fields; prefer `storageKey` issued by a future upload-intent route.
+  fields; prefer `storageKey` issued by a future upload-intent route that calls
+  `StorageService`.
 - Failed uploads must not leave orphan incomplete messages.
 
 Ticket-scoped attachment list remains on get/create responses. Removing ticket

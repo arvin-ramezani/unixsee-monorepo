@@ -45,7 +45,8 @@ Withdrawn messages are hidden from the customer audience.
 
 Item fields include `isRead`, `links[]`, `attachments[]` (`storageKey`
 metadata; optional `downloadUrl` when object storage signing is available —
-S3 upload/signing still deferred), optional `website`.
+Supabase via `StorageModule`; HTTP upload/signing routes still deferred),
+optional `website`.
 
 ## Admin routes
 

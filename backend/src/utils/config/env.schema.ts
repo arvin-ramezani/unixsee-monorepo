@@ -32,6 +32,16 @@ export const envSchema = z.object({
 
   DATABASE_URL: z.url('DATABASE_URL must be a valid URL'),
 
+  SUPABASE_URL: z.url('SUPABASE_URL must be a valid URL'),
+  SUPABASE_SECRET_KEY: z
+    .string({ error: 'SUPABASE_SECRET_KEY is required' })
+    .trim()
+    .min(1, 'SUPABASE_SECRET_KEY is required'),
+  SUPABASE_STORAGE_BUCKET: z
+    .string({ error: 'SUPABASE_STORAGE_BUCKET is required' })
+    .trim()
+    .min(1, 'SUPABASE_STORAGE_BUCKET is required'),
+
   JWT_ACCESS_SECRET: z
     .string({ error: 'JWT_ACCESS_SECRET is required' })
     .min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),

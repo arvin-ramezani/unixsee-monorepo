@@ -296,7 +296,9 @@ Staff shapes:
 
 Create body includes required `service`, optional `websiteId`, `subject`,
 `description`, and optional `attachments[]`. Default status is `SUBMITTED`
-(customer «ارسال‌شده»). S3 upload provider is deferred; keep `storageKey` shape.
+(customer «ارسال‌شده»). Object storage provider is
+[`StorageModule`](../../backend/src/modules/storage/) (Supabase); attachment
+HTTP upload/signing routes are still deferred — keep opaque `storageKey` shape.
 
 ### Notifications — add `notifications`
 
@@ -324,7 +326,8 @@ Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
 | POST | `/api/v1/admin/unixsee-messages/:id/withdraw` | Admin |
 
 Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
-`websiteId`, `links[]`, attachment `storageKey` metadata (S3 deferred).
+`websiteId`, `links[]`, attachment `storageKey` metadata
+(`StorageModule` / Supabase; HTTP upload/signing still deferred).
 
 ### Activities — add `activities`
 
@@ -401,6 +404,13 @@ backend/src/modules/<domain>/
 ```
 
 Omit controllers that an audience does not need.
+
+### Infrastructure modules (no audience routes)
+
+| Module | Role |
+|---|---|
+| `mail` | SMTP / OTP delivery helper |
+| `storage` | Supabase Object Storage (`StorageService`: upload, download, remove, signed URL). Import into domain modules; no HTTP controllers yet. Env: `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`. |
 
 ## Implementation slices
 
