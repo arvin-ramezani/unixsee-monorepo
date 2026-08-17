@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
   Paperclip,
@@ -9,12 +9,15 @@ import {
   RotateCcw,
   Send,
   ArrowLeft,
+  X,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
 import { addTicketMessageAction } from "@/actions/tickets/add-ticket-message";
 import { closeTicketAction } from "@/actions/tickets/close-ticket";
+import { downloadTicketAttachmentAction } from "@/actions/tickets/download-ticket-attachment";
 import { reopenTicketAction } from "@/actions/tickets/reopen-ticket";
+import { uploadTicketAttachmentAction } from "@/actions/tickets/upload-ticket-attachment";
 import {
   DashboardButton,
   DashboardButtonLink,
@@ -22,57 +25,182 @@ import {
 import { Panel } from "@/components/dashboard/panel";
 import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Link, useRouter } from "@/i18n/navigation";
 import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import type {
+  TicketAttachment,
   TicketDetail,
   TicketMessage,
   TicketStatus,
 } from "@/lib/tickets/types";
 import { cn } from "@/lib/utils";
 
+const MAX_ATTACHMENTS = 20;
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "application/pdf",
+  "application/zip",
+  "application/x-zip-compressed",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "text/csv",
+  "text/plain",
+]);
+
+type PendingAttachment = {
+  id: string;
+  file: File;
+};
+
 export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
   const t = useTranslations("Tickets");
   const tApiErrors = useTranslations("ApiErrors");
   const format = useFormatter();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<TicketStatus>(ticket.status);
   const [messages, setMessages] = useState(ticket.messages);
+  const [attachments, setAttachments] = useState(ticket.attachments);
   const [autoCloseAt, setAutoCloseAt] = useState(ticket.autoCloseAt);
   const [draft, setDraft] = useState("");
+  const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [mutating, setMutating] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [replyError, setReplyError] = useState(false);
   const repliesAllowed = status !== "CLOSED";
+  const attachmentsAllowed = status !== "CLOSED";
+
+  useEffect(() => {
+    setAttachments(ticket.attachments);
+  }, [ticket.attachments]);
+
+  function addFiles(fileList: FileList | null) {
+    const nextFiles = Array.from(fileList ?? []);
+    if (nextFiles.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
+      setAttachmentError(t("reply.tooLarge"));
+      return;
+    }
+    if (
+      nextFiles.some(
+        (file) => !file.type || !ALLOWED_ATTACHMENT_TYPES.has(file.type),
+      )
+    ) {
+      setAttachmentError(t("reply.invalidType"));
+      return;
+    }
+    setAttachmentError(null);
+    setPendingFiles((current) =>
+      [
+        ...current,
+        ...nextFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        })),
+      ].slice(
+        0,
+        Math.max(0, MAX_ATTACHMENTS - attachments.length),
+      ),
+    );
+  }
+
+  async function uploadPendingFiles(ticketId: string) {
+    const uploaded: TicketAttachment[] = [];
+    for (const pending of pendingFiles) {
+      const formData = new FormData();
+      formData.append("file", pending.file);
+      const uploadResult = await uploadTicketAttachmentAction(
+        ticketId,
+        formData,
+      );
+      if (!uploadResult.ok) {
+        return { ok: false as const, error: uploadResult.error, uploaded };
+      }
+      uploaded.push(uploadResult.data);
+    }
+    return { ok: true as const, uploaded };
+  }
 
   async function sendReply(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!draft.trim()) {
+    const hasMessage = Boolean(draft.trim());
+    if (!hasMessage && pendingFiles.length === 0) {
       setReplyError(true);
       return;
     }
     setSending(true);
+    setReplyError(false);
 
-    const result = await addTicketMessageAction({
-      ticketId: ticket.id,
-      body: draft,
-      idempotencyKey: crypto.randomUUID(),
-    });
+    if (hasMessage) {
+      const result = await addTicketMessageAction({
+        ticketId: ticket.id,
+        body: draft,
+        idempotencyKey: crypto.randomUUID(),
+      });
 
-    if (!result.ok) {
-      toastMappedApiError(result.error, tApiErrors);
-      setSending(false);
+      if (!result.ok) {
+        toastMappedApiError(result.error, tApiErrors);
+        setSending(false);
+        return;
+      }
+
+      setMessages((current) => [...current, result.data]);
+      setDraft("");
+      if (status === "WAITING_CUSTOMER") setStatus("IN_PROGRESS");
+    }
+
+    if (pendingFiles.length > 0) {
+      const uploadResult = await uploadPendingFiles(ticket.id);
+      if (!uploadResult.ok) {
+        toastMappedApiError(uploadResult.error, tApiErrors);
+        if (uploadResult.uploaded.length > 0) {
+          setAttachments((current) => [...current, ...uploadResult.uploaded]);
+        }
+        setPendingFiles((current) => current.slice(uploadResult.uploaded.length));
+        setSending(false);
+        router.refresh();
+        return;
+      }
+      setAttachments((current) => [...current, ...uploadResult.uploaded]);
+      setPendingFiles([]);
+    }
+
+    setSending(false);
+    router.refresh();
+  }
+
+  async function handleDownload(attachment: TicketAttachment) {
+    if (attachment.downloadUrl) {
+      window.open(attachment.downloadUrl, "_blank", "noopener,noreferrer");
       return;
     }
 
-    setMessages((current) => [...current, result.data]);
-    setDraft("");
-    setReplyError(false);
-    setSending(false);
-    if (status === "WAITING_CUSTOMER") setStatus("IN_PROGRESS");
-    router.refresh();
+    setDownloadingId(attachment.id);
+    const result = await downloadTicketAttachmentAction(
+      ticket.id,
+      attachment.id,
+    );
+    setDownloadingId(null);
+
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      return;
+    }
+
+    setAttachments((current) =>
+      current.map((item) =>
+        item.id === attachment.id
+          ? { ...item, downloadUrl: result.data.downloadUrl }
+          : item,
+      ),
+    );
+    window.open(result.data.downloadUrl, "_blank", "noopener,noreferrer");
   }
 
   async function handleReopen() {
@@ -266,39 +394,36 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
                   {t("detail.attachments")}
                 </dt>
                 <dd className="mt-2">
-                  {ticket.attachments.length > 0 ? (
+                  {attachments.length > 0 ? (
                     <ul className="space-y-2">
-                      {ticket.attachments.map((attachment) => (
+                      {attachments.map((attachment) => (
                         <li key={attachment.id} className="min-w-0">
-                          {attachment.downloadUrl ? (
-                            <a
-                              href={attachment.downloadUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-link hover:underline inline-flex max-w-full items-center gap-1.5 text-sm"
-                            >
+                          <button
+                            type="button"
+                            disabled={downloadingId === attachment.id}
+                            onClick={() => {
+                              void handleDownload(attachment);
+                            }}
+                            className="text-link hover:underline inline-flex max-w-full items-center gap-1.5 text-start text-sm disabled:opacity-60"
+                          >
+                            {downloadingId === attachment.id ? (
+                              <LoaderCircle
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0 animate-spin"
+                              />
+                            ) : (
                               <Paperclip
                                 aria-hidden="true"
                                 className="size-3.5 shrink-0"
                               />
-                              <span className="truncate">
-                                {attachment.fileName}
-                              </span>
-                              <span className="text-muted-foreground sr-only">
-                                {t("detail.download")}
-                              </span>
-                            </a>
-                          ) : (
-                            <span className="text-muted-foreground inline-flex max-w-full items-center gap-1.5 text-sm">
-                              <Paperclip
-                                aria-hidden="true"
-                                className="size-3.5 shrink-0"
-                              />
-                              <span className="truncate">
-                                {attachment.fileName}
-                              </span>
+                            )}
+                            <span className="truncate">
+                              {attachment.fileName}
                             </span>
-                          )}
+                            <span className="text-muted-foreground sr-only">
+                              {t("detail.download")}
+                            </span>
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -341,11 +466,66 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
                 {t("reply.required")}
               </p>
             )}
+            {attachmentError && (
+              <p className="text-destructive mt-2 text-xs">{attachmentError}</p>
+            )}
+            {pendingFiles.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {pendingFiles.map((pending) => (
+                  <li
+                    key={pending.id}
+                    className="border-border bg-muted/20 flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"
+                  >
+                    <span className="truncate">{pending.file.name}</span>
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-foreground inline-flex size-8 items-center justify-center rounded-md"
+                      aria-label={t("reply.remove", {
+                        name: pending.file.name,
+                      })}
+                      onClick={() =>
+                        setPendingFiles((current) =>
+                          current.filter((item) => item.id !== pending.id),
+                        )
+                      }
+                    >
+                      <X aria-hidden="true" className="size-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <p className="text-muted-foreground flex items-center gap-2 text-xs">
-                <Paperclip aria-hidden="true" className="size-3.5" />
-                {t("reply.attachmentsUnavailable")}
-              </p>
+              <div className="flex flex-col gap-2">
+                {attachmentsAllowed && (
+                  <>
+                    <Input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept=".pdf,.zip,.gif,.jpg,.jpeg,.png,.webp,.csv,.txt,application/pdf,application/zip,image/gif,image/jpeg,image/png,image/webp,text/csv,text/plain"
+                      className="hidden"
+                      onChange={(event) => {
+                        addFiles(event.target.files);
+                        event.target.value = "";
+                      }}
+                    />
+                    <DashboardButton
+                      type="button"
+                      variant="outline"
+                      disabled={sending}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-border hover:bg-muted inline-flex min-h-10 w-fit items-center gap-2 rounded-lg border px-3 text-sm"
+                    >
+                      <Paperclip aria-hidden="true" className="size-3.5" />
+                      {t("reply.attach")}
+                    </DashboardButton>
+                    <p className="text-muted-foreground text-xs">
+                      {t("reply.attachmentsHint")}
+                    </p>
+                  </>
+                )}
+              </div>
               <DashboardButton
                 type="submit"
                 disabled={sending}
