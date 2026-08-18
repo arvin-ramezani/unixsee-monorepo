@@ -422,7 +422,7 @@ export function RequestAssessmentMultiStepForm({
                     key="request-assessment-continue"
                     type="button"
                     className={cn(
-                      "h-auto min-h-11 flex-[2] py-3 text-base",
+                      "h-auto min-h-11 flex-2 py-3 text-base",
                       submitButtonClassName,
                     )}
                     disabled={isSubmitting || (step === 1 && !verifiedChannel)}
@@ -437,7 +437,7 @@ export function RequestAssessmentMultiStepForm({
                     key="request-assessment-submit"
                     type="button"
                     className={cn(
-                      "h-auto min-h-11 flex-[2] py-3 text-base",
+                      "h-auto min-h-11 flex-2 py-3 text-base",
                       submitButtonClassName,
                     )}
                     disabled={isSubmitting || !verifiedChannel}
