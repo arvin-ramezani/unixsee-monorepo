@@ -47,7 +47,7 @@ export default function HeroSection({ id }: HeroSectionProps) {
   }, [resolvedTheme, setHeaderTone]);
 
   return (
-    <div ref={heroRef}>
+    <div ref={heroRef} className="sticky top-16">
       <Section
         id={id}
         containerClassName="p-0"

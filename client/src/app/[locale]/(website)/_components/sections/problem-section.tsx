@@ -28,7 +28,7 @@ export default function ProblemSection({ id }: ProblemSectionProps) {
 
   return (
     // Don not change this -top-6 to -top-11, it will break the layout
-    <div className="bg-background relative -top-6 rounded-t-4xl lg:-top-11 lg:rounded-t-[52px]">
+    <div className="bg-background -top-6 min-h-[calc(100%+24px)] rounded-t-4xl lg:-top-11 lg:rounded-t-[52px]">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-16 bg-linear-to-b from-transparent via-[#020812]/45 to-transparent dark:via-[#07111d]/65 dark:to-[#101b29]"
