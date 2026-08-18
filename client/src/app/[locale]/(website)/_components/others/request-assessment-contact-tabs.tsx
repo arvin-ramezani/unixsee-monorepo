@@ -16,11 +16,7 @@ import { PhoneField } from "@/components/auth/phone-field";
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import { useAuthStore } from "@/components/providers/auth-store-provider";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isCompleteIranNationalMobile } from "@/lib/auth/iran-phone";
@@ -211,7 +207,7 @@ export function RequestAssessmentContactTabs({
                     <motion.span
                       layoutId="request-assessment-contact-tab-pill"
                       aria-hidden
-                      className="bg-background pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm dark:bg-input/30"
+                      className="bg-background dark:bg-input/30 pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm"
                       transition={
                         shouldReduceMotion
                           ? { duration: 0 }
@@ -231,7 +227,7 @@ export function RequestAssessmentContactTabs({
               ))}
             </TabsList>
 
-            <TabsContent value="phone" className="mt-4 space-y-3" asChild>
+            <TabsContent value="phone" className="mt-4" asChild>
               <motion.div
                 initial={
                   shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }
@@ -314,9 +310,7 @@ export function RequestAssessmentContactTabs({
                         <FieldError
                           errors={[
                             {
-                              message: translateError(
-                                fieldState.error.message,
-                              ),
+                              message: translateError(fieldState.error.message),
                             },
                           ]}
                         />
@@ -345,7 +339,10 @@ export function RequestAssessmentContactTabs({
                   control={control}
                   render={({ field, fieldState }) => (
                     <div className="flex flex-col gap-2">
-                      <Field data-invalid={fieldState.invalid}>
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        className="flex flex-col gap-2"
+                      >
                         <FieldLabel
                           htmlFor="request-assessment-email"
                           className="gap-1"
@@ -391,8 +388,7 @@ export function RequestAssessmentContactTabs({
                           size="sm"
                           className="w-fit!"
                           disabled={
-                            contactInputDisabled ||
-                            !isLikelyEmail(email ?? "")
+                            contactInputDisabled || !isLikelyEmail(email ?? "")
                           }
                           onClick={() => void startOtp("email")}
                         >

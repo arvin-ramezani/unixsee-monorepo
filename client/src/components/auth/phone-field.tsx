@@ -4,11 +4,7 @@ import { useId } from "react";
 import { useTranslations } from "next-intl";
 
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { parseIranPhoneInput } from "@/lib/auth/iran-phone";
 import { cn } from "@/lib/utils";
@@ -58,17 +54,14 @@ export function PhoneField({
   }
 
   return (
-    <Field
-      data-invalid={invalid || undefined}
-      className={cn(className)}
-    >
-      {resolvedLabel ? (
+    <Field data-invalid={invalid || undefined} className={cn(className)}>
+      {!!resolvedLabel && (
         <FieldLabel htmlFor={id} className={required ? "gap-1" : undefined}>
           {resolvedLabel}
-          {required ? <RequiredInputIcon /> : null}
+          {required && <RequiredInputIcon />}
         </FieldLabel>
-      ) : null}
-      <div className={cn("flex gap-2", resolvedLabel ? "mt-1.5" : undefined)} dir="ltr">
+      )}
+      <div className={cn("flex gap-2")} dir="ltr">
         <Input
           type="text"
           inputMode="tel"
