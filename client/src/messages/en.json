@@ -1239,8 +1239,11 @@
             "otpUnavailable": "Verification is temporarily unavailable.",
             "otpGenericError": "Verification is unavailable right now.",
             "otpWrongCode": "Incorrect code.",
-            "verifyContactFirst": "Verify your phone or email before submitting.",
-            "verifyPreferredContact": "Verify the contact method selected in the tab."
+            "verifyContactFirst": "Verify your phone or email before continuing.",
+            "verifyPreferredContact": "Verify the contact method selected in the tab.",
+            "signedInHint": "Your account details are filled in. If you use a different phone or email, you need to verify it.",
+            "accountPhoneReady": "Using your account phone",
+            "accountEmailReady": "Using your account email"
           },
           "fields": {
             "name": {
@@ -1575,10 +1578,22 @@
               "additionalDetailsPlaceholder": "Any additional context about your needs"
             }
           },
+          "steps": {
+            "loading": "Loading…",
+            "progress": "{current} of {total}",
+            "progressLabel": "Form progress",
+            "titles": {
+              "1": "Basic information",
+              "2": "Service details",
+              "3": "Notes and files"
+            }
+          },
           "actions": {
             "sendMessage": "Send Message",
             "submitting": "Sending…",
-            "cancel": "Cancel Request"
+            "cancel": "Cancel Request",
+            "continue": "Continue",
+            "back": "Back"
           }
         }
       },

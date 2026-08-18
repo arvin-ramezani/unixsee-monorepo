@@ -24,6 +24,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isCompleteIranNationalMobile } from "@/lib/auth/iran-phone";
+import {
+  emailsMatch,
+  phonesMatch,
+} from "@/lib/request-assessment/account-contact";
 import type { RequestAssessmentSchemaType } from "@/lib/zod-schemas/request-assessment-schema";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +40,9 @@ type RequestAssessmentContactTabsProps = {
   disabled?: boolean;
   translateError: TranslateError;
   verifiedChannel: ContactOtpChannel | null;
+  accountPhone?: string;
+  accountEmail?: string;
+  isSignedIn?: boolean;
   onVerifiedChannelChange: (channel: ContactOtpChannel | null) => void;
 };
 
@@ -50,6 +57,9 @@ export function RequestAssessmentContactTabs({
   disabled,
   translateError,
   verifiedChannel,
+  accountPhone = "",
+  accountEmail = "",
+  isSignedIn = false,
   onVerifiedChannelChange,
 }: RequestAssessmentContactTabsProps) {
   const t = useTranslations(
@@ -70,7 +80,10 @@ export function RequestAssessmentContactTabs({
   const phone = useWatch({ control, name: "phone" });
   const email = useWatch({ control, name: "email" });
 
-  const contactLocked = Boolean(verifiedChannel);
+  const phoneMatchesAccount = phonesMatch(phone, accountPhone);
+  const emailMatchesAccount = emailsMatch(email, accountEmail);
+  const preferredVerified = verifiedChannel === preferredContact;
+  const contactInputDisabled = disabled || otpPending || Boolean(otpChannel);
   const contactInputClassName = cn(
     "h-12 dir-ltr text-start",
     locale === "fa" && "placeholder:text-end",
@@ -162,7 +175,9 @@ export function RequestAssessmentContactTabs({
     <div className="flex flex-col gap-3">
       <div>
         <p className="text-sm font-medium">{t("tabsLabel")}</p>
-        <p className="text-muted-foreground mt-1 text-xs">{t("hint")}</p>
+        <p className="text-muted-foreground mt-1 text-xs">
+          {isSignedIn ? t("signedInHint") : t("hint")}
+        </p>
       </div>
 
       <Controller
@@ -172,7 +187,7 @@ export function RequestAssessmentContactTabs({
           <Tabs
             value={field.value}
             onValueChange={(value) => {
-              if (contactLocked || disabled) return;
+              if (contactInputDisabled) return;
               field.onChange(value as ContactOtpChannel);
               resetOtpUi();
             }}
@@ -185,7 +200,7 @@ export function RequestAssessmentContactTabs({
                 <TabsTrigger
                   key={channel}
                   value={channel}
-                  disabled={contactLocked || disabled}
+                  disabled={contactInputDisabled}
                   className={cn(
                     "relative z-0 overflow-hidden",
                     "data-active:bg-transparent! data-active:shadow-none!",
@@ -238,29 +253,30 @@ export function RequestAssessmentContactTabs({
                         id="request-assessment-phone"
                         label={t("phoneLabel")}
                         placeholder={t("phonePlaceholder")}
-                        required={!verifiedChannel}
+                        required={!preferredVerified}
                         value={field.value ?? ""}
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         error={translateError(fieldState.error?.message)}
-                        disabled={disabled || contactLocked || otpPending}
+                        disabled={contactInputDisabled}
                         className={phonePlaceholderClassName}
                       />
-                      {verifiedChannel === "phone" && (
+                      {preferredVerified && (
                         <p className="text-success flex items-center gap-1.5 text-sm">
                           <CheckIcon className="size-4" aria-hidden />
-                          {t("phoneVerified")}
+                          {phoneMatchesAccount
+                            ? t("accountPhoneReady")
+                            : t("phoneVerified")}
                         </p>
                       )}
-                      {!contactLocked && (
+                      {!preferredVerified && (
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           className="w-fit!"
                           disabled={
-                            disabled ||
-                            otpPending ||
+                            contactInputDisabled ||
                             !isCompleteIranNationalMobile(phone ?? "")
                           }
                           onClick={() => void startOtp("phone")}
@@ -292,7 +308,7 @@ export function RequestAssessmentContactTabs({
                         aria-invalid={fieldState.invalid}
                         className={contactInputClassName}
                         placeholder={t("emailPlaceholder")}
-                        disabled={disabled || contactLocked || otpPending}
+                        disabled={contactInputDisabled}
                       />
                       {fieldState.error?.message && (
                         <FieldError
@@ -335,7 +351,7 @@ export function RequestAssessmentContactTabs({
                           className="gap-1"
                         >
                           {t("emailLabel")}
-                          {!verifiedChannel && <RequiredInputIcon />}
+                          {!preferredVerified && <RequiredInputIcon />}
                         </FieldLabel>
                         <Input
                           {...field}
@@ -346,7 +362,7 @@ export function RequestAssessmentContactTabs({
                           aria-invalid={fieldState.invalid}
                           className={contactInputClassName}
                           placeholder={t("emailPlaceholder")}
-                          disabled={disabled || contactLocked || otpPending}
+                          disabled={contactInputDisabled}
                         />
                         {fieldState.error?.message && (
                           <FieldError
@@ -360,21 +376,22 @@ export function RequestAssessmentContactTabs({
                           />
                         )}
                       </Field>
-                      {verifiedChannel === "email" && (
+                      {preferredVerified && (
                         <p className="text-success flex items-center gap-1.5 text-sm">
                           <CheckIcon className="size-4" aria-hidden />
-                          {t("emailVerified")}
+                          {emailMatchesAccount
+                            ? t("accountEmailReady")
+                            : t("emailVerified")}
                         </p>
                       )}
-                      {!contactLocked && (
+                      {!preferredVerified && (
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           className="w-fit!"
                           disabled={
-                            disabled ||
-                            otpPending ||
+                            contactInputDisabled ||
                             !isLikelyEmail(email ?? "")
                           }
                           onClick={() => void startOtp("email")}
@@ -401,7 +418,7 @@ export function RequestAssessmentContactTabs({
                       onChange={field.onChange}
                       onBlur={field.onBlur}
                       error={translateError(fieldState.error?.message)}
-                      disabled={disabled || contactLocked || otpPending}
+                      disabled={contactInputDisabled}
                       className={phonePlaceholderClassName}
                     />
                   )}

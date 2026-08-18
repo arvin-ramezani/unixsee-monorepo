@@ -38,11 +38,14 @@ import {
   type TranslateError,
 } from "./request-assessment-form-fields";
 
+export type ServiceFieldsSection = "details" | "notes";
+
 type ServiceFieldsProps = {
   control: Control<RequestAssessmentSchemaType>;
   disabled?: boolean;
   translateError: TranslateError;
   service: ServiceValue;
+  section?: ServiceFieldsSection;
 };
 
 const enterEase = [0.22, 1, 0.36, 1] as const;
@@ -84,6 +87,7 @@ function ManagedServerFields({
   control,
   disabled,
   translateError,
+  section = "details",
 }: Omit<ServiceFieldsProps, "service">) {
   const t = useTranslations(
     "HomePage.ConsultationSection.requestAssessment.form.services.managedServer",
@@ -159,6 +163,23 @@ function ManagedServerFields({
   }, [clearErrors, hasActiveWebsite, setValue]);
 
   const existingSiteDisabled = disabled || hasActiveWebsite !== "yes";
+
+  if (section === "notes") {
+    if (hasActiveWebsite !== "yes") {
+      return null;
+    }
+
+    return (
+      <TextareaFormField
+        control={control}
+        name="serviceDetails.managedServerAdditionalDetails"
+        label={t("additionalDetails")}
+        disabled={disabled}
+        translateError={translateError}
+        placeholder={t("additionalDetailsPlaceholder")}
+      />
+    );
+  }
 
   return (
     <ServiceSection title={t("title")}>
@@ -254,14 +275,6 @@ function ManagedServerFields({
               placeholder={t("peakTrafficDetailsPlaceholder")}
             />
           )}
-          <TextareaFormField
-            control={control}
-            name="serviceDetails.managedServerAdditionalDetails"
-            label={t("additionalDetails")}
-            disabled={existingSiteDisabled}
-            translateError={translateError}
-            placeholder={t("additionalDetailsPlaceholder")}
-          />
         </>
       )}
     </ServiceSection>
@@ -546,6 +559,7 @@ function ProductDataEntryFields({
   control,
   disabled,
   translateError,
+  section = "details",
 }: Omit<ServiceFieldsProps, "service">) {
   const t = useTranslations(
     "HomePage.ConsultationSection.requestAssessment.form.services.productDataEntry",
@@ -556,6 +570,19 @@ function ProductDataEntryFields({
 
   const optionLabel = (group: string, value: string) =>
     tOptions(`${group}.${value}` as "cms.wordpress");
+
+  if (section === "notes") {
+    return (
+      <TextareaFormField
+        control={control}
+        name="serviceDetails.specialInstructions"
+        label={t("specialInstructions")}
+        disabled={disabled}
+        translateError={translateError}
+        placeholder={t("specialInstructionsPlaceholder")}
+      />
+    );
+  }
 
   return (
     <ServiceSection title={t("title")}>
@@ -618,14 +645,6 @@ function ProductDataEntryFields({
         disabled={disabled}
         translateError={translateError}
       />
-      <TextareaFormField
-        control={control}
-        name="serviceDetails.specialInstructions"
-        label={t("specialInstructions")}
-        disabled={disabled}
-        translateError={translateError}
-        placeholder={t("specialInstructionsPlaceholder")}
-      />
     </ServiceSection>
   );
 }
@@ -634,6 +653,7 @@ function SocialMediaFields({
   control,
   disabled,
   translateError,
+  section = "details",
 }: Omit<ServiceFieldsProps, "service">) {
   const t = useTranslations(
     "HomePage.ConsultationSection.requestAssessment.form.services.socialMedia",
@@ -644,6 +664,19 @@ function SocialMediaFields({
 
   const optionLabel = (group: string, value: string) =>
     tOptions(`${group}.${value}` as "cms.wordpress");
+
+  if (section === "notes") {
+    return (
+      <TextareaFormField
+        control={control}
+        name="serviceDetails.socialAdditionalDetails"
+        label={t("additionalDetails")}
+        disabled={disabled}
+        translateError={translateError}
+        placeholder={t("additionalDetailsPlaceholder")}
+      />
+    );
+  }
 
   return (
     <ServiceSection title={t("title")}>
@@ -711,19 +744,26 @@ function SocialMediaFields({
         disabled={disabled}
         translateError={translateError}
       />
-      <TextareaFormField
-        control={control}
-        name="serviceDetails.socialAdditionalDetails"
-        label={t("additionalDetails")}
-        disabled={disabled}
-        translateError={translateError}
-        placeholder={t("additionalDetailsPlaceholder")}
-      />
     </ServiceSection>
   );
 }
 
 function renderServiceFields(props: ServiceFieldsProps) {
+  const { section = "details" } = props;
+
+  if (section === "notes") {
+    switch (props.service) {
+      case "managedServer":
+        return <ManagedServerFields {...props} />;
+      case "productDataEntry":
+        return <ProductDataEntryFields {...props} />;
+      case "socialMedia":
+        return <SocialMediaFields {...props} />;
+      default:
+        return null;
+    }
+  }
+
   switch (props.service) {
     case "managedServer":
       return <ManagedServerFields {...props} />;
@@ -747,16 +787,18 @@ export function RequestAssessmentServiceFields({
   disabled,
   translateError,
   service,
+  section = "details",
 }: ServiceFieldsProps) {
   return (
     <AnimatePresence mode="wait">
       {!!service && (
-        <AnimatedServicePanel serviceKey={service}>
+        <AnimatedServicePanel serviceKey={`${service}-${section}`}>
           {renderServiceFields({
             control,
             disabled,
             translateError,
             service,
+            section,
           })}
         </AnimatedServicePanel>
       )}

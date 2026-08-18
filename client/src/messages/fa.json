@@ -1249,8 +1249,11 @@
             "otpUnavailable": "تأیید موقتاً در دسترس نیست.",
             "otpGenericError": "الان امکان تأیید نیست.",
             "otpWrongCode": "کد نادرست است.",
-            "verifyContactFirst": "قبل از ارسال، موبایل یا ایمیل را تأیید کنید.",
-            "verifyPreferredContact": "همان روشی را که در زبانه انتخاب کرده‌اید تأیید کنید."
+            "verifyContactFirst": "قبل از ادامه، موبایل یا ایمیل را تأیید کنید.",
+            "verifyPreferredContact": "همان روشی را که در زبانه انتخاب کرده‌اید تأیید کنید.",
+            "signedInHint": "اطلاعات حساب شما وارد شده است. اگر موبایل یا ایمیل دیگری استفاده کنید، باید آن را تأیید کنید.",
+            "accountPhoneReady": "از شماره تماس شما استفاده می‌شود",
+            "accountEmailReady": "از ایمیل حساب شما استفاده می‌شود"
           },
           "fields": {
             "name": {
@@ -1585,10 +1588,22 @@
               "additionalDetailsPlaceholder": "جزئیات بیشتر درباره نیاز شما"
             }
           },
+          "steps": {
+            "loading": "در حال بارگذاری…",
+            "progress": "{current} از {total}",
+            "progressLabel": "پیشرفت فرم",
+            "titles": {
+              "1": "اطلاعات اولیه",
+              "2": "جزئیات سرویس",
+              "3": "توضیحات و فایل‌ها"
+            }
+          },
           "actions": {
             "sendMessage": "ارسال پیام",
             "submitting": "در حال ارسال…",
-            "cancel": "لغو درخواست"
+            "cancel": "لغو درخواست",
+            "continue": "ادامه",
+            "back": "بازگشت"
           }
         }
       },
