@@ -15,22 +15,22 @@ export type HeroSectionProps = {
 const HEADER_OFFSET_PX = 64;
 
 export default function HeroSection({ id }: HeroSectionProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const setHeaderTone = useLightHeaderStore((state) => state.setTone);
 
   useEffect(() => {
-    const element = heroRef.current;
+    const sentinel = sentinelRef.current;
 
-    if (!element || !resolvedTheme) {
+    if (!sentinel || !resolvedTheme) {
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const heroVisible = entry.isIntersecting;
+        const heroInDocumentFlow = entry.isIntersecting;
         setHeaderTone(
-          resolvedTheme === "dark" || heroVisible ? "dark" : "light",
+          resolvedTheme === "dark" || heroInDocumentFlow ? "dark" : "light",
         );
       },
       {
@@ -39,7 +39,7 @@ export default function HeroSection({ id }: HeroSectionProps) {
       },
     );
 
-    observer.observe(element);
+    observer.observe(sentinel);
 
     return () => {
       observer.disconnect();
@@ -47,14 +47,19 @@ export default function HeroSection({ id }: HeroSectionProps) {
   }, [resolvedTheme, setHeaderTone]);
 
   return (
-    <div ref={heroRef} className="sticky top-16">
+    <>
+      <div
+        ref={sentinelRef}
+        aria-hidden="true"
+        className="pointer-events-none -mb-[calc(100dvh-65px)] h-[calc(100dvh-65px)]"
+      />
       <Section
         id={id}
         containerClassName="p-0"
-        className="sticky top-16 h-[calc(100dvh-65px)] bg-black text-center"
+        className="sticky top-16 z-0 h-[calc(100dvh-65px)] bg-black text-center"
       >
         <VideoBackground />
       </Section>
-    </div>
+    </>
   );
 }

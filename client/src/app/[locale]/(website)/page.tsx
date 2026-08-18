@@ -60,25 +60,27 @@ export default async function Home({ params }: HomePageProps) {
 
     <main>
       <HeroSection />
-      <ProblemSection id={sectionIds[0]} />
-      {/* <AboutUsSection id={sectionIds[1]} /> */}
-      <SolutionOverviewSection id={sectionIds[1]} />
-      {/* <NumberOfSuccessSection id={sectionIds[2]} /> */}
-      <InfrastructureSection id={sectionIds[2]} />
-      <ProcessSection id={sectionIds[3]} />
-      {/* <PortfolioLogos id={sectionIds[6]} /> */}
-      <ConsultationSection id={sectionIds[4]} />
-      <FaqSection id={sectionIds[5]} />
-      {/* <TestimonialsSection id={sectionIds[5]} /> */}
-      {/* <BlogSection id={sectionIds[9]} /> */}
+      <div className="relative z-10">
+        <ProblemSection id={sectionIds[0]} />
+        {/* <AboutUsSection id={sectionIds[1]} /> */}
+        <SolutionOverviewSection id={sectionIds[1]} />
+        {/* <NumberOfSuccessSection id={sectionIds[2]} /> */}
+        <InfrastructureSection id={sectionIds[2]} />
+        <ProcessSection id={sectionIds[3]} />
+        {/* <PortfolioLogos id={sectionIds[6]} /> */}
+        <ConsultationSection id={sectionIds[4]} />
+        <FaqSection id={sectionIds[5]} />
+        {/* <TestimonialsSection id={sectionIds[5]} /> */}
+        {/* <BlogSection id={sectionIds[9]} /> */}
 
-      {/* <WhyChooseUsSection />
+        {/* <WhyChooseUsSection />
       <CoreServicesSection />
       <AudienceFitSection />
       <MonitoringSection />
       <AdditionalServicesSection />
       <SocialProofSection />
       <CallToActionSection /> */}
+      </div>
     </main>
   );
 }
