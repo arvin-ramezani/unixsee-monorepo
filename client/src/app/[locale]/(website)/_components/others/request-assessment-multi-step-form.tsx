@@ -211,7 +211,7 @@ export function RequestAssessmentMultiStepForm({
                               autoComplete="name"
                               disabled={isSubmitting}
                             />
-                            {fieldState.error?.message && (
+                            {!!fieldState.error?.message && (
                               <FieldError
                                 errors={[
                                   {
