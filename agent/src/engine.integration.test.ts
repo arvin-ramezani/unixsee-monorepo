@@ -1,113 +1,147 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AgentApiError } from "./api/client.js";
-import { createEngine } from "./engine.js";
 import type { HostIdentity } from "./discovery.js";
+import { loadTestConfig } from "./test-helpers.js";
+
+vi.mock("./site-stack.js", () => ({
+  enrichSiteStack: vi.fn(),
+}));
+
+vi.mock("./traffic.js", () => ({
+  ensureTrafficTails: vi.fn().mockResolvedValue(undefined),
+  collectActiveVisitors3m: vi.fn(),
+}));
+
+import { createEngine } from "./engine.js";
+import { enrichSiteStack } from "./site-stack.js";
 import {
   collectActiveVisitors3m,
   ensureTrafficTails,
-  resetTrafficStateForTests,
 } from "./traffic.js";
-import { enrichSiteStack } from "./site-stack.js";
-import { clearPersistedAgentSecret, persistAgentSecret } from "./security.js";
-import { loadTestConfig } from "./test-helpers.js";
 
 const identity: HostIdentity = {
-  machineId: "machine-int-1",
+  agentInstanceId: "agent-instance-int-1",
   domains: [
     {
-      domain: "farcoland.com",
-      documentRoot: "/home/u/domains/farcoland.com/public_html",
+      domain: "example.com",
+      documentRoot: "/home/u/domains/example.com/public_html",
       owner: "u",
-      appType: "woocommerce",
+      appType: "wordpress",
       source: "openlitespeed",
-      aliases: [],
+      aliases: ["example.com", "www.example.com"],
+      virtualHostName: "example-vhost",
+    },
+    {
+      domain: "legacy.example.net",
+      documentRoot: "/home/u/domains/legacy.example.net/public_html",
+      owner: "u",
+      appType: "wordpress",
+      source: "directadmin",
+      aliases: ["www.legacy.example.net"],
     },
   ],
 };
 
-describe("engine integration", () => {
-  let cwd: string;
-  let logDir: string;
-  let previousCwd: string;
+describe("engine Step 3 ingest separation", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    loadTestConfig();
 
-  beforeEach(async () => {
-    previousCwd = process.cwd();
-    cwd = await mkdtemp(join(tmpdir(), "unixsee-agent-int-"));
-    logDir = join(cwd, "logs");
-    process.chdir(cwd);
-    resetTrafficStateForTests();
-    loadTestConfig({
-      NODE_ENV: "test",
-      ACCESS_LOG_DIR: logDir,
-      DIRECTADMIN_BASE_URL: "https://panel.test:2222",
-    });
-    await persistAgentSecret("live-secret", cwd);
+    vi.mocked(enrichSiteStack).mockResolvedValue([
+      {
+        domain: "example.com",
+        aliases: ["www.example.com"],
+        documentRoot: "/home/u/domains/example.com/public_html",
+        owner: "u",
+        appType: "wordpress",
+        source: "openlitespeed",
+        controlPanelUrl: "https://panel.example.com:2222",
+        wordpressAdminUrl: "https://example.com/wp-admin/",
+        wordpressVersion: "6.8.2",
+        phpVersion: "8.3.23",
+        phpVersionScope: "host",
+        imagickVersion: "3.8.0",
+        wordpressUpdateStatus: "up_to_date",
+        wordpressUpdateCheckedAt: "2026-08-19T11:00:00.000Z",
+        fieldStatus: {
+          wordpressVersion: { state: "ok" },
+          phpVersion: { state: "ok" },
+          imagickVersion: { state: "ok" },
+          controlPanelUrl: { state: "ok" },
+          wordpressAdminUrl: { state: "ok" },
+          wordpressUpdateStatus: { state: "ok" },
+        },
+      },
+    ]);
+
+    vi.mocked(collectActiveVisitors3m).mockReturnValue([
+      {
+        domain: "example.com",
+        uniqueIpCount: 3,
+        windowSeconds: 180,
+        windowStartedAt: "2026-08-19T11:57:00.000Z",
+        measuredAt: "2026-08-19T12:00:00.000Z",
+        status: { state: "ok" },
+      },
+    ]);
   });
 
-  afterEach(() => {
-    resetTrafficStateForTests();
-    process.chdir(previousCwd);
-  });
+  it("builds discovery inventory and stack snapshots as separate sections", async () => {
+    const times = [
+      new Date("2026-08-19T12:00:00.000Z"),
+      new Date("2026-08-19T12:00:01.000Z"),
+      new Date("2026-08-19T12:00:02.000Z"),
+    ];
+    let index = 0;
 
-  it("clears persisted secret after ingest 401 and does not re-ack sent payloads", async () => {
-    const clearSecret = async () => clearPersistedAgentSecret(cwd);
-    const sendIngest = vi
-      .fn()
-      .mockResolvedValueOnce({ ok: true })
-      .mockRejectedValueOnce(new AgentApiError("revoked", 401, ""));
-
-    const engine = createEngine(identity, "live-secret", {
+    const engine = createEngine(identity, "secret", {
       autoStart: false,
-      sendIngest,
-      clearSecret,
+      now: () => times[Math.min(index++, times.length - 1)]!,
       sendHeartbeat: vi.fn().mockResolvedValue({}),
+      sendIngest: vi.fn().mockResolvedValue({}),
     });
 
-    engine.enqueue({ schemaVersion: "phase1", n: 1 });
-    engine.enqueue({ schemaVersion: "phase1", n: 2 });
-    await engine.flushQueue();
+    const payload = await engine.buildIngestPayload();
 
-    const envContent = await readFile(join(cwd, ".env"), "utf-8");
-    expect(envContent).not.toContain("AGENT_SECRET=");
-    expect(engine.isSecretInvalidated()).toBe(true);
-    expect(engine.getQueueLength()).toBe(1);
+    expect(payload.agentInstanceId).toBe("agent-instance-int-1");
+    expect(payload.discoveries).toEqual([
+      {
+        domain: "example.com",
+        aliases: ["www.example.com"],
+        virtualHostName: "example-vhost",
+        source: "openlitespeed",
+        discoveredAt: "2026-08-19T12:00:00.000Z",
+      },
+    ]);
 
-    await engine.flushQueue();
-    expect(sendIngest).toHaveBeenCalledTimes(2);
+    expect(payload.discoveries?.[0]).not.toHaveProperty("documentRoot");
+    expect(payload.discoveries?.[0]).not.toHaveProperty("wordpressVersion");
+    expect(payload.discoveries?.[0]).not.toHaveProperty("controlPanelUrl");
+
+    expect(payload.stackSnapshots).toEqual([
+      {
+        domain: "example.com",
+        wordpressVersion: "6.8.2",
+        phpVersion: "8.3.23",
+        imagickVersion: "3.8.0",
+        checkedAt: "2026-08-19T12:00:01.000Z",
+        fieldStatus: {
+          wordpressVersion: { state: "ok" },
+          phpVersion: { state: "ok" },
+          imagickVersion: { state: "ok" },
+        },
+      },
+    ]);
+
+    expect(payload.stackSnapshots?.[0]).not.toHaveProperty("documentRoot");
+    expect(payload.stackSnapshots?.[0]).not.toHaveProperty("controlPanelUrl");
+    expect(payload.stackSnapshots?.[0]).not.toHaveProperty("wordpressAdminUrl");
+    expect(payload.stackSnapshots?.[0]).not.toHaveProperty("phpVersionScope");
+
+    expect(enrichSiteStack).toHaveBeenCalledWith([identity.domains[0]]);
+    expect(ensureTrafficTails).toHaveBeenCalledWith(["example.com"]);
+    expect(collectActiveVisitors3m).toHaveBeenCalledWith(["example.com"]);
+
     engine.stop();
-  });
-
-  it("builds ingest with unsupported visitor status when log is missing", async () => {
-    await ensureTrafficTails(["farcoland.com"]);
-    const visitors = collectActiveVisitors3m(["farcoland.com"]);
-    expect(visitors[0]?.status?.state).toBe("unsupported");
-
-    const discoveries = await enrichSiteStack(identity.domains);
-    expect(discoveries[0]?.domain).toBe("farcoland.com");
-    expect(discoveries[0]?.controlPanelUrl).toBe("https://panel.test:2222");
-
-    const payload = {
-      schemaVersion: "phase1",
-      machineId: identity.machineId,
-      discoveries,
-      activeVisitors3m: visitors,
-    };
-
-    expect(payload.activeVisitors3m[0]?.uniqueIpCount).toBe(0);
-    expect(payload.activeVisitors3m[0]?.status?.reason).toBe("log_missing");
-  });
-
-  it("builds visitor sample ok when log exists", async () => {
-    const { mkdir } = await import("node:fs/promises");
-    await mkdir(logDir, { recursive: true });
-    await writeFile(join(logDir, "farcoland.com.log"), "");
-    await ensureTrafficTails(["farcoland.com"]);
-    const visitors = collectActiveVisitors3m(["farcoland.com"]);
-    expect(visitors[0]?.status?.state).toBe("ok");
-    expect(visitors[0]?.uniqueIpCount).toBe(0);
   });
 });

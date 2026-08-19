@@ -54,7 +54,7 @@ describe('AgentService', () => {
   });
 
   describe('enroll', () => {
-    it('delegates enrollment atomically to ServersService', async () => {
+    it('delegates enrollment using agentInstanceId', async () => {
       const result = {
         vpsNodeId: 'node-1',
         serverId: 'server-1',
@@ -63,13 +63,13 @@ describe('AgentService', () => {
       serversService.enrollWithToken.mockResolvedValue(result);
 
       await expect(
-        service.enroll('plain-token', 'machine-1', '0.1.0'),
+        service.enroll('plain-token', 'agent-instance-1', '0.2.0'),
       ).resolves.toEqual(result);
 
       expect(serversService.enrollWithToken).toHaveBeenCalledWith(
         'plain-token',
-        'machine-1',
-        '0.1.0',
+        'agent-instance-1',
+        '0.2.0',
       );
     });
   });
@@ -77,8 +77,8 @@ describe('AgentService', () => {
   describe('heartbeat', () => {
     const body: HeartbeatAgentDto = {
       schemaVersion: 'phase1',
-      machineId: 'machine-1',
-      agentVersion: '0.1.0',
+      agentInstanceId: 'agent-instance-1',
+      agentVersion: '0.2.0',
       serverBinding: { hostname: 'vps.example' },
       sentAt: '2026-08-19T12:00:00.000Z',
     };
@@ -91,19 +91,19 @@ describe('AgentService', () => {
       });
       prisma.vpsNode.update.mockResolvedValue({
         id: 'node-1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
         status: VpsNodeStatus.ONLINE,
-        agentVersion: '0.1.0',
+        agentVersion: '0.2.0',
       });
 
       await service.heartbeat(body);
 
       expect(prisma.vpsNode.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { machineId: 'machine-1' },
+          where: { agentInstanceId: 'agent-instance-1' },
           data: expect.objectContaining({
             status: VpsNodeStatus.ONLINE,
-            agentVersion: '0.1.0',
+            agentVersion: '0.2.0',
             hostname: 'vps.example',
           }),
         }),
@@ -153,19 +153,18 @@ describe('AgentService', () => {
       prisma.websiteTrafficSnapshot.upsert.mockResolvedValue({});
     });
 
-    it('accepts a discovery-only ingest', async () => {
+    it('stores discovery as OLS inventory only', async () => {
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
         sentAt: '2026-08-19T12:00:00.000Z',
         discoveries: [
           {
             domain: 'example.com',
             aliases: ['www.example.com'],
-            documentRoot: '/home/user/domains/example.com/public_html',
-            owner: 'user',
-            appType: 'wordpress',
+            virtualHostName: 'example.com',
             source: 'openlitespeed',
+            discoveredAt: '2026-08-19T11:59:30.000Z',
           },
         ],
       };
@@ -181,21 +180,70 @@ describe('AgentService', () => {
         visitors24hSkipped: 0,
       });
 
-      expect(prisma.websiteDiscovery.upsert).toHaveBeenCalledWith(
+      const upsert = prisma.websiteDiscovery.upsert.mock.calls[0]?.[0];
+      expect(upsert).toEqual(
         expect.objectContaining({
           create: expect.objectContaining({
             serverId: 'server-1',
             domain: 'example.com',
+            displayName: 'example.com',
             status: DiscoveryStatus.NEW,
+            aliases: ['www.example.com'],
+            virtualHostName: 'example.com',
+            source: 'openlitespeed',
+            discoveredAt: new Date('2026-08-19T11:59:30.000Z'),
+          }),
+          update: expect.objectContaining({
+            aliases: ['www.example.com'],
+            virtualHostName: 'example.com',
+            source: 'openlitespeed',
           }),
         }),
       );
+
+      for (const data of [upsert.create, upsert.update]) {
+        expect(data).not.toHaveProperty('documentRoot');
+        expect(data).not.toHaveProperty('homeDirectory');
+        expect(data).not.toHaveProperty('directAdminUser');
+        expect(data).not.toHaveProperty('appType');
+        expect(data).not.toHaveProperty('backendAddress');
+        expect(data).not.toHaveProperty('controlPanelUrl');
+        expect(data).not.toHaveProperty('wordpressAdminUrl');
+        expect(data).not.toHaveProperty('wordpressVersion');
+        expect(data).not.toHaveProperty('phpVersion');
+        expect(data).not.toHaveProperty('phpVersionScope');
+        expect(data).not.toHaveProperty('imagickVersion');
+        expect(data).not.toHaveProperty('wordpressUpdateStatus');
+        expect(data).not.toHaveProperty('wordpressUpdateCheckedAt');
+        expect(data).not.toHaveProperty('fieldStatus');
+      }
     });
 
-    it('accepts a stack-only ingest and preserves previous values for failed fields', async () => {
+    it('does not overwrite displayName when an existing discovery is updated', async () => {
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
+        sentAt: '2026-08-19T12:00:00.000Z',
+        discoveries: [
+          {
+            domain: 'example.com',
+            aliases: [],
+            virtualHostName: 'site-vhost',
+            source: 'openlitespeed',
+            discoveredAt: '2026-08-19T12:00:00.000Z',
+          },
+        ],
+      };
+
+      await service.processPhase1Ingest(payload);
+      const update = prisma.websiteDiscovery.upsert.mock.calls[0]?.[0].update;
+      expect(update).not.toHaveProperty('displayName');
+    });
+
+    it('stores stack only through stackSnapshots and preserves failed fields', async () => {
+      const payload: Phase1IngestDto = {
+        schemaVersion: 'phase1',
+        agentInstanceId: 'agent-instance-1',
         sentAt: '2026-08-19T12:00:00.000Z',
         stackSnapshots: [
           {
@@ -216,6 +264,7 @@ describe('AgentService', () => {
       const result = await service.processPhase1Ingest(payload);
 
       expect(result.stackSnapshotsUpdated).toBe(1);
+      expect(prisma.websiteDiscovery.upsert).not.toHaveBeenCalled();
       expect(prisma.websiteDiscovery.update).toHaveBeenCalledWith({
         where: { id: 'disc-1' },
         data: expect.objectContaining({
@@ -229,10 +278,46 @@ describe('AgentService', () => {
       expect(updateArg.data).not.toHaveProperty('phpVersion');
     });
 
+    it('uses a discovery created in the same ingest for its separate stack snapshot', async () => {
+      const payload: Phase1IngestDto = {
+        schemaVersion: 'phase1',
+        agentInstanceId: 'agent-instance-1',
+        sentAt: '2026-08-19T12:00:00.000Z',
+        discoveries: [
+          {
+            domain: 'example.com',
+            aliases: ['www.example.com'],
+            virtualHostName: 'site-vhost',
+            source: 'openlitespeed',
+            discoveredAt: '2026-08-19T12:00:00.000Z',
+          },
+        ],
+        stackSnapshots: [
+          {
+            domain: 'example.com',
+            wordpressVersion: '6.8.2',
+            phpVersion: '8.3.23',
+            imagickVersion: '3.8.0',
+            checkedAt: '2026-08-19T12:00:01.000Z',
+            fieldStatus: {
+              wordpressVersion: { state: 'ok' },
+              phpVersion: { state: 'ok' },
+              imagickVersion: { state: 'ok' },
+            },
+          },
+        ],
+      };
+
+      const result = await service.processPhase1Ingest(payload);
+      expect(result.discoveryCount).toBe(1);
+      expect(result.stackSnapshotsUpdated).toBe(1);
+      expect(prisma.websiteDiscovery.findUnique).not.toHaveBeenCalled();
+    });
+
     it('accepts an active-visitors-only ingest', async () => {
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
         sentAt: '2026-08-19T12:00:00.000Z',
         activeVisitors3m: [
           {
@@ -252,29 +337,15 @@ describe('AgentService', () => {
       expect(prisma.websiteActiveVisitorSample.createMany).toHaveBeenCalledWith(
         expect.objectContaining({
           skipDuplicates: true,
-          data: [
-            expect.objectContaining({
-              discoveryId: 'disc-1',
-              uniqueIpCount: 7,
-            }),
-          ],
-        }),
-      );
-      expect(prisma.websiteTrafficSnapshot.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { discoveryId: 'disc-1' },
-          update: expect.objectContaining({
-            activeVisitorCount: 7,
-            activeWindowSeconds: 180,
-          }),
+          data: [expect.objectContaining({ discoveryId: 'disc-1', uniqueIpCount: 7 })],
         }),
       );
     });
 
-    it('accepts a 24h-only ingest and stores the latest aggregate', async () => {
+    it('accepts a 24h-only ingest', async () => {
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
         sentAt: '2026-08-19T12:00:00.000Z',
         visitors24h: [
           {
@@ -290,7 +361,6 @@ describe('AgentService', () => {
       };
 
       const result = await service.processPhase1Ingest(payload);
-
       expect(result.visitors24hUpdated).toBe(1);
       expect(prisma.websiteTrafficSnapshot.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -298,49 +368,32 @@ describe('AgentService', () => {
           update: expect.objectContaining({
             visitors24hCount: 487,
             visitors24hCoverageSeconds: 86400,
-            visitors24hAlgorithm: 'hll',
           }),
         }),
       );
     });
 
-    it('uses discoveries created in the same ingest without re-querying them', async () => {
-      const payload: Phase1IngestDto = {
-        schemaVersion: 'phase1',
-        machineId: 'machine-1',
-        sentAt: '2026-08-19T12:00:00.000Z',
-        discoveries: [
-          {
-            domain: 'example.com',
-            documentRoot: '/home/user/domains/example.com/public_html',
-            appType: 'wordpress',
-            source: 'openlitespeed',
-          },
-        ],
-        visitors24h: [
-          {
-            domain: 'example.com',
-            uniqueVisitors24h: 100,
-            windowSeconds: 86400,
-            coverageSeconds: 7200,
-            measuredAt: '2026-08-19T12:00:00.000Z',
-            algorithm: 'hll',
-            status: { state: 'unknown', reason: 'warming_up' },
-          },
-        ],
-      };
-
-      await service.processPhase1Ingest(payload);
-      expect(prisma.websiteDiscovery.findUnique).not.toHaveBeenCalled();
-    });
-
-    it('skips typed samples for domains that are not in this server inventory', async () => {
+    it('skips stack/traffic records for a domain outside this server inventory', async () => {
       prisma.websiteDiscovery.findUnique.mockResolvedValue(null);
 
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'agent-instance-1',
         sentAt: '2026-08-19T12:00:00.000Z',
+        stackSnapshots: [
+          {
+            domain: 'missing.example.com',
+            wordpressVersion: null,
+            phpVersion: null,
+            imagickVersion: null,
+            checkedAt: '2026-08-19T12:00:00.000Z',
+            fieldStatus: {
+              wordpressVersion: { state: 'unknown', reason: 'missing' },
+              phpVersion: { state: 'unknown', reason: 'missing' },
+              imagickVersion: { state: 'unknown', reason: 'missing' },
+            },
+          },
+        ],
         visitors24h: [
           {
             domain: 'missing.example.com',
@@ -355,9 +408,9 @@ describe('AgentService', () => {
       };
 
       const result = await service.processPhase1Ingest(payload);
-
-      expect(result.visitors24hUpdated).toBe(0);
+      expect(result.stackSnapshotsSkipped).toBe(1);
       expect(result.visitors24hSkipped).toBe(1);
+      expect(prisma.websiteDiscovery.update).not.toHaveBeenCalled();
       expect(prisma.websiteTrafficSnapshot.upsert).not.toHaveBeenCalled();
     });
 
@@ -365,7 +418,7 @@ describe('AgentService', () => {
       prisma.vpsNode.findUnique.mockResolvedValue(null);
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'missing-machine',
+        agentInstanceId: 'missing-agent-instance',
         sentAt: '2026-08-19T12:00:00.000Z',
         discoveries: [],
       };

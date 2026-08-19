@@ -117,9 +117,7 @@ export class AgentService {
         where: { id: vpsNode.id },
         data: {
           lastSeenAt: ingestedAt,
-          ...(payload.agentVersion
-            ? { agentVersion: payload.agentVersion }
-            : {}),
+          ...(payload.agentVersion ? { agentVersion: payload.agentVersion } : {}),
         },
       });
 
@@ -229,30 +227,12 @@ export class AgentService {
     discovery: Phase1DiscoveryDto,
     ingestedAt: Date,
   ): Promise<ResolvedDiscovery> {
-    const homeDirectory = this.getHomeDirectory(discovery.documentRoot);
-    const data = {
+    const inventoryData = {
       vpsNodeId,
-      displayName: discovery.domain,
-      directAdminUser: discovery.owner ?? null,
-      homeDirectory,
-      documentRoot: discovery.documentRoot,
-      aliases: discovery.aliases ?? [],
-      appType: discovery.appType,
+      aliases: discovery.aliases,
+      virtualHostName: discovery.virtualHostName,
       source: discovery.source,
-      backendAddress: discovery.backendAddress ?? null,
-      controlPanelUrl: discovery.controlPanelUrl ?? null,
-      wordpressAdminUrl: discovery.wordpressAdminUrl ?? null,
-      wordpressVersion: discovery.wordpressVersion ?? null,
-      phpVersion: discovery.phpVersion ?? null,
-      phpVersionScope: discovery.phpVersionScope ?? null,
-      imagickVersion: discovery.imagickVersion ?? null,
-      wordpressUpdateStatus: discovery.wordpressUpdateStatus ?? null,
-      wordpressUpdateCheckedAt: discovery.wordpressUpdateCheckedAt
-        ? new Date(discovery.wordpressUpdateCheckedAt)
-        : null,
-      fieldStatus: discovery.fieldStatus
-        ? (discovery.fieldStatus as unknown as Prisma.InputJsonValue)
-        : Prisma.JsonNull,
+      discoveredAt: new Date(discovery.discoveredAt),
       rawPayload: discovery as unknown as Prisma.InputJsonValue,
       lastIngestedAt: ingestedAt,
     };
@@ -264,10 +244,11 @@ export class AgentService {
       create: {
         serverId,
         domain: discovery.domain,
+        displayName: discovery.domain,
         status: DiscoveryStatus.NEW,
-        ...data,
+        ...inventoryData,
       },
-      update: data,
+      update: inventoryData,
       select: { id: true, domain: true, websiteId: true },
     });
   }
@@ -309,8 +290,7 @@ export class AgentService {
       lastIngestedAt: ingestedAt,
     };
 
-    // Do not erase the last successful version when the new probe reports
-    // unknown/unsupported. Only successful fields replace their stored value.
+    // Failed/unsupported refreshes never erase the last successful value.
     if (snapshot.fieldStatus.wordpressVersion.state === 'ok') {
       data.wordpressVersion = snapshot.wordpressVersion;
     }
@@ -400,10 +380,5 @@ export class AgentService {
       },
       update: visitors24hData,
     });
-  }
-
-  private getHomeDirectory(documentRoot: string): string | null {
-    const match = documentRoot.match(/^(\/home\/[^/]+)/);
-    return match?.[1] ?? null;
   }
 }

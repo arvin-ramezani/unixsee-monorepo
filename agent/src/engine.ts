@@ -6,6 +6,11 @@ import {
   sendPhase1Ingest as defaultSendPhase1Ingest,
 } from "./api/client.js";
 import { getConfig } from "./config/config.js";
+import {
+  toPhase1DiscoveryPayload,
+  toPhase1StackSnapshotPayload,
+  type Phase1IngestPayload,
+} from "./contracts/phase1-ingest.js";
 import { initializeIdentity, type HostIdentity } from "./discovery.js";
 import { clearPersistedAgentSecret } from "./security.js";
 import { enrichSiteStack } from "./site-stack.js";
@@ -19,7 +24,7 @@ const MAX_QUEUE_SIZE = 30;
 export type EngineDependencies = {
   sendIngest?: (payload: unknown, secretKey: string) => Promise<unknown>;
   sendHeartbeat?: (
-    machineId: string,
+    agentInstanceId: string,
     secretKey: string,
     hostname?: string,
   ) => Promise<unknown>;
@@ -35,7 +40,7 @@ export type EngineHandle = {
   flushQueue: () => Promise<void>;
   runHeartbeat: () => Promise<void>;
   runTransmit: () => Promise<void>;
-  buildIngestPayload: () => Promise<unknown>;
+  buildIngestPayload: () => Promise<Phase1IngestPayload>;
   getQueueLength: () => number;
   isSecretInvalidated: () => boolean;
   getActiveSecret: () => string | null;
@@ -83,23 +88,40 @@ export function createEngine(
     );
   }
 
-  async function buildIngestPayload(): Promise<unknown> {
+  async function buildIngestPayload(): Promise<Phase1IngestPayload> {
     if (!identity) {
       throw new Error("Host identity not initialized.");
     }
 
-    const discoveries = await enrichSiteStack(identity.domains);
-    const domains = identity.domains.map((domain) => domain.domain);
+    const discoveryObservedAt = now().toISOString();
+    const discoveryPairs = identity.domains.flatMap((domain) => {
+      const outbound = toPhase1DiscoveryPayload(domain, discoveryObservedAt);
+      return outbound ? [{ internal: domain, outbound }] : [];
+    });
+
+    const discoveries = discoveryPairs.map((item) => item.outbound);
+    const olsDomains = discoveryPairs.map((item) => item.internal);
+
+    // Step 3 separates the wire contracts. The legacy stack implementation is
+    // still invoked here until the dedicated runtime-probe replacement step.
+    const legacyStackRows = await enrichSiteStack(olsDomains);
+    const stackCheckedAt = now().toISOString();
+    const stackSnapshots = legacyStackRows.map((row) =>
+      toPhase1StackSnapshotPayload(row, stackCheckedAt),
+    );
+
+    const domains = discoveries.map((discovery) => discovery.domain);
     await ensureTrafficTails(domains);
     const activeVisitors3m = collectActiveVisitors3m(domains);
     const cfg = getConfig();
 
     return {
-      schemaVersion: "phase1" as const,
-      machineId: identity.machineId,
+      schemaVersion: "phase1",
+      agentInstanceId: identity.agentInstanceId,
       agentVersion: cfg.agentVersion,
       sentAt: now().toISOString(),
       discoveries,
+      stackSnapshots,
       activeVisitors3m,
     };
   }
@@ -146,7 +168,11 @@ export function createEngine(
     if (!identity || secretInvalidated) return;
     try {
       const secret = assertSecretReady();
-      await sendHeartbeatFn(identity.machineId, secret, resolveHostname());
+      await sendHeartbeatFn(
+        identity.agentInstanceId,
+        secret,
+        resolveHostname(),
+      );
     } catch (error: unknown) {
       if (error instanceof AgentApiError && error.status === 401) {
         await invalidateSecret("Heartbeat rejected with HTTP 401.");

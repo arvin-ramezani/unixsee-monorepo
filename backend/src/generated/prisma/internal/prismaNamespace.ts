@@ -393,6 +393,7 @@ export const ModelName = {
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteTrafficSnapshot: 'WebsiteTrafficSnapshot',
   WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead"
+    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteTrafficSnapshot" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1106,6 +1107,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.WebsiteDiscoveryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.WebsiteDiscoveryCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteTrafficSnapshot: {
+      payload: Prisma.$WebsiteTrafficSnapshotPayload<ExtArgs>
+      fields: Prisma.WebsiteTrafficSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteTrafficSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteTrafficSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteTrafficSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteTrafficSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteTrafficSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteTrafficSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteTrafficSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteTrafficSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteTrafficSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        update: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteTrafficSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteTrafficSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteTrafficSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteTrafficSnapshot>
+        }
+        groupBy: {
+          args: Prisma.WebsiteTrafficSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteTrafficSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteTrafficSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteTrafficSnapshotCountAggregateOutputType> | number
         }
       }
     }
@@ -3600,6 +3675,8 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   websiteId: 'websiteId',
   domain: 'domain',
+  virtualHostName: 'virtualHostName',
+  discoveredAt: 'discoveredAt',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
@@ -3617,6 +3694,7 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   wordpressUpdateStatus: 'wordpressUpdateStatus',
   wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
   fieldStatus: 'fieldStatus',
+  stackCheckedAt: 'stackCheckedAt',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
@@ -3626,6 +3704,27 @@ export const WebsiteDiscoveryScalarFieldEnum = {
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteTrafficSnapshotScalarFieldEnum = {
+  discoveryId: 'discoveryId',
+  domain: 'domain',
+  activeVisitorCount: 'activeVisitorCount',
+  activeWindowSeconds: 'activeWindowSeconds',
+  activeWindowStartedAt: 'activeWindowStartedAt',
+  activeMeasuredAt: 'activeMeasuredAt',
+  activeStatus: 'activeStatus',
+  visitors24hCount: 'visitors24hCount',
+  visitors24hWindowSeconds: 'visitors24hWindowSeconds',
+  visitors24hCoverageSeconds: 'visitors24hCoverageSeconds',
+  visitors24hMeasuredAt: 'visitors24hMeasuredAt',
+  visitors24hAlgorithm: 'visitors24hAlgorithm',
+  visitors24hStatus: 'visitors24hStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteTrafficSnapshotScalarFieldEnum = (typeof WebsiteTrafficSnapshotScalarFieldEnum)[keyof typeof WebsiteTrafficSnapshotScalarFieldEnum]
 
 
 export const WebsiteActiveVisitorSampleScalarFieldEnum = {
@@ -4710,6 +4809,7 @@ export type GlobalOmitConfig = {
   vpsNode?: Prisma.VpsNodeOmit
   website?: Prisma.WebsiteOmit
   websiteDiscovery?: Prisma.WebsiteDiscoveryOmit
+  websiteTrafficSnapshot?: Prisma.WebsiteTrafficSnapshotOmit
   websiteActiveVisitorSample?: Prisma.WebsiteActiveVisitorSampleOmit
   vpsMetric?: Prisma.VpsMetricOmit
   webMetric?: Prisma.WebMetricOmit

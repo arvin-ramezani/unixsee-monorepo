@@ -7,7 +7,9 @@ async function bootstrap() {
   loadConfig();
   const config = getConfig();
 
-  console.log(`[Unixsee Phase 1 Agent] Bootstrapping ${config.agentVersion}...`);
+  console.log(
+    `[Unixsee Phase 1 Agent] Bootstrapping ${config.agentVersion}...`,
+  );
 
   if (config.nodeEnv !== "production") {
     console.warn(
@@ -76,7 +78,7 @@ async function bootstrap() {
   }
 
   const hostIdentity = await initializeIdentity();
-  const secretKey = await resolveSecretKey(hostIdentity.machineId);
+  const secretKey = await resolveSecretKey(hostIdentity.agentInstanceId);
   startEngine(hostIdentity, secretKey);
 }
 

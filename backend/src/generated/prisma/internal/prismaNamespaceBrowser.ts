@@ -60,6 +60,7 @@ export const ModelName = {
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteTrafficSnapshot: 'WebsiteTrafficSnapshot',
   WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
@@ -267,6 +268,8 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   websiteId: 'websiteId',
   domain: 'domain',
+  virtualHostName: 'virtualHostName',
+  discoveredAt: 'discoveredAt',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
@@ -284,6 +287,7 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   wordpressUpdateStatus: 'wordpressUpdateStatus',
   wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
   fieldStatus: 'fieldStatus',
+  stackCheckedAt: 'stackCheckedAt',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
@@ -293,6 +297,27 @@ export const WebsiteDiscoveryScalarFieldEnum = {
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteTrafficSnapshotScalarFieldEnum = {
+  discoveryId: 'discoveryId',
+  domain: 'domain',
+  activeVisitorCount: 'activeVisitorCount',
+  activeWindowSeconds: 'activeWindowSeconds',
+  activeWindowStartedAt: 'activeWindowStartedAt',
+  activeMeasuredAt: 'activeMeasuredAt',
+  activeStatus: 'activeStatus',
+  visitors24hCount: 'visitors24hCount',
+  visitors24hWindowSeconds: 'visitors24hWindowSeconds',
+  visitors24hCoverageSeconds: 'visitors24hCoverageSeconds',
+  visitors24hMeasuredAt: 'visitors24hMeasuredAt',
+  visitors24hAlgorithm: 'visitors24hAlgorithm',
+  visitors24hStatus: 'visitors24hStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteTrafficSnapshotScalarFieldEnum = (typeof WebsiteTrafficSnapshotScalarFieldEnum)[keyof typeof WebsiteTrafficSnapshotScalarFieldEnum]
 
 
 export const WebsiteActiveVisitorSampleScalarFieldEnum = {

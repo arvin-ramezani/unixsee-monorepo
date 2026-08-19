@@ -1,23 +1,21 @@
-import { plainToInstance, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
+  ArrayUnique,
   Equals,
   IsArray,
   IsIn,
   IsInt,
   IsISO8601,
   IsNotEmpty,
-  IsObject,
   IsOptional,
   IsString,
-  IsUrl,
   Max,
   Min,
   MinLength,
   Validate,
   ValidateIf,
   ValidateNested,
-  validateSync,
   type ValidationArguments,
   ValidatorConstraint,
   type ValidatorConstraintInterface,
@@ -71,35 +69,10 @@ export class FieldStatusDto {
   reason?: string;
 }
 
-@ValidatorConstraint({ name: 'fieldStatusMap', async: false })
-class FieldStatusMapConstraint implements ValidatorConstraintInterface {
-  validate(value: unknown): boolean {
-    if (value === undefined || value === null) {
-      return true;
-    }
-    if (typeof value !== 'object' || Array.isArray(value)) {
-      return false;
-    }
-
-    for (const entry of Object.values(value as Record<string, unknown>)) {
-      if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-        return false;
-      }
-      const dto = plainToInstance(FieldStatusDto, entry);
-      if (validateSync(dto).length > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  defaultMessage(): string {
-    return 'fieldStatus values must include state ok|unknown|unsupported';
-  }
-}
-
 @ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
-class ZeroVisitorsRequireStatusConstraint implements ValidatorConstraintInterface {
+class ZeroVisitorsRequireStatusConstraint
+  implements ValidatorConstraintInterface
+{
   validate(uniqueIpCount: unknown, args: ValidationArguments): boolean {
     if (uniqueIpCount !== 0) {
       return true;
@@ -116,7 +89,9 @@ class ZeroVisitorsRequireStatusConstraint implements ValidatorConstraintInterfac
 }
 
 @ValidatorConstraint({ name: 'stackSnapshotConsistency', async: false })
-class StackSnapshotConsistencyConstraint implements ValidatorConstraintInterface {
+class StackSnapshotConsistencyConstraint
+  implements ValidatorConstraintInterface
+{
   validate(_checkedAt: unknown, args: ValidationArguments): boolean {
     const snapshot = args.object as StackSnapshotDto;
     if (!snapshot.fieldStatus) return false;
@@ -151,7 +126,9 @@ class StackSnapshotConsistencyConstraint implements ValidatorConstraintInterface
 }
 
 @ValidatorConstraint({ name: 'visitors24hCoverageStatus', async: false })
-class Visitors24hCoverageStatusConstraint implements ValidatorConstraintInterface {
+class Visitors24hCoverageStatusConstraint
+  implements ValidatorConstraintInterface
+{
   validate(coverageSeconds: unknown, args: ValidationArguments): boolean {
     if (typeof coverageSeconds !== 'number') return false;
 
@@ -173,7 +150,9 @@ class Visitors24hCoverageStatusConstraint implements ValidatorConstraintInterfac
 }
 
 @ValidatorConstraint({ name: 'phase1IngestHasSection', async: false })
-class Phase1IngestHasSectionConstraint implements ValidatorConstraintInterface {
+class Phase1IngestHasSectionConstraint
+  implements ValidatorConstraintInterface
+{
   validate(_schemaVersion: unknown, args: ValidationArguments): boolean {
     const payload = args.object as Phase1IngestDto;
     return (
@@ -190,78 +169,33 @@ class Phase1IngestHasSectionConstraint implements ValidatorConstraintInterface {
 }
 
 /**
- * Transitional discovery DTO for Step 2.
- * Step 3 removes the legacy filesystem/stack/manual-URL fields and replaces
- * this with the OLS-only discovery record from the replacement PRD.
+ * Agent-owned OLS inventory only.
+ *
+ * Stack versions, admin URLs, document roots, hosting users and other legacy
+ * enrichment fields are intentionally not part of discovery anymore.
  */
 export class Phase1DiscoveryDto {
   @IsString()
   @IsNotEmpty()
   domain!: string;
 
-  @IsOptional()
   @IsArray()
+  @ArrayMaxSize(100)
+  @ArrayUnique()
   @IsString({ each: true })
-  aliases?: string[];
+  @IsNotEmpty({ each: true })
+  aliases!: string[];
 
   @IsString()
   @IsNotEmpty()
-  documentRoot!: string;
-
-  @IsOptional()
-  @IsString()
-  owner?: string;
+  virtualHostName!: string;
 
   @IsString()
-  @IsNotEmpty()
-  appType!: string;
+  @Equals('openlitespeed')
+  source!: 'openlitespeed';
 
-  @IsString()
-  @IsNotEmpty()
-  source!: string;
-
-  @IsOptional()
-  @IsString()
-  backendAddress?: string | null;
-
-  @IsOptional()
-  @ValidateIf((_, value) => value !== null && value !== undefined)
-  @IsUrl({ protocols: ['https'], require_protocol: true })
-  controlPanelUrl?: string | null;
-
-  @IsOptional()
-  @ValidateIf((_, value) => value !== null && value !== undefined)
-  @IsUrl({ protocols: ['https'], require_protocol: true })
-  wordpressAdminUrl?: string | null;
-
-  @IsOptional()
-  @IsString()
-  wordpressVersion?: string | null;
-
-  @IsOptional()
-  @IsString()
-  phpVersion?: string | null;
-
-  @IsOptional()
-  @IsIn(['site', 'host', 'unknown'])
-  phpVersionScope?: 'site' | 'host' | 'unknown';
-
-  @IsOptional()
-  @IsString()
-  imagickVersion?: string | null;
-
-  @IsOptional()
-  @IsString()
-  wordpressUpdateStatus?: string | null;
-
-  @IsOptional()
   @IsISO8601()
-  wordpressUpdateCheckedAt?: string | null;
-
-  @IsOptional()
-  @IsObject()
-  @Validate(FieldStatusMapConstraint)
-  fieldStatus?: Record<string, FieldStatusDto>;
+  discoveredAt!: string;
 }
 
 export class StackFieldStatusDto {

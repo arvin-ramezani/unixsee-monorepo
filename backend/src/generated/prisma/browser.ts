@@ -63,6 +63,11 @@ export type Website = Prisma.WebsiteModel
  */
 export type WebsiteDiscovery = Prisma.WebsiteDiscoveryModel
 /**
+ * Model WebsiteTrafficSnapshot
+ * Latest Phase 1 traffic read model. Raw visitor identities never reach NestJS.
+ */
+export type WebsiteTrafficSnapshot = Prisma.WebsiteTrafficSnapshotModel
+/**
  * Model WebsiteActiveVisitorSample
  * Phase 1 agent 3-minute unique-IP visitor samples (append-only).
  */

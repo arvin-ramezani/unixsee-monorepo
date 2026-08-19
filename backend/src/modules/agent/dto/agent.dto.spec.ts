@@ -14,8 +14,16 @@ function errorsFor(payload: Record<string, unknown>) {
 describe('Phase1IngestDto', () => {
   const envelope = {
     schemaVersion: 'phase1',
-    machineId: 'machine-1',
+    agentInstanceId: 'agent-instance-1',
     sentAt: '2026-08-19T12:00:00.000Z',
+  };
+
+  const discovery = {
+    domain: 'example.com',
+    aliases: ['www.example.com'],
+    virtualHostName: 'example.com',
+    source: 'openlitespeed',
+    discoveredAt: '2026-08-19T12:00:00.000Z',
   };
 
   it('rejects an ingest envelope with no typed section', () => {
@@ -24,6 +32,71 @@ describe('Phase1IngestDto', () => {
 
   it('accepts an explicitly empty discovery snapshot', () => {
     expect(errorsFor({ ...envelope, discoveries: [] })).toHaveLength(0);
+  });
+
+  it('accepts the OLS-only discovery shape', () => {
+    expect(errorsFor({ ...envelope, discoveries: [discovery] })).toHaveLength(0);
+  });
+
+  it('rejects legacy discovery-owned filesystem and stack fields', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        discoveries: [
+          {
+            ...discovery,
+            documentRoot: '/home/user/domains/example.com/public_html',
+            owner: 'user',
+            appType: 'wordpress',
+            wordpressVersion: '6.8.2',
+            phpVersion: '8.3.23',
+            imagickVersion: '3.8.0',
+            controlPanelUrl: 'https://panel.example.com:2222',
+            wordpressAdminUrl: 'https://example.com/wp-admin/',
+          },
+        ],
+      }),
+    ).not.toHaveLength(0);
+  });
+
+  it('rejects a non-OLS discovery source', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        discoveries: [{ ...discovery, source: 'directadmin' }],
+      }),
+    ).not.toHaveLength(0);
+  });
+
+  it('requires virtualHostName and discoveredAt for discovery records', () => {
+    const { virtualHostName: _vhost, discoveredAt: _at, ...incomplete } =
+      discovery;
+    expect(
+      errorsFor({ ...envelope, discoveries: [incomplete] }),
+    ).not.toHaveLength(0);
+  });
+
+  it('accepts discovery and stack as separate sections in one envelope', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        discoveries: [discovery],
+        stackSnapshots: [
+          {
+            domain: 'example.com',
+            wordpressVersion: '6.8.2',
+            phpVersion: '8.3.23',
+            imagickVersion: '3.8.0',
+            checkedAt: '2026-08-19T12:00:00.000Z',
+            fieldStatus: {
+              wordpressVersion: { state: 'ok' },
+              phpVersion: { state: 'ok' },
+              imagickVersion: { state: 'ok' },
+            },
+          },
+        ],
+      }),
+    ).toHaveLength(0);
   });
 
   it('accepts a stack-only ingest', () => {
@@ -70,14 +143,14 @@ describe('Phase1IngestDto', () => {
     ).not.toHaveLength(0);
   });
 
-  it('accepts a 24h warming sample with partial coverage', () => {
+  it('accepts a partial 24h sample only with non-ok status', () => {
     expect(
       errorsFor({
         ...envelope,
         visitors24h: [
           {
             domain: 'example.com',
-            uniqueVisitors24h: 50,
+            uniqueVisitors24h: 123,
             windowSeconds: 86400,
             coverageSeconds: 7200,
             measuredAt: '2026-08-19T12:00:00.000Z',
@@ -96,7 +169,7 @@ describe('Phase1IngestDto', () => {
         visitors24h: [
           {
             domain: 'example.com',
-            uniqueVisitors24h: 50,
+            uniqueVisitors24h: 123,
             windowSeconds: 86400,
             coverageSeconds: 7200,
             measuredAt: '2026-08-19T12:00:00.000Z',

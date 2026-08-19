@@ -6,7 +6,7 @@ import type { HostIdentity } from "./discovery.js";
 import { loadTestConfig } from "./test-helpers.js";
 
 const identity: HostIdentity = {
-  machineId: "machine-1",
+  agentInstanceId: "agent-instance-1",
   domains: [
     {
       domain: "example.com",
@@ -14,7 +14,8 @@ const identity: HostIdentity = {
       owner: "u",
       appType: "wordpress",
       source: "openlitespeed",
-      aliases: [],
+      aliases: ["www.example.com"],
+      virtualHostName: "example.com",
     },
   ],
 };

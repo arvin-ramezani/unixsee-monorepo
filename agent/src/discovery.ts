@@ -27,7 +27,7 @@ export interface DiscoveredDomain {
 }
 
 export interface HostIdentity {
-  machineId: string;
+  agentInstanceId: string;
   domains: DiscoveredDomain[];
 }
 
@@ -48,10 +48,7 @@ function openLiteSpeedServerRoot(): string {
 
 function defaultOpenLiteSpeedVhostDeclarationPaths(): string[] {
   const root = openLiteSpeedServerRoot();
-  return [
-    `${root}/conf/httpd-vhosts.conf`,
-    `${root}/conf/httpd_config.conf`,
-  ];
+  return [`${root}/conf/httpd-vhosts.conf`, `${root}/conf/httpd_config.conf`];
 }
 
 function defaultOpenLiteSpeedListenerPaths(): string[] {
@@ -555,9 +552,7 @@ async function scanDirectAdminManifests(): Promise<DiscoveredDomain[]> {
 
       const userDir = join(daUsersPath, user);
       if (await isDirectAdminUserSuspended(userDir)) {
-        console.log(
-          `[INFO] Skipping suspended DirectAdmin account: ${user}`,
-        );
+        console.log(`[INFO] Skipping suspended DirectAdmin account: ${user}`);
         continue;
       }
 
@@ -693,7 +688,9 @@ async function scanOpenLiteSpeedDeclarations(): Promise<DiscoveredDomain[]> {
       ? declarationPaths
       : defaultOpenLiteSpeedVhostDeclarationPaths();
   const openLiteSpeedListenerPaths =
-    listenerPaths.length > 0 ? listenerPaths : defaultOpenLiteSpeedListenerPaths();
+    listenerPaths.length > 0
+      ? listenerPaths
+      : defaultOpenLiteSpeedListenerPaths();
 
   const [declarationFiles, listenerFiles] = await Promise.all([
     readConfiguredFiles(vhostDeclarationPaths),
@@ -876,7 +873,9 @@ async function scanOpenLiteSpeed(): Promise<DiscoveredDomain[]> {
   return [...declaredDomains, ...orphanDomains];
 }
 
-async function scanVarWwwStyleRoot(rootPath: string): Promise<DiscoveredDomain[]> {
+async function scanVarWwwStyleRoot(
+  rootPath: string,
+): Promise<DiscoveredDomain[]> {
   const discovered: DiscoveredDomain[] = [];
 
   try {
@@ -909,7 +908,9 @@ async function scanVarWwwStyleRoot(rootPath: string): Promise<DiscoveredDomain[]
   return discovered;
 }
 
-async function scanHomeDomainsRoot(rootPath: string): Promise<DiscoveredDomain[]> {
+async function scanHomeDomainsRoot(
+  rootPath: string,
+): Promise<DiscoveredDomain[]> {
   const discovered: DiscoveredDomain[] = [];
 
   try {
@@ -924,7 +925,8 @@ async function scanHomeDomainsRoot(rootPath: string): Promise<DiscoveredDomain[]
       );
 
       for (const domainEntry of domains) {
-        if (!domainEntry.isDirectory() || isStaleName(domainEntry.name)) continue;
+        if (!domainEntry.isDirectory() || isStaleName(domainEntry.name))
+          continue;
 
         const domain = normalizeDomain(domainEntry.name);
         if (!domain) continue;
@@ -952,7 +954,9 @@ async function scanHomeDomainsRoot(rootPath: string): Promise<DiscoveredDomain[]
 }
 
 async function scanManualExactPaths(): Promise<DiscoveredDomain[]> {
-  const exactPaths = splitConfiguredPaths(process.env.WEB_DISCOVERY_EXACT_PATHS);
+  const exactPaths = splitConfiguredPaths(
+    process.env.WEB_DISCOVERY_EXACT_PATHS,
+  );
   const discovered: DiscoveredDomain[] = [];
 
   for (const exactPath of exactPaths) {
@@ -1076,8 +1080,8 @@ function enrichOpenLiteSpeedWithDirectAdmin(
 export async function initializeIdentity(): Promise<HostIdentity> {
   console.log(`[Discovery] Initiating host identity resolution...`);
 
-  const machineId = await getMachineId();
-  console.log(`[Discovery] Node Fingerprint: ${machineId}`);
+  const agentInstanceId = await getMachineId();
+  console.log(`[Discovery] Agent instance identity resolved.`);
 
   console.log(`[Discovery] Scanning OpenLiteSpeed active routing first...`);
   const openLiteSpeedDomains = await scanOpenLiteSpeed();
@@ -1103,7 +1107,7 @@ export async function initializeIdentity(): Promise<HostIdentity> {
         .join(", ")}`,
     );
 
-    return { machineId, domains };
+    return { agentInstanceId, domains };
   }
 
   console.log(
@@ -1126,5 +1130,5 @@ export async function initializeIdentity(): Promise<HostIdentity> {
       .join(", ")}`,
   );
 
-  return { machineId, domains };
+  return { agentInstanceId, domains };
 }
