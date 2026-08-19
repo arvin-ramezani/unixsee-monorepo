@@ -9,3 +9,4 @@
 8. Renew Plan in website details page
 9. check all empty stats in users dashboard
 10. Users profile page
+11. when users do logout, don't redirect to auth page and remove their phone from forms.

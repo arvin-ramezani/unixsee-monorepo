@@ -28,7 +28,7 @@ export type VpsNodeMinAggregateOutputType = {
   id: string | null
   serverId: string | null
   userId: string | null
-  machineId: string | null
+  agentInstanceId: string | null
   name: string | null
   secretKey: string | null
   status: $Enums.VpsNodeStatus | null
@@ -50,7 +50,7 @@ export type VpsNodeMaxAggregateOutputType = {
   id: string | null
   serverId: string | null
   userId: string | null
-  machineId: string | null
+  agentInstanceId: string | null
   name: string | null
   secretKey: string | null
   status: $Enums.VpsNodeStatus | null
@@ -72,7 +72,7 @@ export type VpsNodeCountAggregateOutputType = {
   id: number
   serverId: number
   userId: number
-  machineId: number
+  agentInstanceId: number
   name: number
   secretKey: number
   status: number
@@ -96,7 +96,7 @@ export type VpsNodeMinAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -118,7 +118,7 @@ export type VpsNodeMaxAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -140,7 +140,7 @@ export type VpsNodeCountAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -235,7 +235,7 @@ export type VpsNodeGroupByOutputType = {
   id: string
   serverId: string
   userId: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status: $Enums.VpsNodeStatus
@@ -278,7 +278,7 @@ export type VpsNodeWhereInput = {
   id?: Prisma.UuidFilter<"VpsNode"> | string
   serverId?: Prisma.UuidFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringFilter<"VpsNode"> | string
   name?: Prisma.StringFilter<"VpsNode"> | string
   secretKey?: Prisma.StringFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -310,7 +310,7 @@ export type VpsNodeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -340,7 +340,7 @@ export type VpsNodeOrderByWithRelationInput = {
 
 export type VpsNodeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  machineId?: string
+  agentInstanceId?: string
   AND?: Prisma.VpsNodeWhereInput | Prisma.VpsNodeWhereInput[]
   OR?: Prisma.VpsNodeWhereInput[]
   NOT?: Prisma.VpsNodeWhereInput | Prisma.VpsNodeWhereInput[]
@@ -371,13 +371,13 @@ export type VpsNodeWhereUniqueInput = Prisma.AtLeast<{
   networkInterfaceMetrics?: Prisma.VpsNetworkInterfaceMetricListRelationFilter
   serviceMetrics?: Prisma.VpsServiceMetricListRelationFilter
   alerts?: Prisma.AlertListRelationFilter
-}, "id" | "machineId">
+}, "id" | "agentInstanceId">
 
 export type VpsNodeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -405,7 +405,7 @@ export type VpsNodeScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"VpsNode"> | string
   serverId?: Prisma.UuidWithAggregatesFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableWithAggregatesFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   name?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   secretKey?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusWithAggregatesFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -425,7 +425,7 @@ export type VpsNodeScalarWhereWithAggregatesInput = {
 
 export type VpsNodeCreateInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -457,7 +457,7 @@ export type VpsNodeUncheckedCreateInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -485,7 +485,7 @@ export type VpsNodeUncheckedCreateInput = {
 
 export type VpsNodeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -517,7 +517,7 @@ export type VpsNodeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -547,7 +547,7 @@ export type VpsNodeCreateManyInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -567,7 +567,7 @@ export type VpsNodeCreateManyInput = {
 
 export type VpsNodeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -589,7 +589,7 @@ export type VpsNodeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -621,7 +621,7 @@ export type VpsNodeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -643,7 +643,7 @@ export type VpsNodeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -665,7 +665,7 @@ export type VpsNodeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -899,7 +899,7 @@ export type VpsNodeUpdateOneWithoutAlertsNestedInput = {
 
 export type VpsNodeCreateWithoutUserInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -929,7 +929,7 @@ export type VpsNodeCreateWithoutUserInput = {
 export type VpsNodeUncheckedCreateWithoutUserInput = {
   id?: string
   serverId: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -988,7 +988,7 @@ export type VpsNodeScalarWhereInput = {
   id?: Prisma.UuidFilter<"VpsNode"> | string
   serverId?: Prisma.UuidFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringFilter<"VpsNode"> | string
   name?: Prisma.StringFilter<"VpsNode"> | string
   secretKey?: Prisma.StringFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -1008,7 +1008,7 @@ export type VpsNodeScalarWhereInput = {
 
 export type VpsNodeCreateWithoutServerInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1038,7 +1038,7 @@ export type VpsNodeCreateWithoutServerInput = {
 export type VpsNodeUncheckedCreateWithoutServerInput = {
   id?: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1092,7 +1092,7 @@ export type VpsNodeUpdateManyWithWhereWithoutServerInput = {
 
 export type VpsNodeCreateWithoutWebsitesInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1123,7 +1123,7 @@ export type VpsNodeUncheckedCreateWithoutWebsitesInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1166,7 +1166,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutWebsitesInput = {
 
 export type VpsNodeUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1197,7 +1197,7 @@ export type VpsNodeUncheckedUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1224,7 +1224,7 @@ export type VpsNodeUncheckedUpdateWithoutWebsitesInput = {
 
 export type VpsNodeCreateWithoutDiscoveriesInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1255,7 +1255,7 @@ export type VpsNodeUncheckedCreateWithoutDiscoveriesInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1298,7 +1298,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutDiscoveriesInput = {
 
 export type VpsNodeUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1329,7 +1329,7 @@ export type VpsNodeUncheckedUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1356,7 +1356,7 @@ export type VpsNodeUncheckedUpdateWithoutDiscoveriesInput = {
 
 export type VpsNodeCreateWithoutVpsMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1387,7 +1387,7 @@ export type VpsNodeUncheckedCreateWithoutVpsMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1430,7 +1430,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutVpsMetricsInput = {
 
 export type VpsNodeUpdateWithoutVpsMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1461,7 +1461,7 @@ export type VpsNodeUncheckedUpdateWithoutVpsMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1488,7 +1488,7 @@ export type VpsNodeUncheckedUpdateWithoutVpsMetricsInput = {
 
 export type VpsNodeCreateWithoutWebMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1519,7 +1519,7 @@ export type VpsNodeUncheckedCreateWithoutWebMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1562,7 +1562,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutWebMetricsInput = {
 
 export type VpsNodeUpdateWithoutWebMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1593,7 +1593,7 @@ export type VpsNodeUncheckedUpdateWithoutWebMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1620,7 +1620,7 @@ export type VpsNodeUncheckedUpdateWithoutWebMetricsInput = {
 
 export type VpsNodeCreateWithoutFilesystemMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1651,7 +1651,7 @@ export type VpsNodeUncheckedCreateWithoutFilesystemMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1694,7 +1694,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutFilesystemMetricsInput = {
 
 export type VpsNodeUpdateWithoutFilesystemMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1725,7 +1725,7 @@ export type VpsNodeUncheckedUpdateWithoutFilesystemMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1752,7 +1752,7 @@ export type VpsNodeUncheckedUpdateWithoutFilesystemMetricsInput = {
 
 export type VpsNodeCreateWithoutNetworkInterfaceMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1783,7 +1783,7 @@ export type VpsNodeUncheckedCreateWithoutNetworkInterfaceMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1826,7 +1826,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutNetworkInterfaceMetricsInput = {
 
 export type VpsNodeUpdateWithoutNetworkInterfaceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1857,7 +1857,7 @@ export type VpsNodeUncheckedUpdateWithoutNetworkInterfaceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1884,7 +1884,7 @@ export type VpsNodeUncheckedUpdateWithoutNetworkInterfaceMetricsInput = {
 
 export type VpsNodeCreateWithoutServiceMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1915,7 +1915,7 @@ export type VpsNodeUncheckedCreateWithoutServiceMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1958,7 +1958,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutServiceMetricsInput = {
 
 export type VpsNodeUpdateWithoutServiceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1989,7 +1989,7 @@ export type VpsNodeUncheckedUpdateWithoutServiceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2016,7 +2016,7 @@ export type VpsNodeUncheckedUpdateWithoutServiceMetricsInput = {
 
 export type VpsNodeCreateWithoutAlertsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2047,7 +2047,7 @@ export type VpsNodeUncheckedCreateWithoutAlertsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2090,7 +2090,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutAlertsInput = {
 
 export type VpsNodeUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2121,7 +2121,7 @@ export type VpsNodeUncheckedUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2149,7 +2149,7 @@ export type VpsNodeUncheckedUpdateWithoutAlertsInput = {
 export type VpsNodeCreateManyUserInput = {
   id?: string
   serverId: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2169,7 +2169,7 @@ export type VpsNodeCreateManyUserInput = {
 
 export type VpsNodeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2199,7 +2199,7 @@ export type VpsNodeUpdateWithoutUserInput = {
 export type VpsNodeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2228,7 +2228,7 @@ export type VpsNodeUncheckedUpdateWithoutUserInput = {
 export type VpsNodeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2249,7 +2249,7 @@ export type VpsNodeUncheckedUpdateManyWithoutUserInput = {
 export type VpsNodeCreateManyServerInput = {
   id?: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2269,7 +2269,7 @@ export type VpsNodeCreateManyServerInput = {
 
 export type VpsNodeUpdateWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2299,7 +2299,7 @@ export type VpsNodeUpdateWithoutServerInput = {
 export type VpsNodeUncheckedUpdateWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2328,7 +2328,7 @@ export type VpsNodeUncheckedUpdateWithoutServerInput = {
 export type VpsNodeUncheckedUpdateManyWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2444,7 +2444,7 @@ export type VpsNodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2477,7 +2477,7 @@ export type VpsNodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2501,7 +2501,7 @@ export type VpsNodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2525,7 +2525,7 @@ export type VpsNodeSelectScalar = {
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2543,7 +2543,7 @@ export type VpsNodeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VpsNodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "userId" | "machineId" | "name" | "secretKey" | "status" | "hostname" | "publicIp" | "osName" | "osVersion" | "kernelVersion" | "agentVersion" | "lastSeenAt" | "lastHeartbeatAt" | "credentialsRevokedAt" | "credentialsRevokedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["vpsNode"]>
+export type VpsNodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "userId" | "agentInstanceId" | "name" | "secretKey" | "status" | "hostname" | "publicIp" | "osName" | "osVersion" | "kernelVersion" | "agentVersion" | "lastSeenAt" | "lastHeartbeatAt" | "credentialsRevokedAt" | "credentialsRevokedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["vpsNode"]>
 export type VpsNodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.VpsNode$userArgs<ExtArgs>
@@ -2584,7 +2584,7 @@ export type $VpsNodePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     serverId: string
     userId: string | null
-    machineId: string
+    agentInstanceId: string
     name: string
     secretKey: string
     status: $Enums.VpsNodeStatus
@@ -3036,7 +3036,7 @@ export interface VpsNodeFieldRefs {
   readonly id: Prisma.FieldRef<"VpsNode", 'String'>
   readonly serverId: Prisma.FieldRef<"VpsNode", 'String'>
   readonly userId: Prisma.FieldRef<"VpsNode", 'String'>
-  readonly machineId: Prisma.FieldRef<"VpsNode", 'String'>
+  readonly agentInstanceId: Prisma.FieldRef<"VpsNode", 'String'>
   readonly name: Prisma.FieldRef<"VpsNode", 'String'>
   readonly secretKey: Prisma.FieldRef<"VpsNode", 'String'>
   readonly status: Prisma.FieldRef<"VpsNode", 'VpsNodeStatus'>

@@ -25,13 +25,17 @@ export class AgentService {
     private readonly serversService: ServersService,
   ) {}
 
-  async enroll(plaintextToken: string, machineId: string, agentVersion?: string) {
+  async enroll(
+    plaintextToken: string,
+    agentInstanceId: string,
+    agentVersion?: string,
+  ) {
     // Token consume + secret + optional agentVersion must be one transaction
     // (owned by ServersService) so a failed follow-up never leaves a used token
     // without a secret returned to the agent.
     return this.serversService.enrollWithToken(
       plaintextToken,
-      machineId,
+      agentInstanceId,
       agentVersion,
     );
   }
@@ -39,7 +43,7 @@ export class AgentService {
   async heartbeat(body: HeartbeatAgentDto) {
     const now = new Date();
     const existing = await this.prisma.vpsNode.findUnique({
-      where: { machineId: body.machineId },
+      where: { agentInstanceId: body.agentInstanceId },
       select: {
         id: true,
         credentialsRevokedAt: true,
@@ -54,7 +58,7 @@ export class AgentService {
     }
 
     const updated = await this.prisma.vpsNode.update({
-      where: { machineId: body.machineId },
+      where: { agentInstanceId: body.agentInstanceId },
       data: {
         lastHeartbeatAt: now,
         lastSeenAt: now,
@@ -66,7 +70,7 @@ export class AgentService {
       },
       select: {
         id: true,
-        machineId: true,
+        agentInstanceId: true,
         lastHeartbeatAt: true,
         lastSeenAt: true,
         status: true,
@@ -75,7 +79,7 @@ export class AgentService {
     });
 
     this.logger.debug('agent.heartbeat.received', {
-      machineId: body.machineId,
+      agentInstanceId: body.agentInstanceId,
       vpsNodeId: updated.id,
     });
     return updated;
@@ -86,7 +90,7 @@ export class AgentService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       const vpsNode = await tx.vpsNode.findUnique({
-        where: { machineId: payload.machineId },
+        where: { agentInstanceId: payload.agentInstanceId },
         select: {
           id: true,
           serverId: true,
@@ -107,7 +111,9 @@ export class AgentService {
         where: { id: vpsNode.id },
         data: {
           lastSeenAt: now,
-          ...(payload.agentVersion ? { agentVersion: payload.agentVersion } : {}),
+          ...(payload.agentVersion
+            ? { agentVersion: payload.agentVersion }
+            : {}),
         },
       });
 
@@ -167,7 +173,7 @@ export class AgentService {
     });
 
     this.logger.log('agent.ingest.phase1.stored', {
-      machineId: payload.machineId,
+      agentInstanceId: payload.agentInstanceId,
       vpsNodeId: result.vpsNodeId,
       discoveryCount: result.discoveryCount,
       visitorSamplesInserted: result.visitorSamplesInserted,
@@ -205,9 +211,9 @@ export class AgentService {
       wordpressUpdateCheckedAt: discovery.wordpressUpdateCheckedAt
         ? new Date(discovery.wordpressUpdateCheckedAt)
         : null,
-      fieldStatus: (discovery.fieldStatus
+      fieldStatus: discovery.fieldStatus
         ? (discovery.fieldStatus as unknown as Prisma.InputJsonValue)
-        : Prisma.JsonNull),
+        : Prisma.JsonNull,
       rawPayload: discovery as unknown as Prisma.InputJsonValue,
       lastIngestedAt: ingestedAt,
     };

@@ -25,7 +25,7 @@ import {
 export class EnrollAgentDto {
   @IsString()
   @MinLength(1)
-  machineId!: string;
+  agentInstanceId!: string;
 
   @IsOptional()
   @IsString()
@@ -45,7 +45,7 @@ export class HeartbeatAgentDto {
 
   @IsString()
   @MinLength(1)
-  machineId!: string;
+  agentInstanceId!: string;
 
   @IsOptional()
   @IsString()
@@ -98,9 +98,7 @@ class FieldStatusMapConstraint implements ValidatorConstraintInterface {
 }
 
 @ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
-class ZeroVisitorsRequireStatusConstraint
-  implements ValidatorConstraintInterface
-{
+class ZeroVisitorsRequireStatusConstraint implements ValidatorConstraintInterface {
   validate(uniqueIpCount: unknown, args: ValidationArguments): boolean {
     if (uniqueIpCount !== 0) {
       return true;
@@ -221,7 +219,7 @@ export class Phase1IngestDto {
 
   @IsString()
   @MinLength(1)
-  machineId!: string;
+  agentInstanceId!: string;
 
   @IsOptional()
   @IsString()

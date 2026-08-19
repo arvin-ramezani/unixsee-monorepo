@@ -7,7 +7,15 @@ import {
 } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { GlobalExceptionFilter } from '#/common/http/filters/global-exception.filter.js';
 import { DiscoveryStatus, VpsNodeStatus } from '#/generated/prisma/enums.js';
@@ -80,7 +88,9 @@ describe('AgentModule (e2e)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    prisma.$transaction.mockImplementation(async (callback) => callback(prisma));
+    prisma.$transaction.mockImplementation(async (callback) =>
+      callback(prisma),
+    );
 
     prisma.vpsNode.findUnique.mockResolvedValue({
       id: VPS_NODE_ID,
@@ -90,7 +100,7 @@ describe('AgentModule (e2e)', () => {
     });
     prisma.vpsNode.update.mockImplementation(async ({ data, select }) => ({
       id: VPS_NODE_ID,
-      machineId: MACHINE_ID,
+      agentInstanceId: MACHINE_ID,
       lastHeartbeatAt: data.lastHeartbeatAt ?? new Date(),
       lastSeenAt: data.lastSeenAt ?? new Date(),
       status: data.status ?? VpsNodeStatus.ONLINE,
@@ -117,7 +127,7 @@ describe('AgentModule (e2e)', () => {
     it('returns 401 when enrollment token header is missing', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
-        .send({ machineId: MACHINE_ID })
+        .send({ agentInstanceId: MACHINE_ID })
         .expect(401);
 
       expect(response.body).toMatchObject({
@@ -130,7 +140,7 @@ describe('AgentModule (e2e)', () => {
       expect(serversService.enrollWithToken).not.toHaveBeenCalled();
     });
 
-    it('returns 400 when machineId is missing', async () => {
+    it('returns 400 when agentInstanceId is missing', async () => {
       await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', ENROLLMENT_TOKEN)
@@ -151,7 +161,7 @@ describe('AgentModule (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', ENROLLMENT_TOKEN)
-        .send({ machineId: MACHINE_ID, agentVersion: '0.1.0' })
+        .send({ agentInstanceId: MACHINE_ID, agentVersion: '0.1.0' })
         .expect(201);
 
       expect(serversService.enrollWithToken).toHaveBeenCalledWith(
@@ -179,7 +189,7 @@ describe('AgentModule (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', 'bad-token')
-        .send({ machineId: MACHINE_ID })
+        .send({ agentInstanceId: MACHINE_ID })
         .expect(400);
 
       expect(response.body.success).toBe(false);
@@ -192,7 +202,7 @@ describe('AgentModule (e2e)', () => {
         .post('/api/internal/agent/v1/heartbeat')
         .send({
           schemaVersion: 'phase1',
-          machineId: MACHINE_ID,
+          agentInstanceId: MACHINE_ID,
           sentAt: new Date().toISOString(),
         })
         .expect(401);
@@ -202,7 +212,7 @@ describe('AgentModule (e2e)', () => {
 
     it('rejects invalid payloads before signature checks complete meaningfully', async () => {
       const timestamp = new Date().toISOString();
-      const body = { machineId: MACHINE_ID, sentAt: timestamp };
+      const body = { agentInstanceId: MACHINE_ID, sentAt: timestamp };
       const signature = signAgentBody(SECRET_KEY, timestamp, body);
 
       await request(app.getHttpServer())
@@ -217,7 +227,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         agentVersion: '0.1.0',
         serverBinding: { hostname: 'vps.example' },
         sentAt,
@@ -237,13 +247,13 @@ describe('AgentModule (e2e)', () => {
         statusCode: 200,
         data: expect.objectContaining({
           id: VPS_NODE_ID,
-          machineId: MACHINE_ID,
+          agentInstanceId: MACHINE_ID,
           status: VpsNodeStatus.ONLINE,
         }),
       });
       expect(prisma.vpsNode.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { machineId: MACHINE_ID },
+          where: { agentInstanceId: MACHINE_ID },
           data: expect.objectContaining({
             status: VpsNodeStatus.ONLINE,
             hostname: 'vps.example',
@@ -257,7 +267,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
       };
       const timestamp = new Date().toISOString();
@@ -276,7 +286,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         agentVersion: '0.1.0',
         sentAt,
         discoveries: [
@@ -334,7 +344,7 @@ describe('AgentModule (e2e)', () => {
       const body = {
         batch: [
           {
-            machineId: MACHINE_ID,
+            agentInstanceId: MACHINE_ID,
             timestamp: new Date().toISOString(),
             metrics: { cpuMean: 1 },
             websites: [],
@@ -356,7 +366,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: Array.from({ length: 201 }, (_, index) => ({
           domain: `site-${index}.example.com`,
@@ -380,7 +390,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -408,7 +418,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -437,7 +447,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         agentVersion: '0.1.0',
         sentAt,
         discoveries: [
@@ -467,7 +477,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -502,7 +512,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -538,7 +548,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        machineId: MACHINE_ID,
+        agentInstanceId: MACHINE_ID,
         sentAt,
         discoveries: [
           {

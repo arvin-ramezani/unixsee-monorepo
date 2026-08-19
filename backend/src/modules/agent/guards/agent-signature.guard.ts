@@ -26,22 +26,24 @@ export class AgentSignatureGuard implements CanActivate {
     const timestamp = request.headers['x-agent-timestamp'];
     const incomingSignature = request.headers['x-agent-signature'];
 
-    const requestBody = request.body as { machineId?: string } | undefined;
-    const machineId = requestBody?.machineId;
+    const requestBody = request.body as
+      | { agentInstanceId?: string }
+      | undefined;
+    const agentInstanceId = requestBody?.agentInstanceId;
 
-    if (!machineId) {
+    if (!agentInstanceId) {
       this.logger.warn('agent.auth.payload_invalid', {
         ip: request.ip,
         path: request.originalUrl,
       });
       throw new BadRequestException(
-        'Invalid payload topology or missing machineId.',
+        'Invalid payload topology or missing agentInstanceId.',
       );
     }
 
     if (!timestamp || !incomingSignature) {
       this.logger.warn('agent.auth.headers_missing', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
         hasTimestamp: Boolean(timestamp),
         hasSignature: Boolean(incomingSignature),
@@ -56,7 +58,7 @@ export class AgentSignatureGuard implements CanActivate {
 
     if (isNaN(requestTime) || driftMs > 5 * 60 * 1000) {
       this.logger.warn('agent.auth.timestamp_drift', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
         driftMs,
       });
@@ -65,14 +67,14 @@ export class AgentSignatureGuard implements CanActivate {
 
     if (!request.rawBody || request.rawBody.length === 0) {
       this.logger.warn('agent.auth.raw_body_missing', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
       });
       throw this.authenticationFailed();
     }
 
     const vpsNode = await this.prisma.vpsNode.findUnique({
-      where: { machineId },
+      where: { agentInstanceId },
       select: { secretKey: true, credentialsRevokedAt: true },
     });
 
@@ -95,7 +97,7 @@ export class AgentSignatureGuard implements CanActivate {
 
     if (!credentialsUsable || !signatureValid) {
       this.logger.warn('agent.auth.rejected', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
         credentialsUsable,
         signatureValid,
@@ -103,10 +105,10 @@ export class AgentSignatureGuard implements CanActivate {
       throw this.authenticationFailed();
     }
 
-    request.vpsMachineId = machineId;
+    request.vpsAgentInstanceId = agentInstanceId;
 
     this.logger.debug('agent.auth.signature_verified', {
-      machineId,
+      agentInstanceId,
       ip: request.ip,
     });
     return true;

@@ -31,7 +31,8 @@ export class AgentController {
   @Post('enroll')
   @HttpCode(HttpStatus.CREATED)
   async enroll(
-    @Headers('x-enrollment-token') enrollmentToken: string | string[] | undefined,
+    @Headers('x-enrollment-token')
+    enrollmentToken: string | string[] | undefined,
     @Body() body: EnrollAgentDto,
   ) {
     const token = Array.isArray(enrollmentToken)
@@ -43,12 +44,12 @@ export class AgentController {
 
     const result = await this.agentService.enroll(
       token,
-      body.machineId,
+      body.agentInstanceId,
       body.agentVersion,
     );
 
     this.logger.log('agent.enroll.completed', {
-      machineId: body.machineId,
+      agentInstanceId: body.agentInstanceId,
       vpsNodeId: result.vpsNodeId,
       serverId: result.serverId,
     });
@@ -75,7 +76,7 @@ export class AgentController {
   @HttpCode(HttpStatus.CREATED)
   async ingest(@Body() payload: Phase1IngestDto) {
     this.logger.debug('agent.ingest.received', {
-      machineId: payload.machineId,
+      agentInstanceId: payload.agentInstanceId,
       discoveryCount: payload.discoveries.length,
       visitorSampleCount: payload.activeVisitors3m?.length ?? 0,
     });
@@ -83,7 +84,7 @@ export class AgentController {
     const result = await this.agentService.processPhase1Ingest(payload);
 
     this.logger.log('agent.ingest.completed', {
-      machineId: payload.machineId,
+      agentInstanceId: payload.agentInstanceId,
       vpsNodeId: result.vpsNodeId,
       discoveryCount: result.discoveryCount,
     });
