@@ -44,6 +44,7 @@ export type WebsiteMinAggregateOutputType = {
   planId: string | null
   domain: string | null
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -65,6 +66,7 @@ export type WebsiteMaxAggregateOutputType = {
   planId: string | null
   domain: string | null
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -86,6 +88,7 @@ export type WebsiteCountAggregateOutputType = {
   planId: number
   domain: number
   displayName: number
+  wordpressAdminUrl: number
   directAdminUser: number
   homeDirectory: number
   documentRoot: number
@@ -119,6 +122,7 @@ export type WebsiteMinAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -140,6 +144,7 @@ export type WebsiteMaxAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -161,6 +166,7 @@ export type WebsiteCountAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -269,6 +275,7 @@ export type WebsiteGroupByOutputType = {
   planId: string | null
   domain: string
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -313,6 +320,7 @@ export type WebsiteWhereInput = {
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -350,6 +358,7 @@ export type WebsiteOrderByWithRelationInput = {
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -390,6 +399,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   vpsNodeId?: Prisma.UuidFilter<"Website"> | string
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -427,6 +437,7 @@ export type WebsiteOrderByWithAggregationInput = {
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -456,6 +467,7 @@ export type WebsiteScalarWhereWithAggregatesInput = {
   planId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   domain?: Prisma.StringWithAggregatesFilter<"Website"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
@@ -473,6 +485,7 @@ export type WebsiteCreateInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -510,6 +523,7 @@ export type WebsiteUncheckedCreateInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -539,6 +553,7 @@ export type WebsiteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -576,6 +591,7 @@ export type WebsiteUncheckedUpdateInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -609,6 +625,7 @@ export type WebsiteCreateManyInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -626,6 +643,7 @@ export type WebsiteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -647,6 +665,7 @@ export type WebsiteUncheckedUpdateManyInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -678,6 +697,7 @@ export type WebsiteCountOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -704,6 +724,7 @@ export type WebsiteMaxOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -725,6 +746,7 @@ export type WebsiteMinOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -1123,6 +1145,7 @@ export type WebsiteCreateWithoutUserInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1158,6 +1181,7 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1220,6 +1244,7 @@ export type WebsiteScalarWhereInput = {
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -1237,6 +1262,7 @@ export type WebsiteCreateWithoutTenantInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1272,6 +1298,7 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1327,6 +1354,7 @@ export type WebsiteCreateWithoutVpsNodeInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1362,6 +1390,7 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1417,6 +1446,7 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1453,6 +1483,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1497,6 +1528,7 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1533,6 +1565,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1561,6 +1594,7 @@ export type WebsiteCreateWithoutMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1597,6 +1631,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1641,6 +1676,7 @@ export type WebsiteUpdateWithoutMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1677,6 +1713,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1705,6 +1742,7 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1741,6 +1779,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1785,6 +1824,7 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1821,6 +1861,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1849,6 +1890,7 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1885,6 +1927,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1929,6 +1972,7 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1965,6 +2009,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1993,6 +2038,7 @@ export type WebsiteCreateWithoutSslInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2029,6 +2075,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2073,6 +2120,7 @@ export type WebsiteUpdateWithoutSslInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2109,6 +2157,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2137,6 +2186,7 @@ export type WebsiteCreateWithoutAlertsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2173,6 +2223,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2217,6 +2268,7 @@ export type WebsiteUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2253,6 +2305,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2281,6 +2334,7 @@ export type WebsiteCreateWithoutPlanInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2316,6 +2370,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   vpsNodeId: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2371,6 +2426,7 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2407,6 +2463,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2451,6 +2508,7 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2487,6 +2545,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2515,6 +2574,7 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2551,6 +2611,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2595,6 +2656,7 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2631,6 +2693,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2659,6 +2722,7 @@ export type WebsiteCreateWithoutTicketsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2695,6 +2759,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2739,6 +2804,7 @@ export type WebsiteUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2775,6 +2841,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2803,6 +2870,7 @@ export type WebsiteCreateWithoutActivitiesInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2839,6 +2907,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2883,6 +2952,7 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2919,6 +2989,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2947,6 +3018,7 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2983,6 +3055,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3027,6 +3100,7 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3063,6 +3137,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3091,6 +3166,7 @@ export type WebsiteCreateWithoutUnixseeMessagesInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3127,6 +3203,7 @@ export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3171,6 +3248,7 @@ export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3207,6 +3285,7 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3238,6 +3317,7 @@ export type WebsiteCreateManyUserInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3255,6 +3335,7 @@ export type WebsiteUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3290,6 +3371,7 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3322,6 +3404,7 @@ export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3342,6 +3425,7 @@ export type WebsiteCreateManyTenantInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3359,6 +3443,7 @@ export type WebsiteUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3394,6 +3479,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3426,6 +3512,7 @@ export type WebsiteUncheckedUpdateManyWithoutTenantInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3446,6 +3533,7 @@ export type WebsiteCreateManyVpsNodeInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3463,6 +3551,7 @@ export type WebsiteUpdateWithoutVpsNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3498,6 +3587,7 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3530,6 +3620,7 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3550,6 +3641,7 @@ export type WebsiteCreateManyPlanInput = {
   vpsNodeId: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3567,6 +3659,7 @@ export type WebsiteUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3602,6 +3695,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3634,6 +3728,7 @@ export type WebsiteUncheckedUpdateManyWithoutPlanInput = {
   vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3776,6 +3871,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3814,6 +3910,7 @@ export type WebsiteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3839,6 +3936,7 @@ export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3864,6 +3962,7 @@ export type WebsiteSelectScalar = {
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3877,7 +3976,7 @@ export type WebsiteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
+export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "domain" | "displayName" | "wordpressAdminUrl" | "directAdminUser" | "homeDirectory" | "documentRoot" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
 export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -3938,6 +4037,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     planId: string | null
     domain: string
     displayName: string | null
+    wordpressAdminUrl: string | null
     directAdminUser: string | null
     homeDirectory: string | null
     documentRoot: string | null
@@ -4395,6 +4495,7 @@ export interface WebsiteFieldRefs {
   readonly planId: Prisma.FieldRef<"Website", 'String'>
   readonly domain: Prisma.FieldRef<"Website", 'String'>
   readonly displayName: Prisma.FieldRef<"Website", 'String'>
+  readonly wordpressAdminUrl: Prisma.FieldRef<"Website", 'String'>
   readonly directAdminUser: Prisma.FieldRef<"Website", 'String'>
   readonly homeDirectory: Prisma.FieldRef<"Website", 'String'>
   readonly documentRoot: Prisma.FieldRef<"Website", 'String'>

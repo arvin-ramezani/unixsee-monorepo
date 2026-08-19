@@ -260,6 +260,7 @@ Owned with `websites` + `discoveries` services:
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/v1/admin/websites` | Admin |
+| GET/PATCH | `/api/v1/admin/websites/:id` | Admin (detail + admin-owned metadata) |
 | POST | `/api/v1/admin/websites/:id/assign` | Admin |
 | POST | `/api/v1/admin/websites/:id/transfer` | Admin (audited) |
 | POST | `/api/v1/admin/websites/:id/retire` | Admin |

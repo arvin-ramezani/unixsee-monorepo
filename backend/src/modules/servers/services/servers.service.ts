@@ -115,7 +115,12 @@ export class ServersService {
     return this.toAdminServerReadModel(server);
   }
 
-  async create(input: { name: string; ipAddress: string; notes?: string }) {
+  async create(input: {
+    name: string;
+    ipAddress: string;
+    notes?: string;
+    controlPanelUrl?: string | null;
+  }) {
     const server = await this.prisma.server.create({ data: input });
     this.logger.log('server.created', {
       serverId: server.id,
@@ -126,7 +131,12 @@ export class ServersService {
 
   async update(
     id: string,
-    data: { name?: string; ipAddress?: string; notes?: string | null },
+    data: {
+      name?: string;
+      ipAddress?: string;
+      notes?: string | null;
+      controlPanelUrl?: string | null;
+    },
   ) {
     await this.ensureServer(id);
     const server = await this.prisma.server.update({ where: { id }, data });
@@ -412,6 +422,7 @@ export class ServersService {
     name: string;
     ipAddress: string;
     notes: string | null;
+    controlPanelUrl: string | null;
     createdAt: Date;
     updatedAt: Date;
     vpsNodes: Array<{
@@ -443,6 +454,7 @@ export class ServersService {
       label: server.name,
       ipAddress: server.ipAddress,
       notes: server.notes,
+      controlPanelUrl: server.controlPanelUrl,
       createdAt: server.createdAt,
       updatedAt: server.updatedAt,
       agent: this.deriveAgentState(latestNode, latestToken),

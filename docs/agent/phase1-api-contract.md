@@ -170,3 +170,22 @@ Partial coverage cannot use `status.state = ok`.
 - traffic sections update traffic storage only;
 - agent ingest never updates manual DirectAdmin/control-panel or WordPress admin URLs;
 - stack/traffic records do not implicitly create discoveries for unknown domains.
+
+### Manual URL ownership
+
+Manual links are canonical backend/admin metadata, not agent/discovery data:
+
+- `Server.controlPanelUrl` owns the DirectAdmin/control-panel URL for the VPS;
+- `Website.wordpressAdminUrl` owns the WordPress admin URL for the managed site.
+
+Admin API write paths:
+
+- `POST /api/v1/admin/servers` may set `controlPanelUrl`;
+- `PATCH /api/v1/admin/servers/:id` may set or clear `controlPanelUrl`;
+- `POST /api/v1/admin/websites` may set `wordpressAdminUrl`;
+- `PATCH /api/v1/admin/websites/:id` may set or clear `wordpressAdminUrl`.
+
+Legacy `WebsiteDiscovery.controlPanelUrl` and
+`WebsiteDiscovery.wordpressAdminUrl` columns may remain nullable during the
+migration window, but they are not canonical and new agent ingest must never
+write them.

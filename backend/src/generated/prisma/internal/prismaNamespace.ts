@@ -3598,6 +3598,7 @@ export const ServerScalarFieldEnum = {
   name: 'name',
   ipAddress: 'ipAddress',
   notes: 'notes',
+  controlPanelUrl: 'controlPanelUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3653,6 +3654,7 @@ export const WebsiteScalarFieldEnum = {
   planId: 'planId',
   domain: 'domain',
   displayName: 'displayName',
+  wordpressAdminUrl: 'wordpressAdminUrl',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',

@@ -286,6 +286,9 @@ model Server {
   ipAddress String @map("ip_address")
   notes     String?
 
+  // Admin-owned control-panel metadata. The Phase 1 agent never writes this.
+  controlPanelUrl String? @map("control_panel_url")
+
   vpsNodes         VpsNode[]
   alerts           Alert[]
   enrollmentTokens ServerEnrollmentToken[]
@@ -374,7 +377,11 @@ model Website {
   domain      String  @unique
   displayName String? @map("display_name")
 
-  // Inventory fields discovered by the agent from DirectAdmin/LiteSpeed.
+  // Admin-owned WordPress metadata. The Phase 1 agent never writes this.
+  wordpressAdminUrl String? @map("wordpress_admin_url")
+
+  // Legacy inventory fields retained during migration. New Phase 1 agent ingest
+  // does not own or update these fields.
   directAdminUser String? @map("direct_admin_user")
   homeDirectory   String? @map("home_directory")
   documentRoot    String? @map("document_root")
@@ -436,6 +443,8 @@ model WebsiteDiscovery {
   appType         String?     @map("app_type")
   source          String?
   backendAddress  String?     @map("backend_address")
+  // Legacy manual-link columns retained only for migration/history. Canonical
+  // ownership is Server.controlPanelUrl and Website.wordpressAdminUrl.
   controlPanelUrl String?     @map("control_panel_url")
   wordpressAdminUrl String?   @map("wordpress_admin_url")
   wordpressVersion  String?   @map("wordpress_version")
