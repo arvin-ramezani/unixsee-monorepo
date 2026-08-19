@@ -8,12 +8,10 @@ import {
 import { getConfig } from "./config/config.js";
 import {
   toPhase1DiscoveryPayload,
-  toPhase1StackSnapshotPayload,
   type Phase1IngestPayload,
 } from "./contracts/phase1-ingest.js";
 import { initializeIdentity, type HostIdentity } from "./discovery.js";
 import { clearPersistedAgentSecret } from "./security.js";
-import { enrichSiteStack } from "./site-stack.js";
 import {
   collectActiveVisitors3m,
   ensureTrafficTails,
@@ -100,16 +98,10 @@ export function createEngine(
     });
 
     const discoveries = discoveryPairs.map((item) => item.outbound);
-    const olsDomains = discoveryPairs.map((item) => item.internal);
 
-    // Step 3 separates the wire contracts. The legacy stack implementation is
-    // still invoked here until the dedicated runtime-probe replacement step.
-    const legacyStackRows = await enrichSiteStack(olsDomains);
-    const stackCheckedAt = now().toISOString();
-    const stackSnapshots = legacyStackRows.map((row) =>
-      toPhase1StackSnapshotPayload(row, stackCheckedAt),
-    );
-
+    // Step 5 removes the legacy filesystem/DirectAdmin stack dependency from
+    // discovery. Stack snapshots are intentionally omitted until the protected
+    // OLS/PHP runtime probe is introduced in the dedicated stack-probe step.
     const domains = discoveries.map((discovery) => discovery.domain);
     await ensureTrafficTails(domains);
     const activeVisitors3m = collectActiveVisitors3m(domains);
@@ -121,7 +113,6 @@ export function createEngine(
       agentVersion: cfg.agentVersion,
       sentAt: now().toISOString(),
       discoveries,
-      stackSnapshots,
       activeVisitors3m,
     };
   }
@@ -197,7 +188,9 @@ export function createEngine(
 
   async function refreshDiscovery(): Promise<void> {
     try {
-      const refreshed = await initializeIdentity();
+      const refreshed = await initializeIdentity(
+        identity?.agentInstanceId ?? hostIdentity.agentInstanceId,
+      );
       if (identity) {
         identity.domains = refreshed.domains;
       } else {

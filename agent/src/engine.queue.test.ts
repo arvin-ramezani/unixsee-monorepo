@@ -10,12 +10,9 @@ const identity: HostIdentity = {
   domains: [
     {
       domain: "example.com",
-      documentRoot: "/home/u/domains/example.com/public_html",
-      owner: "u",
-      appType: "wordpress",
       source: "openlitespeed",
       aliases: ["www.example.com"],
-      virtualHostName: "example.com",
+      virtualHostName: "example-vhost",
     },
   ],
 };

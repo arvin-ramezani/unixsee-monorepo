@@ -1,5 +1,5 @@
-import { platform } from "node:os";
 import { promises as fs } from "node:fs";
+import { platform } from "node:os";
 import { join } from "node:path";
 
 async function bootstrap() {
@@ -7,9 +7,7 @@ async function bootstrap() {
   loadConfig();
   const config = getConfig();
 
-  console.log(
-    `[Unixsee Phase 1 Agent] Bootstrapping ${config.agentVersion}...`,
-  );
+  console.log(`[Unixsee Phase 1 Agent] Bootstrapping ${config.agentVersion}...`);
 
   if (config.nodeEnv !== "production") {
     console.warn(
@@ -27,6 +25,7 @@ async function bootstrap() {
   const { AgentApiError, enrollAgent } = await import("./api/client.js");
   const { initializeIdentity } = await import("./discovery.js");
   const { startEngine } = await import("./engine.js");
+  const { resolveAgentInstanceIdCompat } = await import("./identity-compat.js");
   const { persistAgentSecret } = await import("./security.js");
 
   const RUNTIME_STATE_FILE = ".env";
@@ -43,7 +42,7 @@ async function bootstrap() {
     }
   }
 
-  async function resolveSecretKey(machineId: string): Promise<string> {
+  async function resolveSecretKey(agentInstanceId: string): Promise<string> {
     const existingSecret =
       config.agentSecret || (await loadPersistedSecretKey());
     if (existingSecret) {
@@ -57,11 +56,14 @@ async function bootstrap() {
     }
 
     console.log(
-      `[Security] No AGENT_SECRET found. Starting enrollment for ${machineId}...`,
+      `[Security] No AGENT_SECRET found. Starting enrollment for agentInstanceId=${agentInstanceId}...`,
     );
 
     try {
-      const enrollment = await enrollAgent(machineId, config.enrollmentToken);
+      const enrollment = await enrollAgent(
+        agentInstanceId,
+        config.enrollmentToken,
+      );
       await persistAgentSecret(enrollment.secretKey);
       console.log(
         `[Security] Enrollment completed. HMAC secret persisted for vpsNodeId=${enrollment.vpsNodeId}.`,
@@ -77,8 +79,9 @@ async function bootstrap() {
     }
   }
 
-  const hostIdentity = await initializeIdentity();
-  const secretKey = await resolveSecretKey(hostIdentity.agentInstanceId);
+  const agentInstanceId = await resolveAgentInstanceIdCompat();
+  const hostIdentity = await initializeIdentity(agentInstanceId);
+  const secretKey = await resolveSecretKey(agentInstanceId);
   startEngine(hostIdentity, secretKey);
 }
 
