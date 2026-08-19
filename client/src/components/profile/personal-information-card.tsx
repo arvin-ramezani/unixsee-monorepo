@@ -293,14 +293,14 @@ export function PersonalInformationCard({
       </div>
       <form
         onSubmit={save}
-        className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-end"
+        className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center"
       >
-        {nestBacked && contactDirty ? (
+        {nestBacked && contactDirty && (
           <p className="text-muted-foreground me-auto text-xs">
             {t("contactSaveHint")}
           </p>
-        ) : null}
-        {dirty ? (
+        )}
+        {dirty && (
           <DashboardButton
             revealClassName="bg-muted dark:bg-accent"
             size="xl"
@@ -312,7 +312,7 @@ export function PersonalInformationCard({
             <RotateCcw aria-hidden="true" className="size-4" />
             {t("reset")}
           </DashboardButton>
-        ) : null}
+        )}
         <DashboardButton
           size="xl"
           type="submit"
@@ -326,24 +326,24 @@ export function PersonalInformationCard({
         </DashboardButton>
       </form>
       <div ref={toastRef} aria-live="polite">
-        {saveState === "saved" && !nestBacked ? (
+        {saveState === "saved" && !nestBacked && (
           <div className="border-success/25 bg-popover text-success-foreground fixed inset-e-4 bottom-4 z-50 flex items-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium shadow-lg">
             <CheckCircle2 aria-hidden="true" className="size-4" />
             {t("saved")}
           </div>
-        ) : null}
-        {saveState === "failed" ? (
+        )}
+        {saveState === "failed" && (
           <p className="text-destructive mt-3 text-end text-sm">
             {t("saveFailed")}
           </p>
-        ) : null}
+        )}
       </div>
       <UnsavedChangesDialog
         open={showReset}
         onCancel={() => setShowReset(false)}
         onDiscard={reset}
       />
-      {verifyChannel ? (
+      {!!verifyChannel && (
         <ContactVerifyDialog
           open
           channel={verifyChannel}
@@ -353,7 +353,7 @@ export function PersonalInformationCard({
           }}
           onVerified={handleVerified}
         />
-      ) : null}
+      )}
     </Panel>
   );
 }
@@ -404,7 +404,7 @@ export function ProfileForm({
   }
 
   return (
-    <div className="flex flex-wrap gap-x-5 gap-y-5">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
       <Field
         id="profile-name"
         label={t("name")}
@@ -429,7 +429,6 @@ export function ProfileForm({
         className="min-w-0 basis-full sm:min-w-64 sm:flex-[1_1_calc(50%-0.625rem)]"
         required={emailRequired}
         optionalLabel={!emailRequired ? t("optional") : undefined}
-        hint={!emailRequired ? t("optionalBecausePhone") : undefined}
       >
         <Input
           id="profile-email"
@@ -457,7 +456,7 @@ export function ProfileForm({
               {t("notProvided")}
             </span>
           )}
-          {showEmailVerify ? (
+          {showEmailVerify && (
             <>
               <span className="text-muted-foreground text-xs">
                 {emailChanged ? t("emailChanged") : t("emailNeedsVerify")}
@@ -472,7 +471,7 @@ export function ProfileForm({
                 {t("sendEmail")}
               </Button>
             </>
-          ) : null}
+          )}
         </div>
       </Field>
       <Field
@@ -514,7 +513,7 @@ export function ProfileForm({
               {t("notProvided")}
             </span>
           )}
-          {showMobileVerify ? (
+          {showMobileVerify && (
             <>
               <span className="text-muted-foreground text-xs">
                 {mobileChanged ? t("mobileChanged") : t("mobileNeedsVerify")}
@@ -529,7 +528,7 @@ export function ProfileForm({
                 {t("verifyMobile")}
               </Button>
             </>
-          ) : null}
+          )}
         </div>
       </Field>
       <fieldset className="w-full shrink-0 sm:w-72">
@@ -610,15 +609,16 @@ function Field({
           </span>
         ) : null}
       </Label>
-      {hint ? (
-        <p className="text-muted-foreground mt-1 text-xs">{hint}</p>
-      ) : null}
+
+      {!!hint && <p className="text-muted-foreground mt-1 text-xs">{hint}</p>}
+
       <div className="mt-2">{children}</div>
-      {error ? (
+
+      {!!error && (
         <p id={`${id}-error`} className="text-destructive mt-2 text-xs">
           {error}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }

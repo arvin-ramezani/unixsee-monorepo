@@ -431,11 +431,12 @@ export function RequestAssessmentContactTabs({
       />
 
       {otpChannel && !verifiedChannel && (
-        <div className="border-border bg-muted/30 flex flex-col gap-3 rounded-xl border p-4">
+        <div className="border-border bg-muted/30 flex flex-col items-center justify-center gap-3 rounded-xl border p-4">
           <p className="text-sm">
             {otpChannel === "phone" ? t("otpPhoneHint") : t("otpEmailHint")}
           </p>
           <OtpInput
+            className="flex flex-col items-center justify-center [&_label]:justify-center"
             value={otpCode}
             onChange={setOtpCode}
             disabled={otpPending || disabled}

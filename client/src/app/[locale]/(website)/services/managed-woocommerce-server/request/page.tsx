@@ -107,11 +107,11 @@ export default async function GuestPlanRequestPage({
             {t("summary.planLabel")}
           </p>
           <p className="mt-1 text-lg font-semibold">{plan.name}</p>
-          {plan.description ? (
+          {!!plan.description && (
             <p className="text-muted-foreground mt-2 text-sm leading-6">
               {plan.description}
             </p>
-          ) : null}
+          )}
         </div>
 
         <div className="mt-6">

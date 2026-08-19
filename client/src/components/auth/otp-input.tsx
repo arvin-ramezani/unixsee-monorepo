@@ -9,11 +9,7 @@ import {
 } from "react";
 import { useTranslations } from "next-intl";
 
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { OTP_LENGTH } from "@/lib/zod-schemas/auth-schemas";
 import { cn } from "@/lib/utils";
@@ -88,7 +84,10 @@ export function OtpInput({
     }
   }
 
-  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) {
     if (event.key === "Backspace" && !digits[index] && index > 0) {
       event.preventDefault();
       const next = [...digits];
@@ -127,7 +126,7 @@ export function OtpInput({
         aria-labelledby={`${groupId}-label`}
         aria-describedby={invalid ? errorId : undefined}
         dir="ltr"
-        className="mt-3 flex justify-between gap-2"
+        className="mt-3 flex justify-center gap-2"
       >
         {digits.map((digit, index) => (
           <Input

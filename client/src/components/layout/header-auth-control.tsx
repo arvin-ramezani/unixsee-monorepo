@@ -26,9 +26,9 @@ function resolveDisplayName(
 ) {
   const fullName = user?.fullName?.trim();
   if (fullName) return fullName;
-  if (user?.phoneNumber) return user.phoneNumber;
   if (user?.email) return user.email;
   return fallback;
+  // if (user?.phoneNumber) return user.phoneNumber;
 }
 
 export function HeaderAuthControl({

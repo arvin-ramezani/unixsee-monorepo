@@ -6,6 +6,7 @@ import { UnixseeMessagesAside } from "@/components/unixsee-messages/unixsee-mess
 import { UnixseeMessagesManager } from "@/components/unixsee-messages/unixsee-messages-manager";
 import type { Locale } from "@/i18n/routing";
 import { fetchUnixseeMessageList } from "@/lib/unixsee-messages/unixsee-messages-api";
+import { UnixseeMessagesLoadingSkeleton } from "@/components/unixsee-messages/unixsee-messages-loading-skeleton";
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -31,16 +32,18 @@ export default async function UnixseeMessagesPage({ params }: PageProps) {
       activeItem="UnixseeMessages"
       breadcrumbs={[{ label: t("title") }]}
     >
-      <div className="space-y-4 pt-2">
+      <div className="mt-4">
         <div className="max-w-2xl">
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {t("title")}
+          </h1>
           <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
         </div>
-        <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+        <div className="mt-6 grid w-full gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
           <div className="xl:hidden">
             <UnixseeMessagesAside />
           </div>
-          <div className="min-w-0 max-w-2xl">
+          <div className="max-w-2xl min-w-0">
             <UnixseeMessagesManager
               messages={result.ok ? result.data.items : []}
               initialState={

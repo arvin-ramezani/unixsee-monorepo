@@ -47,16 +47,16 @@ export function UnixseeMessagesLoadingSkeleton() {
   const t = useTranslations("UnixseeMessages");
 
   return (
-    <div className="space-y-4 pt-2" aria-busy="true" aria-label={t("loading")}>
+    <div className="mt-4 space-y-4" aria-busy="true" aria-label={t("loading")}>
       <div className="max-w-2xl space-y-2">
         <Skeleton className="h-8 w-56 max-w-full" />
         <Skeleton className="h-4 w-80 max-w-full" />
       </div>
 
-      <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="grid w-full gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
         <QuickActionsAsideSkeleton className="xl:hidden" />
 
-        <div className="min-w-0 max-w-2xl space-y-3">
+        <div className="max-w-2xl min-w-0 space-y-3">
           {Array.from({ length: 4 }, (_, index) => (
             <MessageRowSkeleton key={index} />
           ))}

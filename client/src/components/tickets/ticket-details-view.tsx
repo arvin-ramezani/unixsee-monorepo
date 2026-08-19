@@ -103,10 +103,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
           id: crypto.randomUUID(),
           file,
         })),
-      ].slice(
-        0,
-        Math.max(0, MAX_ATTACHMENTS - attachments.length),
-      ),
+      ].slice(0, Math.max(0, MAX_ATTACHMENTS - attachments.length)),
     );
   }
 
@@ -162,7 +159,9 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
         if (uploadResult.uploaded.length > 0) {
           setAttachments((current) => [...current, ...uploadResult.uploaded]);
         }
-        setPendingFiles((current) => current.slice(uploadResult.uploaded.length));
+        setPendingFiles((current) =>
+          current.slice(uploadResult.uploaded.length),
+        );
         setSending(false);
         router.refresh();
         return;
@@ -238,7 +237,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center justify-between gap-2 rounded-md text-sm transition-colors focus-visible:ring-2"
       >
         <ArrowLeft aria-hidden="true" className="size-4 rtl:rotate-180" />
-        {t("detail.back")}{" "}
+        {t("detail.back")}
       </Link>
       <header className="border-border mt-3 flex flex-col gap-5 border-b pb-6 lg:flex-row lg:justify-between">
         <div className="min-w-0">
@@ -404,7 +403,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
                             onClick={() => {
                               void handleDownload(attachment);
                             }}
-                            className="text-link hover:underline inline-flex max-w-full items-center gap-1.5 text-start text-sm disabled:opacity-60"
+                            className="text-link inline-flex max-w-full items-center gap-1.5 text-start text-sm hover:underline disabled:opacity-60"
                           >
                             {downloadingId === attachment.id ? (
                               <LoaderCircle
@@ -439,7 +438,10 @@ export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
         </aside>
       </div>
 
-      <Panel id="ticket-reply" className="mt-6 p-5 sm:p-6">
+      <Panel
+        id="ticket-reply"
+        className="mt-6 p-5 sm:p-6 xl:w-[calc(100%-344px)]"
+      >
         <h2 className="text-xl font-semibold">{t("reply.title")}</h2>
         <p className="text-muted-foreground mt-1 text-sm">
           {repliesAllowed ? t("reply.description") : t("reply.closed")}
@@ -566,8 +568,8 @@ function TicketMessageBlock({ message }: { message: TicketMessage }) {
   const format = useFormatter();
   const senderName =
     message.sender === "USER"
-      ? (message.author.fullName?.trim() || t("detail.you"))
-      : (message.author.fullName?.trim() || t("conversation.roles.SUPPORT"));
+      ? message.author.fullName?.trim() || t("detail.you")
+      : message.author.fullName?.trim() || t("conversation.roles.SUPPORT");
 
   return (
     <article
@@ -591,7 +593,9 @@ function TicketMessageBlock({ message }: { message: TicketMessage }) {
           {format.dateTime(new Date(message.createdAt), "shortTime")}
         </time>
       </header>
-      <p className="mt-4 text-sm leading-7 whitespace-pre-line">{message.body}</p>
+      <p className="mt-4 text-sm leading-7 whitespace-pre-line">
+        {message.body}
+      </p>
     </article>
   );
 }

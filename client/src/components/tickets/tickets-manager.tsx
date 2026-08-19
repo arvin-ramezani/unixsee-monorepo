@@ -158,10 +158,10 @@ export function TicketsManager({
   );
   const hasFilters = Boolean(
     normalizedQuery ||
-      tab !== "all" ||
-      service !== "all" ||
-      website !== "all" ||
-      status !== "all",
+    tab !== "all" ||
+    service !== "all" ||
+    website !== "all" ||
+    status !== "all",
   );
 
   function resetFilters() {
@@ -306,14 +306,14 @@ export function TicketsManager({
               <TabsTrigger
                 key={value}
                 value={value}
-                className="text-muted-foreground data-[state=active]:text-primary h-full rounded border-0 border-b border-transparent px-3 shadow-none! transition-colors"
+                className="text-muted-foreground dark:data-[state=active]:text-secondary data-[state=active]:text-primary h-full rounded border-0! border-b border-transparent bg-transparent! px-3 shadow-none! transition-colors"
               >
                 {t(`tabs.${value}`)}
 
                 {value === tab && (
                   <motion.div
                     layoutId="active-tab-underline"
-                    className="bg-primary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
+                    className="bg-primary dark:bg-secondary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
                     transition={
                       prefersReducedMotion
                         ? { duration: 0 }
@@ -365,201 +365,210 @@ export function TicketsManager({
         deferUntilKeyChange
         animationKey={`${view}-${tab}-${service}-${website}-${status}-${sort}-${page}`}
       >
-      {visibleTickets.length === 0 ? (
-        <div className="grid min-h-90 place-items-center px-6 text-center">
-          <div>
-            <Search
-              aria-hidden="true"
-              className="text-muted-foreground mx-auto size-8"
-            />
-            <h3 className="mt-3 font-semibold">{t("states.filteredTitle")}</h3>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {t("states.filteredDescription")}
-            </p>
-            {hasFilters && (
-              <DashboardButton
-                type="button"
-                onClick={resetFilters}
-                variant="outline"
-                className="mt-4 min-h-10"
-              >
-                {t("states.clear")}
-              </DashboardButton>
-            )}
+        {visibleTickets.length === 0 ? (
+          <div className="grid min-h-90 place-items-center px-6 text-center">
+            <div>
+              <Search
+                aria-hidden="true"
+                className="text-muted-foreground mx-auto size-8"
+              />
+              <h3 className="mt-3 font-semibold">
+                {t("states.filteredTitle")}
+              </h3>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {t("states.filteredDescription")}
+              </p>
+              {hasFilters && (
+                <DashboardButton
+                  type="button"
+                  onClick={resetFilters}
+                  variant="outline"
+                  className="mt-4 min-h-10"
+                >
+                  {t("states.clear")}
+                </DashboardButton>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <>
-          {view === "grid" && <TicketGrid tickets={visibleTickets} />}
+        ) : (
+          <>
+            {view === "grid" && <TicketGrid tickets={visibleTickets} />}
 
-          <div
-            className={cn(
-              "overflow-x-auto",
-              view === "grid" ? "hidden" : "hidden lg:block",
-            )}
-          >
-            <Table className="min-w-245 table-fixed text-sm">
-              <TableCaption className="sr-only">
-                {t("table.caption")}
-              </TableCaption>
-              <colgroup>
-                <col className="w-[30%]" />
-                <col className="w-[16%]" />
-                <col className="w-[14%]" />
-                <col className="w-[15%]" />
-                <col className="w-[15%]" />
-                <col className="w-[10%]" />
-              </colgroup>
-              <TableHeader className="text-muted-foreground">
-                <TableRow className="h-12">
-                  <TableHead className="ps-6 text-xs">
-                    {t("table.ticket")}
-                  </TableHead>
-                  <TableHead className="text-xs">
-                    {t("table.service")}
-                  </TableHead>
-                  <TableHead className="text-xs">
-                    {t("table.website")}
-                  </TableHead>
-                  <TableHead className="text-xs">{t("table.status")}</TableHead>
-                  <TableHead className="text-xs">
-                    {t("table.activity")}
-                  </TableHead>
-                  <TableHead className="text-xs">{t("table.action")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {visibleTickets.map((ticket) => (
-                  <TableRow
-                    key={ticket.id}
-                    className="border-border hover:bg-muted/30 h-19.5 border-b"
-                  >
-                    <TableHead
-                      scope="row"
-                      className="text-foreground h-auto ps-6 pe-4 text-start"
+            <div
+              className={cn(
+                "overflow-x-auto",
+                view === "grid" ? "hidden" : "hidden lg:block",
+              )}
+            >
+              <Table className="min-w-245 table-fixed text-sm">
+                <TableCaption className="sr-only">
+                  {t("table.caption")}
+                </TableCaption>
+                <colgroup>
+                  <col className="w-[30%]" />
+                  <col className="w-[16%]" />
+                  <col className="w-[14%]" />
+                  <col className="w-[15%]" />
+                  <col className="w-[15%]" />
+                  <col className="w-[10%]" />
+                </colgroup>
+                <TableHeader className="text-muted-foreground">
+                  <TableRow className="h-12">
+                    <TableHead className="ps-6 text-xs">
+                      {t("table.ticket")}
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      {t("table.service")}
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      {t("table.website")}
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      {t("table.status")}
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      {t("table.activity")}
+                    </TableHead>
+                    <TableHead className="text-xs">
+                      {t("table.action")}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visibleTickets.map((ticket) => (
+                    <TableRow
+                      key={ticket.id}
+                      className="border-border hover:bg-muted/30 h-19.5 border-b"
                     >
-                      <span className="flex items-center gap-3">
+                      <TableHead
+                        scope="row"
+                        className="text-foreground h-auto ps-6 pe-4 text-start"
+                      >
+                        <span className="flex items-center gap-3">
+                          {ticket.unread ? (
+                            <span
+                              className="bg-warning size-2 shrink-0 rounded-full"
+                              aria-label={t("unread")}
+                            />
+                          ) : (
+                            <span className="size-2 shrink-0" />
+                          )}
+                          <span className="min-w-0">
+                            <Link
+                              href={`/dashboard/tickets/${ticket.id}`}
+                              className="hover:text-link focus-visible:ring-ring block truncate font-semibold focus-visible:ring-2"
+                            >
+                              {ticket.subject}
+                            </Link>
+                            <span className="text-muted-foreground mt-1 block text-start text-xs font-normal">
+                              #{ticket.number}
+                            </span>
+                          </span>
+                        </span>
+                      </TableHead>
+                      <TableCell>{t(`services.${ticket.service}`)}</TableCell>
+                      <TableCell>
+                        {ticket.website?.name ?? t("notApplicable")}
+                      </TableCell>
+                      <TableCell>
+                        <TicketStatusBadge status={ticket.status} />
+                      </TableCell>
+                      <TableCell className="pe-3 text-xs leading-5">
+                        <span className="block">
+                          {formatTicketRelativeActivity(
+                            ticket.lastActivityAt,
+                            locale,
+                          )}
+                        </span>
+                        <span className="text-muted-foreground block">
+                          {t(`activity.${ticket.lastActor}`)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/dashboard/tickets/${ticket.id}`}
+                          className="border-border dark:hover:bg-accent dark:hover:border-link/12 dark:hover:text-accent-foreground hover:bg-muted focus-visible:ring-ring inline-flex min-h-9 items-center rounded-lg border px-3 text-xs font-medium focus-visible:ring-2"
+                        >
+                          {t("viewTicket")}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div
+              className={cn(
+                "space-y-3 p-4",
+                view === "grid" ? "hidden" : "lg:hidden",
+              )}
+            >
+              {visibleTickets.map((ticket) => (
+                <article
+                  key={ticket.id}
+                  className="border-border rounded-lg border p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
                         {ticket.unread ? (
                           <span
                             className="bg-warning size-2 shrink-0 rounded-full"
                             aria-label={t("unread")}
                           />
-                        ) : (
-                          <span className="size-2 shrink-0" />
-                        )}
-                        <span className="min-w-0">
-                          <Link
-                            href={`/dashboard/tickets/${ticket.id}`}
-                            className="hover:text-link focus-visible:ring-ring block truncate font-semibold focus-visible:ring-2"
-                          >
-                            {ticket.subject}
-                          </Link>
-                          <span className="text-muted-foreground mt-1 block text-start text-xs font-normal">
-                            #{ticket.number}
-                          </span>
-                        </span>
-                      </span>
-                    </TableHead>
-                    <TableCell>{t(`services.${ticket.service}`)}</TableCell>
-                    <TableCell>
-                      {ticket.website?.name ?? t("notApplicable")}
-                    </TableCell>
-                    <TableCell>
-                      <TicketStatusBadge status={ticket.status} />
-                    </TableCell>
-                    <TableCell className="pe-3 text-xs leading-5">
-                      <span className="block">
-                        {formatTicketRelativeActivity(
-                          ticket.lastActivityAt,
-                          locale,
-                        )}
-                      </span>
-                      <span className="text-muted-foreground block">
-                        {t(`activity.${ticket.lastActor}`)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/dashboard/tickets/${ticket.id}`}
-                        className="border-border dark:hover:bg-accent dark:hover:border-link/12 dark:hover:text-accent-foreground hover:bg-muted focus-visible:ring-ring inline-flex min-h-9 items-center rounded-lg border px-3 text-xs font-medium focus-visible:ring-2"
+                        ) : null}
+                        <h3 className="truncate font-semibold">
+                          {ticket.subject}
+                        </h3>
+                      </div>
+                      <p
+                        dir="ltr"
+                        className="text-muted-foreground mt-1 w-fit text-start text-xs"
                       >
-                        {t("viewTicket")}
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-          <div
-            className={cn(
-              "space-y-3 p-4",
-              view === "grid" ? "hidden" : "lg:hidden",
-            )}
-          >
-            {visibleTickets.map((ticket) => (
-              <article
-                key={ticket.id}
-                className="border-border rounded-lg border p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      {ticket.unread ? (
-                        <span
-                          className="bg-warning size-2 shrink-0 rounded-full"
-                          aria-label={t("unread")}
-                        />
-                      ) : null}
-                      <h3 className="truncate font-semibold">
-                        {ticket.subject}
-                      </h3>
+                        #{ticket.number}
+                      </p>
                     </div>
-                    <p
-                      dir="ltr"
-                      className="text-muted-foreground mt-1 w-fit text-start text-xs"
-                    >
-                      #{ticket.number}
+                    <TicketStatusBadge status={ticket.status} />
+                  </div>
+                  <dl className="border-border mt-4 grid grid-cols-2 gap-4 border-y py-4 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground text-xs">
+                        {t("table.service")}
+                      </dt>
+                      <dd className="mt-1 font-medium">
+                        {t(`services.${ticket.service}`)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground text-xs">
+                        {t("table.website")}
+                      </dt>
+                      <dd className="mt-1 font-medium">
+                        {ticket.website?.name ?? t("notApplicable")}
+                      </dd>
+                    </div>
+                  </dl>
+                  <div className="mt-4 flex items-center justify-between gap-4">
+                    <p className="text-muted-foreground text-xs leading-5">
+                      {formatTicketRelativeActivity(
+                        ticket.lastActivityAt,
+                        locale,
+                      )}
+                      <br />
+                      {t(`activity.${ticket.lastActor}`)}
                     </p>
+                    <Link
+                      href={`/dashboard/tickets/${ticket.id}`}
+                      className="border-border focus-visible:ring-ring inline-flex min-h-10 items-center rounded-lg border px-3 text-xs font-medium focus-visible:ring-2"
+                    >
+                      {t("viewTicket")}
+                    </Link>
                   </div>
-                  <TicketStatusBadge status={ticket.status} />
-                </div>
-                <dl className="border-border mt-4 grid grid-cols-2 gap-4 border-y py-4 text-sm">
-                  <div>
-                    <dt className="text-muted-foreground text-xs">
-                      {t("table.service")}
-                    </dt>
-                    <dd className="mt-1 font-medium">
-                      {t(`services.${ticket.service}`)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground text-xs">
-                      {t("table.website")}
-                    </dt>
-                    <dd className="mt-1 font-medium">
-                      {ticket.website?.name ?? t("notApplicable")}
-                    </dd>
-                  </div>
-                </dl>
-                <div className="mt-4 flex items-center justify-between gap-4">
-                  <p className="text-muted-foreground text-xs leading-5">
-                    {formatTicketRelativeActivity(ticket.lastActivityAt, locale)}
-                    <br />
-                    {t(`activity.${ticket.lastActor}`)}
-                  </p>
-                  <Link
-                    href={`/dashboard/tickets/${ticket.id}`}
-                    className="border-border focus-visible:ring-ring inline-flex min-h-10 items-center rounded-lg border px-3 text-xs font-medium focus-visible:ring-2"
-                  >
-                    {t("viewTicket")}
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </>
-      )}
+                </article>
+              ))}
+            </div>
+          </>
+        )}
       </DashboardFadeIn>
 
       <footer className="border-border text-muted-foreground flex min-h-15 items-center justify-between gap-4 border-t px-5 text-sm sm:px-6">

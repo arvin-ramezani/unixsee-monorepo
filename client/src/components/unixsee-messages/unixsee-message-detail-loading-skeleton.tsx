@@ -29,10 +29,10 @@ export function UnixseeMessageDetailLoadingSkeleton() {
 
   return (
     <div className="space-y-5" aria-busy="true" aria-label={t("loadingDetail")}>
-      <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="grid w-full gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
         <QuickActionsAsideSkeleton className="xl:hidden" />
 
-        <Panel className="min-w-0 max-w-2xl space-y-5 p-5 sm:p-6">
+        <div className="mt-8 max-w-2xl min-w-0 space-y-5">
           <div className="space-y-2">
             <Skeleton className="h-4 w-20" />
             <Skeleton className="h-8 w-72 max-w-full" />
@@ -59,9 +59,9 @@ export function UnixseeMessageDetailLoadingSkeleton() {
           </div>
 
           <Skeleton className="h-4 w-40" />
-        </Panel>
+        </div>
 
-        <QuickActionsAsideSkeleton className="hidden self-start xl:sticky xl:top-24 xl:block" />
+        <QuickActionsAsideSkeleton className="mt-8 hidden self-start xl:sticky xl:top-24 xl:block" />
       </div>
     </div>
   );

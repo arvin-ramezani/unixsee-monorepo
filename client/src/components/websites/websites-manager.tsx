@@ -180,17 +180,14 @@ export function WebsitesManager({
               key={tab}
               value={tab}
               className={cn(
-                "text-muted-foreground hover:text-foreground focus-visible:ring-ring relative h-auto snap-center rounded border-0 border-b border-transparent bg-transparent px-4 py-0 text-sm shadow-none focus-visible:ring-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                activeTab === tab && "text-primary shadow-none!",
-                // activeTab === tab &&
-                //   "border-success text-foreground border-b shadow-none!",
+                "text-muted-foreground hover:text-foreground focus-visible:ring-ring dark:data-[state=active]:text-secondary data-[state=active]:text-primary relative h-auto snap-center rounded border-0 border-b border-transparent bg-transparent px-4 py-0 text-sm shadow-none focus-visible:ring-2 data-state-active:shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none",
               )}
             >
               {t(`tabs.${tab}`)}
               {activeTab === tab && (
                 <motion.div
                   layoutId="active-tab-underline"
-                  className="bg-primary absolute -bottom-1 h-1 w-full origin-center scale-y-50 rounded-full"
+                  className="bg-primary dark:bg-secondary absolute -bottom-1 h-1 w-full origin-center scale-y-50 rounded-full"
                   transition={
                     prefersReducedMotion
                       ? { duration: 0 }
@@ -256,188 +253,193 @@ export function WebsitesManager({
         deferUntilKeyChange
         animationKey={`${view}-${activeTab}-${status}-${plan}-${backup}-${sort}`}
       >
-      {view === "grid" && visibleWebsites.length > 0 && (
-        <WebsiteGrid websites={visibleWebsites} />
-      )}
-
-      <div
-        className={cn(
-          "overflow-x-auto",
-          view === "grid" ? "hidden" : "hidden lg:block",
+        {view === "grid" && visibleWebsites.length > 0 && (
+          <WebsiteGrid websites={visibleWebsites} />
         )}
-      >
-        <Table className="min-w-245 table-fixed text-sm">
-          <TableCaption className="sr-only">{t("table.caption")}</TableCaption>
-          <colgroup>
-            <col className="w-[22%]" />
-            <col className="w-[15%]" />
-            <col className="w-[10%]" />
-            <col className="w-[14%]" />
-            <col className="w-[14%]" />
-            <col className="w-[13%]" />
-            <col className="w-[12%]" />
-          </colgroup>
-          <TableHeader className="text-muted-foreground">
-            <TableRow className="h-11.25">
-              <TableHead className="ps-7 text-xs">
-                {t("table.website")}
-              </TableHead>
-              <TableHead className="text-xs">{t("table.domain")}</TableHead>
-              <TableHead className="text-xs">{t("table.plan")}</TableHead>
-              <TableHead className="text-xs">{t("table.status")}</TableHead>
-              <TableHead className="text-xs">{t("table.backup")}</TableHead>
-              <TableHead className="text-xs">
-                {t("table.lastUpdated")}
-              </TableHead>
-              <TableHead className="text-xs">{t("table.actions")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {visibleWebsites.map((website) => (
-              <TableRow
-                key={website.domain}
-                className="border-border hover:bg-muted/30 h-18 border-b"
-              >
-                <TableHead
-                  scope="row"
-                  className="text-foreground h-auto ps-5.5 text-start"
-                >
-                  <span className="flex items-center gap-5">
-                    <span
-                      className={cn(
-                        "grid size-9.5 shrink-0 place-items-center rounded-full text-lg font-semibold",
-                        monogramStyles[website.tone],
-                      )}
-                    >
-                      {website.monogram}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="text-foreground block truncate font-semibold">
-                        {website.name}
-                      </span>
-                      <span className="text-muted-foreground mt-1 block truncate text-xs font-normal">
-                        {common(`descriptions.${website.description}`)}
-                      </span>
-                    </span>
-                  </span>
+
+        <div
+          className={cn(
+            "overflow-x-auto",
+            view === "grid" ? "hidden" : "hidden lg:block",
+          )}
+        >
+          <Table className="min-w-245 table-fixed text-sm">
+            <TableCaption className="sr-only">
+              {t("table.caption")}
+            </TableCaption>
+            <colgroup>
+              <col className="w-[22%]" />
+              <col className="w-[15%]" />
+              <col className="w-[10%]" />
+              <col className="w-[14%]" />
+              <col className="w-[14%]" />
+              <col className="w-[13%]" />
+              <col className="w-[12%]" />
+            </colgroup>
+            <TableHeader className="text-muted-foreground">
+              <TableRow className="h-11.25">
+                <TableHead className="ps-7 text-xs">
+                  {t("table.website")}
                 </TableHead>
-                <TableCell>
-                  <Link
-                    href={`https://${website.domain}`}
+                <TableHead className="text-xs">{t("table.domain")}</TableHead>
+                <TableHead className="text-xs">{t("table.plan")}</TableHead>
+                <TableHead className="text-xs">{t("table.status")}</TableHead>
+                <TableHead className="text-xs">{t("table.backup")}</TableHead>
+                <TableHead className="text-xs">
+                  {t("table.lastUpdated")}
+                </TableHead>
+                <TableHead className="text-xs">{t("table.actions")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visibleWebsites.map((website) => (
+                <TableRow
+                  key={website.domain}
+                  className="border-border hover:bg-muted/30 h-18 border-b"
+                >
+                  <TableHead
+                    scope="row"
+                    className="text-foreground h-auto ps-5.5 text-start"
+                  >
+                    <span className="flex items-center gap-5">
+                      <span
+                        className={cn(
+                          "grid size-9.5 shrink-0 place-items-center rounded-full text-lg font-semibold",
+                          monogramStyles[website.tone],
+                        )}
+                      >
+                        {website.monogram}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="text-foreground block truncate font-semibold">
+                          {website.name}
+                        </span>
+                        <span className="text-muted-foreground mt-1 block truncate text-xs font-normal">
+                          {common(`descriptions.${website.description}`)}
+                        </span>
+                      </span>
+                    </span>
+                  </TableHead>
+                  <TableCell>
+                    <Link
+                      href={`https://${website.domain}`}
+                      dir="ltr"
+                      className="hover:text-link inline-flex items-center gap-2"
+                    >
+                      {website.domain}
+                      <ExternalLink
+                        aria-hidden="true"
+                        className="text-muted-foreground size-3.5"
+                      />
+                    </Link>
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {common(`plans.${website.plan}`)}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={website.status} />
+                  </TableCell>
+                  <TableCell>
+                    <BackupBadge backup={website.backup} />
+                  </TableCell>
+                  <TableCell className="leading-5 tabular-nums">
+                    <time dateTime={website.updatedAt}>
+                      <span className="block">
+                        {format.dateTime(
+                          new Date(website.updatedAt),
+                          "shortDate",
+                        )}
+                      </span>
+                      <span className="text-muted-foreground block">
+                        {format.dateTime(
+                          new Date(website.updatedAt),
+                          "shortTime",
+                        )}
+                      </span>
+                    </time>
+                  </TableCell>
+                  <TableCell>
+                    <span className="flex items-center gap-5">
+                      <Link
+                        href={`/dashboard/websites/${website.id}`}
+                        className="border-border hover:bg-muted focus-visible:ring-ring dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-link/12 inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium transition-colors focus-visible:ring-2"
+                      >
+                        {t("table.manage")}
+                      </Link>
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div
+          className={cn(
+            "space-y-3 p-4",
+            view === "grid" ? "hidden" : "lg:hidden",
+          )}
+        >
+          {visibleWebsites.map((website) => (
+            <article
+              key={website.domain}
+              className="border-border rounded-lg border p-4"
+            >
+              <div className="flex items-start gap-3">
+                <span
+                  className={cn(
+                    "grid size-10 shrink-0 place-items-center rounded-full font-semibold",
+                    monogramStyles[website.tone],
+                  )}
+                >
+                  {website.monogram}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold">{website.name}</h3>
+                  <p
                     dir="ltr"
-                    className="hover:text-link inline-flex items-center gap-2"
+                    className="text-muted-foreground truncate text-xs"
                   >
                     {website.domain}
-                    <ExternalLink
-                      aria-hidden="true"
-                      className="text-muted-foreground size-3.5"
-                    />
-                  </Link>
-                </TableCell>
-                <TableCell className="font-medium">
-                  {common(`plans.${website.plan}`)}
-                </TableCell>
-                <TableCell>
-                  <StatusBadge status={website.status} />
-                </TableCell>
-                <TableCell>
-                  <BackupBadge backup={website.backup} />
-                </TableCell>
-                <TableCell className="leading-5 tabular-nums">
-                  <time dateTime={website.updatedAt}>
-                    <span className="block">
-                      {format.dateTime(
-                        new Date(website.updatedAt),
-                        "shortDate",
-                      )}
-                    </span>
-                    <span className="text-muted-foreground block">
-                      {format.dateTime(
-                        new Date(website.updatedAt),
-                        "shortTime",
-                      )}
-                    </span>
-                  </time>
-                </TableCell>
-                <TableCell>
-                  <span className="flex items-center gap-5">
-                    <Link
-                      href={`/dashboard/websites/${website.id}`}
-                      className="border-border hover:bg-muted focus-visible:ring-ring dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-link/12 inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium transition-colors focus-visible:ring-2"
-                    >
-                      {t("table.manage")}
-                    </Link>
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      <div
-        className={cn(
-          "space-y-3 p-4",
-          view === "grid" ? "hidden" : "lg:hidden",
-        )}
-      >
-        {visibleWebsites.map((website) => (
-          <article
-            key={website.domain}
-            className="border-border rounded-lg border p-4"
-          >
-            <div className="flex items-start gap-3">
-              <span
-                className={cn(
-                  "grid size-10 shrink-0 place-items-center rounded-full font-semibold",
-                  monogramStyles[website.tone],
-                )}
-              >
-                {website.monogram}
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold">{website.name}</h3>
-                <p dir="ltr" className="text-muted-foreground truncate text-xs">
-                  {website.domain}
-                </p>
+                  </p>
+                </div>
+                <StatusBadge status={website.status} />
               </div>
-              <StatusBadge status={website.status} />
-            </div>
-            <div className="border-border mt-4 flex items-center justify-between border-t pt-3">
-              <BackupBadge backup={website.backup} />
-              <Link
-                href={`/dashboard/websites/${website.id}`}
-                className="border-border focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium focus-visible:ring-2"
-              >
-                {t("table.manage")}
-              </Link>
-            </div>
-          </article>
-        ))}
-      </div>
-      {visibleWebsites.length === 0 && (
-        <div className="border-border grid min-h-60 place-items-center border-b px-6 text-center">
-          <div className="flex flex-col items-center">
-            <Search
-              aria-hidden="true"
-              className="text-muted-foreground mx-auto size-8"
-            />
-            <h3 className="mt-3 font-semibold">{t("table.emptyTitle")}</h3>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {t("table.emptyDescription")}
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              size="plain"
-              onClick={resetFilters}
-              className="border-border mt-4 h-9 rounded-lg border px-4 text-sm font-medium"
-            >
-              {t("table.clearFilters")}
-            </Button>
-          </div>
+              <div className="border-border mt-4 flex items-center justify-between border-t pt-3">
+                <BackupBadge backup={website.backup} />
+                <Link
+                  href={`/dashboard/websites/${website.id}`}
+                  className="border-border focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium focus-visible:ring-2"
+                >
+                  {t("table.manage")}
+                </Link>
+              </div>
+            </article>
+          ))}
         </div>
-      )}
+        {visibleWebsites.length === 0 && (
+          <div className="border-border grid min-h-60 place-items-center border-b px-6 text-center">
+            <div className="flex flex-col items-center">
+              <Search
+                aria-hidden="true"
+                className="text-muted-foreground mx-auto size-8"
+              />
+              <h3 className="mt-3 font-semibold">{t("table.emptyTitle")}</h3>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {t("table.emptyDescription")}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="plain"
+                onClick={resetFilters}
+                className="border-border mt-4 h-9 rounded-lg border px-4 text-sm font-medium"
+              >
+                {t("table.clearFilters")}
+              </Button>
+            </div>
+          </div>
+        )}
       </DashboardFadeIn>
       <div className="text-muted-foreground flex h-15 items-center justify-between px-6 text-sm">
         <span>

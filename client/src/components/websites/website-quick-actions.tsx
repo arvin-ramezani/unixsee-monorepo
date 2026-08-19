@@ -31,14 +31,14 @@ export function WebsiteQuickActions({
         description={t("quickActions.description")}
       />
       <div className="mt-5 grid gap-3 md:grid-cols-3">
-        <WebsiteDetailsActionButton
+        {/* <WebsiteDetailsActionButton
           kind="clearCache"
           idleLabel={t("actions.clearCache")}
           pendingLabel={t("actions.clearingCache")}
           successLabel={t("actions.cacheCleared")}
           description={t("quickActions.cacheDescription")}
           className="[&_button]:h-auto [&_button]:min-h-20 [&_button]:p-4"
-        />
+        /> */}
 
         {website.links.directAdmin ? (
           <Button
@@ -71,11 +71,12 @@ export function WebsiteQuickActions({
           </div>
         )}
 
-        <Button
-          asChild
-          className="hover:border-primary/4 hover:bg-primary/95 h-auto min-h-20 justify-start gap-3 p-4 whitespace-normal transition-colors"
-        >
-          {!!website.links.wordPressAdmin && (
+        {!!website.links.wordPressAdmin && (
+          <Button
+            asChild
+            variant="outline"
+            className="h-auto min-h-20 justify-start gap-3 p-4 whitespace-normal"
+          >
             <Link
               href={website.links.wordPressAdmin}
               target="_blank"
@@ -98,8 +99,8 @@ export function WebsiteQuickActions({
                 className="ms-auto size-4 shrink-0 rtl:-scale-x-100"
               />
             </Link>
-          )}
-        </Button>
+          </Button>
+        )}
       </div>
     </Panel>
   );

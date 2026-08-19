@@ -10,6 +10,7 @@ import { UnixseeMessageAttachments } from "@/components/unixsee-messages/unixsee
 import { UnixseeMessagesAside } from "@/components/unixsee-messages/unixsee-messages-aside";
 import { Link } from "@/i18n/navigation";
 import type { UnixseeMessageItem } from "@/lib/unixsee-messages/types";
+import { Badge } from "../ui/badge";
 
 type UnixseeMessageDetailViewProps = {
   message: UnixseeMessageItem;
@@ -32,8 +33,8 @@ export function UnixseeMessageDetailView({
     message.website?.displayName?.trim() || message.website?.domain || null;
 
   return (
-    <div className="space-y-5">
-      <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
+    <div className="mt-8 space-y-5">
+      <div className="grid w-full gap-6 xl:grid-cols-[minmax(0,1fr)_19rem]">
         <div className="xl:hidden">
           <UnixseeMessagesAside
             websiteId={message.websiteId ?? message.website?.id}
@@ -41,12 +42,25 @@ export function UnixseeMessageDetailView({
           />
         </div>
 
-        <DashboardFadeIn className="min-w-0 max-w-2xl">
-          <Panel className="space-y-5 p-5 sm:p-6">
+        <DashboardFadeIn className="max-w-2xl min-w-0">
+          <div className="space-y-5">
             <div>
-              <p className="text-muted-foreground text-sm">
-                {message.isRead || pending ? t("read") : t("unread")}
-              </p>
+              {message.isRead ? (
+                <Badge
+                  variant="outline"
+                  className="bg-success text-success-foreground"
+                >
+                  {t("read")}
+                </Badge>
+              ) : (
+                <Badge
+                  variant="outline"
+                  className="bg-destructive dark:bg-destructive/80 text-destructive-foreground dark:text-destructive-foreground/80"
+                >
+                  {t("unread")}
+                </Badge>
+              )}
+
               <h1 className="mt-1 text-2xl font-semibold tracking-tight">
                 {message.title}
               </h1>
@@ -59,7 +73,7 @@ export function UnixseeMessageDetailView({
               )}
             </div>
 
-            <p className="whitespace-pre-wrap text-sm leading-7">
+            <p className="text-sm leading-7 whitespace-pre-wrap">
               {message.body}
             </p>
 
@@ -77,14 +91,14 @@ export function UnixseeMessageDetailView({
                           {link.label || link.url}
                         </Link>
                       ) : (
-                        <a
+                        <Link
                           href={link.url}
                           target="_blank"
                           rel="noreferrer noopener"
                           className="text-primary underline-offset-2 hover:underline"
                         >
                           {link.label || link.url}
-                        </a>
+                        </Link>
                       )}
                     </li>
                   ))}
@@ -93,14 +107,7 @@ export function UnixseeMessageDetailView({
             )}
 
             <UnixseeMessageAttachments attachments={message.attachments} />
-
-            <Link
-              href="/dashboard/unixsee-messages"
-              className="text-primary inline-flex text-sm underline-offset-2 hover:underline"
-            >
-              {t("backToList")}
-            </Link>
-          </Panel>
+          </div>
         </DashboardFadeIn>
 
         <UnixseeMessagesAside

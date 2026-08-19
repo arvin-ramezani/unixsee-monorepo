@@ -588,12 +588,13 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
 
             {otpChannel && !verifiedChannel && (
               <div className="bg-muted/30 rounded-2xl border p-4">
-                <p className="text-muted-foreground mb-3 text-sm">
+                <p className="text-muted-foreground mb-3 text-center text-sm">
                   {otpChannel === "phone"
                     ? t("otpPhoneHint")
                     : t("otpEmailHint")}
                 </p>
                 <OtpInput
+                  className="flex flex-col items-center justify-center text-center [&_label]:justify-center"
                   value={otpCode}
                   onChange={setOtpCode}
                   error={otpError ?? undefined}

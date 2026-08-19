@@ -104,16 +104,16 @@ export function ComplementaryServicesTabs({
           <TabsTrigger
             key={tab}
             value={tab}
-            className="text-muted-foreground data-[state=active]:text-primary relative min-h-full border-0 px-4 text-sm shadow-none! transition-colors data-[state=active]:rounded-none data-[state=active]:shadow-none"
+            className="text-muted-foreground group data-[state=active]:text-primary dark:data-[state=active]:text-secondary relative min-h-full border-0 bg-transparent! px-4 text-sm shadow-none! transition-colors data-[state=active]:rounded-none data-[state=active]:shadow-none"
           >
             {t(tab)}{" "}
-            <span className="text-muted-foreground ms-1 text-xs tabular-nums">
+            <span className="text-muted-foreground group-data-[state=active]:text-primary dark:group-data-[state=active]:text-secondary ms-1 text-xs tabular-nums">
               {counts[tab]}
             </span>
             {activeTab === tab && (
               <motion.div
                 layoutId="active-tab-underline"
-                className="bg-primary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
+                className="bg-primary dark:bg-secondary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
                 transition={
                   prefersReducedMotion
                     ? { duration: 0 }
