@@ -73,10 +73,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   }, [cooldown]);
 
   function translateError(message?: string) {
-    return translateFormError(
-      (key) => tErrors(key as FormErrorKey),
-      message,
-    );
+    return translateFormError((key) => tErrors(key as FormErrorKey), message);
   }
 
   async function onSubmit(data: OtpSchemaType) {
@@ -141,10 +138,14 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
       return;
     }
 
+    toast.success(`OTP: ${result.otp}`);
+
     setCooldown(RESEND_COOLDOWN_SECONDS);
   }
 
-  const maskedMessage = tCommon("maskedPhone", { identifier: display });
+  const maskedMessage = tCommon("maskedPhone", {
+    identifier: `<span dir="ltr">${display}</span>`,
+  });
 
   return (
     <div>
@@ -153,8 +154,10 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
         title={t("title")}
         description={t("description")}
       />
-      <p className="text-muted-foreground mt-3 text-sm">{maskedMessage}</p>
-
+      <p
+        className="text-muted-foreground mt-3 text-sm"
+        dangerouslySetInnerHTML={{ __html: maskedMessage }}
+      />
       <form
         className="mt-6"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -175,15 +178,15 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
           )}
         />
 
-        {!!formError && (
-          <AuthAlert className="mt-4" description={formError} />
-        )}
+        {!!formError && <AuthAlert className="mt-4" description={formError} />}
 
         <AnimatePresence mode="wait" initial={false}>
           {success ? (
             <motion.div
               key="success"
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              initial={
+                reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }
+              }
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: reduceMotion ? 0.12 : 0.25 }}
@@ -209,7 +212,6 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
           )}
         </AnimatePresence>
       </form>
-
       <AuthCrossLinks>
         <Button
           type="button"

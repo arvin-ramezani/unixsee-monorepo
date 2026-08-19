@@ -443,6 +443,7 @@ model WebsiteDiscovery {
   wordpressUpdateStatus    String?         @map("wordpress_update_status")
   wordpressUpdateCheckedAt DateTime?       @map("wordpress_update_checked_at") @db.Timestamptz(6)
   fieldStatus              Json?           @map("field_status")
+  stackCheckedAt           DateTime?       @map("stack_checked_at") @db.Timestamptz(6)
   status                   DiscoveryStatus @default(NEW)
   rawPayload               Json?           @map("raw_payload")
   assignedAt               DateTime?       @map("assigned_at") @db.Timestamptz(6)
@@ -453,6 +454,7 @@ model WebsiteDiscovery {
   website Website? @relation(fields: [websiteId], references: [id], onDelete: SetNull)
 
   activeVisitorSamples WebsiteActiveVisitorSample[]
+  trafficSnapshot      WebsiteTrafficSnapshot?
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -461,6 +463,35 @@ model WebsiteDiscovery {
   @@index([status])
   @@index([vpsNodeId])
   @@map("website_discoveries")
+}
+
+/// Latest Phase 1 traffic read model. Raw visitor identities never reach NestJS.
+model WebsiteTrafficSnapshot {
+  discoveryId String @id @map("discovery_id") @db.Uuid
+  domain      String
+
+  activeVisitorCount    Int?      @map("active_visitor_count")
+  activeWindowSeconds   Int?      @map("active_window_seconds")
+  activeWindowStartedAt DateTime? @map("active_window_started_at") @db.Timestamptz(6)
+  activeMeasuredAt      DateTime? @map("active_measured_at") @db.Timestamptz(6)
+  activeStatus          Json?     @map("active_status")
+
+  visitors24hCount           Int?      @map("visitors_24h_count")
+  visitors24hWindowSeconds   Int?      @map("visitors_24h_window_seconds")
+  visitors24hCoverageSeconds Int?      @map("visitors_24h_coverage_seconds")
+  visitors24hMeasuredAt      DateTime? @map("visitors_24h_measured_at") @db.Timestamptz(6)
+  visitors24hAlgorithm       String?   @map("visitors_24h_algorithm")
+  visitors24hStatus          Json?     @map("visitors_24h_status")
+
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([domain])
+  @@index([activeMeasuredAt])
+  @@index([visitors24hMeasuredAt])
+  @@map("website_traffic_snapshots")
 }
 
 /// Phase 1 agent 3-minute unique-IP visitor samples (append-only).

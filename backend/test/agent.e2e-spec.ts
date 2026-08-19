@@ -7,15 +7,7 @@ import {
 } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { GlobalExceptionFilter } from '#/common/http/filters/global-exception.filter.js';
 import { DiscoveryStatus, VpsNodeStatus } from '#/generated/prisma/enums.js';
@@ -50,9 +42,13 @@ describe('AgentModule (e2e)', () => {
     websiteDiscovery: {
       upsert: vi.fn(),
       findUnique: vi.fn(),
+      update: vi.fn(),
     },
     websiteActiveVisitorSample: {
       createMany: vi.fn(),
+    },
+    websiteTrafficSnapshot: {
+      upsert: vi.fn(),
     },
     $transaction: vi.fn(),
   };
@@ -88,9 +84,7 @@ describe('AgentModule (e2e)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    prisma.$transaction.mockImplementation(async (callback) =>
-      callback(prisma),
-    );
+    prisma.$transaction.mockImplementation(async (callback) => callback(prisma));
 
     prisma.vpsNode.findUnique.mockResolvedValue({
       id: VPS_NODE_ID,
@@ -100,7 +94,7 @@ describe('AgentModule (e2e)', () => {
     });
     prisma.vpsNode.update.mockImplementation(async ({ data, select }) => ({
       id: VPS_NODE_ID,
-      agentInstanceId: MACHINE_ID,
+      machineId: MACHINE_ID,
       lastHeartbeatAt: data.lastHeartbeatAt ?? new Date(),
       lastSeenAt: data.lastSeenAt ?? new Date(),
       status: data.status ?? VpsNodeStatus.ONLINE,
@@ -110,13 +104,18 @@ describe('AgentModule (e2e)', () => {
     prisma.websiteDiscovery.upsert.mockResolvedValue({
       id: 'discovery-1',
       domain: 'example.com',
-    });
-    prisma.websiteDiscovery.findUnique.mockResolvedValue({
       websiteId: 'website-1',
     });
+    prisma.websiteDiscovery.findUnique.mockResolvedValue({
+      id: 'discovery-1',
+      domain: 'example.com',
+      websiteId: 'website-1',
+    });
+    prisma.websiteDiscovery.update.mockResolvedValue({});
     prisma.websiteActiveVisitorSample.createMany.mockResolvedValue({
       count: 1,
     });
+    prisma.websiteTrafficSnapshot.upsert.mockResolvedValue({});
   });
 
   afterAll(async () => {
@@ -127,7 +126,7 @@ describe('AgentModule (e2e)', () => {
     it('returns 401 when enrollment token header is missing', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
-        .send({ agentInstanceId: MACHINE_ID })
+        .send({ machineId: MACHINE_ID })
         .expect(401);
 
       expect(response.body).toMatchObject({
@@ -140,7 +139,7 @@ describe('AgentModule (e2e)', () => {
       expect(serversService.enrollWithToken).not.toHaveBeenCalled();
     });
 
-    it('returns 400 when agentInstanceId is missing', async () => {
+    it('returns 400 when machineId is missing', async () => {
       await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', ENROLLMENT_TOKEN)
@@ -161,7 +160,7 @@ describe('AgentModule (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', ENROLLMENT_TOKEN)
-        .send({ agentInstanceId: MACHINE_ID, agentVersion: '0.1.0' })
+        .send({ machineId: MACHINE_ID, agentVersion: '0.1.0' })
         .expect(201);
 
       expect(serversService.enrollWithToken).toHaveBeenCalledWith(
@@ -189,7 +188,7 @@ describe('AgentModule (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/api/internal/agent/v1/enroll')
         .set('x-enrollment-token', 'bad-token')
-        .send({ agentInstanceId: MACHINE_ID })
+        .send({ machineId: MACHINE_ID })
         .expect(400);
 
       expect(response.body.success).toBe(false);
@@ -202,7 +201,7 @@ describe('AgentModule (e2e)', () => {
         .post('/api/internal/agent/v1/heartbeat')
         .send({
           schemaVersion: 'phase1',
-          agentInstanceId: MACHINE_ID,
+          machineId: MACHINE_ID,
           sentAt: new Date().toISOString(),
         })
         .expect(401);
@@ -212,7 +211,7 @@ describe('AgentModule (e2e)', () => {
 
     it('rejects invalid payloads before signature checks complete meaningfully', async () => {
       const timestamp = new Date().toISOString();
-      const body = { agentInstanceId: MACHINE_ID, sentAt: timestamp };
+      const body = { machineId: MACHINE_ID, sentAt: timestamp };
       const signature = signAgentBody(SECRET_KEY, timestamp, body);
 
       await request(app.getHttpServer())
@@ -227,7 +226,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         agentVersion: '0.1.0',
         serverBinding: { hostname: 'vps.example' },
         sentAt,
@@ -247,13 +246,13 @@ describe('AgentModule (e2e)', () => {
         statusCode: 200,
         data: expect.objectContaining({
           id: VPS_NODE_ID,
-          agentInstanceId: MACHINE_ID,
+          machineId: MACHINE_ID,
           status: VpsNodeStatus.ONLINE,
         }),
       });
       expect(prisma.vpsNode.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { agentInstanceId: MACHINE_ID },
+          where: { machineId: MACHINE_ID },
           data: expect.objectContaining({
             status: VpsNodeStatus.ONLINE,
             hostname: 'vps.example',
@@ -267,7 +266,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
       };
       const timestamp = new Date().toISOString();
@@ -286,7 +285,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         agentVersion: '0.1.0',
         sentAt,
         discoveries: [
@@ -344,7 +343,7 @@ describe('AgentModule (e2e)', () => {
       const body = {
         batch: [
           {
-            agentInstanceId: MACHINE_ID,
+            machineId: MACHINE_ID,
             timestamp: new Date().toISOString(),
             metrics: { cpuMean: 1 },
             websites: [],
@@ -366,7 +365,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: Array.from({ length: 201 }, (_, index) => ({
           domain: `site-${index}.example.com`,
@@ -390,7 +389,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -418,7 +417,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -447,7 +446,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         agentVersion: '0.1.0',
         sentAt,
         discoveries: [
@@ -477,7 +476,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -512,7 +511,7 @@ describe('AgentModule (e2e)', () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
@@ -544,11 +543,94 @@ describe('AgentModule (e2e)', () => {
         .expect(201);
     });
 
+    it('accepts a stack-only ingest payload', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        stackSnapshots: [
+          {
+            domain: 'example.com',
+            wordpressVersion: '6.8.2',
+            phpVersion: '8.3.23',
+            imagickVersion: '3.8.0',
+            checkedAt: sentAt,
+            fieldStatus: {
+              wordpressVersion: { state: 'ok' },
+              phpVersion: { state: 'ok' },
+              imagickVersion: { state: 'ok' },
+            },
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(201);
+
+      expect(prisma.websiteDiscovery.update).toHaveBeenCalled();
+    });
+
+    it('accepts a 24h-only ingest payload', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+        visitors24h: [
+          {
+            domain: 'example.com',
+            uniqueVisitors24h: 487,
+            windowSeconds: 86400,
+            coverageSeconds: 86400,
+            measuredAt: sentAt,
+            algorithm: 'hll',
+            status: { state: 'ok' },
+          },
+        ],
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(201);
+
+      expect(prisma.websiteTrafficSnapshot.upsert).toHaveBeenCalled();
+    });
+
+    it('rejects an ingest envelope with no typed sections', async () => {
+      const sentAt = new Date().toISOString();
+      const body = {
+        schemaVersion: 'phase1',
+        machineId: MACHINE_ID,
+        sentAt,
+      };
+      const timestamp = new Date().toISOString();
+      const signature = signAgentBody(SECRET_KEY, timestamp, body);
+
+      await request(app.getHttpServer())
+        .post('/api/internal/agent/v1/ingest')
+        .set('x-agent-timestamp', timestamp)
+        .set('x-agent-signature', signature)
+        .send(body)
+        .expect(400);
+    });
+
     it('accepts zero uniqueIpCount with ok status for empty readable windows', async () => {
       const sentAt = new Date().toISOString();
       const body = {
         schemaVersion: 'phase1',
-        agentInstanceId: MACHINE_ID,
+        machineId: MACHINE_ID,
         sentAt,
         discoveries: [
           {
