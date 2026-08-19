@@ -86,10 +86,7 @@ export function SignInForm({
   const pending = form.formState.isSubmitting;
 
   function translateError(message?: string) {
-    return translateFormError(
-      (key) => tErrors(key as FormErrorKey),
-      message,
-    );
+    return translateFormError((key) => tErrors(key as FormErrorKey), message);
   }
 
   async function onSubmit(data: SignInSchemaType) {
@@ -117,21 +114,20 @@ export function SignInForm({
       params.set("returnTo", returnTo);
     }
 
+    toast.success(`OTP: ${result.otp}`);
+
     router.push(`/otp?${params.toString()}`);
   }
 
   function switchMode(next: IdentifierMode) {
     form.setValue("mode", next);
-    setFormError(
-      next === "email" ? tAuthErrors("emailOtpComingSoon") : null,
-    );
+    setFormError(next === "email" ? tAuthErrors("emailOtpComingSoon") : null);
     form.clearErrors();
   }
 
   return (
     <div>
       <AuthPageHeader title={t("title")} description={t("description")} />
-
       <form
         className="mt-6"
         onSubmit={form.handleSubmit(onSubmit, () => {
@@ -176,9 +172,7 @@ export function SignInForm({
           )}
         </div>
 
-        {!!formError && (
-          <AuthAlert className="mt-4" description={formError} />
-        )}
+        {!!formError && <AuthAlert className="mt-4" description={formError} />}
 
         <AuthSubmitButton
           className="mt-6"
@@ -192,12 +186,13 @@ export function SignInForm({
         <AuthDivider className="mt-6" />
         <GoogleAuthButton className="mt-6" disabled />
       </form>
-
       <AuthCrossLinks>
-        <AuthTextLink href="/forgot-password">{t("forgotPassword")}</AuthTextLink>
+        <AuthTextLink href="/forgot-password">
+          {t("forgotPassword")}
+        </AuthTextLink>
         <p>
           {t("noAccount")}{" "}
-          <AuthTextLink href="/sign-up" className="min-h-0 inline">
+          <AuthTextLink href="/sign-up" className="inline min-h-0">
             {t("signUpLink")}
           </AuthTextLink>
         </p>

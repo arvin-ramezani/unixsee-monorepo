@@ -192,16 +192,18 @@ export class AuthenticationService {
         context: resolvedContext,
       });
 
-      await this.mailService.sendPhoneOtpMockEmail({
-        phoneNumber,
-        otp: otp.otp,
-      });
+      // TODO: later opt should be send to users phone/email
+
+      // await this.mailService.sendPhoneOtpMockEmail({
+      //   phoneNumber,
+      //   otp: otp.otp,
+      // });
 
       this.logger.log('auth.otp.created', {
         context: resolvedContext,
         otpId: otp.id,
       });
-      return { delivered: true as const };
+      return { delivered: true as const, otp: otp.otp };
     } catch (error) {
       this.logger.error('auth.otp.create_failed', error as Error, {
         context: resolvedContext,

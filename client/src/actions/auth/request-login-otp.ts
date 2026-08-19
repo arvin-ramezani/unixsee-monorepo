@@ -8,8 +8,9 @@ import {
   setPendingLoginPhoneCookie,
 } from "@/lib/auth/session-cookies";
 
+// TODO: later opt should be send to users phone/email and remove from here
 export type RequestLoginOtpResult =
-  | { ok: true }
+  | { ok: true; otp?: string }
   | { ok: false; errorKey: "generic" | "unavailable" | "rateLimited" };
 
 export async function requestLoginOtp(input: {
@@ -19,16 +20,16 @@ export async function requestLoginOtp(input: {
   const phoneNumber = toE164IranPhone(national);
 
   try {
-    const response = await publicFetch<{ delivered?: boolean }>(
-      "/auth/otp/request",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          phoneNumber,
-          context: "LOGIN",
-        }),
-      },
-    );
+    const response = await publicFetch<{
+      delivered: boolean;
+      otp?: string;
+    }>("/auth/otp/request", {
+      method: "POST",
+      body: JSON.stringify({
+        phoneNumber,
+        context: "LOGIN",
+      }),
+    });
 
     if (!response.success) {
       if (response.statusCode === 429) {
@@ -41,16 +42,15 @@ export async function requestLoginOtp(input: {
     }
 
     await setPendingLoginPhoneCookie(phoneNumber);
-    return { ok: true };
+    return { ok: true, otp: response.data?.otp };
   } catch {
     return { ok: false, errorKey: "unavailable" };
   }
 }
 
 export async function resendLoginOtp(): Promise<RequestLoginOtpResult> {
-  const { getPendingLoginPhoneFromCookies } = await import(
-    "@/lib/auth/server-cookie"
-  );
+  const { getPendingLoginPhoneFromCookies } =
+    await import("@/lib/auth/server-cookie");
   const phoneNumber = await getPendingLoginPhoneFromCookies();
 
   if (!phoneNumber) {
@@ -58,7 +58,7 @@ export async function resendLoginOtp(): Promise<RequestLoginOtpResult> {
   }
 
   try {
-    const response = await publicFetch<{ delivered?: boolean }>(
+    const response = await publicFetch<{ delivered: boolean; otp?: string }>(
       "/auth/otp/request",
       {
         method: "POST",
@@ -79,7 +79,7 @@ export async function resendLoginOtp(): Promise<RequestLoginOtpResult> {
       return { ok: false, errorKey: "generic" };
     }
 
-    return { ok: true };
+    return { ok: true, otp: response.data?.otp };
   } catch {
     return { ok: false, errorKey: "unavailable" };
   }

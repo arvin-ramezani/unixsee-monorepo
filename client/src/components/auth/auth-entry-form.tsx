@@ -81,10 +81,7 @@ export function AuthEntryForm({
   const pending = form.formState.isSubmitting;
 
   function translateError(message?: string) {
-    return translateFormError(
-      (key) => tErrors(key as FormErrorKey),
-      message,
-    );
+    return translateFormError((key) => tErrors(key as FormErrorKey), message);
   }
 
   async function onSubmit(data: SignInSchemaType) {
@@ -112,14 +109,17 @@ export function AuthEntryForm({
       params.set("returnTo", returnTo);
     }
 
+    toast.success(`OTP: ${result.otp}`, {
+      duration: Infinity,
+      closeButton: true,
+    });
+
     router.push(`/otp?${params.toString()}`);
   }
 
   function switchMode(next: IdentifierMode) {
     form.setValue("mode", next);
-    setFormError(
-      next === "email" ? tAuthErrors("emailOtpComingSoon") : null,
-    );
+    setFormError(next === "email" ? tAuthErrors("emailOtpComingSoon") : null);
     form.clearErrors();
   }
 
@@ -171,9 +171,7 @@ export function AuthEntryForm({
           )}
         </div>
 
-        {!!formError && (
-          <AuthAlert className="mt-4" description={formError} />
-        )}
+        {!!formError && <AuthAlert className="mt-4" description={formError} />}
 
         <AuthSubmitButton
           className="mt-6"
