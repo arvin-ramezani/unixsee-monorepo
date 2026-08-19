@@ -9,9 +9,13 @@ import {
 import { setAuthSessionCookies } from "@/lib/auth/session-cookies";
 import type { AuthSessionPayload, SafeAuthUser } from "@/types/auth.types";
 
+// TODO: later opt should be send to users phone/email and remove from here
 export type GuestPlanOtpResult =
-  | { ok: true }
-  | { ok: false; errorKey: "generic" | "unavailable" | "rateLimited" | "validation" };
+  | { ok: true; otp?: string }
+  | {
+      ok: false;
+      errorKey: "generic" | "unavailable" | "rateLimited" | "validation";
+    };
 
 export type GuestPlanVerifyOtpResult =
   | {
@@ -51,7 +55,7 @@ export async function requestGuestPlanOtpAction(input: {
   if (phone && isCompleteIranNationalMobile(phone)) {
     const phoneNumber = toE164IranFromNational(phone);
     try {
-      const response = await publicFetch<{ delivered?: boolean }>(
+      const response = await publicFetch<{ delivered: boolean; otp?: string }>(
         "/auth/otp/request",
         {
           method: "POST",
@@ -72,7 +76,7 @@ export async function requestGuestPlanOtpAction(input: {
         return { ok: false, errorKey: "generic" };
       }
 
-      return { ok: true };
+      return { ok: true, otp: response.data?.otp };
     } catch {
       return { ok: false, errorKey: "unavailable" };
     }
@@ -80,7 +84,7 @@ export async function requestGuestPlanOtpAction(input: {
 
   if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     try {
-      const response = await publicFetch<{ delivered?: boolean }>(
+      const response = await publicFetch<{ delivered: boolean; otp?: string }>(
         "/auth/otp/request",
         {
           method: "POST",
@@ -101,7 +105,7 @@ export async function requestGuestPlanOtpAction(input: {
         return { ok: false, errorKey: "generic" };
       }
 
-      return { ok: true };
+      return { ok: true, otp: response.data?.otp };
     } catch {
       return { ok: false, errorKey: "unavailable" };
     }

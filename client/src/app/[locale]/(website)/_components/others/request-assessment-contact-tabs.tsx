@@ -28,6 +28,7 @@ import type { RequestAssessmentSchemaType } from "@/lib/zod-schemas/request-asse
 import { cn } from "@/lib/utils";
 
 import type { TranslateError } from "./request-assessment-form-fields";
+import { toast } from "sonner";
 
 export type ContactOtpChannel = "phone" | "email";
 
@@ -133,6 +134,10 @@ export function RequestAssessmentContactTabs({
     setOtpChannel(channel);
     setOtpCode("");
     setCooldown(RESEND_COOLDOWN_SECONDS);
+    toast.success(`OTP: ${result.otp}`, {
+      duration: Infinity,
+      closeButton: true,
+    });
   }
 
   async function confirmOtp() {

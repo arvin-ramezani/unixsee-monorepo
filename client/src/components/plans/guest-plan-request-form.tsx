@@ -234,7 +234,11 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
     setOtpChannel(channel);
     setOtpCode("");
     setCooldown(RESEND_COOLDOWN_SECONDS);
-    toast.success(t("otpSent"));
+    // toast.success(t("otpSent"));
+    toast.success(`OTP: ${result.otp}`, {
+      duration: Infinity,
+      closeButton: true,
+    });
   }
 
   async function confirmOtp() {
@@ -386,7 +390,7 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
                       <motion.span
                         layoutId="guest-plan-contact-tab-pill"
                         aria-hidden
-                        className="bg-background pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm dark:bg-input/30"
+                        className="bg-background dark:bg-input/30 pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm"
                         transition={
                           shouldReduceMotion
                             ? { duration: 0 }
@@ -419,77 +423,77 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
                   }
                   className="mt-4 space-y-3"
                 >
-                <Controller
-                  name="phone"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <div className="mb-8 space-y-2">
-                      <PhoneField
-                        id="guest-plan-phone"
-                        label={t("phoneLabel")}
-                        required={!verifiedChannel}
-                        value={field.value}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        error={translateError(fieldState.error?.message)}
-                        disabled={pending || contactLocked || otpPending}
-                      />
-                      {verifiedChannel === "phone" && (
-                        <p className="text-success flex items-center gap-1.5 text-sm">
-                          <CheckIcon className="size-4" aria-hidden />
-                          {t("phoneVerified")}
-                        </p>
-                      )}
-                      {!contactLocked && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="w-fit!"
-                          disabled={
-                            pending ||
-                            otpPending ||
-                            !isCompleteIranNationalMobile(phone ?? "")
-                          }
-                          onClick={() => void startOtp("phone")}
-                        >
-                          {otpPending && otpChannel === "phone" && (
-                            <LoaderCircle className="size-4 animate-spin" />
-                          )}
-                          {t("verifyPhone")}
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                />
+                  <Controller
+                    name="phone"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <div className="mb-8 space-y-2">
+                        <PhoneField
+                          id="guest-plan-phone"
+                          label={t("phoneLabel")}
+                          required={!verifiedChannel}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          error={translateError(fieldState.error?.message)}
+                          disabled={pending || contactLocked || otpPending}
+                        />
+                        {verifiedChannel === "phone" && (
+                          <p className="text-success flex items-center gap-1.5 text-sm">
+                            <CheckIcon className="size-4" aria-hidden />
+                            {t("phoneVerified")}
+                          </p>
+                        )}
+                        {!contactLocked && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-fit!"
+                            disabled={
+                              pending ||
+                              otpPending ||
+                              !isCompleteIranNationalMobile(phone ?? "")
+                            }
+                            onClick={() => void startOtp("phone")}
+                          >
+                            {otpPending && otpChannel === "phone" && (
+                              <LoaderCircle className="size-4 animate-spin" />
+                            )}
+                            {t("verifyPhone")}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  />
 
-                <Controller
-                  name="email"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="guest-plan-email-optional">
-                        {t("optionalEmailLabel")}
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="guest-plan-email-optional"
-                        type="email"
-                        dir="ltr"
-                        autoComplete="email"
-                        aria-invalid={fieldState.invalid}
-                        className="h-12"
-                        placeholder={t("emailPlaceholder")}
-                        disabled={pending || contactLocked || otpPending}
-                      />
-                      {fieldState.error && (
-                        <FieldError>
-                          {translateError(fieldState.error.message)}
-                        </FieldError>
-                      )}
-                    </Field>
-                  )}
-                />
+                  <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="guest-plan-email-optional">
+                          {t("optionalEmailLabel")}
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="guest-plan-email-optional"
+                          type="email"
+                          dir="ltr"
+                          autoComplete="email"
+                          aria-invalid={fieldState.invalid}
+                          className="h-12"
+                          placeholder={t("emailPlaceholder")}
+                          disabled={pending || contactLocked || otpPending}
+                        />
+                        {fieldState.error && (
+                          <FieldError>
+                            {translateError(fieldState.error.message)}
+                          </FieldError>
+                        )}
+                      </Field>
+                    )}
+                  />
                 </motion.div>
               </TabsContent>
 
@@ -506,73 +510,78 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
                   }
                   className="mt-4 space-y-3"
                 >
-                <Controller
-                  name="email"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid} className="mb-8">
-                      <FieldLabel htmlFor="guest-plan-email" className="gap-1">
-                        {t("emailLabel")}
-                        {!verifiedChannel && <RequiredInputIcon />}
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="guest-plan-email"
-                        type="email"
-                        dir="ltr"
-                        autoComplete="email"
-                        aria-invalid={fieldState.invalid}
-                        className="h-12"
-                        placeholder={t("emailPlaceholder")}
+                  <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid} className="mb-8">
+                        <FieldLabel
+                          htmlFor="guest-plan-email"
+                          className="gap-1"
+                        >
+                          {t("emailLabel")}
+                          {!verifiedChannel && <RequiredInputIcon />}
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="guest-plan-email"
+                          type="email"
+                          dir="ltr"
+                          autoComplete="email"
+                          aria-invalid={fieldState.invalid}
+                          className="h-12"
+                          placeholder={t("emailPlaceholder")}
+                          disabled={pending || contactLocked || otpPending}
+                        />
+                        {fieldState.error && (
+                          <FieldError>
+                            {translateError(fieldState.error.message)}
+                          </FieldError>
+                        )}
+                        {verifiedChannel === "email" && (
+                          <p className="text-success mt-2 flex items-center gap-1.5 text-sm">
+                            <CheckIcon className="size-4" aria-hidden />
+                            {t("emailVerified")}
+                          </p>
+                        )}
+                        {!contactLocked && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2 w-fit!"
+                            disabled={
+                              pending ||
+                              otpPending ||
+                              !isLikelyEmail(email ?? "")
+                            }
+                            onClick={() => void startOtp("email")}
+                          >
+                            {otpPending && otpChannel === "email" && (
+                              <LoaderCircle className="size-4 animate-spin" />
+                            )}
+                            {t("verifyEmail")}
+                          </Button>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="phone"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <PhoneField
+                        id="guest-plan-phone-optional"
+                        label={t("optionalPhoneLabel")}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        error={translateError(fieldState.error?.message)}
                         disabled={pending || contactLocked || otpPending}
                       />
-                      {fieldState.error && (
-                        <FieldError>
-                          {translateError(fieldState.error.message)}
-                        </FieldError>
-                      )}
-                      {verifiedChannel === "email" && (
-                        <p className="text-success mt-2 flex items-center gap-1.5 text-sm">
-                          <CheckIcon className="size-4" aria-hidden />
-                          {t("emailVerified")}
-                        </p>
-                      )}
-                      {!contactLocked && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="mt-2 w-fit!"
-                          disabled={
-                            pending || otpPending || !isLikelyEmail(email ?? "")
-                          }
-                          onClick={() => void startOtp("email")}
-                        >
-                          {otpPending && otpChannel === "email" && (
-                            <LoaderCircle className="size-4 animate-spin" />
-                          )}
-                          {t("verifyEmail")}
-                        </Button>
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="phone"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <PhoneField
-                      id="guest-plan-phone-optional"
-                      label={t("optionalPhoneLabel")}
-                      value={field.value}
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      error={translateError(fieldState.error?.message)}
-                      disabled={pending || contactLocked || otpPending}
-                    />
-                  )}
-                />
+                    )}
+                  />
                 </motion.div>
               </TabsContent>
             </Tabs>
