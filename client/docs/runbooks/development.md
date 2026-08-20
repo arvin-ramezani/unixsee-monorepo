@@ -24,7 +24,8 @@ npm run lint
 npm run build:static
 ```
 
-Use the checks relevant to the change. The full build also generates Prisma and deploys migrations, so run it only with an approved database configuration.
+Use the checks relevant to the change. `npm run build` is a Next.js production
+build only; this app does not own a database.
 
 ## Troubleshooting Order
 

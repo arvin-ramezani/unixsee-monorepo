@@ -60,6 +60,23 @@ enum AlertStatus {
 enum OtpContext {
   LOGIN
   MONITORING_ACCESS
+  PHONE_VERIFY
+  EMAIL_VERIFY
+}
+
+enum AuthorizationCaseStatus {
+  DRAFT
+  PENDING_REVIEW
+  NEEDS_MORE_INFO
+  REJECTED
+  APPROVED
+}
+
+enum ContactChallengeState {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  SKIPPED_ALREADY_VERIFIED
 }
 
 enum PlanRequestStatus {
@@ -94,11 +111,21 @@ enum EnrollmentTokenStatus {
 }
 
 enum TicketStatus {
-  OPEN
+  SUBMITTED
   IN_PROGRESS
   WAITING_CUSTOMER
   RESOLVED
   CLOSED
+}
+
+enum TicketServiceCategory {
+  MANAGED_SERVER
+  MIGRATION_OPTIMIZATION
+  WOOCOMMERCE_SUPPORT
+  SEO
+  GRAPHIC_DESIGN
+  PRODUCT_DATA_ENTRY
+  SOCIAL_MEDIA_SUPPORT
 }
 
 enum TicketPriority {
@@ -114,6 +141,12 @@ enum NotificationStatus {
   ARCHIVED
 }
 
+enum UnixseeMessageStatus {
+  DRAFT
+  PUBLISHED
+  WITHDRAWN
+}
+
 enum OperationalActionStatus {
   QUEUED
   RUNNING
@@ -127,9 +160,21 @@ enum OperationalActionType {
   OTHER
 }
 
+enum AgentCommandStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  EXPIRED
+}
+
+enum AgentCommandType {
+  REFRESH_SITE_STACK
+}
+
 model User {
   id          String            @id @default(uuid()) @db.Uuid
-  phoneNumber String            @unique @map("phone_number")
+  phoneNumber String?           @unique @map("phone_number")
   email       String?           @unique
   username    String?           @unique
   password    String?
@@ -140,10 +185,14 @@ model User {
   hashedRt    String?           @map("hashed_rt")
   suspendedAt DateTime?         @map("suspended_at") @db.Timestamptz(6)
   suspendedReason String?       @map("suspended_reason")
+  phoneVerifiedAt DateTime?     @map("phone_verified_at") @db.Timestamptz(6)
+  emailVerifiedAt DateTime?     @map("email_verified_at") @db.Timestamptz(6)
 
   websites   Website[]
   vpsNodes   VpsNode[]
   memberships Membership[]
+  authorizationCases AuthorizationCase[] @relation("AuthorizationCaseUser")
+  decidedAuthorizationCases AuthorizationCase[] @relation("AuthorizationCaseDecider")
 
   createdPlanRequests        PlanRequest[]                 @relation("PlanRequestCreatedBy")
   linkedPlanRequests         PlanRequest[]                 @relation("PlanRequestLinkedUser")
@@ -153,8 +202,11 @@ model User {
   ticketMessages             TicketMessage[]
   notificationReads          NotificationRead[]
   authoredNotifications      Notification[]                @relation("NotificationAuthor")
+  unixseeMessageReads        UnixseeMessageRead[]
+  authoredUnixseeMessages    UnixseeMessage[]              @relation("UnixseeMessageAuthor")
   auditRecords               AuditRecord[]                 @relation("AuditActor")
   operationalActions         OperationalAction[]           @relation("OperationalActionRequester")
+  requestedAgentCommands     AgentCommand[]                 @relation("AgentCommandRequester")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -175,6 +227,8 @@ model Tenant {
   tickets     Ticket[]
   activities  Activity[]
   notifications Notification[]
+  unixseeMessages UnixseeMessage[]
+  authorizationCases AuthorizationCase[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -200,16 +254,59 @@ model Membership {
   @@map("memberships")
 }
 
+/// Customer احراز هویت package for staff review → tenant approval.
+model AuthorizationCase {
+  id     String                  @id @default(uuid()) @db.Uuid
+  userId String                  @map("user_id") @db.Uuid
+  status AuthorizationCaseStatus @default(DRAFT)
+
+  nationalId                 String               @map("national_id")
+  birthDate                  String               @map("birth_date")
+  mobile                     String
+  mobileChallenge            ContactChallengeState @map("mobile_challenge") @default(UNVERIFIED)
+  mobileBelongsToNationalId  Boolean              @default(false) @map("mobile_belongs_to_national_id")
+  email                      String
+  emailChallenge             ContactChallengeState @map("email_challenge") @default(UNVERIFIED)
+  province                   String               @default("")
+  city                       String               @default("")
+  address                    String               @default("")
+  postalCode                 String               @default("") @map("postal_code")
+  nationalIdCardFileName     String?              @map("national_id_card_file_name")
+  attestedTruthful           Boolean              @default(false) @map("attested_truthful")
+
+  staffReason      String?  @map("staff_reason")
+  staffFieldsToFix String[] @default([]) @map("staff_fields_to_fix")
+  submittedAt      DateTime? @map("submitted_at") @db.Timestamptz(6)
+  decidedAt        DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId  String?   @map("decided_by_user_id") @db.Uuid
+  tenantId         String?   @map("tenant_id") @db.Uuid
+
+  user      User    @relation("AuthorizationCaseUser", fields: [userId], references: [id], onDelete: Cascade)
+  decidedBy User?   @relation("AuthorizationCaseDecider", fields: [decidedByUserId], references: [id], onDelete: SetNull)
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([userId, status])
+  @@index([status, submittedAt])
+  @@map("authorization_cases")
+}
+
 model Server {
   id        String @id @default(uuid()) @db.Uuid
   name      String @unique
   ipAddress String @map("ip_address")
   notes     String?
 
+  // Admin-owned control-panel metadata. The Phase 1 agent never writes this.
+  controlPanelUrl String? @map("control_panel_url")
+
   vpsNodes         VpsNode[]
   alerts           Alert[]
   enrollmentTokens ServerEnrollmentToken[]
   discoveries      WebsiteDiscovery[]
+  agentCommands    AgentCommand[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -240,8 +337,8 @@ model VpsNode {
   serverId String  @map("server_id") @db.Uuid
   userId   String? @map("user_id") @db.Uuid
 
-  // Stable identity used by the agent. Usually extracted from /etc/machine-id.
-  machineId String @unique @map("machine_id")
+  // Stable installation identity generated and persisted by the Unixsee agent.
+  agentInstanceId String @unique @map("agent_instance_id")
 
   name      String
   secretKey String @map("secret_key")
@@ -256,12 +353,15 @@ model VpsNode {
   agentVersion  String?       @map("agent_version")
   lastSeenAt    DateTime?     @map("last_seen_at") @db.Timestamptz(6)
   lastHeartbeatAt DateTime?   @map("last_heartbeat_at") @db.Timestamptz(6)
+  credentialsRevokedAt DateTime? @map("credentials_revoked_at") @db.Timestamptz(6)
+  credentialsRevokedReason String? @map("credentials_revoked_reason")
 
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
   user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   websites    Website[]
   discoveries WebsiteDiscovery[]
+  agentCommands AgentCommand[]
 
   // Time-series metrics. Keep append-only for easy TimescaleDB migration later.
   vpsMetrics              VpsMetric[]
@@ -292,7 +392,11 @@ model Website {
   domain      String  @unique
   displayName String? @map("display_name")
 
-  // Inventory fields discovered by the agent from DirectAdmin/LiteSpeed.
+  // Admin-owned WordPress metadata. The Phase 1 agent never writes this.
+  wordpressAdminUrl String? @map("wordpress_admin_url")
+
+  // Legacy inventory fields retained during migration. New Phase 1 agent ingest
+  // does not own or update these fields.
   directAdminUser String? @map("direct_admin_user")
   homeDirectory   String? @map("home_directory")
   documentRoot    String? @map("document_root")
@@ -322,6 +426,7 @@ model Website {
   complementaryRequests ComplementaryServiceRequest[]
   tickets              Ticket[]
   activities           Activity[]
+  unixseeMessages      UnixseeMessage[]
   operationalActions   OperationalAction[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -342,18 +447,41 @@ model WebsiteDiscovery {
   serverId    String          @map("server_id") @db.Uuid
   vpsNodeId   String?         @map("vps_node_id") @db.Uuid
   websiteId   String?         @map("website_id") @db.Uuid
-  domain      String
-  displayName String?         @map("display_name")
+  domain          String
+  virtualHostName String          @map("virtual_host_name")
+  discoveredAt    DateTime        @map("discovered_at") @db.Timestamptz(6)
+  displayName     String?         @map("display_name")
   directAdminUser String?     @map("direct_admin_user")
   homeDirectory   String?     @map("home_directory")
   documentRoot    String?     @map("document_root")
+  aliases         String[]    @default([])
+  appType         String?     @map("app_type")
+  source          String?
+  backendAddress  String?     @map("backend_address")
+  // Legacy manual-link columns retained only for migration/history. Canonical
+  // ownership is Server.controlPanelUrl and Website.wordpressAdminUrl.
+  controlPanelUrl String?     @map("control_panel_url")
+  wordpressAdminUrl String?   @map("wordpress_admin_url")
+  wordpressVersion  String?   @map("wordpress_version")
+  phpVersion        String?   @map("php_version")
+  phpVersionScope   String?   @map("php_version_scope")
+  imagickVersion    String?   @map("imagick_version")
+  wordpressUpdateStatus    String?   @map("wordpress_update_status")
+  wordpressUpdateCheckedAt DateTime? @map("wordpress_update_checked_at") @db.Timestamptz(6)
+  fieldStatus Json?           @map("field_status")
+  stackCheckedAt DateTime?    @map("stack_checked_at") @db.Timestamptz(6)
   status      DiscoveryStatus @default(NEW)
   rawPayload  Json?           @map("raw_payload")
   assignedAt  DateTime?       @map("assigned_at") @db.Timestamptz(6)
+  lastIngestedAt DateTime?    @map("last_ingested_at") @db.Timestamptz(6)
 
   server  Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
   vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: SetNull)
   website Website? @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+
+  activeVisitorSamples WebsiteActiveVisitorSample[]
+  trafficSnapshot      WebsiteTrafficSnapshot?
+  agentCommands        AgentCommand[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -362,6 +490,54 @@ model WebsiteDiscovery {
   @@index([status])
   @@index([vpsNodeId])
   @@map("website_discoveries")
+}
+
+/// Latest Phase 1 traffic read model. Raw visitor identities never reach NestJS.
+model WebsiteTrafficSnapshot {
+  discoveryId String @id @map("discovery_id") @db.Uuid
+  domain      String
+
+  activeVisitorCount    Int?      @map("active_visitor_count")
+  activeWindowSeconds   Int?      @map("active_window_seconds")
+  activeWindowStartedAt DateTime? @map("active_window_started_at") @db.Timestamptz(6)
+  activeMeasuredAt      DateTime? @map("active_measured_at") @db.Timestamptz(6)
+  activeStatus          Json?     @map("active_status")
+
+  visitors24hCount           Int?      @map("visitors_24h_count")
+  visitors24hWindowSeconds   Int?      @map("visitors_24h_window_seconds")
+  visitors24hCoverageSeconds Int?      @map("visitors_24h_coverage_seconds")
+  visitors24hMeasuredAt      DateTime? @map("visitors_24h_measured_at") @db.Timestamptz(6)
+  visitors24hAlgorithm       String?   @map("visitors_24h_algorithm")
+  visitors24hStatus          Json?     @map("visitors_24h_status")
+
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([domain])
+  @@index([activeMeasuredAt])
+  @@index([visitors24hMeasuredAt])
+  @@map("website_traffic_snapshots")
+}
+
+/// Phase 1 agent 3-minute unique-visitor samples (append-only).
+model WebsiteActiveVisitorSample {
+  recordedAt DateTime @map("recorded_at") @db.Timestamptz(6)
+  discoveryId String  @map("discovery_id") @db.Uuid
+  websiteId   String? @map("website_id") @db.Uuid
+  domain      String
+  uniqueVisitorCount Int @map("unique_ip_count")
+  windowSeconds Int   @map("window_seconds")
+  windowStartedAt DateTime @map("window_started_at") @db.Timestamptz(6)
+  measuredAt DateTime @map("measured_at") @db.Timestamptz(6)
+
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+
+  @@id([recordedAt, discoveryId])
+  @@index([websiteId, measuredAt])
+  @@index([domain, measuredAt])
+  @@map("website_active_visitor_samples")
 }
 
 // -----------------------------------------------------------------------------
@@ -673,7 +849,7 @@ model PlanRequest {
   planId          String            @map("plan_id") @db.Uuid
   status          PlanRequestStatus @default(SUBMITTED)
   contactName     String            @map("contact_name")
-  contactPhone    String            @map("contact_phone")
+  contactPhone    String?           @map("contact_phone")
   contactEmail    String?           @map("contact_email")
   websiteDomain   String?           @map("website_domain")
   notes           String?
@@ -821,37 +997,43 @@ model ServiceDeliverable {
 }
 
 model Ticket {
-  id           String         @id @default(uuid()) @db.Uuid
-  tenantId     String         @map("tenant_id") @db.Uuid
-  websiteId    String?        @map("website_id") @db.Uuid
-  createdById  String         @map("created_by_id") @db.Uuid
-  assigneeId   String?        @map("assignee_id") @db.Uuid
-  subject      String
-  status       TicketStatus   @default(OPEN)
-  priority     TicketPriority @default(NORMAL)
+  id          String                @id @default(uuid()) @db.Uuid
+  tenantId    String                @map("tenant_id") @db.Uuid
+  websiteId   String?               @map("website_id") @db.Uuid
+  createdById String                @map("created_by_id") @db.Uuid
+  assigneeId  String?               @map("assignee_id") @db.Uuid
+  number      String                @unique
+  subject     String
+  service     TicketServiceCategory
+  status      TicketStatus          @default(SUBMITTED)
+  priority    TicketPriority        @default(NORMAL)
+  resolvedAt  DateTime?             @map("resolved_at") @db.Timestamptz(6)
+  autoCloseAt DateTime?             @map("auto_close_at") @db.Timestamptz(6)
 
-  tenant    Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   website   Website? @relation(fields: [websiteId], references: [id], onDelete: SetNull)
-  createdBy User    @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Restrict)
-  assignee  User?   @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy User     @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignee  User?    @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
 
-  messages     TicketMessage[]
-  attachments  TicketAttachment[]
+  messages    TicketMessage[]
+  attachments TicketAttachment[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([tenantId, status])
   @@index([assigneeId])
+  @@index([status, autoCloseAt])
   @@map("tickets")
 }
 
 model TicketMessage {
-  id         String  @id @default(uuid()) @db.Uuid
-  ticketId   String  @map("ticket_id") @db.Uuid
-  authorId   String  @map("author_id") @db.Uuid
-  body       String
-  isInternal Boolean @default(false) @map("is_internal")
+  id             String  @id @default(uuid()) @db.Uuid
+  ticketId       String  @map("ticket_id") @db.Uuid
+  authorId       String  @map("author_id") @db.Uuid
+  body           String
+  isInternal     Boolean @default(false) @map("is_internal")
+  idempotencyKey String? @map("idempotency_key")
 
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   author User   @relation(fields: [authorId], references: [id], onDelete: Restrict)
@@ -859,6 +1041,7 @@ model TicketMessage {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  @@unique([ticketId, idempotencyKey])
   @@index([ticketId, createdAt])
   @@map("ticket_messages")
 }
@@ -954,6 +1137,40 @@ model AuditRecord {
   @@map("audit_records")
 }
 
+model AgentCommand {
+  id            String             @id @default(uuid()) @db.Uuid
+  vpsNodeId     String             @map("vps_node_id") @db.Uuid
+  serverId      String             @map("server_id") @db.Uuid
+  discoveryId   String?            @map("discovery_id") @db.Uuid
+  requestedById String             @map("requested_by_id") @db.Uuid
+  domain        String
+  type          AgentCommandType   @default(REFRESH_SITE_STACK)
+  status        AgentCommandStatus @default(QUEUED)
+
+  requestedAt    DateTime  @default(now()) @map("requested_at") @db.Timestamptz(6)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(6)
+  leasedAt       DateTime? @map("leased_at") @db.Timestamptz(6)
+  leaseExpiresAt DateTime? @map("lease_expires_at") @db.Timestamptz(6)
+  attemptCount   Int       @default(0) @map("attempt_count")
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  errorCode      String?   @map("error_code")
+  resultMetadata Json?     @map("result_metadata")
+
+  vpsNode     VpsNode           @relation(fields: [vpsNodeId], references: [id], onDelete: Cascade)
+  server      Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  discovery   WebsiteDiscovery? @relation(fields: [discoveryId], references: [id], onDelete: SetNull)
+  requestedBy User              @relation("AgentCommandRequester", fields: [requestedById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([vpsNodeId, status, requestedAt])
+  @@index([serverId, domain, status])
+  @@index([discoveryId])
+  @@index([expiresAt])
+  @@map("agent_commands")
+}
+
 model OperationalAction {
   id          String                  @id @default(uuid()) @db.Uuid
   websiteId   String                  @map("website_id") @db.Uuid
@@ -988,4 +1205,63 @@ model IdempotencyRecord {
   @@unique([scope, key])
   @@index([createdAt])
   @@map("idempotency_records")
+}
+
+/// Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی).
+/// Distinct from Notification (News) and ticket thread messages.
+model UnixseeMessage {
+  id            String              @id @default(uuid()) @db.Uuid
+  tenantId      String              @map("tenant_id") @db.Uuid
+  authorId      String              @map("author_id") @db.Uuid
+  websiteId     String?             @map("website_id") @db.Uuid
+  status        UnixseeMessageStatus @default(DRAFT)
+  title         String
+  body          String
+  contentLocale String              @map("content_locale") @db.VarChar(8)
+  links         Json?
+  publishedAt   DateTime?           @map("published_at") @db.Timestamptz(6)
+  withdrawnAt   DateTime?           @map("withdrawn_at") @db.Timestamptz(6)
+
+  tenant      Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  author      User                       @relation("UnixseeMessageAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  website     Website?                   @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+  attachments UnixseeMessageAttachment[]
+  reads       UnixseeMessageRead[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([tenantId, status])
+  @@index([status, publishedAt])
+  @@map("unixsee_messages")
+}
+
+model UnixseeMessageAttachment {
+  id           String @id @default(uuid()) @db.Uuid
+  messageId    String @map("message_id") @db.Uuid
+  fileName     String @map("file_name")
+  contentType  String @map("content_type")
+  sizeBytes    Int    @map("size_bytes")
+  storageKey   String @map("storage_key")
+
+  message UnixseeMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([messageId])
+  @@map("unixsee_message_attachments")
+}
+
+model UnixseeMessageRead {
+  id        String   @id @default(uuid()) @db.Uuid
+  messageId String   @map("message_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  readAt    DateTime @default(now()) @map("read_at") @db.Timestamptz(6)
+
+  message UnixseeMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@map("unixsee_message_reads")
 }

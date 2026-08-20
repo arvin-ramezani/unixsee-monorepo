@@ -1,9 +1,9 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
 import { routing } from "@/i18n/routing";
-import { prisma } from "@/lib/prisma";
 import { sendRequestAssessmentEmails } from "@/lib/email/services/request-assessment-email-service";
 import { requestAssessmentSchema } from "@/lib/zod-schemas/request-assessment-schema";
 import type { ServerActionState } from "@/types/server-action-state";
@@ -19,6 +19,10 @@ export type RequestAssessmentActionMessageKey =
   | "submissionFailed"
   | "submissionSucceeded";
 
+/**
+ * Public assessment intake.
+ * Persistence belongs in NestJS; this client action only validates and notifies.
+ */
 export async function createRequestAssessmentAction(
   _previousState: ServerActionState,
   input: RequestAssessmentInput,
@@ -37,23 +41,11 @@ export async function createRequestAssessmentAction(
   }
 
   try {
-    const request = await prisma.requestAssessment.create({
-      data: {
-        fullName: parsed.data.fullName,
-        workEmail: parsed.data.businessEmail,
-        description: parsed.data.aboutProject ?? "",
-        serviceType: parsed.data.services,
-        locale: parsed.data.locale,
-      },
-    });
+    const requestId = randomUUID();
 
     await sendRequestAssessmentEmails({
-      requestId: request.id,
-      fullName: request.fullName,
-      workEmail: request.workEmail,
-      description: request.description,
-      serviceType: parsed.data.services,
-      locale: parsed.data.locale,
+      requestId,
+      payload: parsed.data,
     });
   } catch (error) {
     console.error("Request assessment submission failed.", {

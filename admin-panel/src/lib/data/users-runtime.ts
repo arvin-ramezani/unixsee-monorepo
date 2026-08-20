@@ -135,7 +135,7 @@ export function createCustomerAccount(
 ): CreateCustomerResultType {
   const suffix = String(runtimeUsers.length + 1).padStart(3, "0");
   const email = input.email ? normalizeEmail(input.email) : "";
-  const mobile = input.mobile ? normalizeMobile(input.mobile) : "";
+  const mobile = normalizeMobile(input.mobile);
 
   const user: CustomerUserType = {
     id: `user-9${suffix}`,
@@ -144,10 +144,8 @@ export function createCustomerAccount(
     emailVerification: email
       ? CONTACT_VERIFICATION.PENDING
       : CONTACT_VERIFICATION.NOT_PROVIDED,
-    mobile: mobile || null,
-    mobileVerification: mobile
-      ? CONTACT_VERIFICATION.PENDING
-      : CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile,
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: input.locale,
     accountState: ACCOUNT_STATE.PENDING_VERIFICATION,
     origin: ACCOUNT_ORIGIN.ADMIN_CREATE,
@@ -202,7 +200,7 @@ export function createCustomerAccount(
   appendAuditEntry({
     userId: user.id,
     action: AUDIT_ACTION.INVITE_SENT,
-    target: user.email ?? user.mobile ?? "بدون شناسه تماس",
+    target: user.email ?? user.mobile,
     result: AUDIT_RESULT.ACCEPTED,
   });
 
@@ -423,3 +421,79 @@ function applySecurityActionToUser(
       return { ...user, inviteStatus: INVITE_STATUS.PENDING };
   }
 }
+
+export type CreateTenantForUserResultType =
+  | {
+      ok: true;
+      tenant: TenantType;
+      membership: MembershipType;
+      created: boolean;
+    }
+  | { ok: false; message: string };
+
+/**
+ * Creates an active tenant + owner membership for an existing customer who
+ * has none yet. Used when staff approve an authorization package.
+ */
+export function createTenantForExistingUser({
+  userId,
+  tenantName,
+}: {
+  userId: string;
+  tenantName: string;
+}): CreateTenantForUserResultType {
+  const user = runtimeUsers.find((entry) => entry.id === userId);
+  if (!user) {
+    return { ok: false, message: "کاربر یافت نشد." };
+  }
+
+  const existingMembership = runtimeMemberships.find(
+    (membership) =>
+      membership.userId === userId &&
+      membership.role === MEMBERSHIP_ROLE.OWNER,
+  );
+
+  if (existingMembership) {
+    const tenant = runtimeTenants.find(
+      (entry) => entry.id === existingMembership.tenantId,
+    );
+    if (!tenant) {
+      return { ok: false, message: "مستأجر موجود یافت نشد." };
+    }
+    return {
+      ok: true,
+      tenant,
+      membership: existingMembership,
+      created: false,
+    };
+  }
+
+  const suffix = String(runtimeTenants.length + 1).padStart(3, "0");
+  const tenant: TenantType = {
+    id: `tenant-auth-${suffix}`,
+    name: tenantName,
+    state: TENANT_STATE.ACTIVE,
+    createdAt: "اکنون",
+    stateReason: null,
+  };
+  const membership: MembershipType = {
+    id: `membership-auth-${suffix}`,
+    tenantId: tenant.id,
+    userId,
+    role: MEMBERSHIP_ROLE.OWNER,
+    addedAt: "اکنون",
+  };
+
+  runtimeTenants = [tenant, ...runtimeTenants];
+  runtimeMemberships = [membership, ...runtimeMemberships];
+
+  appendAuditEntry({
+    userId,
+    action: AUDIT_ACTION.ACCOUNT_CREATED,
+    target: `مستأجر ${tenant.name} از احراز هویت`,
+    result: AUDIT_RESULT.ACCEPTED,
+  });
+
+  return { ok: true, tenant, membership, created: true };
+}
+

@@ -134,6 +134,7 @@ export function ServiceScopeCard({
   service: ComplementaryService;
 }) {
   const t = useTranslations("ComplementaryServices.detail");
+
   return (
     <Panel className="p-5 sm:p-6">
       <h2 className="text-xl font-semibold">{t("scopeTitle")}</h2>
@@ -145,7 +146,7 @@ export function ServiceScopeCard({
           <li key={key} className="flex items-start gap-3 text-sm leading-6">
             <CircleCheck
               aria-hidden="true"
-              className="text-success-foreground mt-0.5 size-5 shrink-0"
+              className="text-success-foreground dark:text-success mt-0.5 size-5 shrink-0"
             />
             <span>{t(`scopeItems.${key}`)}</span>
           </li>
@@ -168,7 +169,7 @@ export function ServiceActivityTimeline({
       <p className="text-muted-foreground mt-1 text-sm">
         {t("activityDescription")}
       </p>
-      <ol className="before:bg-border relative mt-6 space-y-0 before:absolute before:inset-y-2 before:inset-s-[7px] before:w-px">
+      <ol className="before:bg-border relative mt-6 space-y-0 before:absolute before:inset-y-2 before:inset-s-1.75 before:w-px">
         {[...service.activity].reverse().map((event) => (
           <li key={event.id} className="relative ps-8 pb-6 last:pb-0">
             <span className="border-background bg-success absolute inset-s-0 top-1.5 size-3.5 rounded-full border-2" />

@@ -1,4 +1,4 @@
-import { PLAN_ID, type PlanIdType } from "@/lib/data/plans-data";
+import { PLAN_ID } from "@/lib/data/plans-data";
 
 export const PLAN_REQUEST_STATUS = {
   PENDING: "pending",
@@ -22,6 +22,7 @@ export const PLAN_REQUEST_STATUS_LABELS: Record<PlanRequestStatusType, string> =
 
 export const PLAN_REQUEST_BLOCKER = {
   MISSING_USER: "missing_user",
+  MISSING_TENANT: "missing_tenant",
   MISSING_WEBSITE: "missing_website",
   ACTIVE_PLAN_CONFLICT: "active_plan_conflict",
 } as const;
@@ -35,6 +36,8 @@ export const PLAN_REQUEST_BLOCKER_LABELS: Record<
 > = {
   [PLAN_REQUEST_BLOCKER.MISSING_USER]:
     "کاربر موجود هنوز به این درخواست متصل نشده است.",
+  [PLAN_REQUEST_BLOCKER.MISSING_TENANT]:
+    "مشتری هنوز مستأجر تأییدشده نیست. ابتدا احراز هویت را تأیید کنید.",
   [PLAN_REQUEST_BLOCKER.MISSING_WEBSITE]:
     "وب‌سایت هدف برای فعال‌سازی انتخاب نشده است.",
   [PLAN_REQUEST_BLOCKER.ACTIVE_PLAN_CONFLICT]:
@@ -51,15 +54,20 @@ export type PlanRequestHistoryEntryType = {
 
 export type PlanRequestType = {
   id: string;
-  chosenPlanId: PlanIdType;
+  /** Nest plan code (preferred) or plan UUID when code is missing. */
+  chosenPlanId: string;
   chosenPlanName: string;
   contactName: string;
   contactEmail: string | null;
   contactMobile: string | null;
   domainHint: string | null;
+  notes: string | null;
   linkedUserId: string | null;
+  linkedUserName: string | null;
   linkedTenantId: string | null;
+  linkedTenantName: string | null;
   targetWebsiteId: string | null;
+  targetWebsiteDomain: string | null;
   status: PlanRequestStatusType;
   nextAction: string;
   submittedAt: string;
@@ -73,15 +81,19 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-001",
     chosenPlanId: PLAN_ID.UNIX_CORE,
     chosenPlanName: "UNIX CORE",
+    notes: null,
     contactName: "نیما فرهادی",
     contactEmail: "nima.farhadi@example.com",
     contactMobile: "09120001122",
     domainHint: "nima-store.ir",
-    linkedUserId: null,
+    linkedUserId: "user-201",
+    linkedUserName: "نیما فرهادی",
     linkedTenantId: null,
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
-    nextAction: "اتصال کاربر موجود",
+    nextAction: "تأیید احراز هویت / ایجاد مستأجر",
     submittedAt: "۱۶ مرداد ۱۴۰۵",
     updatedAt: "۱۶ مرداد ۱۴۰۵",
     terminalReason: null,
@@ -89,9 +101,9 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-001",
         at: "۱۶ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
-        note: "پلن UNIX CORE انتخاب شد.",
+        note: "پلن UNIX CORE انتخاب شد؛ حساب پس از تأیید تماس ایجاد شد.",
       },
     ],
   },
@@ -99,13 +111,17 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-002",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    notes: null,
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
     contactMobile: "09121234567",
     domainHint: "ali-studio.ir",
     linkedUserId: "user-101",
+    linkedUserName: null,
     linkedTenantId: "tenant-501",
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
     nextAction: "انتخاب وب‌سایت هدف",
     submittedAt: "۱۵ مرداد ۱۴۰۵",
@@ -115,14 +131,8 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-002",
         at: "۱۵ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
-      },
-      {
-        id: "prh-003",
-        at: "۱۵ مرداد ۱۴۰۵",
-        action: "اتصال کاربر موجود",
-        actorName: "سارا کریمی",
         note: "علی رضایی / فروشگاه آرتین",
       },
     ],
@@ -131,13 +141,17 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-003",
     chosenPlanId: PLAN_ID.UNIX_PEAK,
     chosenPlanName: "UNIX PEAK",
+    notes: null,
     contactName: "مریم حسینی",
     contactEmail: "maryam.hosseini@habibeh.ir",
     contactMobile: "09125551212",
     domainHint: "habibeh.ir",
     linkedUserId: "user-106",
+    linkedUserName: null,
     linkedTenantId: "tenant-504",
+    linkedTenantName: null,
     targetWebsiteId: "website-006",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.READY_TO_ENABLE,
     nextAction: "فعال‌سازی پلن روی وب‌سایت",
     submittedAt: "۱۴ مرداد ۱۴۰۵",
@@ -147,13 +161,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-004",
         at: "۱۴ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
         id: "prh-005",
         at: "۱۴ مرداد ۱۴۰۵",
-        action: "اتصال کاربر و وب‌سایت",
+        action: "اتصال وب‌سایت",
         actorName: "سارا کریمی",
         note: "habibeh.ir بدون پلن فعال",
       },
@@ -163,13 +177,17 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-004",
     chosenPlanId: PLAN_ID.UNIX_ENTERPRISE,
     chosenPlanName: "UNIX ENTERPRISE",
+    notes: "دامنه فروشگاه اصلی",
     contactName: "علی رضایی",
     contactEmail: "ali.rezaei@greenario.com",
     contactMobile: "09121234567",
     domainHint: "greenario.com",
     linkedUserId: "user-101",
+    linkedUserName: null,
     linkedTenantId: "tenant-501",
+    linkedTenantName: null,
     targetWebsiteId: "website-001",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.PENDING,
     nextAction: "رفع تداخل پلن فعال",
     submittedAt: "۱۳ مرداد ۱۴۰۵",
@@ -179,13 +197,13 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-006",
         at: "۱۳ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
         id: "prh-007",
         at: "۱۳ مرداد ۱۴۰۵",
-        action: "اتصال کاربر و وب‌سایت",
+        action: "اتصال وب‌سایت",
         actorName: "سارا کریمی",
         note: "greenario.com از قبل UNIX SCALE دارد",
       },
@@ -195,13 +213,17 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-005",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    notes: null,
     contactName: "سارا محمدی",
     contactEmail: "sara.mohammadi@parsmod.com",
     contactMobile: "09123334455",
     domainHint: "parsmod.com",
     linkedUserId: "user-102",
+    linkedUserName: null,
     linkedTenantId: "tenant-502",
+    linkedTenantName: null,
     targetWebsiteId: "website-004",
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.ENABLED,
     nextAction: "مشاهده وب‌سایت فعال",
     submittedAt: "۱۰ مرداد ۱۴۰۵",
@@ -211,7 +233,7 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-008",
         at: "۱۰ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {
@@ -227,13 +249,17 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
     id: "plan-req-006",
     chosenPlanId: PLAN_ID.UNIX_SCALE,
     chosenPlanName: "UNIX SCALE",
+    notes: null,
     contactName: "حامد کاظمی",
     contactEmail: null,
     contactMobile: "09351234567",
     domainHint: null,
-    linkedUserId: null,
+    linkedUserId: "user-210",
+    linkedUserName: "حامد کاظمی",
     linkedTenantId: null,
+    linkedTenantName: null,
     targetWebsiteId: null,
+    targetWebsiteDomain: null,
     status: PLAN_REQUEST_STATUS.DECLINED,
     nextAction: "بایگانی",
     submittedAt: "۸ مرداد ۱۴۰۵",
@@ -243,7 +269,7 @@ export const PLAN_REQUESTS: PlanRequestType[] = [
       {
         id: "prh-010",
         at: "۸ مرداد ۱۴۰۵",
-        action: "ثبت درخواست از وب عمومی",
+        action: "ثبت درخواست",
         actorName: "سامانه",
       },
       {

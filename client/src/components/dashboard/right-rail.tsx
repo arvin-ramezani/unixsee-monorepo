@@ -86,7 +86,7 @@ export function RightRail() {
                 aria-hidden="true"
                 className="text-secondary size-6 lg:hidden"
               />
-              <span>{t("help.title")}</span>
+              <span className="font-semibold">{t("help.title")}</span>
             </h2>
             <p className="text-muted-foreground mt-2 max-w-37.5 text-xs leading-5">
               {t("help.description")}

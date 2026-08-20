@@ -11,6 +11,7 @@ import type { AppConfigType } from './utils/config/app.config.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: getLoggerLevels(process.env.APP_ENV, process.env.NODE_ENV),
+    rawBody: true,
   });
   const configService = app.get<ConfigService<AppConfigType>>(ConfigService);
   const allowedOrigins = configService.getOrThrow('app.corsAllowedOrigins', {

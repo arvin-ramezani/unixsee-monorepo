@@ -30,12 +30,12 @@
 - **Goal:** Find or create the correct customer user and tenant, manage membership and account state, and complete website ownership assignment without leaving the provisioning context.
 - **Current problem:** `/users` is a dead end. Discovery assignment (`تخصیص وب‌سایت کشف‌شده`) can only choose from a fixed tenant list and cannot create a missing customer/user while continuing.
 - **Proposed change:** Provide a first-class users-and-tenants admin flow, plus an inline **create-customer-and-continue** path inside تخصیص وب‌سایت کشف‌شده.
-- **Main decisions:** Distinguish **user account**, **tenant**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Plan requests may link an existing account but do **not** create users. Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. This admin flow does **not** design public auth/signup UX.
+- **Main decisions:** Distinguish **user account**, **contact verification**, **احراز هویت**, **tenant**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Public signup creates a user, not a tenant. **Authorized** means staff approved احراز هویت and the customer **became a tenant** (or staff created/approved the tenant). Plan requests may be submitted before tenant approval but may only be **enabled** after a tenant exists. Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. This admin flow does **not** design public auth/signup UX.
 - **Completion state:** The intended customer/tenant exists, membership and owner are valid, and related website assignment or plan-request linking can complete without offline workaround.
-- **Highest-risk failure:** Creating a duplicate of a public-signup or previously admin-created customer, or assigning a website while create/link result is uncertain.
+- **Highest-risk failure:** Creating a duplicate of a public-signup or previously admin-created customer, enabling a plan for a non-tenant user, or assigning a website while create/link result is uncertain.
 - **Accessibility risk:** Nested create-inside-assign surfaces can trap focus, lose context, or fail to announce create/assign status.
-- **Evidence gap:** No staff interviews; public signup rules, invite-vs-create, verification bootstrap, and capability separation are unresolved.
-- **Next validation:** Prototype find existing signup customer → or admin create → resume discovery assignment; confirm plan-request enablement only links existing users.
+- **Evidence gap:** No staff interviews; certification document set, invite-vs-create, and capability separation remain partially open.
+- **Next validation:** Prototype find existing signup customer → certifications / tenant approve → resume discovery assignment; confirm plan-request enablement only after tenant exists.
 
 ## Problem and desired outcome
 
@@ -64,18 +64,21 @@ Unixsee can onboard customers and activate managed websites consistently while p
 #### In scope
 
 - Administrator find, view, create, and maintain customer user accounts.
-- Tenant create/approve, membership add/change/remove, and owner assignment safeguards.
-- Account state review: active, suspended, locked, verified, 2FA-protected indicators.
+- Tenant create/approve (including احراز هویت certification review), membership
+  add/change/remove, and owner assignment safeguards.
+- Account state review: active, suspended, locked, contact-verified, tenant /
+  احراز هویت state, 2FA-protected indicators.
 - Controlled staff assistance for verification/session recovery without exposing secrets.
 - Internal notes that never appear to customers.
-- Cross-flow: inline create-user/tenant during `تخصیص وب‌سایت کشف‌شده`, then continue assignment.
-- Entry from plan-request enablement when a missing user must be created here first, then linked back on `/plan-requests` (create is never owned by the plan-request surface).
+- Cross-flow: create-user/tenant via `/users/new?returnTo=…` during تخصیص وب‌سایت کشف‌شده, then continue assignment.
+- Entry from plan-request enablement when a missing user or missing tenant must be resolved here first, then linked back on `/plan-requests` (create is never owned by the plan-request surface).
 - Loading, empty, permission, validation, conflict, failure, and recovery states.
 - Persian RTL and equivalent English LTR behaviour.
 
 #### Out of scope
 
-- Designing the public-site auth/signup, password, verification-challenge, or session journey. Public signup may be a real account origin, but that customer journey belongs in a future public/customer auth UX document.
+- Designing the public-site auth/signup, password, verification-challenge, or session journey in this admin doc. Public signup may be a real account origin; the customer journey is specified in [`client-auth.md`](./client-auth.md) (UI companion: [`../../frontend/client-auth-ui.md`](../../frontend/client-auth-ui.md)).
+- Detailed customer submission and staff review of احراز هویت packages — see [`client-authorization.md`](./client-authorization.md) and [`admin-authorization.md`](./admin-authorization.md); this users flow consumes the resulting tenant.
 - Customer self-service profile editing in the customer dashboard beyond what admin must display as state.
 - Designing the public plan-request form; admin consumes resulting requests via `admin-plan-requests.md`.
 - Staff impersonation of customers.
@@ -133,36 +136,50 @@ No staff interviews, support tickets, or analytics were available. E-001–E-004
 | A-001 | Phase 1 admin “user” work primarily means **customer user accounts** and their **tenant memberships**, not staff RBAC configuration | Phase 1 §9 and nav label “کاربران” | Medium if staff-user admin is also expected here | Scope of `/users` | Product IA decision | Unvalidated |
 | A-002 | Creating a missing owner during discovery assignment creates both a customer user and a tenant with that user as owner when no eligible tenant exists | Inference from E-003 and onboarding needs | High if orgs already exist without users or vice versa | Inline create shape | Ops/product walkthrough | Unvalidated |
 | A-003 | Minimum create fields for continuing assignment are display name, primary contact identifier, locale preference, and tenant display name | Inference from Phase 1 profile/tenant fields | Medium | Inline create form | Prototype with ops | Unvalidated |
-| A-004 | Staff-created accounts start in a controlled unverified/pending-verification state rather than fully verified | Inference from §8 and §20 verification rules | High if wrong | Post-create security state | Security decision | Unvalidated |
+| A-004 | Staff-created accounts start unverified; the customer becomes verified after signing in with the admin-entered phone or email and passing OTP (no invite token required for this Phase 1 path) | Phase 1 §8.1.1 (2026-08-09) | Low once implemented | Post-create security state | Auth/product confirmation | Accepted for this phase |
 | A-005 | Search across email/mobile/name/tenant name is capability-scoped and non-enumerating beyond authorized results | §8.2 / §19.2 | Medium | Find-or-create UX | Security review | Unvalidated |
 | A-006 | Current fixture conflation of user IDs as tenants is a prototype shortcut, not the target domain model | E-010 + E-003 | High if retained | Data model and labels | Architecture/product | Unvalidated |
-| A-007 | Public signup, when enabled, creates a customer user (and possibly tenant) that admin must be able to find during plan-request linking and website assignment | E-012 | High if signup creates only a lead with no account | Find-before-create | Auth/product decision | Unvalidated |
+| A-007 | Public signup, when enabled, creates a customer **user** only; tenant comes from احراز هویت approval or staff create/approve | Phase 1 §8.1.2 + authorization note | High if signup is mistaken for tenant | Find-before-enable | Auth/product | Accepted for this phase |
 
 ### Unknowns
 
 | ID | Unknown | Impact | Decision blocked | Resolution | Priority |
 |---|---|---|---|---|---|
 | U-001 | Final administrator capability bundles for create user, create tenant, change owner, suspend, and security recovery | Unauthorized or blocked admin actions | Permission matrix | Security/product decision | Critical |
+
+Staff hierarchy / specialty OPERATORs (main ADMIN → sub-admin → operators) are
+proposed in
+[`../notes/admin-staff-roles-and-capabilities.md`](../notes/admin-staff-roles-and-capabilities.md)
+and intended as the last Phase 1 step; that note should feed the U-001 matrix
+before Staff access UI ships.
 | U-002 | Whether staff may create a fully usable credentialed account in-panel, or only invite/bootstrap with customer-set password | Create vs invite UX and notification | Inline create completion | Security/product | Critical |
 | U-003 | Required unique identifiers for duplicate detection (email, mobile, national id, external CRM id) | Duplicate customers and failed create | Find-or-create rules | Product/security | Critical |
 | U-004 | Whether a personal customer is always 1 user = 1 tenant in Phase 1, or multi-member tenants are common at create time | Inline create complexity | Create tenant defaults | Ops research | High |
-| U-005 | Verification bootstrap after staff create (send email/SMS challenge now, later, or never automatically) | Account security and customer readiness | Post-create notifications | Security/ops | High |
+| U-005 | ~~Verification bootstrap after staff create~~ **Resolved for Phase 1 thin path:** no invite token; customer signs in with admin-entered phone/email and passes OTP to become verified | Was blocking create UX | Closed by Phase 1 §8.1.1 | Done | Closed |
 | U-006 | Concurrent create of the same contact by two staff members | Duplicate ownership risk | Idempotency/conflict UX | Backend design | High |
 | U-007 | Retention and expiry of abandoned inline-create drafts inside assignment | Lost work vs stale PII | Save/resume policy | Product/security | Medium |
 | U-008 | Whether discovery-assignment inline create is the only create-customer contract besides standalone `/users` create | Duplication or inconsistent rules | Shared create design | Product/engineering | Medium |
-| U-009 | Exact public signup eligibility and whether plan requests may arrive with only contacts until an account exists elsewhere | Link timing from درخواست‌های پلن (enablement stays blocked until a user exists) | Identity linking | Auth/product decision | Critical |
+| U-009 | Exact public signup eligibility and whether plan requests may arrive with only contacts until an account exists elsewhere | Link timing from درخواست‌های پلن (enablement stays blocked until a **tenant** exists) | Identity linking | Auth/product decision | Critical |
+| U-010 | Exact certification document set and customer upload UI for احراز هویت | Incomplete authorization queue | Tenant approval UX | Product/ops | Critical |
 
 ## Domain distinctions for this flow
 
 | Concept | Meaning in this flow | Must not be confused with |
 |---|---|---|
 | Customer user | Person identity/contact account that can authenticate and hold memberships | Tenant organization record |
-| Tenant | Customer organization/account that owns websites and services | A single login by itself |
+| Contact verification | OTP / email proof that a contact works | احراز هویت / tenant approval |
+| احراز هویت | Staff review of certifications that authorizes the customer | Sign-in success |
+| Tenant | Approved customer organization that owns websites and can receive sold services (**authorized**) | A single login by itself |
 | Membership | Link of a user to a tenant with a tenant role | Website-level permission override |
 | Tenant owner | Membership role that controls the tenant with owner-safeguard rules | Staff administrator role |
 | Managed website ownership | Website belongs to exactly one tenant after assignment | Raw agent discovery |
 
-**Inference:** تخصیص وب‌سایت کشف‌شده should select a **tenant** as owner of the website, while inline create may also create the first **user** and owner membership when the customer does not yet exist.
+Canonical product note:
+[`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
+Dedicated flows: [`client-authorization.md`](./client-authorization.md),
+[`admin-authorization.md`](./admin-authorization.md).
+
+**Inference:** تخصیص وب‌سایت کشف‌شده should select a **tenant** as owner of the website, while create-and-return via `/users/new` may also create the first **user** and owner membership when the customer does not yet exist. Public signup alone must not be treated as tenant approval.
 
 ## Users, roles and permissions
 
@@ -260,26 +277,25 @@ Role names are descriptive placeholders. Enforcement must use approved capabilit
 |---|---|---|---|---|---|---|---|
 | 1. Enter users work | Find actionable customer admin work | Open users queue or search | Lists/scopes authorized users and tenants | Permitted? | Capability filter | JP-001 | UN-001 |
 | 2. Find or confirm | Avoid duplicates | Search by approved identifiers | Shows matches with state and memberships | Exact/possible duplicate? | Non-enumerating search | JP-002 | UN-001 |
-| 3. Create standalone | Establish customer | Enter minimum identity + tenant/owner defaults | User + tenant + owner membership created | Valid and unique? | NestJS create + audit | JP-001 | UN-003 |
+| 3. Create standalone | Establish customer | Open `/users/new`; enter minimum identity + tenant/owner defaults | User + tenant + owner membership created | Valid and unique? | NestJS create + audit | JP-001 | UN-003 |
 | 4. Maintain membership | Keep access correct | Add/change/remove members; change owner with safeguards | Membership and owner state update | Final owner protected? | Authorization + audit | JP-001 | UN-004 |
 | 5. Security assist | Restore safe access | Suspend/restore, revoke sessions, start recovery | State changes with reason | Capability and policy ok? | No secret reveal | JP-005 | UN-005 |
 | 6. Discovery assign entry | Make website customer-owned | Start تخصیص وب‌سایت کشف‌شده | Tenant/plan required; discovery context visible | Matching tenant exists? | Preserve discovery draft | JP-002 | UN-002 |
-| 7. Inline create | Unblock assignment | Choose “ایجاد مشتری جدید”, complete minimum create | Create succeeds; return to assignment with tenant selected | Create authorized and unique? | Same create contract as standalone | JP-003 | UN-002 |
+| 7. Create from assign | Unblock assignment | Choose “ایجاد مشتری جدید”; complete `/users/new?returnTo=/servers/{id}&assign=` | Create succeeds; return to assignment Dialog with tenant selected | Create authorized and unique? | Same create contract as standalone | JP-003 | UN-002 |
 | 8. Resume assign | Finish ownership | Confirm tenant, plan, display title | Managed website ownership created | Activation prerequisites met? | NestJS assignment + audit | E-005 | UN-003 |
 | 9. Re-enter | Support later work | Open user/tenant detail | Related websites, requests, tickets, notes, history | Further action needed? | Retrieve related records | JP-004 | UN-006 |
 
 ### Cross-flow change required in website assignment
 
-**CH-001 — Create-and-continue inside تخصیص وب‌سایت کشف‌شده**
+**CH-001 — Create-and-continue from تخصیص وب‌سایت کشف‌شده**
 
 When no suitable tenant/user exists:
 
-1. Staff keep the discovery assignment surface open or explicitly stacked.
-2. Staff start inline create with discovery domain/title available as optional context only.
-3. System creates user + tenant + owner membership under the same rules as standalone create.
-4. On success, focus returns to assignment with the new tenant preselected and prior title/plan inputs restored.
-5. Staff confirm assignment as a separate consequential action.
-6. Canceling inline create returns to assignment without creating records and without clearing discovery inputs.
+1. Staff leave the assignment Dialog for `/users/new?returnTo=/servers/{serverId}&assign={discoveryId}`.
+2. System creates user + tenant + owner membership under the same rules as standalone create.
+3. On success, staff return to `/servers/{serverId}` with the assign Dialog reopened and the new tenant preselected.
+4. Staff confirm assignment as a separate consequential action.
+5. Canceling create returns via `returnTo` without creating records; the discovery stays unassigned.
 
 This change should also be reflected in `admin-servers-websites-agents.md` as an alternative path under assignment.
 
@@ -353,12 +369,12 @@ flowchart TD
 |---|---|---|---|---|---|---|---|
 | S-01 | Users queue | Find customer admin work | Authorized `/users` | Name, contact masks, tenant(s), account state, website count | Search, filter, create, open | Scope by capability | Record selected/created |
 | S-02 | Find results | Prevent duplicates | Search submitted | Ranked authorized matches and “no match” empty state | Open match, start create | Avoid leaking existence beyond policy | Detail or create |
-| S-03 | Create user/tenant | Establish customer | Create from queue or inline | Display name, contact identifiers, locale, tenant name, owner default, internal note optional | Save, cancel | Validates uniqueness; creates user+tenant+owner as configured | Detail or resume parent flow |
+| S-03 | Create user/tenant | Establish customer | Create from `/users/new` or assign returnTo | Display name, contact identifiers, locale, tenant name, owner default, internal note optional | Save, cancel | Validates uniqueness; creates user+tenant+owner as configured | Detail or resume parent flow |
 | S-04 | User/tenant detail | Understand customer context | Record opened | Identity, verification/security state, memberships, related websites/requests/tickets, internal notes | Edit permitted fields, manage members, security actions | Separates internal vs customer-visible | Related workflow |
 | S-05 | Membership edit | Keep access correct | Manage members | Members, roles, owner marker | Add/change/remove, change owner | Enforces final-owner rule | Updated membership |
 | S-06 | Security action | Safe recovery | Suspend/restore/revoke/recovery | Current state, impact summary, reason | Confirm with reason | Never reveals secrets; audits | Updated account state |
 | S-07 | Discovery assign | Bind website ownership | Unassigned discovery selected | Domain, server/agent context, title, tenant, plan | Select tenant, create customer, confirm assign | Keeps discovery staff-only until success | Assigned or create branch |
-| S-08 | Inline create | Unblock assign | Create customer from S-07 | Minimum create fields + preserved assignment draft summary | Save create, cancel create | Same create rules as S-03; does not assign website yet | S-09 or back to S-07 |
+| S-08 | Create from assign | Unblock assign | Create customer from S-07 via `/users/new` | Minimum create fields | Save create, cancel create | Same create rules as S-03; does not assign website yet | S-09 or back to S-07 |
 | S-09 | Assignment resume | Finish ownership | Inline create succeeded | Preselected tenant, restored title/plan, create confirmation | Confirm assign, edit, cancel assign | Revalidates prerequisites | Managed website |
 | S-10 | Completion | Confirm outcome | Assignment accepted | Website id/reference, tenant, plan, next actions | Open website, open tenant, continue other discoveries | Customer visibility follows activation rules | Re-entry |
 
@@ -393,9 +409,9 @@ flowchart TD
 
 | Condition/result | Case 1 | Case 2 | Case 3 |
 |---|---:|---:|---|
-| Policy allows immediate credentialed create | Yes | No | Yes |
+| Phase 1 thin path | Yes | Legacy invite path (out of thin path) | Duplicate contact |
 | Contact identifier unique | Yes | Yes | No |
-| Result | Create pending/unverified account per A-004/U-002 | Create invite/bootstrap record and wait for customer completion before full access | Block create; open existing authorized match |
+| Result | Create unverified account; customer verifies later via OTP on admin-entered phone/email (A-004 / Phase 1 §8.1.1) | Invite/bootstrap only if a later policy reintroduces it | Block create; open existing authorized match |
 
 ### Business-rule register
 
@@ -403,7 +419,7 @@ flowchart TD
 - **BR-002 — Distinguish user and tenant:** Admin must not treat login identity and owning organization as the same object, even if Phase 1 often creates them together. Source: E-003, A-006. Status: Proposed correction to current fixtures.
 - **BR-003 — Minimum create completeness:** Create requires the approved minimum identity and tenant/owner fields before the record can be used for website ownership. Source: A-003, E-004. Status: Proposed.
 - **BR-004 — Duplicate prevention:** Create must check approved unique identifiers and surface authorized existing matches before a second customer is created. Source: U-003. Status: Proposed.
-- **BR-005 — Verification honesty:** Staff create does not mark contacts verified merely because the admin form saved. Source: Phase 1 §20. Status: Confirmed.
+- **BR-005 — Verification honesty:** Staff create does not mark contacts verified merely because the admin form saved. Verification happens when the customer signs in with that phone/email and passes OTP. Source: Phase 1 §8.1.1 / §20. Status: Confirmed.
 - **BR-006 — Membership access:** Users receive website access through tenant membership, not by website id alone. Source: E-003. Status: Confirmed.
 - **BR-007 — Final-owner safeguard:** The last owner cannot be removed without assigning another owner or an approved close process. Source: E-001. Status: Confirmed.
 - **BR-008 — Reasoned security actions:** Suspend/restore and equivalent high-impact account actions require a reason and audit. Source: E-002. Status: Confirmed.
@@ -488,12 +504,12 @@ flowchart TD
 
 | ID | Criterion | State | Problem/status | Required behaviour | Severity | Test |
 |---|---|---|---|---|---:|---|
-| AX-001 | Keyboard operation | Queue, create, inline create, assign | Nested sheets/dialogs may become pointer-only | All find/create/assign actions operable by keyboard | 4 provisional | Keyboard |
+| AX-001 | Keyboard operation | Queue, `/users/new`, assign Dialog | Create is a dedicated page; assign is a Dialog | All find/create/assign actions operable by keyboard | 4 provisional | Keyboard |
 | AX-002 | Focus order/restoration | Inline create open/close | Returning from create may lose assignment context | On open, focus first create field; on success/cancel, restore focus to tenant control or status summary | 4 provisional | Keyboard/SR |
 | AX-003 | Status messages | Create and assign | Silent success would hide whether continue is safe | Announce create success, selected tenant, assign pending/success/failure | 4 provisional | Screen reader |
 | AX-004 | Labels and errors | Create/assign forms | Conditional identity fields may be unclear | Programmatic labels, required state, linked error text, retained valid input | 3 provisional | SR/code |
 | AX-005 | Critical submission | Create, owner change, suspend, assign | Accidental high-impact changes | Review summary and confirm for high-impact actions; create-and-assign remain separate confirms | 4 provisional | Keyboard/usability |
-| AX-006 | No keyboard trap | Nested create inside assign | Focus may stick in stacked surface | Escape/cancel returns to parent; focus remains usable | 4 provisional | Keyboard |
+| AX-006 | No keyboard trap | Assign Dialog | Focus must remain usable in the Dialog | Escape/cancel closes assign; create uses `/users/new` instead of a nested overlay | 4 provisional | Keyboard |
 | AX-007 | RTL/LTR | Contact identifiers and domains | Email/domain are LTR inside RTL UI | Keep identifiers copyable and readable without breaking reading order | 3 provisional | Manual RTL/LTR |
 | AX-008 | Timing | Invite/verification windows | Unwarned expiry blocks customer access | Expose pending-verification state and next action in text | 3 provisional | Functional |
 
@@ -611,7 +627,7 @@ Exclude raw contact values, free-text notes, and secrets unless separately appro
 | ID | Dependency | Type | Owner | Required by | Failure effect | Fallback |
 |---|---|---|---|---|---|---|
 | D-001 | Capability bundles for user/tenant/assignment | Policy | Security/product | Permission UX | Unsafe or blocked flows | Prototype with capability placeholders |
-| D-002 | Create vs invite/bootstrap policy | Policy | Security/product | Create completion | Incorrect account security | Disable credential create; use invite-only stub |
+| D-002 | Create completion / verification path | Policy | Security/product | Create completion | Incorrect account security | Phase 1 thin path: unverified create + OTP verify; no invite token |
 | D-003 | Unique-identifier and duplicate policy | Policy | Product/security | Find-or-create | Duplicate tenants/users | Manual ops review queue |
 | D-004 | NestJS user/tenant/membership APIs | System | Backend | Real integration | UI remains fixture-only | Static prototype states |
 | D-005 | Shared create contract between `/users` and discovery-assignment inline create | Design | Product/engineering | Consistency | Divergent create paths | Document one shared component intent |
@@ -693,7 +709,7 @@ This flow supports:
 | Assign tenant/plan | If tenant missing → inline create user/tenant/owner → resume assign; prefer chosen plan from a linked plan request when present |
 | Managed website active/provisioning | Still requires explicit assignment/activation prerequisites |
 
-Recommended follow-up: keep public auth/signup UX in a separate future document; consume only account-origin outcomes here.
+Recommended follow-up: consume public auth/signup only as account-origin outcomes here; customer journey lives in [`client-auth.md`](./client-auth.md).
 
 ## Appendix B — Minimum inline create information architecture
 

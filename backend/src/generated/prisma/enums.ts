@@ -85,10 +85,33 @@ export type AlertStatus = (typeof AlertStatus)[keyof typeof AlertStatus]
 
 export const OtpContext = {
   LOGIN: 'LOGIN',
-  MONITORING_ACCESS: 'MONITORING_ACCESS'
+  MONITORING_ACCESS: 'MONITORING_ACCESS',
+  PHONE_VERIFY: 'PHONE_VERIFY',
+  EMAIL_VERIFY: 'EMAIL_VERIFY'
 } as const
 
 export type OtpContext = (typeof OtpContext)[keyof typeof OtpContext]
+
+
+export const AuthorizationCaseStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  NEEDS_MORE_INFO: 'NEEDS_MORE_INFO',
+  REJECTED: 'REJECTED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type AuthorizationCaseStatus = (typeof AuthorizationCaseStatus)[keyof typeof AuthorizationCaseStatus]
+
+
+export const ContactChallengeState = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  SKIPPED_ALREADY_VERIFIED: 'SKIPPED_ALREADY_VERIFIED'
+} as const
+
+export type ContactChallengeState = (typeof ContactChallengeState)[keyof typeof ContactChallengeState]
 
 
 export const PlanRequestStatus = {
@@ -135,7 +158,7 @@ export type EnrollmentTokenStatus = (typeof EnrollmentTokenStatus)[keyof typeof 
 
 
 export const TicketStatus = {
-  OPEN: 'OPEN',
+  SUBMITTED: 'SUBMITTED',
   IN_PROGRESS: 'IN_PROGRESS',
   WAITING_CUSTOMER: 'WAITING_CUSTOMER',
   RESOLVED: 'RESOLVED',
@@ -143,6 +166,19 @@ export const TicketStatus = {
 } as const
 
 export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketServiceCategory = {
+  MANAGED_SERVER: 'MANAGED_SERVER',
+  MIGRATION_OPTIMIZATION: 'MIGRATION_OPTIMIZATION',
+  WOOCOMMERCE_SUPPORT: 'WOOCOMMERCE_SUPPORT',
+  SEO: 'SEO',
+  GRAPHIC_DESIGN: 'GRAPHIC_DESIGN',
+  PRODUCT_DATA_ENTRY: 'PRODUCT_DATA_ENTRY',
+  SOCIAL_MEDIA_SUPPORT: 'SOCIAL_MEDIA_SUPPORT'
+} as const
+
+export type TicketServiceCategory = (typeof TicketServiceCategory)[keyof typeof TicketServiceCategory]
 
 
 export const TicketPriority = {
@@ -162,6 +198,15 @@ export const NotificationStatus = {
 } as const
 
 export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus]
+
+
+export const UnixseeMessageStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type UnixseeMessageStatus = (typeof UnixseeMessageStatus)[keyof typeof UnixseeMessageStatus]
 
 
 export const OperationalActionStatus = {

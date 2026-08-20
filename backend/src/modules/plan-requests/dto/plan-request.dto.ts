@@ -5,6 +5,7 @@ import {
   IsUUID,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreatePublicPlanRequestDto {
@@ -16,12 +17,13 @@ export class CreatePublicPlanRequestDto {
   @MaxLength(200)
   contactName!: string;
 
+  @ValidateIf((o: CreatePublicPlanRequestDto) => !o.contactEmail)
   @IsString()
   @MinLength(1)
   @MaxLength(32)
-  contactPhone!: string;
+  contactPhone?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CreatePublicPlanRequestDto) => !o.contactPhone)
   @IsEmail()
   contactEmail?: string;
 
@@ -32,9 +34,12 @@ export class CreatePublicPlanRequestDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(2000)
+  @MaxLength(4000)
   notes?: string;
 }
+
+/** Authenticated customer create — same body as public intake. */
+export class CreatePlanRequestDto extends CreatePublicPlanRequestDto {}
 
 export class LinkPlanRequestDto {
   @IsUUID()
@@ -63,4 +68,20 @@ export class DeclinePlanRequestDto {
   @IsString()
   @MaxLength(1000)
   reason?: string;
+}
+
+export class CheckPublicPlanRequestAccountDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(32)
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsEmail()
+  contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  websiteDomain?: string;
 }

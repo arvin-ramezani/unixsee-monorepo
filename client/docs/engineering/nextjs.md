@@ -4,7 +4,20 @@
 >
 > **Owner:** Frontend team
 >
-> **Last verified:** 2026-08-04
+> **Last verified:** 2026-08-16
+
+## Version-matched documentation
+
+For Next.js-specific implementation, do **not** rely on model memory.
+
+Before implementing or modifying data fetching, caching, revalidation, Server Components, Server Actions / Server Functions, Route Handlers, Cache Components (`"use cache"` and related), or Suspense / streaming:
+
+1. Inspect the installed Next.js version and cache / Cache Components configuration in this app (`client/package.json` and Next config).
+2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from `client/`; the package may not be visible from the monorepo root).
+
+The installed Next.js documentation is authoritative over model knowledge.
+
+Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md).
 
 ## Component Boundaries
 
@@ -24,12 +37,21 @@
 
 ## Data Loading
 
+- Before adding or changing fetch / cache / revalidate / Cache Components behavior, read the installed docs under `node_modules/next/dist/docs/` for this Next.js version.
 - Public static content should be imported from repository-owned modules or messages and rendered on the server.
 - Dashboard and admin application data should be requested through typed NestJS clients.
 - Keep credentials and privileged calls server-only.
 - Set explicit caching behavior rather than relying on accidental framework defaults.
 - Use parallel data loading when requests are independent and streaming when it materially improves the experience.
 - Provide stable loading, empty, permission-denied, unavailable, and error states.
+- **Customer dashboard routes:** every new or restructured
+  `dashboard/` page must include a co-located `loading.tsx` whose skeleton
+  mirrors the live page structure (grids, rails, max-widths). Canonical
+  rules: [`ui.md`](./ui.md#customer-dashboard-loading-skeletons).
+- Planned hybrid auth session + Nest fetch conventions:
+  [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md) and
+  ADRs [`../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md`](../../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
+  [`../../../docs/architecture/decisions/0011-client-nest-auth-integration.md`](../../../docs/architecture/decisions/0011-client-nest-auth-integration.md).
 
 ## Mutations and Forms
 
@@ -54,3 +76,11 @@
 - Avoid sequential fetch waterfalls and unbounded client subscriptions.
 - Use framework image and font optimizations where appropriate.
 - Measure before introducing caching layers, global state, memoization, or virtualization.
+
+## Related
+
+- Shared monorepo Next.js rules: [`../../../docs/frontend/nextjs.md`](../../../docs/frontend/nextjs.md)
+- Client data fetching Layer 1: [`../../../docs/frontend/client-data-fetching.md`](../../../docs/frontend/client-data-fetching.md)
+- Client domain fetching Layer 2: [`../../../docs/frontend/client-domain-data-fetching.md`](../../../docs/frontend/client-domain-data-fetching.md)
+- Agent skills: [`.agents/skills/nextjs-app-router`](../../.agents/skills/nextjs-app-router/SKILL.md),
+  [`.agents/skills/react-19`](../../.agents/skills/react-19/SKILL.md)

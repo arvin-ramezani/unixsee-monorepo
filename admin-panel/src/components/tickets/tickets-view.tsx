@@ -16,11 +16,14 @@ import {
   formatTicketNumber,
   getInitials,
   sortTickets,
+  TICKET_PRIORITY_LABELS,
   TICKET_STATUS_CONFIG,
+  toPersianDigits,
   type TicketSortOption,
 } from "@/lib/tickets-utils";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -42,7 +45,32 @@ import SearchInput from "../common/search-input";
 type TicketsViewProps = {
   tickets: TicketType[];
   initialStatus?: TicketStatusType | "ALL";
+  total: number;
+  page: number;
+  pageSize: number;
 };
+
+function buildTicketsHref(
+  status: TicketStatusType | "ALL",
+  page: number,
+): string {
+  const next = new URLSearchParams();
+  if (status !== "ALL") {
+    next.set("status", status);
+  }
+  if (page > 1) {
+    next.set("page", String(page));
+  }
+  const qs = next.toString();
+  return qs ? `/tickets?${qs}` : "/tickets";
+}
+
+function ticketContactSummary(ticket: TicketType) {
+  const parts = [ticket.phoneNumber?.trim(), ticket.email?.trim()].filter(
+    Boolean,
+  ) as string[];
+  return parts.length > 0 ? parts.join(" · ") : "—";
+}
 
 function TicketCustomer({
   ticket,
@@ -75,7 +103,7 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
   const router = useRouter();
 
   const ticketHref = `/tickets/${ticket.id}`;
-  const ticketLabel = `مشاهده تیکت ${formatTicketNumber(ticket.id)}`;
+  const ticketLabel = `مشاهده تیکت ${formatTicketNumber(ticket.id, ticket.number)}`;
 
   const navigateToTicket = () => {
     router.push(ticketHref);
@@ -114,16 +142,32 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
       aria-label={ticketLabel}
     >
       <TableCell className="px-4 py-3">
-        <span dir="ltr" className="font-medium text-foreground">
-          {formatTicketNumber(ticket.id)}
-        </span>
+        <div className="flex flex-col gap-1">
+          <span dir="ltr" className="font-medium text-foreground w-fit">
+            {formatTicketNumber(ticket.id, ticket.number)}
+          </span>
+          {!!ticket.priority && (
+            <span className="text-xs text-muted-foreground">
+              {TICKET_PRIORITY_LABELS[ticket.priority]}
+            </span>
+          )}
+        </div>
       </TableCell>
       <TableCell className="px-4 py-3">
         <TicketCustomer ticket={ticket} linkUser />
       </TableCell>
+      <TableCell className="max-w-48 px-4 py-3">
+        <span
+          className="block truncate text-muted-foreground w-fit"
+          dir="ltr"
+          title={ticketContactSummary(ticket)}
+        >
+          {ticketContactSummary(ticket)}
+        </span>
+      </TableCell>
       <TableCell className="max-w-xs px-4 py-3">
         <span className="block truncate text-muted-foreground">
-          {ticket?.subject}
+          {ticket.subject}
         </span>
       </TableCell>
       <TableCell className="max-w-xs px-4 py-3">
@@ -142,8 +186,6 @@ function TicketTableRow({ ticket }: { ticket: TicketType }) {
 }
 
 function TicketCard({ ticket }: { ticket: TicketType }) {
-  // const lastMessage = getLastMessage(ticket);
-
   return (
     <Link
       href={`/tickets/${ticket.id}`}
@@ -151,7 +193,7 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
     >
       <div className="flex items-start justify-between gap-3">
         <span dir="ltr" className="font-medium">
-          {formatTicketNumber(ticket.id)}
+          {formatTicketNumber(ticket.id, ticket.number)}
         </span>
         <TicketStatusBadge status={ticket.status} />
       </div>
@@ -160,17 +202,24 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
         <TicketCustomer ticket={ticket} />
       </div>
 
+      <p className="mt-2 line-clamp-1 text-xs text-muted-foreground" dir="ltr">
+        {ticketContactSummary(ticket)}
+      </p>
+
       <p className="mt-3 line-clamp-1 text-sm text-muted-foreground">
         <strong>بخش: </strong>
         <span>{TICKET_SERVICE_LABELS[ticket.section]}</span>
       </p>
       <p className="mt-3 line-clamp-1 text-sm text-muted-foreground">
-        {ticket?.subject}
+        {ticket.subject}
       </p>
 
-      <p className="mt-3 text-xs text-muted-foreground">
-        {formatRelativeTime(ticket.updatedAt)}
-      </p>
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        {ticket.priority ? (
+          <span>{TICKET_PRIORITY_LABELS[ticket.priority]}</span>
+        ) : null}
+        <span>{formatRelativeTime(ticket.updatedAt)}</span>
+      </div>
     </Link>
   );
 }
@@ -178,15 +227,26 @@ function TicketCard({ ticket }: { ticket: TicketType }) {
 export function TicketsView({
   tickets,
   initialStatus = "ALL",
+  total,
+  page,
+  pageSize,
 }: TicketsViewProps) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<TicketStatusType | "ALL">(initialStatus);
   const [sortBy, setSortBy] = useState<TicketSortOption>("updated-desc");
 
+  const status = initialStatus;
+  const hasLocalSearch = query.trim().length > 0;
+
   const filteredTickets = useMemo(() => {
-    const filtered = filterTickets(tickets, { query, status });
+    // Status is applied by Nest; only search client-side on the loaded page.
+    const filtered = filterTickets(tickets, { query, status: "ALL" });
     return sortTickets(filtered, sortBy);
-  }, [tickets, query, status, sortBy]);
+  }, [tickets, query, sortBy]);
+
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const canGoPrev = page > 1;
+  const canGoNext = page < pageCount;
 
   const statusLabel =
     status === "ALL"
@@ -201,22 +261,41 @@ export function TicketsView({
 
   const sortByLabel = sortByLabels[sortBy];
 
+  function replaceListParams(updates: {
+    status?: TicketStatusType | "ALL";
+    page?: number;
+  }) {
+    router.replace(
+      buildTicketsHref(updates.status ?? status, updates.page ?? page),
+    );
+  }
+
+  const emptyMessage = hasLocalSearch
+    ? "تیکتی با این جستجو در صفحه فعلی پیدا نشد."
+    : "تیکتی برای این وضعیت پیدا نشد.";
+
+  const countLabel = hasLocalSearch
+    ? `${toPersianDigits(filteredTickets.length)} نتیجه در صفحه`
+    : `${toPersianDigits(total)} تیکت`;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
-        {/* <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"> */}
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(220px,480px)_repeat(3,minmax(130px,170px))]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="جستجو در تیکت، مشتری یا پیام..."
+            placeholder="جستجو در تیکت، مشتری یا موضوع..."
             className="sm:col-span-2 lg:col-span-1"
           />
 
           <Select
             value={status}
             onValueChange={(value) =>
-              setStatus(value as TicketStatusType | "ALL")
+              replaceListParams({
+                status: value as TicketStatusType | "ALL",
+                page: 1,
+              })
             }
           >
             <SelectTrigger className="w-full" aria-label="فیلتر وضعیت">
@@ -252,12 +331,37 @@ export function TicketsView({
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>{filteredTickets.length.toLocaleString("fa-IR")} تیکت</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+        <span>{countLabel}</span>
+        {pageCount > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={!canGoPrev}
+              onClick={() => replaceListParams({ page: page - 1 })}
+            >
+              قبلی
+            </Button>
+            <span>
+              صفحه {toPersianDigits(page)} از {toPersianDigits(pageCount)}
+            </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={!canGoNext}
+              onClick={() => replaceListParams({ page: page + 1 })}
+            >
+              بعدی
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="hidden rounded-xl border border-border bg-card lg:block">
-        <Table className="w-full min-w-190 text-sm">
+        <Table className="w-full min-w-220 text-sm">
           <TableHeader className="border-b border-border bg-muted/30 text-muted-foreground">
             <TableRow>
               <TableHead className="px-4 py-3 text-right font-medium">
@@ -265,6 +369,9 @@ export function TicketsView({
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
                 مشتری
+              </TableHead>
+              <TableHead className="px-4 py-3 text-right font-medium">
+                تلفن/ایمیل
               </TableHead>
               <TableHead className="px-4 py-3 text-right font-medium">
                 موضوع
@@ -288,10 +395,10 @@ export function TicketsView({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="px-4 py-10 text-center text-muted-foreground"
                 >
-                  تیکتی با این فیلترها پیدا نشد.
+                  {emptyMessage}
                 </TableCell>
               </TableRow>
             )}
@@ -299,14 +406,14 @@ export function TicketsView({
         </Table>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-3 lg:hidden">
+      <div className="grid gap-3 md:grid-cols-2 lg:hidden">
         {filteredTickets.length > 0 ? (
           filteredTickets.map((ticket) => (
             <TicketCard key={ticket.id} ticket={ticket} />
           ))
         ) : (
           <div className="rounded-xl border border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
-            تیکتی با این فیلترها پیدا نشد.
+            {emptyMessage}
           </div>
         )}
       </div>

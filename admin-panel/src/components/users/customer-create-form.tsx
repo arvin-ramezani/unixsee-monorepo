@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent, type ReactNode } from "react";
+import {
+  useState,
+  type ComponentProps,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { AlertTriangle, Info, MailCheck, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SheetFooter } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import {
   CUSTOMER_LOCALE,
   CUSTOMER_LOCALE_LABELS,
@@ -27,6 +32,18 @@ import {
   type CreateCustomerResultType,
 } from "@/lib/data/users-runtime";
 import { formatContactSummary, normalizeMobile } from "@/lib/users-utils";
+
+function FormActions({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "mt-auto flex flex-col gap-2 border-t border-border bg-card p-4",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 const CREATE_STEP = {
   FORM: "FORM",
@@ -72,12 +89,12 @@ function validateCreateValues(
   const email = values.email.trim();
   const mobile = normalizeMobile(values.mobile);
 
-  if (!email && !mobile) {
-    errors.contact = "حداقل یکی از ایمیل یا شماره موبایل لازم است.";
+  if (!mobile) {
+    errors.contact = "شماره موبایل لازم است.";
+  } else if (!MOBILE_PATTERN.test(mobile)) {
+    errors.contact = "شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.";
   } else if (email && !EMAIL_PATTERN.test(email)) {
     errors.contact = "قالب ایمیل معتبر نیست.";
-  } else if (mobile && !MOBILE_PATTERN.test(mobile)) {
-    errors.contact = "شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.";
   }
 
   if (!values.tenantName.trim()) {
@@ -192,13 +209,13 @@ export function CustomerCreateForm({
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">ایمیل</dt>
-                <dd className="mt-1 text-sm font-medium" dir="ltr">
+                <dd className="mt-1 text-sm font-medium w-fit" dir="ltr">
                   {email.trim() || "—"}
                 </dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">موبایل</dt>
-                <dd className="mt-1 text-sm font-medium" dir="ltr">
+                <dd className="mt-1 text-sm font-medium w-fit" dir="ltr">
                   {normalizeMobile(mobile) || "—"}
                 </dd>
               </div>
@@ -222,8 +239,8 @@ export function CustomerCreateForm({
             <MailCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p>
               حساب به‌صورت دعوت‌نامه‌ای ساخته می‌شود: تا تکمیل دعوت توسط مشتری،
-              ایمیل و موبایل تأییدشده در نظر گرفته نمی‌شود و هیچ رمز یا کد
-              ورودی در پنل نمایش داده نمی‌شود.
+              ایمیل و موبایل تأییدشده در نظر گرفته نمی‌شود و هیچ رمز یا کد ورودی
+              در پنل نمایش داده نمی‌شود.
             </p>
           </div>
 
@@ -239,7 +256,7 @@ export function CustomerCreateForm({
           </div>
         </div>
 
-        <SheetFooter className="border-t border-border bg-card">
+        <FormActions className="xl:flex-row">
           <Button type="button" autoFocus onClick={handleConfirm}>
             تأیید و ایجاد مشتری
           </Button>
@@ -250,7 +267,7 @@ export function CustomerCreateForm({
           >
             بازگشت به ویرایش
           </Button>
-        </SheetFooter>
+        </FormActions>
       </div>
     );
   }
@@ -313,7 +330,10 @@ export function CustomerCreateForm({
         )}
 
         <div className="space-y-2">
-          <label htmlFor="customer-display-name" className="text-sm font-medium">
+          <label
+            htmlFor="customer-display-name"
+            className="text-sm font-medium"
+          >
             نام مشتری
           </label>
           <Input
@@ -340,22 +360,6 @@ export function CustomerCreateForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="customer-email" className="text-sm font-medium">
-              ایمیل
-            </label>
-            <Input
-              id="customer-email"
-              type="email"
-              dir="ltr"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              aria-invalid={!!errors.contact}
-              aria-describedby={errors.contact ? "customer-contact-error" : undefined}
-              placeholder="name@example.com"
-            />
-          </div>
-
-          <div className="space-y-2">
             <label htmlFor="customer-mobile" className="text-sm font-medium">
               موبایل
             </label>
@@ -365,9 +369,33 @@ export function CustomerCreateForm({
               inputMode="numeric"
               value={mobile}
               onChange={(event) => setMobile(event.target.value)}
+              aria-required="true"
               aria-invalid={!!errors.contact}
-              aria-describedby={errors.contact ? "customer-contact-error" : undefined}
+              aria-describedby={
+                errors.contact ? "customer-contact-error" : undefined
+              }
               placeholder="09121234567"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="customer-email" className="text-sm font-medium">
+              ایمیل
+              <span className="ms-1 font-normal text-muted-foreground">
+                (اختیاری)
+              </span>
+            </label>
+            <Input
+              id="customer-email"
+              type="email"
+              dir="ltr"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              aria-invalid={!!errors.contact}
+              aria-describedby={
+                errors.contact ? "customer-contact-error" : undefined
+              }
+              placeholder="name@example.com"
             />
           </div>
         </div>
@@ -381,12 +409,15 @@ export function CustomerCreateForm({
           }
         >
           {errors.contact ??
-            "شناسه تماس برای بررسی تکراری‌نبودن مشتری و ارسال دعوت‌نامه استفاده می‌شود."}
+            "موبایل برای شناسایی مشتری و ارسال دعوت‌نامه لازم است؛ ایمیل اختیاری است."}
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="customer-tenant-name" className="text-sm font-medium">
+            <label
+              htmlFor="customer-tenant-name"
+              className="text-sm font-medium"
+            >
               نام مستأجر
             </label>
             <Input
@@ -451,7 +482,10 @@ export function CustomerCreateForm({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="customer-internal-note" className="text-sm font-medium">
+          <label
+            htmlFor="customer-internal-note"
+            className="text-sm font-medium"
+          >
             یادداشت داخلی (اختیاری)
           </label>
           <Textarea
@@ -471,12 +505,12 @@ export function CustomerCreateForm({
         </div>
       </div>
 
-      <SheetFooter className="border-t border-border bg-card">
+      <FormActions className="xl:flex-row">
         <Button type="submit">بازبینی و ادامه</Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           {cancelLabel}
         </Button>
-      </SheetFooter>
+      </FormActions>
     </form>
   );
 }

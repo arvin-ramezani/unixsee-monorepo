@@ -15,7 +15,150 @@
     "phoneInvalid": "Please enter a valid phone number",
     "messageTooShort": "Message must be at least 20 characters",
     "messageRequired": "Message content is required",
-    "websiteInvalid": "Please enter a valid website url"
+    "websiteInvalid": "Please enter a valid website url",
+    "websiteRequired": "Website is required unless you don't have one yet",
+    "contactRequired": "Enter and verify a phone number or email",
+    "databaseSizeRequired": "Select an approximate database size",
+    "dailyVisitorsRequired": "Select an approximate daily visitor range",
+    "monthlyVisitorsRequired": "Select an approximate daily visitor range",
+    "woocommerceRequired": "Tell us whether you use WooCommerce today",
+    "attachmentsInvalid": "One or more files are not allowed",
+    "attachmentsTooMany": "Too many files selected",
+    "attachmentTooLarge": "A selected file is too large",
+    "passwordRequired": "Password is required",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "otpRequired": "Enter the verification code",
+    "otpInvalid": "Enter a valid 6-digit code",
+    "nationalIdRequired": "National ID is required",
+    "nationalIdInvalid": "Enter a valid 10-digit national ID",
+    "birthDateRequired": "Date of birth is required",
+    "mobileRequired": "Mobile number is required",
+    "mobileInvalid": "Enter a valid Iranian mobile number",
+    "mobileBelongsRequired": "Confirm this mobile belongs to the same national ID",
+    "provinceRequired": "Province is required",
+    "cityRequired": "City is required",
+    "addressRequired": "Full address is required",
+    "addressTooLong": "Address must be under 500 characters",
+    "postalCodeRequired": "Postal code is required",
+    "postalCodeInvalid": "Enter a valid 10-digit postal code",
+    "attestationRequired": "Confirm that the information is accurate",
+    "documentRequired": "National ID card photo is required",
+    "documentInvalid": "Upload a JPG, PNG, or WebP image up to 5MB"
+  },
+  "Auth": {
+    "common": {
+      "or": "or",
+      "continue": "Continue",
+      "continuing": "Continuing…",
+      "verify": "Verify",
+      "verifying": "Verifying…",
+      "submit": "Submit",
+      "submitting": "Submitting…",
+      "sending": "Sending…",
+      "sendCode": "Send code",
+      "setPassword": "Set password",
+      "settingPassword": "Saving…",
+      "requestNewLink": "Request a new link",
+      "backToSignIn": "Back to sign in",
+      "editIdentifier": "Edit",
+      "resendCode": "Resend code",
+      "resendIn": "Resend in {seconds}s",
+      "google": "Continue with Google",
+      "googleComingSoon": "Google sign-in is coming soon",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "countryCode": "Country code",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "912 000 0000",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "modePhone": "Phone",
+      "modeEmail": "Email",
+      "identifierMode": "Sign-in method",
+      "otpLabel": "Verification code",
+      "otpHint": "Enter the 6-digit code we sent",
+      "maskedPhone": "Code sent to {identifier}",
+      "maskedEmail": "Code sent to {identifier}",
+      "prototypeNote": "UI prototype — authentication is not connected yet.",
+      "phoneOtpLiveNote": "Phone OTP is live via Nest. SMS is mocked on the API (code emailed until an SMS provider is wired). Email OTP is coming soon."
+    },
+    "signIn": {
+      "title": "Sign in",
+      "description": "Use your phone or email to receive a one-time code.",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "entry": {
+      "title": "Access your account",
+      "description": "Enter your phone number. We will sign you in or create an account after you verify the code."
+    },
+    "signUp": {
+      "title": "Create your account",
+      "description": "A few details to get started. We'll verify your contact next.",
+      "haveAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "alreadyExistsTitle": "Account already exists",
+      "alreadyExistsDescription": "We couldn't create a new account with those details. Sign in to continue.",
+      "goToSignIn": "Sign in"
+    },
+    "otp": {
+      "title": "Enter verification code",
+      "description": "We sent a one-time code. It may take a moment to arrive.",
+      "wrongCode": "That code isn't valid. Try again or resend.",
+      "rateLimited": "Too many attempts. Wait a moment before trying again.",
+      "success": "Verified"
+    },
+    "verifyEmail": {
+      "pendingTitle": "Check your email",
+      "pendingDescription": "We sent a verification link. Open it to continue.",
+      "resend": "Resend verification email",
+      "successTitle": "Email verified",
+      "successDescription": "You're all set. Continue to your dashboard.",
+      "continue": "Continue to dashboard",
+      "expiredTitle": "Link expired",
+      "expiredDescription": "This verification link is no longer valid. Request a new one.",
+      "changeEmail": "Use a different email"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Enter your email and we'll send reset instructions if an account exists.",
+      "submit": "Send reset link",
+      "sentTitle": "Check your email",
+      "sentDescription": "If an account exists for that email, we sent instructions to reset your password.",
+      "openEmail": "Open your inbox, then return here to sign in."
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "description": "Choose a strong password you haven't used here before.",
+      "deadTitle": "Link expired or invalid",
+      "deadDescription": "This reset link can't be used. Request a new one to continue.",
+      "successRedirect": "Password updated. Sign in to continue."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "unavailable": "Authentication is temporarily unavailable. Please try again later.",
+      "validation": "Please review the highlighted fields.",
+      "rateLimited": "Too many attempts. Please wait and try again.",
+      "emailOtpComingSoon": "Email OTP is coming soon. Sign in with your phone for now.",
+      "expiredSession": "Your verification session expired. Start again from sign in."
+    }
+  },
+  "ApiErrors": {
+    "generic": "Something went wrong. Please try again.",
+    "unavailable": "This service is temporarily unavailable. Please try again later.",
+    "unauthorized": "Please sign in again to continue.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "The requested item could not be found.",
+    "rateLimited": "Too many attempts. Please wait and try again.",
+    "validation": "Please check your details and try again.",
+    "conflict": "This action conflicts with the current state.",
+    "accountExists": "You already have an account. Sign in to continue."
   },
   "ServerActionMessages": {
     "requestAssessment": {
@@ -123,6 +266,10 @@
       "testimonials": {
         "label": "Clients",
         "href": "testimonials"
+      },
+      "faq": {
+        "label": "FAQ",
+        "href": "faq"
       },
       "portfolio": {
         "label": "Portfolio",
@@ -1062,6 +1209,42 @@
       "requestAssessment": {
         "form": {
           "title": "Contact Information",
+          "common": {
+            "yes": "Yes",
+            "no": "No",
+            "unknown": "I don't know"
+          },
+          "contact": {
+            "tabsLabel": "Verify contact",
+            "hint": "Choose and verify either phone or email. The other field stays optional.",
+            "phoneTab": "Phone",
+            "emailTab": "Email",
+            "phoneLabel": "Mobile number",
+            "phonePlaceholder": "912 345 6789",
+            "emailLabel": "Work email",
+            "emailPlaceholder": "name@example.com",
+            "optionalEmailLabel": "Email (optional)",
+            "optionalPhoneLabel": "Phone (optional)",
+            "verifyPhone": "Verify phone",
+            "verifyEmail": "Verify email",
+            "phoneVerified": "Phone verified",
+            "emailVerified": "Email verified",
+            "otpPhoneHint": "Enter the code sent to your phone.",
+            "otpEmailHint": "Enter the code sent to your email.",
+            "confirmOtp": "Confirm code",
+            "resendOtp": "Resend code",
+            "resendIn": "Resend in {seconds}s",
+            "cancelOtp": "Cancel",
+            "otpRateLimited": "Too many attempts. Please wait.",
+            "otpUnavailable": "Verification is temporarily unavailable.",
+            "otpGenericError": "Verification is unavailable right now.",
+            "otpWrongCode": "Incorrect code.",
+            "verifyContactFirst": "Verify your phone or email before continuing.",
+            "verifyPreferredContact": "Verify the contact method selected in the tab.",
+            "signedInHint": "Your account details are filled in. If you use a different phone or email, you need to verify it.",
+            "accountPhoneReady": "Using your account phone",
+            "accountEmailReady": "Using your account email"
+          },
           "fields": {
             "name": {
               "label": "Name",
@@ -1071,42 +1254,346 @@
               "label": "Email",
               "placeholder": "Work email"
             },
+            "phone": {
+              "label": "Phone",
+              "placeholder": "Phone / WhatsApp (optional)"
+            },
             "aboutProject": {
               "label": "Tell us about your project",
               "placeholder": "Tell us about your project"
             },
-            "budget": {
-              "label": "Budget",
-              "placeholder": "Select...",
-              "options": {
-                "under_5k": "Less than 300 million tomans",
-                "5k_10k": "300 to 600 million tomans",
-                "10k_25k": "600 million to 1.5 billion tomans",
-                "25k_plus": "More than 1.5 billion tomans",
-                "not_sure": "I’m not sure yet"
-              }
-            },
-            "traffic": {
-              "label": "Traffic / Order Volume",
-              "placeholder": "Select..."
-            },
             "service": {
               "label": "How can we help you?",
+              "placeholder": "Select...",
               "options": {
                 "managedServer": "Managed Server",
-                "migrationOptimization": "Managed Server",
-                "woocommerceSupport": "WooCommerce SEO",
+                "woocommerceSupport": "WooCommerce Support",
                 "seo": "SEO",
                 "graphicDesign": "Graphic Design",
-                "productDataEntry": "Product Data Entry",
+                "productDataEntry": "Data Entry / Content",
                 "socialMedia": "Social Media Support"
               }
+            },
+            "attachments": {
+              "label": "Related files",
+              "hint": "Add project files, error screenshots, reports, Excel files, or design references. (PDF, PNG, JPG, DOCX, XLSX, CSV, ZIP)",
+              "empty": "Drag and drop files here or use the button below",
+              "selected": "{count} file(s) selected",
+              "browse": "Choose files",
+              "remove": "Remove {name}",
+              "tooMany": "Maximum {max} files allowed",
+              "tooLarge": "Each file must be under {maxMb} MB",
+              "invalidType": "Unsupported file type"
+            }
+          },
+          "options": {
+            "cms": {
+              "wordpress": "WordPress",
+              "woocommerce": "WooCommerce",
+              "custom": "Custom",
+              "other": "Other"
+            },
+            "hostingType": {
+              "shared": "Shared",
+              "vps": "VPS",
+              "dedicated": "Dedicated",
+              "cloud": "Cloud",
+              "unknown": "I don't know"
+            },
+            "websiteCount": {
+              "1": "1 website",
+              "2_5": "2 to 5",
+              "6_10": "6 to 10",
+              "over_10": "More than 10"
+            },
+            "storage": {
+              "under_10gb": "Under 10 GB",
+              "10_50gb": "10–50 GB",
+              "50_100gb": "50–100 GB",
+              "over_100gb": "Over 100 GB",
+              "unknown": "I don't know"
+            },
+            "database": {
+              "under_1gb": "Under 1 GB",
+              "1_5gb": "1–5 GB",
+              "5_20gb": "5–20 GB",
+              "over_20gb": "Over 20 GB",
+              "unknown": "I don't know"
+            },
+            "dailyVisits": {
+              "under_100": "Under 100",
+              "100_to_500": "100–500",
+              "500_to_2k": "500–2,000",
+              "over_2k": "Over 2,000"
+            },
+            "projectType": {
+              "shop": "Shop",
+              "corporate": "Corporate",
+              "content": "Content",
+              "app": "Application",
+              "other": "Other"
+            },
+            "launchTime": {
+              "under_1_month": "Under 1 month",
+              "1_3_months": "1–3 months",
+              "3_6_months": "3–6 months",
+              "over_6_months": "Over 6 months",
+              "unknown": "Not sure"
+            },
+            "managedServerProblems": {
+              "slow": "Slow performance",
+              "downtime": "Downtime",
+              "security": "Security",
+              "lowResources": "Low resources",
+              "hardToManage": "Hard to manage",
+              "poorSupport": "Poor support",
+              "other": "Other"
+            },
+            "productCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "orderCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "woocommerceIssues": {
+              "bugFix": "Bug fixes",
+              "speed": "Speed",
+              "payment": "Payments",
+              "orders": "Orders",
+              "theme": "Theme",
+              "plugin": "Plugins",
+              "featureDev": "Feature development",
+              "security": "Security",
+              "other": "Other"
+            },
+            "seoGoals": {
+              "increaseSales": "Increase sales",
+              "increaseTraffic": "Increase traffic",
+              "keywordRankings": "Keyword rankings",
+              "localSeo": "Local SEO",
+              "technicalFixes": "Technical fixes"
+            },
+            "designTypes": {
+              "banner": "Banner",
+              "social": "Social media",
+              "ads": "Ads",
+              "logo": "Logo",
+              "other": "Other"
+            },
+            "designCount": {
+              "1": "1 design",
+              "2_5": "2–5",
+              "6_10": "6–10",
+              "11_20": "11–20",
+              "over_20": "Over 20",
+              "unknown": "Not sure"
+            },
+            "aspectRatios": {
+              "1_1": "1:1 (square)",
+              "4_5": "4:5 (portrait)",
+              "9_16": "9:16 (story/reels)",
+              "16_9": "16:9 (landscape/banner)",
+              "3_2": "3:2",
+              "2_3": "2:3",
+              "4_3": "4:3",
+              "21_9": "21:9 (ultra-wide)",
+              "other": "Other"
+            },
+            "deliveryTime": {
+              "under_1_week": "Under 1 week",
+              "1_2_weeks": "1–2 weeks",
+              "2_4_weeks": "2–4 weeks",
+              "over_4_weeks": "Over 4 weeks",
+              "flexible": "Flexible"
+            },
+            "dataEntryWork": {
+              "productEntry": "Product entry",
+              "articleEntry": "Article entry",
+              "infoEntry": "Information entry",
+              "contentMigration": "Content migration",
+              "contentCreation": "Content creation"
+            },
+            "dataSources": {
+              "excel": "Excel",
+              "csv": "CSV",
+              "pdf": "PDF",
+              "website": "Website",
+              "images": "Images",
+              "other": "Other"
+            },
+            "itemCount": {
+              "under_50": "Under 50",
+              "50_200": "50–200",
+              "200_1000": "200–1,000",
+              "over_1000": "Over 1,000",
+              "unknown": "I don't know"
+            },
+            "socialPlatforms": {
+              "instagram": "Instagram",
+              "linkedin": "LinkedIn",
+              "telegram": "Telegram",
+              "x": "X",
+              "youtube": "YouTube",
+              "other": "Other"
+            },
+            "socialGoals": {
+              "sales": "Sales",
+              "brandAwareness": "Brand awareness",
+              "engagement": "Engagement",
+              "leadGen": "Lead generation",
+              "dailyManagement": "Daily management"
+            },
+            "postCount": {
+              "under_4": "Under 4",
+              "4_8": "4–8",
+              "8_16": "8–16",
+              "over_16": "Over 16",
+              "unknown": "I don't know"
+            }
+          },
+          "services": {
+            "managedServer": {
+              "title": "Managed server details",
+              "selectPlaceholder": "Select...",
+              "hasActiveWebsite": "Do you currently have an active website?",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "https://example.com",
+              "cms": "Content management system",
+              "currentHosting": "Current hosting provider",
+              "currentHostingPlaceholder": "Optional",
+              "currentServiceType": "Current service type",
+              "websiteCount": "Number of websites to host",
+              "storageUsage": "Current storage usage",
+              "databaseSize": "Approximate database size",
+              "monthlyVisits": "Approximate daily visits",
+              "hasWooCommerce": "Do you use WooCommerce?",
+              "hasPeakTraffic": "Do you have peak traffic or heavy campaigns?",
+              "peakTrafficDetails": "Peak traffic details",
+              "peakTrafficDetailsPlaceholder": "Optional — timing, campaign type, etc.",
+              "needsMigration": "Do you need to migrate to Unixsee?",
+              "currentProblems": "Main issues with current service",
+              "additionalDetails": "Additional details",
+              "additionalDetailsPlaceholder": "Optional",
+              "projectType": "Project type",
+              "expectedTraffic": "Expected daily visits",
+              "expectedStorage": "Expected storage",
+              "willUseWooCommerce": "Will you use WooCommerce?",
+              "expectedLaunchTime": "Expected launch timeline"
+            },
+            "woocommerceSupport": {
+              "title": "WooCommerce support details",
+              "selectPlaceholder": "Select...",
+              "storeUrl": "Store URL",
+              "storeUrlPlaceholder": "https://shop.example.com",
+              "storeActive": "Is the store active?",
+              "productCount": "Approximate product count",
+              "monthlyOrders": "Monthly orders",
+              "monthlyVisits": "Daily visits",
+              "mainIssues": "Main issue or need",
+              "paymentGateways": "Payment gateways in use",
+              "paymentGatewaysPlaceholder": "Optional",
+              "hasUrgentIssue": "Is there an urgent issue or outage?",
+              "issueDescription": "Issue description / expected outcome",
+              "issueDescriptionPlaceholder": "Describe the current issue and the outcome you expect"
+            },
+            "seo": {
+              "title": "SEO details",
+              "selectPlaceholder": "Select...",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "https://example.com",
+              "businessArea": "Business area",
+              "businessAreaPlaceholder": "e.g. home appliances retail",
+              "mainGoal": "Primary goal",
+              "targetCountry": "Target country / market",
+              "targetCountryPlaceholder": "e.g. Iran",
+              "targetLanguages": "Target languages",
+              "targetLanguagesPlaceholder": "e.g. Persian, English",
+              "organicTraffic": "Approximate daily organic traffic",
+              "hasSearchConsole": "Do you have Google Search Console?",
+              "hasAnalytics": "Do you have Google Analytics?",
+              "importantKeywords": "Important keywords",
+              "importantKeywordsPlaceholder": "Optional",
+              "mainCompetitors": "Main competitors",
+              "mainCompetitorsPlaceholder": "Competitor URLs (optional)",
+              "mainSeoProblem": "Most important current SEO problem",
+              "mainSeoProblemPlaceholder": "Describe your most important current SEO challenge"
+            },
+            "graphicDesign": {
+              "title": "Graphic design details",
+              "selectPlaceholder": "Select...",
+              "designTypes": "Design type",
+              "designCount": "Number of designs needed",
+              "designCountPlaceholder": "e.g. 5 banners",
+              "dimensionsOrPlatform": "Aspect ratios",
+              "dimensionsOrPlatformPlaceholder": "Optional",
+              "hasBrandGuideline": "Do you have brand guidelines?",
+              "contentReady": "Is copy/content ready?",
+              "expectedDelivery": "Expected delivery time",
+              "styleDescription": "Style description or references",
+              "styleDescriptionPlaceholder": "Describe the style, mood, or share reference links"
+            },
+            "productDataEntry": {
+              "title": "Data entry details",
+              "selectPlaceholder": "Select...",
+              "websiteUrl": "Website URL",
+              "websiteUrlPlaceholder": "Optional",
+              "workType": "Type of work",
+              "siteSystem": "Site system",
+              "itemCount": "Approximate item count",
+              "dataSources": "Information source",
+              "contentLanguage": "Content language",
+              "contentLanguagePlaceholder": "e.g. Persian",
+              "needsImageProcessing": "Do images also need processing/upload?",
+              "expectedCompletion": "Expected completion time",
+              "specialInstructions": "Special instructions",
+              "specialInstructionsPlaceholder": "Any extra instructions or details"
+            },
+            "socialMedia": {
+              "title": "Social media support details",
+              "selectPlaceholder": "Select...",
+              "platforms": "Platforms",
+              "accountLinks": "Account links",
+              "accountLinksPlaceholder": "https://instagram.com/...",
+              "addLink": "Add link",
+              "removeLink": "Remove link",
+              "mainGoal": "Primary goal",
+              "businessArea": "Business area",
+              "businessAreaPlaceholder": "e.g. online store",
+              "targetMarket": "Target market / country",
+              "targetMarketPlaceholder": "e.g. Iran",
+              "monthlyPosts": "Approximate posts needed per month",
+              "needsGraphicDesign": "Need graphic design?",
+              "needsCaptionContent": "Need caption/content creation?",
+              "needsCommunityManagement": "Need community management?",
+              "needsAdManagement": "Need ad management?",
+              "additionalDetails": "Additional details",
+              "additionalDetailsPlaceholder": "Any additional context about your needs"
+            }
+          },
+          "steps": {
+            "loading": "Loading…",
+            "progress": "{current} of {total}",
+            "progressLabel": "Form progress",
+            "titles": {
+              "1": "Basic information",
+              "2": "Service details",
+              "3": "Notes and files"
             }
           },
           "actions": {
             "sendMessage": "Send Message",
             "submitting": "Sending…",
-            "cancel": "Cancel Request"
+            "cancel": "Cancel Request",
+            "continue": "Continue",
+            "back": "Back"
           }
         }
       },
@@ -1559,8 +2046,74 @@
         "requestId": "Request ID",
         "fullName": "Full name",
         "email": "Email",
+        "phone": "Phone",
         "service": "Requested service",
-        "description": "Project description"
+        "description": "Project description",
+        "serviceDetails": "Service details"
+      },
+      "detailLabels": {
+        "hasActiveWebsite": "Active website",
+        "websiteUrl": "Website URL",
+        "cms": "CMS",
+        "currentHosting": "Current hosting",
+        "currentServiceType": "Current service type",
+        "websiteCount": "Website count",
+        "storageUsage": "Storage usage",
+        "databaseSize": "Database size",
+        "monthlyVisits": "Daily visits",
+        "hasWooCommerce": "WooCommerce",
+        "hasPeakTraffic": "Peak traffic",
+        "peakTrafficDetails": "Peak traffic details",
+        "needsMigration": "Migration needed",
+        "currentProblems": "Current problems",
+        "additionalDetails": "Additional details",
+        "projectType": "Project type",
+        "expectedTraffic": "Expected daily visits",
+        "expectedStorage": "Expected storage",
+        "willUseWooCommerce": "Will use WooCommerce",
+        "expectedLaunchTime": "Launch timeline",
+        "storeUrl": "Store URL",
+        "storeActive": "Store active",
+        "productCount": "Product count",
+        "monthlyOrders": "Monthly orders",
+        "mainIssues": "Main issues",
+        "paymentGateways": "Payment gateways",
+        "hasUrgentIssue": "Urgent issue",
+        "issueDescription": "Issue description",
+        "businessArea": "Business area",
+        "mainGoal": "Primary goal",
+        "targetCountry": "Target country",
+        "targetLanguages": "Target languages",
+        "organicTraffic": "Organic traffic",
+        "hasSearchConsole": "Search Console",
+        "hasAnalytics": "Analytics",
+        "importantKeywords": "Keywords",
+        "mainCompetitors": "Competitors",
+        "mainSeoProblem": "SEO problem",
+        "designTypes": "Design types",
+        "designCount": "Design count",
+        "dimensionsOrPlatform": "Aspect ratios",
+        "hasBrandGuideline": "Brand guidelines",
+        "contentReady": "Content ready",
+        "expectedDelivery": "Delivery time",
+        "styleDescription": "Style brief",
+        "workType": "Work type",
+        "siteSystem": "Site system",
+        "itemCount": "Item count",
+        "dataSources": "Data sources",
+        "contentLanguage": "Content language",
+        "needsImageProcessing": "Image processing",
+        "expectedCompletion": "Completion time",
+        "specialInstructions": "Instructions",
+        "platforms": "Platforms",
+        "accountLinks": "Account links",
+        "targetMarket": "Target market",
+        "monthlyPosts": "Monthly posts",
+        "needsGraphicDesign": "Graphic design",
+        "needsCaptionContent": "Caption/content",
+        "needsCommunityManagement": "Community management",
+        "needsAdManagement": "Ad management",
+        "attachments": "Attachments"
       },
       "notProvided": "Not provided"
     },
@@ -1623,12 +2176,20 @@
       "description": "Pick the plan that fits your new website before you add it."
     },
     "checkout": {
-      "title": "Checkout | Unixsee",
-      "description": "Confirm your plan and complete your purchase."
+      "title": "Plan request | Unixsee",
+      "description": "Review your plan and submit a request. This is not a payment."
     },
     "plansSuccess": {
-      "title": "Purchase complete | Unixsee",
-      "description": "Your purchase is complete. Our team will call you shortly."
+      "title": "Request submitted | Unixsee",
+      "description": "Your plan request was submitted. Our team will contact you shortly."
+    },
+    "guestPlanRequest": {
+      "title": "Plan request | Unixsee",
+      "description": "Submit your contact details for the plan you chose. This is not a payment."
+    },
+    "guestPlanRequestSuccess": {
+      "title": "Request submitted | Unixsee",
+      "description": "Your plan request was submitted. Our team will contact you shortly."
     },
     "helpCenter": {
       "title": "Help Center | Unixsee",
@@ -1654,6 +2215,14 @@
       "title": "Tickets | Unixsee",
       "description": "Create and track requests across Unixsee services."
     },
+    "unixseeMessages": {
+      "title": "Unixsee messages | Unixsee",
+      "description": "View Unixsee messages sent to your account."
+    },
+    "unixseeMessageDetails": {
+      "title": "Message details | Unixsee",
+      "description": "Read the message body, links, and attachments."
+    },
     "newTicket": {
       "title": "New ticket | Unixsee",
       "description": "Send a new request to Unixsee support."
@@ -1665,6 +2234,10 @@
     "profile": {
       "title": "Profile | Unixsee",
       "description": "Manage your personal information and account security."
+    },
+    "authorization": {
+      "title": "Organization authorization | Unixsee",
+      "description": "Submit identity documents so Unixsee can approve you as a tenant."
     },
     "complementaryServices": {
       "title": "Complementary Services | Unixsee",
@@ -1737,19 +2310,25 @@
     "open": "Open navigation",
     "close": "Close navigation",
     "dashboard": "Dashboard",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "authEntry": "Sign in / Sign up",
+    "accountFallback": "Account",
     "activities": "Unixsee activities",
     "domains": "Domains",
     "websites": "Websites",
     "billing": "Billing",
     "support": "Support",
     "tickets": "Tickets",
+    "unixseeMessages": "Unixsee messages",
     "complementaryServices": "Complementary Services",
     "helpCenter": "Help Center",
     "profile": "Profile",
     "expand": "Expand menu",
     "collapse": "Collapse menu",
     "collapseLabel": "Collapse Menu",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "unreadMessages": "Unread message"
   },
   "Header": {
     "searchLabel": "Search websites, tickets, pages, and actions",
@@ -1828,6 +2407,11 @@
       "emptyDescription": "New Unixsee stories and product updates will appear here."
     },
     "profile": "Open profile menu",
+    "accountMenu": {
+      "open": "Open account menu",
+      "profile": "Profile",
+      "logOut": "Log out"
+    },
     "changeLanguage": "Switch language to {language}",
     "english": "English",
     "persian": "Persian"
@@ -1899,6 +2483,9 @@
       "copyError": "Could not copy",
       "createTicket": "Create a support ticket",
       "close": "Close support dialog"
+    },
+    "states": {
+      "loading": "Loading dashboard"
     }
   },
   "Notifications": {
@@ -1974,6 +2561,7 @@
   "ActivityHistory": {
     "title": "Unixsee recent activities",
     "description": "The latest meaningful work and service events across your Unixsee account.",
+    "loading": "Loading activity history",
     "allActivity": "All Unixsee activities",
     "resultSummary": "Showing {shown, number} of {total, number} activities",
     "timelineLabel": "Account activity timeline",
@@ -2059,14 +2647,119 @@
     "perMonth": "/mo",
     "select": "Choose {plan}",
     "featuresLabel": "What's included",
-    "empty": "Plans will be available here soon."
+    "empty": "Plans will be available here soon.",
+    "loadError": "We could not load plans right now. Please try again later.",
+    "loading": "Loading plans"
+  },
+  "GuestPlanRequestPage": {
+    "title": "Submit a plan request",
+    "description": "Share your contact details so our team can review your chosen plan and call you. This is not a payment.",
+    "backToPlans": "Back to plans",
+    "summary": {
+      "planLabel": "Selected plan"
+    },
+    "form": {
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Jane Doe",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "912 345 6789",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "contactHint": "Verify phone or email with the tabs below. Only the selected contact must be verified; the other stays optional.",
+      "contactTabsLabel": "Verify contact",
+      "optionalEmailLabel": "Email (optional)",
+      "optionalPhoneLabel": "Phone number (optional)",
+      "verifyPhone": "Verify phone",
+      "verifyEmail": "Verify email",
+      "phoneVerified": "Phone verified — account ready",
+      "emailVerified": "Email verified — account ready",
+      "otpPhoneHint": "Enter the code sent for your phone number.",
+      "otpEmailHint": "Enter the code sent for your email.",
+      "confirmOtp": "Confirm code",
+      "resendOtp": "Resend code",
+      "resendIn": "Resend in {seconds}s",
+      "cancelOtp": "Cancel",
+      "otpSent": "Verification code sent.",
+      "otpVerified": "Contact verified. You can submit the request.",
+      "otpWrongCode": "That code is incorrect. Try again.",
+      "otpRateLimited": "Too many attempts. Please wait and try again.",
+      "otpUnavailable": "Verification is temporarily unavailable.",
+      "otpGenericError": "Could not verify right now. Please try again.",
+      "verifyContactFirst": "Verify your phone or email before submitting.",
+      "verifyPreferredContact": "Verify the contact method selected in the tabs before submitting.",
+      "websiteLabel": "Website",
+      "websitePlaceholder": "https://example.com",
+      "noWebsiteLabel": "I don't have a website yet",
+      "intakeSectionTitle": "About your store",
+      "intakeSectionHint": "These sizing questions are skipped when you do not have a website yet.",
+      "databaseSizeLabel": "Approximate database size",
+      "databaseSizePlaceholder": "Select a range",
+      "databaseSizeOptions": {
+        "under_1gb": "Under 1 GB",
+        "1_to_5gb": "1–5 GB",
+        "5_to_20gb": "5–20 GB",
+        "over_20gb": "More than 20 GB"
+      },
+      "dailyVisitorsLabel": "Approximate daily visitors",
+      "dailyVisitorsPlaceholder": "Select a range",
+      "dailyVisitorsOptions": {
+        "under_100": "Under 100",
+        "100_to_500": "100–500",
+        "500_to_2k": "500–2,000",
+        "over_2k": "More than 2,000"
+      },
+      "woocommerceLabel": "Is your shop on WooCommerce today?",
+      "woocommercePlaceholder": "Select an option",
+      "woocommerceOptions": {
+        "yes": "Yes",
+        "no": "No",
+        "not_sure": "Not sure"
+      },
+      "descriptionLabel": "Description (optional)",
+      "descriptionPlaceholder": "Tell us about your store or project…",
+      "upload": {
+        "label": "Attachments (optional)",
+        "hint": "PDF, Word, or images up to 5 MB each. Files are recorded by name for now; binary storage comes later.",
+        "empty": "Drag and drop files here, or browse from your device.",
+        "selected": "{count, plural, one {# file selected} other {# files selected}}",
+        "browse": "Choose files",
+        "remove": "Remove {name}",
+        "tooMany": "You can upload up to {max} files.",
+        "tooLarge": "Each file must be {maxMb} MB or smaller.",
+        "invalidType": "That file type is not supported."
+      },
+      "submit": "Submit request",
+      "processing": "Submitting…",
+      "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup."
+    },
+    "accountExists": {
+      "toast": "You already have an account. Sign in to continue."
+    },
+    "success": {
+      "title": "Your request was submitted",
+      "description": "Thank you. Our team will review your plan request and contact you to continue setup.",
+      "planLabel": "Requested plan",
+      "nextTitle": "What happens next",
+      "step1": "Our team reviews your request.",
+      "step2": "Complete organization authorization so staff can approve you as a tenant before managed services are delivered.",
+      "step3": "After staff enablement, your plan goes live on your website.",
+      "authorizationCta": "Start authorization",
+      "backToPlans": "Back to plans"
+    },
+    "errors": {
+      "planNotFoundTitle": "Plan not found",
+      "planNotFoundDescription": "That plan is unavailable or the link is invalid. Choose a plan from the list and try again.",
+      "serviceUnavailableTitle": "Plans are temporarily unavailable",
+      "serviceUnavailableDescription": "We could not load plan details right now. Check that the API is running, then try again from the plans section."
+    }
   },
   "Checkout": {
-    "title": "Complete your purchase",
-    "description": "Review your plan and confirm. No payment is taken in this demo.",
+    "title": "Submit a plan request",
+    "description": "Review your chosen plan and send a request. This is not a payment.",
     "back": "Back to plans",
-    "summaryTitle": "Order summary",
+    "summaryTitle": "Request summary",
     "planLabel": "Plan",
+    "detailsLabel": "Details",
     "billingLabel": "Billing",
     "billingValue": "Monthly",
     "totalLabel": "Total due today",
@@ -2079,18 +2772,29 @@
     "phonePlaceholder": "+1 555 000 1234",
     "nameError": "Please enter your name.",
     "phoneError": "Please enter a phone number.",
-    "pay": "Complete purchase",
-    "processing": "Processing...",
-    "reassurance": "By completing your purchase, our team will contact you to finish setup."
+    "submit": "Submit request",
+    "processing": "Submitting...",
+    "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup.",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "unavailable": "Plan requests are temporarily unavailable.",
+      "unauthorized": "Please sign in again to continue.",
+      "forbidden": "You do not have permission to submit this request.",
+      "notFound": "That plan is no longer available.",
+      "rateLimited": "Too many attempts. Please wait and try again.",
+      "validation": "Please check your details and try again.",
+      "accountExists": "You already have an account. Sign in to continue."
+    }
   },
   "PlansSuccess": {
-    "title": "Your purchase is complete!",
-    "description": "Thank you for your order. Our team will call you as soon as possible to finish setting up your plan.",
-    "planLabel": "Purchased plan",
+    "title": "Your request was submitted",
+    "description": "Thank you. Our team will review your plan request and contact you to continue setup.",
+    "planLabel": "Requested plan",
     "nextTitle": "What happens next",
-    "step1": "Our team reviews your order.",
-    "step2": "We call you to confirm setup details.",
-    "step3": "Your plan goes live and your website is ready.",
+    "step1": "Our team reviews your request.",
+    "step2": "Complete organization authorization so staff can approve you as a tenant before managed services are delivered.",
+    "step3": "After staff enablement, your plan goes live on your website.",
+    "authorizationCta": "Open authorization",
     "backToWebsites": "Go to websites",
     "viewPlans": "View plans"
   },
@@ -3224,6 +3928,9 @@
       "description": "Our support team is here 24/7 to help you succeed.",
       "contact": "Contact Support",
       "center": "Check our Help Center"
+    },
+    "states": {
+      "loading": "Loading websites"
     }
   },
   "Domains": {
@@ -3282,6 +3989,36 @@
     },
     "summary": "Showing {visible} of {total} domains"
   },
+  "UnixseeMessages": {
+    "title": "Unixsee messages",
+    "subtitle": "One-way messages from Unixsee to your account",
+    "details": "Message details",
+    "empty": "No messages have been sent to you yet.",
+    "loadError": "Could not load messages. Please try again.",
+    "gotIt": "Got it",
+    "markReadError": "Could not mark the message as read. Please try again.",
+    "websiteContext": "Related to website {website}",
+    "links": "Links",
+    "attachments": "Attachments",
+    "attachmentDownload": "Download file",
+    "attachmentDownloadDeferred": "File download will be available soon.",
+    "backToList": "Back to messages",
+    "read": "Read",
+    "unread": "Unread",
+    "loading": "Loading Unixsee messages",
+    "loadingDetail": "Loading message",
+    "aside": {
+      "label": "Unixsee message shortcuts",
+      "quickActions": {
+        "title": "Quick actions",
+        "label": "Message-related navigation",
+        "tickets": "Open tickets",
+        "websites": "My websites",
+        "relatedWebsite": "Website: {website}",
+        "websiteFallback": "Related website"
+      }
+    }
+  },
   "Tickets": {
     "title": "Tickets",
     "description": "Create and track your requests across Unixsee services.",
@@ -3292,20 +4029,29 @@
     "notApplicable": "Not applicable",
     "viewTicket": "View ticket",
     "services": {
-      "managed_server": "Managed Server",
-      "migration_optimization": "Migration and Optimization",
-      "woocommerce_support": "Specialized WooCommerce Support",
-      "seo": "SEO",
-      "graphic_design": "Graphic Design",
-      "product_data_entry": "Product Data Entry",
-      "social_media_support": "Social Media Support"
+      "MANAGED_SERVER": "Managed Server",
+      "MIGRATION_OPTIMIZATION": "Migration and Optimization",
+      "WOOCOMMERCE_SUPPORT": "Specialized WooCommerce Support",
+      "SEO": "SEO",
+      "GRAPHIC_DESIGN": "Graphic Design",
+      "PRODUCT_DATA_ENTRY": "Product Data Entry",
+      "SOCIAL_MEDIA_SUPPORT": "Social Media Support"
     },
     "statuses": {
-      "submitted": "Submitted",
-      "in_progress": "In progress",
-      "waiting_for_user": "Waiting for you",
-      "resolved": "Resolved",
-      "closed": "Closed"
+      "SUBMITTED": "Submitted",
+      "IN_PROGRESS": "In progress",
+      "WAITING_CUSTOMER": "Waiting for you",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "unavailable": "The tickets service is temporarily unavailable.",
+      "unauthorized": "Please sign in again to continue.",
+      "forbidden": "You do not have access to this ticket.",
+      "notFound": "This ticket could not be found.",
+      "rateLimited": "Too many requests. Please wait and try again.",
+      "validation": "Please check the form and try again."
     },
     "tabs": {
       "label": "Ticket status",
@@ -3329,13 +4075,13 @@
       "mobile": "More filters"
     },
     "activity": {
-      "support": "Unixsee replied",
-      "user": "You replied"
+      "SUPPORT": "Unixsee replied",
+      "USER": "You replied"
     },
     "states": {
       "loading": "Loading tickets",
       "errorTitle": "Tickets could not be displayed",
-      "errorDescription": "The ticket list is temporarily unavailable. Try loading the local view again.",
+      "errorDescription": "The ticket list is temporarily unavailable. Please try again.",
       "retry": "Try again",
       "emptyTitle": "No tickets yet",
       "emptyDescription": "Tickets help you request work and follow conversations with the Unixsee team.",
@@ -3394,8 +4140,10 @@
       "website": {
         "label": "Related website",
         "placeholder": "Select a website",
+        "none": "No website",
+        "emptyPlaceholder": "No websites available",
         "requiredHint": "Required for this service",
-        "optionalHint": "Optional for this service"
+        "optionalHint": "Optional — associate a website when it helps"
       },
       "subject": {
         "label": "Subject",
@@ -3408,9 +4156,13 @@
       },
       "attachments": {
         "label": "Attachments",
-        "hint": "Optional screenshots or documents.",
+        "hint": "Images, PDF, ZIP, or text (max 10 MB per file).",
+        "unavailable": "File upload coming soon",
+        "unavailableHint": "Attachments will be available after Nest-owned S3 upload is enabled.",
         "choose": "Choose files",
-        "remove": "Remove {name}"
+        "remove": "Remove {name}",
+        "tooLarge": "Each file must be 10 MB or smaller.",
+        "invalidType": "Only images, PDF, ZIP, CSV, or plain text are allowed."
       },
       "errors": {
         "service": "Select a service.",
@@ -3418,12 +4170,16 @@
         "subject": "Enter a subject.",
         "description": "Enter at least 20 characters."
       },
+      "loadErrorTitle": "New ticket form unavailable",
+      "loadErrorDescription": "Service categories could not be loaded. Please try again later.",
+      "loading": "Loading new ticket form",
       "submitting": "Submitting...",
       "submit": "Submit ticket",
       "cancel": "Cancel"
     },
     "detail": {
       "back": "Back to tickets",
+      "loading": "Loading ticket",
       "you": "You",
       "service": "Service",
       "website": "Related website",
@@ -3431,19 +4187,26 @@
       "updated": "Last updated",
       "ticketNumber": "Ticket number",
       "summary": "Ticket summary",
+      "attachments": "Attachments",
+      "noAttachments": "No attachments",
+      "download": "Download",
+      "downloadFailed": "Could not download this file.",
       "reply": "Reply",
       "reopen": "Reopen ticket",
       "close": "Close ticket",
       "resolvedTitle": "This ticket is resolved",
-      "resolvedDescription": "If the issue continues, reopen the ticket and add the latest details."
+      "resolvedDescription": "If the issue continues, reply with the latest details. Close the ticket when you are satisfied.",
+      "resolvedDescriptionWithAutoClose": "If the issue continues, reply with the latest details. Close the ticket when you are satisfied, or it will close automatically on {date}.",
+      "closedTitle": "This ticket is closed",
+      "closedDescription": "Reopen the ticket if you need more help, then add the latest details."
     },
     "conversation": {
       "title": "Conversation",
       "description": "Messages are shown in chronological order.",
-      "empty": "No conversation messages are available for this fixture.",
+      "empty": "No conversation messages yet.",
       "roles": {
-        "user": "User",
-        "support": "Unixsee Support"
+        "USER": "User",
+        "SUPPORT": "Unixsee Support"
       },
       "attachmentSize": "{size, number} KB"
     },
@@ -3453,8 +4216,11 @@
       "closed": "Replies are disabled because this ticket is closed.",
       "label": "Reply message",
       "placeholder": "Write your reply...",
-      "required": "Enter a reply before sending.",
+      "required": "Enter a reply or attach a file before sending.",
       "attach": "Attach files",
+      "attachmentsHint": "Optional images, PDF, ZIP, or text (max 10 MB each).",
+      "tooLarge": "Each file must be 10 MB or smaller.",
+      "invalidType": "Only images, PDF, ZIP, CSV, or plain text are allowed.",
       "remove": "Remove {name}",
       "sending": "Sending...",
       "send": "Send reply"
@@ -3485,14 +4251,23 @@
     "personal": {
       "title": "Personal information",
       "description": "Update the contact details and language used for your account.",
+      "contactRule": "Only one verified contact is required: a verified mobile makes email optional, and a verified email makes mobile optional.",
       "name": "Full name",
       "email": "Email",
       "mobile": "Mobile number",
       "language": "Preferred language",
-      "emailChanged": "Verification will be required after saving.",
-      "sendEmail": "Send verification email",
-      "mobileChanged": "OTP verification will be required after saving.",
-      "verifyMobile": "Verify mobile number",
+      "optional": "optional",
+      "optionalBecausePhone": "Optional because your mobile number is verified.",
+      "optionalBecauseEmail": "Optional because your email is verified.",
+      "notProvided": "Not provided",
+      "emailChanged": "Verification is required before this email is saved.",
+      "emailNeedsVerify": "This email is not verified yet.",
+      "sendEmail": "Send verification code",
+      "mobileChanged": "Verification is required before this mobile is saved.",
+      "mobileNeedsVerify": "This mobile number is not verified yet.",
+      "verifyMobile": "Send verification code",
+      "contactSaveHint": "Email and mobile changes are saved only after verification — use Send verification code.",
+      "nestUnavailable": "Live account data is unavailable. Showing local sample profile.",
       "reset": "Reset changes",
       "save": "Save changes",
       "saving": "Saving...",
@@ -3501,7 +4276,27 @@
       "errors": {
         "name": "Enter your full name.",
         "email": "Enter a valid email address.",
-        "mobile": "Use 09xxxxxxxxx or +989xxxxxxxxx."
+        "emailRequired": "Enter an email, or verify a mobile number first.",
+        "mobile": "Use 09xxxxxxxxx or +989xxxxxxxxx.",
+        "mobileRequired": "Enter a mobile number, or verify an email first."
+      },
+      "verifyDialog": {
+        "phoneTitle": "Verify mobile number",
+        "emailTitle": "Verify email",
+        "mockDeliveryHint": "Dev delivery: the code is emailed to the mock inbox (same as sign-in), not SMS and not necessarily this address.",
+        "sending": "Sending code…",
+        "resend": "Resend code",
+        "cancel": "Cancel",
+        "confirm": "Confirm code"
+      },
+      "toast": {
+        "phoneCodeSent": "Mobile verification code sent to the mock inbox.",
+        "emailCodeSent": "Email verification code sent to the mock inbox.",
+        "phoneVerified": "Mobile number verified.",
+        "emailVerified": "Email verified.",
+        "invalidCode": "Enter the 6-digit code.",
+        "profileSaved": "Profile updated.",
+        "avatarLocalOnly": "Photo preview is local only until cloud storage is connected."
       }
     },
     "unsaved": {
@@ -3566,6 +4361,117 @@
           "working": "Working..."
         }
       }
+    }
+  },
+  "Authorization": {
+    "title": "Organization authorization",
+    "description": "Submit identity details and your national ID card so staff can approve you as a commercial tenant. Signing in is not enough.",
+    "searchHeader": "Search authorization…",
+    "loading": "Loading authorization",
+    "banner": {
+      "not_started": "Complete organization authorization to become a tenant before Unixsee can deliver managed services.",
+      "draft": "You have an unfinished authorization draft. Continue when ready.",
+      "needs_more_info": "Staff requested changes to your authorization package.",
+      "rejected": "Your authorization was rejected. Review the reasons and resubmit.",
+      "cta": "Open authorization"
+    },
+    "statuses": {
+      "not_started": "Not started",
+      "draft": "Draft",
+      "pending_review": "Under review",
+      "needs_more_info": "Needs changes",
+      "rejected": "Rejected",
+      "approved": "Approved — tenant"
+    },
+    "status": {
+      "not_startedTitle": "Become a commercial tenant",
+      "not_startedBody": "Submit your identity package, including a national ID card photo. Plan requests stay allowed; selling and enablement wait for staff approval.",
+      "draftTitle": "Continue your draft",
+      "draftBody": "Your answers are saved. Finish the remaining steps and submit for staff review.",
+      "pendingTitle": "Under staff review",
+      "pendingBody": "Your package was received. This does not mean you are authorized yet, and services are not enabled.",
+      "needsInfoTitle": "More information needed",
+      "needsInfoBody": "Staff asked you to fix the items below, then resubmit.",
+      "rejectedTitle": "Authorization rejected",
+      "rejectedBody": "Review the reasons, update your package, and resubmit if you want to continue.",
+      "approvedTitle": "You are an approved tenant",
+      "approvedBody": "Staff approved your authorization. Unixsee may now sell and enable managed services for your organization.",
+      "start": "Start authorization",
+      "continue": "Continue draft",
+      "fix": "Fix and resubmit",
+      "view": "View package",
+      "dashboard": "Back to dashboard",
+      "plans": "Browse plans",
+      "support": "Contact support"
+    },
+    "steps": {
+      "progress": "Step {current} of {total}",
+      "identity": "Identity",
+      "contacts": "Contacts",
+      "address": "Address",
+      "document": "Document",
+      "review": "Review"
+    },
+    "fields": {
+      "nationalId": "National ID",
+      "birthDate": "Date of birth",
+      "mobile": "Mobile (belongs to this national ID)",
+      "mobileBelongs": "I confirm this mobile number belongs to the same national ID (code melli).",
+      "mobileNeedsVerify": "No mobile on your account — verify this number with OTP to continue.",
+      "email": "Email",
+      "province": "Province",
+      "city": "City",
+      "address": "Full address",
+      "postalCode": "Postal code",
+      "document": "National ID card photo",
+      "attestation": "I confirm the information and document are accurate and belong to me."
+    },
+    "challenges": {
+      "skipped": "Already verified at signup — no new challenge",
+      "verified": "Verified",
+      "pending": "Verification pending",
+      "unverified": "Needs verification",
+      "sendOtp": "Send mobile OTP",
+      "verifyOtp": "Verify code",
+      "otpLabel": "Mobile verification code",
+      "otpHint": "Prototype: enter 123456",
+      "sendEmail": "Send email confirmation",
+      "confirmEmail": "Mark email confirmed",
+      "emailHint": "Prototype: confirmation is simulated"
+    },
+    "document": {
+      "hint": "JPG, PNG, or WebP up to 5MB. Front of the national ID card is enough for this phase.",
+      "upload": "Upload photo",
+      "replace": "Replace photo",
+      "remove": "Remove photo",
+      "empty": "No photo uploaded yet",
+      "uploaded": "Uploaded: {name}"
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "saveDraft": "Save draft",
+      "cancelDraft": "Cancel draft",
+      "submit": "Submit for review",
+      "submitting": "Submitting…",
+      "saving": "Saving…",
+      "editSection": "Edit"
+    },
+    "review": {
+      "title": "Review before submit",
+      "hint": "After submit, edits are locked until staff approve, reject, or request changes."
+    },
+    "alerts": {
+      "saved": "Draft saved.",
+      "submitted": "Submitted for review. You are not authorized yet.",
+      "incomplete": "Complete all required fields and the national ID photo before submit.",
+      "locked": "This package cannot be edited while under review or after approval.",
+      "cancelled": "Draft cancelled."
+    },
+    "profileLink": {
+      "title": "Organization authorization",
+      "description": "Submit certifications to become a tenant. Separate from login and contact verification.",
+      "cta": "Open authorization"
     }
   },
   "WebsiteDetails": {
@@ -3918,6 +4824,7 @@
       "submit": "Submit consultation request",
       "submitting": "Submitting request...",
       "cancel": "Cancel",
+      "loading": "Loading consultation request form",
       "success": {
         "title": "Consultation request submitted",
         "description": "Your local sample request is ready for Unixsee review. No data was sent or uploaded.",
@@ -3926,6 +4833,7 @@
     },
     "detail": {
       "back": "Back to complementary services",
+      "loading": "Loading service details",
       "createTicket": "Create support ticket",
       "additionalWork": "Request additional work",
       "usageTitle": "Current quota",

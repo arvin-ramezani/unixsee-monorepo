@@ -14,6 +14,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useReducedMotion, motion } from "framer-motion";
 
 import { MobileFilterDisclosure } from "@/components/common/mobile-filter-disclosure";
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import {
   ComplementaryServiceStatusBadge,
@@ -47,6 +48,7 @@ import type {
   ConsultationRequest,
   ServiceWebsite,
 } from "@/lib/data/complementary-services/complementary-services-data";
+import { DashboardButtonLink } from "../dashboard/dashboard-button-link";
 
 export type ComplementaryServicesTab = "active" | "requests" | "history";
 export type ComplementaryServicesState =
@@ -62,13 +64,15 @@ export function ComplementaryServicesHeader() {
           {t("description")}
         </p>
       </div>
-      <Link
+      <DashboardButtonLink
         href="/dashboard/complementary-services/request"
-        className="bg-primary text-primary-foreground hover:bg-primary/85 focus-visible:ring-ring inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium focus-visible:ring-2 sm:w-auto"
+        variant="primary"
+        size="lg"
+        className="h-11 w-full shrink-0"
       >
         <Plus aria-hidden="true" className="size-4" />
         {t("requestService")}
-      </Link>
+      </DashboardButtonLink>
     </header>
   );
 }
@@ -100,16 +104,16 @@ export function ComplementaryServicesTabs({
           <TabsTrigger
             key={tab}
             value={tab}
-            className="text-muted-foreground data-[state=active]:text-primary relative min-h-full border-0 px-4 text-sm shadow-none! transition-colors data-[state=active]:rounded-none data-[state=active]:shadow-none"
+            className="text-muted-foreground group data-[state=active]:text-primary dark:data-[state=active]:text-secondary relative min-h-full border-0 bg-transparent! px-4 text-sm shadow-none! transition-colors data-[state=active]:rounded-none data-[state=active]:shadow-none"
           >
             {t(tab)}{" "}
-            <span className="text-muted-foreground ms-1 text-xs tabular-nums">
+            <span className="text-muted-foreground group-data-[state=active]:text-primary dark:group-data-[state=active]:text-secondary ms-1 text-xs tabular-nums">
               {counts[tab]}
             </span>
             {activeTab === tab && (
               <motion.div
                 layoutId="active-tab-underline"
-                className="bg-primary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
+                className="bg-primary dark:bg-secondary absolute -bottom-1.5 h-1 w-full origin-center scale-y-50 rounded-full"
                 transition={
                   prefersReducedMotion
                     ? { duration: 0 }
@@ -556,30 +560,37 @@ export function ComplementaryServicesManager({
           <LoadingState />
         ) : state === "error" ? (
           <ErrorState onRetry={() => setState("ready")} />
-        ) : state === "empty" || content.length === 0 ? (
-          <ComplementaryServicesEmptyState filtered={filtered} tab={tab} />
-        ) : tab === "active" ? (
-          <div className="grid gap-5 lg:grid-cols-2">
-            {visibleActive.map((item) => (
-              <ActiveServiceCard key={item.id} service={item} />
-            ))}
-          </div>
-        ) : tab === "requests" ? (
-          <div className="grid gap-4 2xl:grid-cols-2">
-            {visibleRequests.map((item) => (
-              <ConsultationRequestCard
-                key={item.id}
-                request={item}
-                onCancel={setCancelTarget}
-              />
-            ))}
-          </div>
         ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
-            {visibleHistory.map((item) => (
-              <ServiceHistoryItem key={item.id} service={item} />
-            ))}
-          </div>
+          <DashboardFadeIn
+            deferUntilKeyChange
+            animationKey={`${tab}-${website}-${serviceType}`}
+          >
+            {state === "empty" || content.length === 0 ? (
+              <ComplementaryServicesEmptyState filtered={filtered} tab={tab} />
+            ) : tab === "active" ? (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {visibleActive.map((item) => (
+                  <ActiveServiceCard key={item.id} service={item} />
+                ))}
+              </div>
+            ) : tab === "requests" ? (
+              <div className="grid gap-4 2xl:grid-cols-2">
+                {visibleRequests.map((item) => (
+                  <ConsultationRequestCard
+                    key={item.id}
+                    request={item}
+                    onCancel={setCancelTarget}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-3 lg:grid-cols-2">
+                {visibleHistory.map((item) => (
+                  <ServiceHistoryItem key={item.id} service={item} />
+                ))}
+              </div>
+            )}
+          </DashboardFadeIn>
         )}
       </div>
 

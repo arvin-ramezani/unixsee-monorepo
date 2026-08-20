@@ -15,7 +15,150 @@
     "phoneInvalid": "لطفاً یک شماره تلفن معتبر وارد کنید",
     "messageTooShort": "پیام باید حداقل ۲۰ کاراکتر باشد",
     "messageRequired": "محتوای پیام الزامی است",
-    "websiteInvalid": "آدرس وبسایت معتبر نیست"
+    "websiteInvalid": "آدرس وبسایت معتبر نیست",
+    "websiteRequired": "وب‌سایت الزامی است مگر اینکه گزینه «هنوز وب‌سایت ندارم» را انتخاب کرده باشید",
+    "contactRequired": "شماره موبایل یا ایمیل را وارد و تأیید کنید",
+    "databaseSizeRequired": "تقریباً حجم دیتابیس را انتخاب کنید",
+    "dailyVisitorsRequired": "تقریباً بازه بازدید روزانه را انتخاب کنید",
+    "monthlyVisitorsRequired": "تقریباً بازه بازدید روزانه را انتخاب کنید",
+    "woocommerceRequired": "وضعیت فعلی ووکامرس را مشخص کنید",
+    "attachmentsInvalid": "یک یا چند فایل مجاز نیست",
+    "attachmentsTooMany": "تعداد فایل‌ها بیش از حد مجاز است",
+    "attachmentTooLarge": "حجم یکی از فایل‌ها زیاد است",
+    "passwordRequired": "رمز عبور الزامی است",
+    "passwordTooShort": "رمز عبور باید حداقل ۸ کاراکتر باشد",
+    "passwordMismatch": "رمزهای عبور یکسان نیستند",
+    "otpRequired": "کد تأیید را وارد کنید",
+    "otpInvalid": "یک کد ۶ رقمی معتبر وارد کنید",
+    "nationalIdRequired": "کد ملی الزامی است",
+    "nationalIdInvalid": "یک کد ملی ۱۰ رقمی معتبر وارد کنید",
+    "birthDateRequired": "تاریخ تولد الزامی است",
+    "mobileRequired": "شماره موبایل الزامی است",
+    "mobileInvalid": "یک شماره موبایل ایرانی معتبر وارد کنید",
+    "mobileBelongsRequired": "تأیید کنید این موبایل متعلق به همین کد ملی است",
+    "provinceRequired": "استان الزامی است",
+    "cityRequired": "شهر الزامی است",
+    "addressRequired": "آدرس کامل الزامی است",
+    "addressTooLong": "آدرس باید کمتر از ۵۰۰ کاراکتر باشد",
+    "postalCodeRequired": "کد پستی الزامی است",
+    "postalCodeInvalid": "یک کد پستی ۱۰ رقمی معتبر وارد کنید",
+    "attestationRequired": "صحت اطلاعات را تأیید کنید",
+    "documentRequired": "عکس کارت ملی الزامی است",
+    "documentInvalid": "یک تصویر JPG، PNG یا WebP حداکثر ۵ مگابایت بارگذاری کنید"
+  },
+  "Auth": {
+    "common": {
+      "or": "یا",
+      "continue": "ادامه",
+      "continuing": "در حال ادامه…",
+      "verify": "تأیید",
+      "verifying": "در حال تأیید…",
+      "submit": "ارسال",
+      "submitting": "در حال ارسال…",
+      "sending": "در حال ارسال…",
+      "sendCode": "ارسال کد",
+      "setPassword": "تنظیم رمز عبور",
+      "settingPassword": "در حال ذخیره…",
+      "requestNewLink": "درخواست لینک جدید",
+      "backToSignIn": "بازگشت به ورود",
+      "editIdentifier": "ویرایش",
+      "resendCode": "ارسال مجدد کد",
+      "resendIn": "ارسال مجدد تا {seconds} ثانیه",
+      "google": "ادامه با گوگل",
+      "googleComingSoon": "ورود با گوگل به‌زودی فعال می‌شود",
+      "showPassword": "نمایش رمز عبور",
+      "hidePassword": "مخفی کردن رمز عبور",
+      "countryCode": "کد کشور",
+      "phoneLabel": "شماره موبایل",
+      "phonePlaceholder": "۹۱۲ ۰۰۰ ۰۰۰۰",
+      "emailLabel": "ایمیل",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "رمز عبور",
+      "confirmPasswordLabel": "تکرار رمز عبور",
+      "fullNameLabel": "نام و نام خانوادگی",
+      "fullNamePlaceholder": "نام کامل شما",
+      "modePhone": "موبایل",
+      "modeEmail": "ایمیل",
+      "identifierMode": "روش ورود",
+      "otpLabel": "کد تأیید",
+      "otpHint": "کد ۶ رقمی ارسال‌شده را وارد کنید",
+      "maskedPhone": "کد به {identifier} ارسال شد",
+      "maskedEmail": "کد به {identifier} ارسال شد",
+      "prototypeNote": "نمونه رابط کاربری — احراز هویت هنوز متصل نشده است.",
+      "phoneOtpLiveNote": "ورود با کد یک‌بارمصرف از طریق Nest فعال است. پیامک موقتاً در API شبیه‌سازی شده و کد ایمیل می‌شود تا ارائه‌دهنده پیامک اضافه شود. ورود ایمیلی به‌زودی فعال می‌شود."
+    },
+    "signIn": {
+      "title": "ورود",
+      "description": "با موبایل یا ایمیل یک کد یک‌بارمصرف دریافت کنید.",
+      "forgotPassword": "رمز عبور را فراموش کرده‌اید؟",
+      "noAccount": "حساب کاربری ندارید؟",
+      "signUpLink": "ثبت‌نام"
+    },
+    "entry": {
+      "title": "دسترسی به حساب",
+      "description": "شماره موبایل خود را وارد کنید. پس از تأیید کد، در صورت داشتن حساب وارد می‌شوید و در غیر این صورت حساب جدید برای شما ساخته می‌شود."
+    },
+    "signUp": {
+      "title": "ایجاد حساب",
+      "description": "چند اطلاعات کوتاه؛ سپس تماس شما را تأیید می‌کنیم.",
+      "haveAccount": "قبلاً حساب دارید؟",
+      "signInLink": "ورود",
+      "alreadyExistsTitle": "این حساب از قبل وجود دارد",
+      "alreadyExistsDescription": "با این مشخصات نمی‌توان حساب جدید ساخت. برای ادامه وارد شوید.",
+      "goToSignIn": "ورود"
+    },
+    "otp": {
+      "title": "کد تأیید را وارد کنید",
+      "description": "یک کد یک‌بارمصرف ارسال شد. ممکن است کمی طول بکشد.",
+      "wrongCode": "این کد معتبر نیست. دوباره تلاش کنید یا کد را مجدداً بفرستید.",
+      "rateLimited": "تلاش‌های زیادی انجام شده. کمی صبر کنید.",
+      "success": "تأیید شد"
+    },
+    "verifyEmail": {
+      "pendingTitle": "ایمیل خود را بررسی کنید",
+      "pendingDescription": "لینک تأیید ارسال شد. برای ادامه آن را باز کنید.",
+      "resend": "ارسال مجدد ایمیل تأیید",
+      "successTitle": "ایمیل تأیید شد",
+      "successDescription": "همه‌چیز آماده است. به داشبورد بروید.",
+      "continue": "ادامه به داشبورد",
+      "expiredTitle": "لینک منقضی شده",
+      "expiredDescription": "این لینک تأیید دیگر معتبر نیست. لینک جدید درخواست کنید.",
+      "changeEmail": "استفاده از ایمیل دیگر"
+    },
+    "forgotPassword": {
+      "title": "فراموشی رمز عبور",
+      "description": "ایمیل خود را وارد کنید؛ اگر حسابی وجود داشته باشد، راهنمای بازنشانی ارسال می‌شود.",
+      "submit": "ارسال لینک بازنشانی",
+      "sentTitle": "ایمیل خود را بررسی کنید",
+      "sentDescription": "اگر حسابی با این ایمیل وجود داشته باشد، راهنمای بازنشانی رمز ارسال شده است.",
+      "openEmail": "صندوق ورودی را باز کنید، سپس برای ورود بازگردید."
+    },
+    "resetPassword": {
+      "title": "رمز عبور جدید",
+      "description": "رمزی قوی انتخاب کنید که قبلاً اینجا استفاده نکرده‌اید.",
+      "deadTitle": "لینک منقضی یا نامعتبر",
+      "deadDescription": "این لینک بازنشانی قابل استفاده نیست. برای ادامه لینک جدید درخواست کنید.",
+      "successRedirect": "رمز به‌روز شد. برای ادامه وارد شوید."
+    },
+    "errors": {
+      "generic": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+      "unavailable": "احراز هویت موقتاً در دسترس نیست. بعداً تلاش کنید.",
+      "validation": "لطفاً فیلدهای مشخص‌شده را بررسی کنید.",
+      "rateLimited": "تلاش‌های زیادی انجام شده. کمی صبر کنید و دوباره تلاش کنید.",
+      "emailOtpComingSoon": "ورود با ایمیل به‌زودی فعال می‌شود. فعلاً با موبایل وارد شوید.",
+      "expiredSession": "نشست تأیید منقضی شد. دوباره از صفحه ورود شروع کنید."
+    }
+  },
+  "ApiErrors": {
+    "generic": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+    "unavailable": "سرویس موقتاً در دسترس نیست. لطفاً بعداً تلاش کنید.",
+    "unauthorized": "لطفاً دوباره وارد شوید.",
+    "forbidden": "اجازه انجام این عملیات را ندارید.",
+    "notFound": "مورد درخواستی پیدا نشد.",
+    "rateLimited": "تلاش‌های زیادی انجام شده. کمی صبر کنید و دوباره تلاش کنید.",
+    "validation": "لطفاً اطلاعات را بررسی کرده و دوباره تلاش کنید.",
+    "conflict": "این عملیات با وضعیت فعلی سازگار نیست.",
+    "accountExists": "حساب کاربری با این مشخصات وجود دارد. برای ادامه وارد شوید."
   },
   "ServerActionMessages": {
     "requestAssessment": {
@@ -123,6 +266,10 @@
       "testimonials": {
         "label": "مشتریان",
         "href": "testimonials"
+      },
+      "faq": {
+        "label": "سوالات متداول",
+        "href": "faq"
       },
       "portfolio": {
         "label": "نمونه‌کارها",
@@ -1072,6 +1219,42 @@
       "requestAssessment": {
         "form": {
           "title": "اطلاعات تماس",
+          "common": {
+            "yes": "بله",
+            "no": "خیر",
+            "unknown": "نمی‌دانم"
+          },
+          "contact": {
+            "tabsLabel": "تأیید تماس",
+            "hint": "یکی از موبایل یا ایمیل را انتخاب و تأیید کنید. روش دیگر اختیاری است.",
+            "phoneTab": "موبایل",
+            "emailTab": "ایمیل",
+            "phoneLabel": "شماره موبایل",
+            "phonePlaceholder": "۰۹۱۲ ۳۴۵ ۶۷۸۹",
+            "emailLabel": "ایمیل کاری",
+            "emailPlaceholder": "name@example.com",
+            "optionalEmailLabel": "ایمیل (اختیاری)",
+            "optionalPhoneLabel": "شماره موبایل (اختیاری)",
+            "verifyPhone": "تأیید موبایل",
+            "verifyEmail": "تأیید ایمیل",
+            "phoneVerified": "موبایل تأیید شد",
+            "emailVerified": "ایمیل تأیید شد",
+            "otpPhoneHint": "کد ارسال‌شده به موبایل را وارد کنید.",
+            "otpEmailHint": "کد ارسال‌شده به ایمیل را وارد کنید.",
+            "confirmOtp": "تأیید کد",
+            "resendOtp": "ارسال مجدد",
+            "resendIn": "ارسال مجدد تا {seconds} ثانیه",
+            "cancelOtp": "انصراف",
+            "otpRateLimited": "تلاش‌های زیاد. کمی صبر کنید.",
+            "otpUnavailable": "تأیید موقتاً در دسترس نیست.",
+            "otpGenericError": "الان امکان تأیید نیست.",
+            "otpWrongCode": "کد نادرست است.",
+            "verifyContactFirst": "قبل از ادامه، موبایل یا ایمیل را تأیید کنید.",
+            "verifyPreferredContact": "همان روشی را که در زبانه انتخاب کرده‌اید تأیید کنید.",
+            "signedInHint": "اطلاعات حساب شما وارد شده است. اگر موبایل یا ایمیل دیگری استفاده کنید، باید آن را تأیید کنید.",
+            "accountPhoneReady": "از شماره تماس شما استفاده می‌شود",
+            "accountEmailReady": "از ایمیل حساب شما استفاده می‌شود"
+          },
           "fields": {
             "name": {
               "label": "نام",
@@ -1081,42 +1264,346 @@
               "label": "ایمیل",
               "placeholder": "ایمیل کاری"
             },
+            "phone": {
+              "label": "شماره تماس",
+              "placeholder": "شماره تماس / واتساپ (اختیاری)"
+            },
             "aboutProject": {
               "label": "درباره پروژه خود به ما بگویید",
               "placeholder": "درباره پروژه خود به ما بگویید"
             },
-            "budget": {
-              "label": "بودجه",
-              "placeholder": "انتخاب کنید...",
-              "options": {
-                "under_5k": "کمتر از ۳۰۰ میلیون تومان",
-                "5k_10k": "۳۰۰ تا ۶۰۰ میلیون تومان",
-                "10k_25k": "۶۰۰ میلیون تا ۱.۵ میلیارد تومان",
-                "25k_plus": "بیش از ۱.۵ میلیارد تومان",
-                "not_sure": "هنوز مطمئن نیستم"
-              }
-            },
-            "traffic": {
-              "label": "ترافیک / حجم سفارش",
-              "placeholder": "انتخاب کنید..."
-            },
             "service": {
               "label": "چگونه می‌توانیم به شما کمک کنیم؟",
+              "placeholder": "انتخاب کنید...",
               "options": {
                 "managedServer": "سرور مدیریت‌شده",
-                "migrationOptimization": "مهاجرت و بهینه‌سازی",
                 "woocommerceSupport": "پشتیبانی تخصصی ووکامرس",
                 "seo": "سئو",
                 "graphicDesign": "طراحی گرافیک",
-                "productDataEntry": "ورود اطلاعات محصول",
+                "productDataEntry": "ورود اطلاعات / تولید محتوا",
                 "socialMedia": "پشتیبانی شبکه‌های اجتماعی"
               }
+            },
+            "attachments": {
+              "label": "فایل‌های مرتبط",
+              "hint": "فایل‌های مرتبط با پروژه، اسکرین‌شات خطا، گزارش، فایل Excel یا نمونه طراحی را اینجا قرار دهید. (PDF, PNG, JPG, DOCX, XLSX, CSV, ZIP)",
+              "empty": "فایل‌ها را بکشید و رها کنید یا از دکمه زیر استفاده کنید",
+              "selected": "{count} فایل انتخاب شد",
+              "browse": "انتخاب فایل",
+              "remove": "حذف {name}",
+              "tooMany": "حداکثر {max} فایل مجاز است",
+              "tooLarge": "حجم هر فایل باید کمتر از {maxMb} مگابایت باشد",
+              "invalidType": "فرمت فایل پشتیبانی نمی‌شود"
+            }
+          },
+          "options": {
+            "cms": {
+              "wordpress": "وردپرس",
+              "woocommerce": "ووکامرس",
+              "custom": "اختصاصی",
+              "other": "سایر"
+            },
+            "hostingType": {
+              "shared": "Shared",
+              "vps": "VPS",
+              "dedicated": "Dedicated",
+              "cloud": "Cloud",
+              "unknown": "نمی‌دانم"
+            },
+            "websiteCount": {
+              "1": "۱ وب‌سایت",
+              "2_5": "۲ تا ۵",
+              "6_10": "۶ تا ۱۰",
+              "over_10": "بیش از ۱۰"
+            },
+            "storage": {
+              "under_10gb": "کمتر از ۱۰ گیگابایت",
+              "10_50gb": "۱۰ تا ۵۰ گیگابایت",
+              "50_100gb": "۵۰ تا ۱۰۰ گیگابایت",
+              "over_100gb": "بیش از ۱۰۰ گیگابایت",
+              "unknown": "نمی‌دانم"
+            },
+            "database": {
+              "under_1gb": "کمتر از ۱ گیگابایت",
+              "1_5gb": "۱ تا ۵ گیگابایت",
+              "5_20gb": "۵ تا ۲۰ گیگابایت",
+              "over_20gb": "بیش از ۲۰ گیگابایت",
+              "unknown": "نمی‌دانم"
+            },
+            "dailyVisits": {
+              "under_100": "کمتر از ۱۰۰",
+              "100_to_500": "۱۰۰ تا ۵۰۰",
+              "500_to_2k": "۵۰۰ تا ۲٬۰۰۰",
+              "over_2k": "بیش از ۲٬۰۰۰"
+            },
+            "projectType": {
+              "shop": "فروشگاه",
+              "corporate": "شرکتی",
+              "content": "محتوا",
+              "app": "اپلیکیشن",
+              "other": "سایر"
+            },
+            "launchTime": {
+              "under_1_month": "کمتر از ۱ ماه",
+              "1_3_months": "۱ تا ۳ ماه",
+              "3_6_months": "۳ تا ۶ ماه",
+              "over_6_months": "بیش از ۶ ماه",
+              "unknown": "نامشخص"
+            },
+            "managedServerProblems": {
+              "slow": "کندی",
+              "downtime": "قطعی",
+              "security": "امنیت",
+              "lowResources": "منابع کم",
+              "hardToManage": "مدیریت سخت",
+              "poorSupport": "پشتیبانی ضعیف",
+              "other": "سایر"
+            },
+            "productCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "orderCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "woocommerceIssues": {
+              "bugFix": "رفع خطا",
+              "speed": "سرعت",
+              "payment": "پرداخت",
+              "orders": "سفارش‌ها",
+              "theme": "قالب",
+              "plugin": "افزونه",
+              "featureDev": "توسعه قابلیت",
+              "security": "امنیت",
+              "other": "سایر"
+            },
+            "seoGoals": {
+              "increaseSales": "افزایش فروش",
+              "increaseTraffic": "افزایش ترافیک",
+              "keywordRankings": "رتبه کلمات",
+              "localSeo": "سئو محلی",
+              "technicalFixes": "رفع مشکلات فنی"
+            },
+            "designTypes": {
+              "banner": "بنر",
+              "social": "شبکه اجتماعی",
+              "ads": "تبلیغات",
+              "logo": "لوگو",
+              "other": "سایر"
+            },
+            "designCount": {
+              "1": "۱ طرح",
+              "2_5": "۲ تا ۵",
+              "6_10": "۶ تا ۱۰",
+              "11_20": "۱۱ تا ۲۰",
+              "over_20": "بیش از ۲۰",
+              "unknown": "نامشخص"
+            },
+            "aspectRatios": {
+              "1_1": "۱:۱ (مربعی)",
+              "4_5": "۴:۵ (پرتره)",
+              "9_16": "۹:۱۶ (استوری/ریلز)",
+              "16_9": "۱۶:۹ (افقی/بنر)",
+              "3_2": "۳:۲",
+              "2_3": "۲:۳",
+              "4_3": "۴:۳",
+              "21_9": "۲۱:۹ (فوق‌عریض)",
+              "other": "سایر"
+            },
+            "deliveryTime": {
+              "under_1_week": "کمتر از ۱ هفته",
+              "1_2_weeks": "۱ تا ۲ هفته",
+              "2_4_weeks": "۲ تا ۴ هفته",
+              "over_4_weeks": "بیش از ۴ هفته",
+              "flexible": "انعطاف‌پذیر"
+            },
+            "dataEntryWork": {
+              "productEntry": "ورود محصول",
+              "articleEntry": "ورود مقاله",
+              "infoEntry": "ورود اطلاعات",
+              "contentMigration": "انتقال محتوا",
+              "contentCreation": "تولید محتوا"
+            },
+            "dataSources": {
+              "excel": "Excel",
+              "csv": "CSV",
+              "pdf": "PDF",
+              "website": "Website",
+              "images": "Images",
+              "other": "Other"
+            },
+            "itemCount": {
+              "under_50": "کمتر از ۵۰",
+              "50_200": "۵۰ تا ۲۰۰",
+              "200_1000": "۲۰۰ تا ۱٬۰۰۰",
+              "over_1000": "بیش از ۱٬۰۰۰",
+              "unknown": "نمی‌دانم"
+            },
+            "socialPlatforms": {
+              "instagram": "Instagram",
+              "linkedin": "LinkedIn",
+              "telegram": "Telegram",
+              "x": "X",
+              "youtube": "YouTube",
+              "other": "Other"
+            },
+            "socialGoals": {
+              "sales": "فروش",
+              "brandAwareness": "آگاهی برند",
+              "engagement": "تعامل",
+              "leadGen": "تولید لید",
+              "dailyManagement": "مدیریت روزانه"
+            },
+            "postCount": {
+              "under_4": "کمتر از ۴",
+              "4_8": "۴ تا ۸",
+              "8_16": "۸ تا ۱۶",
+              "over_16": "بیش از ۱۶",
+              "unknown": "نمی‌دانم"
+            }
+          },
+          "services": {
+            "managedServer": {
+              "title": "جزئیات سرور مدیریت‌شده",
+              "selectPlaceholder": "انتخاب کنید...",
+              "hasActiveWebsite": "آیا در حال حاضر وب‌سایت فعالی دارید؟",
+              "websiteUrl": "آدرس وب‌سایت",
+              "websiteUrlPlaceholder": "https://example.com",
+              "cms": "سیستم مدیریت محتوا",
+              "currentHosting": "شرکت هاستینگ فعلی",
+              "currentHostingPlaceholder": "اختیاری",
+              "currentServiceType": "نوع سرویس فعلی",
+              "websiteCount": "تعداد وب‌سایت‌هایی که باید میزبانی شوند",
+              "storageUsage": "فضای مصرفی فعلی",
+              "databaseSize": "حجم تقریبی دیتابیس",
+              "monthlyVisits": "بازدید روزانه تقریبی",
+              "hasWooCommerce": "آیا WooCommerce دارید؟",
+              "hasPeakTraffic": "آیا ترافیک پیک یا کمپین‌های سنگین دارید؟",
+              "peakTrafficDetails": "جزئیات ترافیک پیک",
+              "peakTrafficDetailsPlaceholder": "اختیاری — زمان، نوع کمپین و…",
+              "needsMigration": "آیا نیاز به انتقال سایت به سرور Unixsee دارید؟",
+              "currentProblems": "مشکل اصلی سرویس فعلی",
+              "additionalDetails": "توضیحات تکمیلی",
+              "additionalDetailsPlaceholder": "اختیاری",
+              "projectType": "نوع پروژه",
+              "expectedTraffic": "بازدید روزانه مورد انتظار",
+              "expectedStorage": "فضای مورد انتظار",
+              "willUseWooCommerce": "آیا WooCommerce خواهد بود؟",
+              "expectedLaunchTime": "زمان تقریبی راه‌اندازی"
+            },
+            "woocommerceSupport": {
+              "title": "جزئیات پشتیبانی ووکامرس",
+              "selectPlaceholder": "انتخاب کنید...",
+              "storeUrl": "آدرس فروشگاه",
+              "storeUrlPlaceholder": "https://shop.example.com",
+              "storeActive": "فروشگاه فعال است؟",
+              "productCount": "تعداد تقریبی محصولات",
+              "monthlyOrders": "تعداد سفارش ماهانه",
+              "monthlyVisits": "بازدید روزانه",
+              "mainIssues": "مشکل یا نیاز اصلی",
+              "paymentGateways": "درگاه‌های پرداخت مورد استفاده",
+              "paymentGatewaysPlaceholder": "اختیاری",
+              "hasUrgentIssue": "آیا مشکل فوری یا اختلال فعلی وجود دارد؟",
+              "issueDescription": "توضیح مشکل / نتیجه مورد انتظار",
+              "issueDescriptionPlaceholder": "مشکل فعلی و نتیجه‌ای که انتظار دارید را توضیح دهید"
+            },
+            "seo": {
+              "title": "جزئیات سئو",
+              "selectPlaceholder": "انتخاب کنید...",
+              "websiteUrl": "آدرس وب‌سایت",
+              "websiteUrlPlaceholder": "https://example.com",
+              "businessArea": "حوزه فعالیت",
+              "businessAreaPlaceholder": "مثلاً فروش لوازم خانگی",
+              "mainGoal": "هدف اصلی",
+              "targetCountry": "کشور / بازار هدف",
+              "targetCountryPlaceholder": "مثلاً ایران",
+              "targetLanguages": "زبان‌های هدف",
+              "targetLanguagesPlaceholder": "مثلاً فارسی، انگلیسی",
+              "organicTraffic": "ترافیک ارگانیک روزانه تقریبی",
+              "hasSearchConsole": "Google Search Console دارید؟",
+              "hasAnalytics": "Google Analytics دارید؟",
+              "importantKeywords": "کلمات کلیدی مهم",
+              "importantKeywordsPlaceholder": "اختیاری",
+              "mainCompetitors": "رقبای اصلی",
+              "mainCompetitorsPlaceholder": "آدرس وب‌سایت رقبا (اختیاری)",
+              "mainSeoProblem": "مهم‌ترین مشکل فعلی سئو",
+              "mainSeoProblemPlaceholder": "مهم‌ترین چالش سئوی فعلی خود را توضیح دهید"
+            },
+            "graphicDesign": {
+              "title": "جزئیات طراحی گرافیک",
+              "selectPlaceholder": "انتخاب کنید...",
+              "designTypes": "نوع طراحی",
+              "designCount": "تعداد طرح مورد نیاز",
+              "designCountPlaceholder": "مثلاً ۵ بنر",
+              "dimensionsOrPlatform": "نسبت‌های تصویر",
+              "dimensionsOrPlatformPlaceholder": "اختیاری",
+              "hasBrandGuideline": "آیا Brand Guideline دارید؟",
+              "contentReady": "متن/محتوای مورد نیاز آماده است؟",
+              "expectedDelivery": "زمان تحویل مورد انتظار",
+              "styleDescription": "توضیح سبک یا نمونه موردنظر",
+              "styleDescriptionPlaceholder": "سبک، حس/visual یا لینک نمونه را توضیح دهید"
+            },
+            "productDataEntry": {
+              "title": "جزئیات ورود اطلاعات",
+              "selectPlaceholder": "انتخاب کنید...",
+              "websiteUrl": "آدرس سایت",
+              "websiteUrlPlaceholder": "اختیاری",
+              "workType": "نوع کار",
+              "siteSystem": "سیستم سایت",
+              "itemCount": "تعداد تقریبی آیتم‌ها",
+              "dataSources": "منبع اطلاعات",
+              "contentLanguage": "زبان محتوا",
+              "contentLanguagePlaceholder": "مثلاً فارسی",
+              "needsImageProcessing": "آیا تصاویر هم نیاز به پردازش/آپلود دارند؟",
+              "expectedCompletion": "زمان مورد انتظار برای تکمیل",
+              "specialInstructions": "توضیحات یا دستورالعمل خاص",
+              "specialInstructionsPlaceholder": "دستورالعمل‌ها یا جزئیات اضافی"
+            },
+            "socialMedia": {
+              "title": "جزئیات پشتیبانی شبکه‌های اجتماعی",
+              "selectPlaceholder": "انتخاب کنید...",
+              "platforms": "پلتفرم‌ها",
+              "accountLinks": "لینک اکانت‌ها",
+              "accountLinksPlaceholder": "https://instagram.com/...",
+              "addLink": "افزودن لینک",
+              "removeLink": "حذف لینک",
+              "mainGoal": "هدف اصلی",
+              "businessArea": "حوزه فعالیت",
+              "businessAreaPlaceholder": "مثلاً فروشگاه آنلاین",
+              "targetMarket": "بازار / کشور هدف",
+              "targetMarketPlaceholder": "مثلاً ایران",
+              "monthlyPosts": "تعداد تقریبی پست مورد نیاز در ماه",
+              "needsGraphicDesign": "نیاز به طراحی گرافیک؟",
+              "needsCaptionContent": "نیاز به تولید کپشن/محتوا؟",
+              "needsCommunityManagement": "نیاز به پاسخگویی به کاربران؟",
+              "needsAdManagement": "نیاز به مدیریت تبلیغات؟",
+              "additionalDetails": "توضیحات تکمیلی",
+              "additionalDetailsPlaceholder": "جزئیات بیشتر درباره نیاز شما"
+            }
+          },
+          "steps": {
+            "loading": "در حال بارگذاری…",
+            "progress": "{current} از {total}",
+            "progressLabel": "پیشرفت فرم",
+            "titles": {
+              "1": "اطلاعات اولیه",
+              "2": "جزئیات سرویس",
+              "3": "توضیحات و فایل‌ها"
             }
           },
           "actions": {
             "sendMessage": "ارسال پیام",
             "submitting": "در حال ارسال…",
-            "cancel": "لغو درخواست"
+            "cancel": "لغو درخواست",
+            "continue": "ادامه",
+            "back": "بازگشت"
           }
         }
       },
@@ -1554,8 +2041,74 @@
         "requestId": "شناسه درخواست",
         "fullName": "نام و نام خانوادگی",
         "email": "ایمیل",
+        "phone": "شماره تماس",
         "service": "سرویس درخواستی",
-        "description": "توضیحات پروژه"
+        "description": "توضیحات پروژه",
+        "serviceDetails": "جزئیات سرویس"
+      },
+      "detailLabels": {
+        "hasActiveWebsite": "وب‌سایت فعال",
+        "websiteUrl": "آدرس وب‌سایت",
+        "cms": "سیستم مدیریت محتوا",
+        "currentHosting": "هاستینگ فعلی",
+        "currentServiceType": "نوع سرویس فعلی",
+        "websiteCount": "تعداد وب‌سایت",
+        "storageUsage": "فضای مصرفی",
+        "databaseSize": "حجم دیتابیس",
+        "monthlyVisits": "بازدید روزانه",
+        "hasWooCommerce": "ووکامرس",
+        "hasPeakTraffic": "ترافیک پیک",
+        "peakTrafficDetails": "جزئیات ترافیک پیک",
+        "needsMigration": "نیاز به مهاجرت",
+        "currentProblems": "مشکلات فعلی",
+        "additionalDetails": "توضیحات تکمیلی",
+        "projectType": "نوع پروژه",
+        "expectedTraffic": "بازدید روزانه مورد انتظار",
+        "expectedStorage": "فضای مورد انتظار",
+        "willUseWooCommerce": "استفاده از ووکامرس",
+        "expectedLaunchTime": "زمان راه‌اندازی",
+        "storeUrl": "آدرس فروشگاه",
+        "storeActive": "فروشگاه فعال",
+        "productCount": "تعداد محصولات",
+        "monthlyOrders": "سفارش ماهانه",
+        "mainIssues": "مشکلات اصلی",
+        "paymentGateways": "درگاه‌های پرداخت",
+        "hasUrgentIssue": "مشکل فوری",
+        "issueDescription": "توضیح مشکل",
+        "businessArea": "حوزه فعالیت",
+        "mainGoal": "هدف اصلی",
+        "targetCountry": "کشور هدف",
+        "targetLanguages": "زبان‌های هدف",
+        "organicTraffic": "ترافیک ارگانیک",
+        "hasSearchConsole": "Search Console",
+        "hasAnalytics": "Analytics",
+        "importantKeywords": "کلمات کلیدی",
+        "mainCompetitors": "رقبا",
+        "mainSeoProblem": "مشکل سئو",
+        "designTypes": "نوع طراحی",
+        "designCount": "تعداد طرح",
+        "dimensionsOrPlatform": "نسبت‌های تصویر",
+        "hasBrandGuideline": "Brand Guideline",
+        "contentReady": "محتوا آماده",
+        "expectedDelivery": "زمان تحویل",
+        "styleDescription": "سبک/design brief",
+        "workType": "نوع کار",
+        "siteSystem": "سیستم سایت",
+        "itemCount": "تعداد آیتم",
+        "dataSources": "منبع اطلاعات",
+        "contentLanguage": "زبان محتوا",
+        "needsImageProcessing": "پردازش تصاویر",
+        "expectedCompletion": "زمان تکمیل",
+        "specialInstructions": "دستورالعمل‌ها",
+        "platforms": "پلتفرم‌ها",
+        "accountLinks": "لینک اکانت‌ها",
+        "targetMarket": "بازار هدف",
+        "monthlyPosts": "پست ماهانه",
+        "needsGraphicDesign": "طراحی گرافیک",
+        "needsCaptionContent": "تولید کپشن",
+        "needsCommunityManagement": "پاسخگویی",
+        "needsAdManagement": "مدیریت تبلیغات",
+        "attachments": "فایل‌های پیوست"
       },
       "notProvided": "وارد نشده است"
     },
@@ -1618,12 +2171,20 @@
       "description": "پیش از افزودن وب‌سایت جدید، طرح مناسب خود را انتخاب کنید."
     },
     "checkout": {
-      "title": "تکمیل خرید | یونیکسی",
-      "description": "طرح خود را تأیید کنید و خرید را نهایی کنید."
+      "title": "درخواست طرح | یونیکسی",
+      "description": "طرح خود را بررسی و درخواست را ارسال کنید. این مرحله پرداخت نیست."
     },
     "plansSuccess": {
-      "title": "خرید تکمیل شد | یونیکسی",
-      "description": "خرید شما با موفقیت انجام شد. تیم ما به‌زودی با شما تماس می‌گیرد."
+      "title": "درخواست ثبت شد | یونیکسی",
+      "description": "درخواست طرح شما ثبت شد. تیم ما به‌زودی با شما تماس می‌گیرد."
+    },
+    "guestPlanRequest": {
+      "title": "درخواست طرح | یونیکسی",
+      "description": "اطلاعات تماس خود را برای طرح انتخاب‌شده ارسال کنید. این مرحله پرداخت نیست."
+    },
+    "guestPlanRequestSuccess": {
+      "title": "درخواست ثبت شد | یونیکسی",
+      "description": "درخواست طرح شما ثبت شد. تیم ما به‌زودی با شما تماس می‌گیرد."
     },
     "helpCenter": {
       "title": "مرکز راهنما | Unixsee",
@@ -1649,6 +2210,14 @@
       "title": "تیکت‌ها | یونیکسی",
       "description": "درخواست‌های خود برای خدمات یونیکسی را ایجاد و پیگیری کنید."
     },
+    "unixseeMessages": {
+      "title": "پیام‌های یونیکسی | یونیکسی",
+      "description": "پیام‌های یونیکسی ارسال‌شده به حساب شما را مشاهده کنید."
+    },
+    "unixseeMessageDetails": {
+      "title": "جزئیات پیام | یونیکسی",
+      "description": "متن، پیوندها و پیوست‌های پیام یونیکسی."
+    },
     "newTicket": {
       "title": "تیکت جدید | یونیکسی",
       "description": "درخواست جدیدی برای پشتیبانی یونیکسی ارسال کنید."
@@ -1660,6 +2229,10 @@
     "profile": {
       "title": "نمایه | یونیکسی",
       "description": "اطلاعات شخصی و امنیت حساب خود را مدیریت کنید."
+    },
+    "authorization": {
+      "title": "احراز هویت سازمانی | یونیکسی",
+      "description": "مدارک هویتی را ارسال کنید تا یونیکسی شما را به‌عنوان مستأجر تأیید کند."
     },
     "complementaryServices": {
       "title": "خدمات تکمیلی | یونیکسی",
@@ -1732,19 +2305,25 @@
     "open": "باز کردن پیمایش",
     "close": "بستن پیمایش",
     "dashboard": "داشبورد",
+    "signIn": "ورود",
+    "signUp": "ثبت‌نام",
+    "authEntry": "ورود / ثبت‌نام",
+    "accountFallback": "حساب کاربری",
     "activities": "فعالیت‌های یونیکسی",
     "domains": "دامنه‌ها",
     "websites": "وب‌سایت‌ها",
     "billing": "صورتحساب",
     "support": "پشتیبانی",
     "tickets": "تیکت‌ها",
+    "unixseeMessages": "پیام‌های یونیکسی",
     "complementaryServices": "خدمات تکمیلی",
     "helpCenter": "مرکز راهنما",
     "profile": "پروفایل",
     "expand": "باز کردن منو",
     "collapse": "جمع کردن منو",
     "collapseLabel": "بستن منو",
-    "comingSoon": "به‌زودی"
+    "comingSoon": "به‌زودی",
+    "unreadMessages": "پیام خوانده‌نشده"
   },
   "Header": {
     "searchLabel": "جست‌وجوی وب‌سایت‌ها، تیکت‌ها، صفحه‌ها و عملیات",
@@ -1823,6 +2402,11 @@
       "emptyDescription": "مطالب و به‌روزرسانی‌های جدید یونیکسی اینجا نمایش داده می‌شوند."
     },
     "profile": "باز کردن منوی نمایه",
+    "accountMenu": {
+      "open": "باز کردن منوی حساب",
+      "profile": "نمایه",
+      "logOut": "خروج"
+    },
     "changeLanguage": "تغییر زبان به {language}",
     "english": "انگلیسی",
     "persian": "فارسی"
@@ -1894,6 +2478,9 @@
       "copyError": "کپی انجام نشد",
       "createTicket": "ایجاد تیکت پشتیبانی",
       "close": "بستن پنجره پشتیبانی"
+    },
+    "states": {
+      "loading": "در حال بارگذاری داشبورد"
     }
   },
   "Notifications": {
@@ -1969,6 +2556,7 @@
   "ActivityHistory": {
     "title": "فعالیت‌های اخیر یونیکسی",
     "description": "جدیدترین کارهای مهم و رویدادهای خدماتی در سراسر حساب یونیکسی شما.",
+    "loading": "در حال بارگذاری تاریخچه فعالیت‌ها",
     "allActivity": "همه فعالیت‌های یونیکسی",
     "resultSummary": "نمایش {shown, number} از {total, number} فعالیت",
     "timelineLabel": "خط زمانی فعالیت‌های حساب",
@@ -2054,14 +2642,119 @@
     "perMonth": "/ماه",
     "select": "انتخاب {plan}",
     "featuresLabel": "امکانات",
-    "empty": "طرح‌ها به‌زودی در این‌جا در دسترس خواهند بود."
+    "empty": "طرح‌ها به‌زودی در این‌جا در دسترس خواهند بود.",
+    "loadError": "در حال حاضر امکان بارگذاری طرح‌ها وجود ندارد. لطفاً بعداً دوباره تلاش کنید.",
+    "loading": "در حال بارگذاری طرح‌ها"
+  },
+  "GuestPlanRequestPage": {
+    "title": "ثبت درخواست طرح",
+    "description": "اطلاعات تماس خود را وارد کنید تا تیم ما طرح انتخاب‌شده را بررسی کند و با شما تماس بگیرد. این مرحله پرداخت نیست.",
+    "backToPlans": "بازگشت به طرح‌ها",
+    "summary": {
+      "planLabel": "طرح انتخاب‌شده"
+    },
+    "form": {
+      "fullNameLabel": "نام و نام خانوادگی",
+      "fullNamePlaceholder": "نام و نام خانوادگی",
+      "phoneLabel": "شماره تلفن",
+      "phonePlaceholder": "۹۱۲ ۳۴۵ ۶۷۸۹",
+      "emailLabel": "ایمیل",
+      "emailPlaceholder": "you@example.com",
+      "contactHint": "با زبانهٔ زیر موبایل یا ایمیل را تأیید کنید. فقط روش انتخاب‌شده لازم است؛ دیگری اختیاری می‌ماند.",
+      "contactTabsLabel": "تأیید تماس",
+      "optionalEmailLabel": "ایمیل (اختیاری)",
+      "optionalPhoneLabel": "شماره تلفن (اختیاری)",
+      "verifyPhone": "تأیید موبایل",
+      "verifyEmail": "تأیید ایمیل",
+      "phoneVerified": "موبایل تأیید شد — حساب آماده است",
+      "emailVerified": "ایمیل تأیید شد — حساب آماده است",
+      "otpPhoneHint": "کدی که برای شماره موبایل ارسال شده را وارد کنید.",
+      "otpEmailHint": "کدی که برای ایمیل ارسال شده را وارد کنید.",
+      "confirmOtp": "تأیید کد",
+      "resendOtp": "ارسال مجدد کد",
+      "resendIn": "ارسال مجدد تا {seconds} ثانیه",
+      "cancelOtp": "انصراف",
+      "otpSent": "کد تأیید ارسال شد.",
+      "otpVerified": "تماس تأیید شد. می‌توانید درخواست را ارسال کنید.",
+      "otpWrongCode": "کد نادرست است. دوباره تلاش کنید.",
+      "otpRateLimited": "تلاش‌های زیاد. کمی صبر کنید و دوباره تلاش کنید.",
+      "otpUnavailable": "تأیید موقتاً در دسترس نیست.",
+      "otpGenericError": "الان امکان تأیید نیست. دوباره تلاش کنید.",
+      "verifyContactFirst": "قبل از ارسال، موبایل یا ایمیل را تأیید کنید.",
+      "verifyPreferredContact": "قبل از ارسال، همان روش تماس انتخاب‌شده در زبانه‌ها را تأیید کنید.",
+      "websiteLabel": "وب‌سایت",
+      "websitePlaceholder": "https://example.com",
+      "noWebsiteLabel": "هنوز وب‌سایت ندارم",
+      "intakeSectionTitle": "درباره فروشگاه شما",
+      "intakeSectionHint": "اگر هنوز وب‌سایت ندارید، این سؤالات اندازه‌گیری غیرفعال می‌شوند.",
+      "databaseSizeLabel": "تقریباً حجم دیتابیس",
+      "databaseSizePlaceholder": "یک بازه انتخاب کنید",
+      "databaseSizeOptions": {
+        "under_1gb": "کمتر از ۱ گیگابایت",
+        "1_to_5gb": "۱ تا ۵ گیگابایت",
+        "5_to_20gb": "۵ تا ۲۰ گیگابایت",
+        "over_20gb": "بیش از ۲۰ گیگابایت"
+      },
+      "dailyVisitorsLabel": "تقریباً بازدید روزانه",
+      "dailyVisitorsPlaceholder": "یک بازه انتخاب کنید",
+      "dailyVisitorsOptions": {
+        "under_100": "کمتر از ۱۰۰",
+        "100_to_500": "۱۰۰ تا ۵۰۰",
+        "500_to_2k": "۵۰۰ تا ۲٬۰۰۰",
+        "over_2k": "بیش از ۲٬۰۰۰"
+      },
+      "woocommerceLabel": "فروشگاه الان روی ووکامرس است؟",
+      "woocommercePlaceholder": "یک گزینه انتخاب کنید",
+      "woocommerceOptions": {
+        "yes": "بله",
+        "no": "خیر",
+        "not_sure": "مطمئن نیستم"
+      },
+      "descriptionLabel": "توضیحات (اختیاری)",
+      "descriptionPlaceholder": "درباره فروشگاه یا پروژه خود بنویسید…",
+      "upload": {
+        "label": "پیوست‌ها (اختیاری)",
+        "hint": "PDF، Word یا تصویر تا ۵ مگابایت. فعلاً فقط نام فایل ثبت می‌شود؛ آپلود باینری بعداً اضافه می‌شود.",
+        "empty": "فایل‌ها را بکشید و رها کنید، یا از دستگاه انتخاب کنید.",
+        "selected": "{count, plural, one {# فایل انتخاب شد} other {# فایل انتخاب شد}}",
+        "browse": "انتخاب فایل",
+        "remove": "حذف {name}",
+        "tooMany": "حداکثر {max} فایل می‌توانید بارگذاری کنید.",
+        "tooLarge": "حجم هر فایل باید حداکثر {maxMb} مگابایت باشد.",
+        "invalidType": "این نوع فایل پشتیبانی نمی‌شود."
+      },
+      "submit": "ارسال درخواست",
+      "processing": "در حال ارسال…",
+      "reassurance": "ارسال درخواست هزینه‌ای برای شما ندارد. تیم ما برای تکمیل راه‌اندازی با شما تماس می‌گیرد."
+    },
+    "accountExists": {
+      "toast": "شما قبلاً حساب دارید. برای ادامه وارد شوید."
+    },
+    "success": {
+      "title": "درخواست شما ثبت شد",
+      "description": "متشکریم. تیم ما درخواست طرح شما را بررسی می‌کند و برای ادامه راه‌اندازی با شما تماس می‌گیرد.",
+      "planLabel": "طرح درخواستی",
+      "nextTitle": "مراحل بعدی",
+      "step1": "تیم ما درخواست شما را بررسی می‌کند.",
+      "step2": "احراز هویت سازمانی را تکمیل کنید تا کارکنان شما را به‌عنوان مستأجر تأیید کنند؛ تحویل خدمات مدیریت‌شده پس از آن ممکن است.",
+      "step3": "پس از فعال‌سازی توسط تیم، طرح روی وب‌سایت شما فعال می‌شود.",
+      "authorizationCta": "شروع احراز هویت",
+      "backToPlans": "بازگشت به طرح‌ها"
+    },
+    "errors": {
+      "planNotFoundTitle": "طرح پیدا نشد",
+      "planNotFoundDescription": "این طرح در دسترس نیست یا لینک نامعتبر است. از فهرست طرح‌ها یک گزینه انتخاب کنید و دوباره تلاش کنید.",
+      "serviceUnavailableTitle": "بارگذاری طرح‌ها موقتاً ممکن نیست",
+      "serviceUnavailableDescription": "در حال حاضر امکان دریافت جزئیات طرح وجود ندارد. اتصال API را بررسی کنید و دوباره از بخش طرح‌ها تلاش کنید."
+    }
   },
   "Checkout": {
-    "title": "نهایی‌سازی خرید",
-    "description": "طرح خود را بررسی و تأیید کنید. در این نسخهٔ نمایشی هیچ پرداختی انجام نمی‌شود.",
+    "title": "ثبت درخواست طرح",
+    "description": "طرح انتخابی را بررسی و درخواست را ارسال کنید. این مرحله پرداخت نیست.",
     "back": "بازگشت به طرح‌ها",
-    "summaryTitle": "خلاصهٔ سفارش",
+    "summaryTitle": "خلاصهٔ درخواست",
     "planLabel": "طرح",
+    "detailsLabel": "جزئیات",
     "billingLabel": "دورهٔ پرداخت",
     "billingValue": "ماهانه",
     "totalLabel": "مبلغ قابل پرداخت امروز",
@@ -2074,18 +2767,29 @@
     "phonePlaceholder": "۰۹۱۲ ۰۰۰ ۱۲۳۴",
     "nameError": "لطفاً نام خود را وارد کنید.",
     "phoneError": "لطفاً شمارهٔ تماس را وارد کنید.",
-    "pay": "نهایی‌سازی خرید",
-    "processing": "در حال پردازش...",
-    "reassurance": "با نهایی‌سازی خرید، تیم ما برای تکمیل راه‌اندازی با شما تماس می‌گیرد."
+    "submit": "ارسال درخواست",
+    "processing": "در حال ارسال...",
+    "reassurance": "ارسال درخواست به‌معنای پرداخت نیست. تیم ما برای تکمیل راه‌اندازی با شما تماس می‌گیرد.",
+    "errors": {
+      "generic": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+      "unavailable": "سرویس درخواست طرح موقتاً در دسترس نیست.",
+      "unauthorized": "برای ادامه دوباره وارد شوید.",
+      "forbidden": "اجازهٔ ثبت این درخواست را ندارید.",
+      "notFound": "این طرح دیگر در دسترس نیست.",
+      "rateLimited": "تلاش‌های زیادی انجام شده است. کمی بعد دوباره تلاش کنید.",
+      "validation": "لطفاً اطلاعات را بررسی و دوباره تلاش کنید.",
+      "accountExists": "شما قبلاً حساب دارید. برای ادامه وارد شوید."
+    }
   },
   "PlansSuccess": {
-    "title": "خرید شما با موفقیت انجام شد!",
-    "description": "از سفارش شما سپاسگزاریم. تیم ما در اسرع وقت برای تکمیل راه‌اندازی طرح با شما تماس می‌گیرد.",
-    "planLabel": "طرح خریداری‌شده",
+    "title": "درخواست شما ثبت شد",
+    "description": "از شما سپاسگزاریم. تیم ما درخواست طرح را بررسی می‌کند و برای ادامهٔ راه‌اندازی با شما تماس می‌گیرد.",
+    "planLabel": "طرح درخواست‌شده",
     "nextTitle": "مراحل بعدی",
-    "step1": "تیم ما سفارش شما را بررسی می‌کند.",
-    "step2": "برای تأیید جزئیات راه‌اندازی با شما تماس می‌گیریم.",
-    "step3": "طرح شما فعال و وب‌سایت‌تان آماده می‌شود.",
+    "step1": "تیم ما درخواست شما را بررسی می‌کند.",
+    "step2": "احراز هویت سازمانی را تکمیل کنید تا کارکنان شما را به‌عنوان مستأجر تأیید کنند؛ تحویل خدمات مدیریت‌شده پس از آن ممکن است.",
+    "step3": "پس از فعال‌سازی توسط تیم، طرح روی وب‌سایت شما اعمال می‌شود.",
+    "authorizationCta": "باز کردن احراز هویت",
     "backToWebsites": "رفتن به وب‌سایت‌ها",
     "viewPlans": "مشاهدهٔ طرح‌ها"
   },
@@ -2827,6 +3531,9 @@
       "description": "تیم پشتیبانی ما شبانه‌روزی همراه شماست.",
       "contact": "تماس با پشتیبانی",
       "center": "مرکز راهنما را ببینید"
+    },
+    "states": {
+      "loading": "در حال بارگذاری وب‌سایت‌ها"
     }
   },
   "Domains": {
@@ -2885,6 +3592,36 @@
     },
     "summary": "نمایش {visible} از {total} دامنه"
   },
+  "UnixseeMessages": {
+    "title": "پیام‌های یونیکسی",
+    "subtitle": "پیام‌های یک‌طرفه یونیکسی به حساب شما",
+    "details": "جزئیات پیام",
+    "empty": "هنوز پیامی برای شما ارسال نشده است.",
+    "loadError": "بارگذاری پیام‌ها ممکن نشد. دوباره تلاش کنید.",
+    "gotIt": "متوجه شدم",
+    "markReadError": "ثبت خوانده‌شدن ناموفق بود. دوباره تلاش کنید.",
+    "websiteContext": "مرتبط با وب‌سایت {website}",
+    "links": "پیوندها",
+    "attachments": "پیوست‌ها",
+    "attachmentDownload": "دانلود فایل",
+    "attachmentDownloadDeferred": "دانلود فایل به‌زودی در دسترس خواهد بود.",
+    "backToList": "بازگشت به فهرست پیام‌ها",
+    "read": "خوانده‌شده",
+    "unread": "خوانده‌نشده",
+    "loading": "در حال بارگذاری پیام‌های یونیکسی",
+    "loadingDetail": "در حال بارگذاری پیام",
+    "aside": {
+      "label": "میانبرهای پیام یونیکسی",
+      "quickActions": {
+        "title": "اقدامات سریع",
+        "label": "ناوبری مرتبط با پیام",
+        "tickets": "تیکت‌ها",
+        "websites": "وب‌سایت‌های من",
+        "relatedWebsite": "وب‌سایت: {website}",
+        "websiteFallback": "وب‌سایت مرتبط"
+      }
+    }
+  },
   "Tickets": {
     "title": "تیکت‌ها",
     "description": "درخواست‌های خود برای خدمات یونیکسی را ایجاد و پیگیری کنید.",
@@ -2895,20 +3632,29 @@
     "notApplicable": "نامرتبط",
     "viewTicket": "مشاهده تیکت",
     "services": {
-      "managed_server": "سرور مدیریت‌شده",
-      "migration_optimization": "انتقال و بهینه‌سازی",
-      "woocommerce_support": "پشتیبانی تخصصی ووکامرس",
-      "seo": "سئو",
-      "graphic_design": "طراحی گرافیک",
-      "product_data_entry": "ورود اطلاعات محصول",
-      "social_media_support": "پشتیبانی شبکه‌های اجتماعی"
+      "MANAGED_SERVER": "سرور مدیریت‌شده",
+      "MIGRATION_OPTIMIZATION": "انتقال و بهینه‌سازی",
+      "WOOCOMMERCE_SUPPORT": "پشتیبانی تخصصی ووکامرس",
+      "SEO": "سئو",
+      "GRAPHIC_DESIGN": "طراحی گرافیک",
+      "PRODUCT_DATA_ENTRY": "ورود اطلاعات محصول",
+      "SOCIAL_MEDIA_SUPPORT": "پشتیبانی شبکه‌های اجتماعی"
     },
     "statuses": {
-      "submitted": "ارسال‌شده",
-      "in_progress": "در حال انجام",
-      "waiting_for_user": "منتظر پاسخ شما",
-      "resolved": "حل‌شده",
-      "closed": "بسته‌شده"
+      "SUBMITTED": "ارسال‌شده",
+      "IN_PROGRESS": "در حال انجام",
+      "WAITING_CUSTOMER": "منتظر پاسخ شما",
+      "RESOLVED": "حل‌شده",
+      "CLOSED": "بسته‌شده"
+    },
+    "errors": {
+      "generic": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+      "unavailable": "سرویس تیکت‌ها موقتاً در دسترس نیست.",
+      "unauthorized": "برای ادامه دوباره وارد شوید.",
+      "forbidden": "به این تیکت دسترسی ندارید.",
+      "notFound": "این تیکت پیدا نشد.",
+      "rateLimited": "تعداد درخواست‌ها زیاد است. کمی صبر کنید و دوباره تلاش کنید.",
+      "validation": "فرم را بررسی کنید و دوباره تلاش کنید."
     },
     "tabs": {
       "label": "وضعیت تیکت",
@@ -2932,13 +3678,13 @@
       "mobile": "فیلترهای بیشتر"
     },
     "activity": {
-      "support": "یونیکسی پاسخ داد",
-      "user": "شما پاسخ دادید"
+      "SUPPORT": "یونیکسی پاسخ داد",
+      "USER": "شما پاسخ دادید"
     },
     "states": {
       "loading": "در حال بارگذاری تیکت‌ها",
       "errorTitle": "تیکت‌ها نمایش داده نشدند",
-      "errorDescription": "فهرست تیکت‌ها موقتاً در دسترس نیست. نمای محلی را دوباره بارگذاری کنید.",
+      "errorDescription": "فهرست تیکت‌ها موقتاً در دسترس نیست. لطفاً دوباره تلاش کنید.",
       "retry": "تلاش دوباره",
       "emptyTitle": "هنوز تیکتی ندارید",
       "emptyDescription": "با تیکت می‌توانید درخواست کار ثبت کنید و گفت‌وگو با تیم یونیکسی را دنبال کنید.",
@@ -2997,8 +3743,10 @@
       "website": {
         "label": "وب‌سایت مرتبط",
         "placeholder": "یک وب‌سایت انتخاب کنید",
+        "none": "بدون وب‌سایت",
+        "emptyPlaceholder": "وب‌سایتی موجود نیست",
         "requiredHint": "برای این سرویس الزامی است",
-        "optionalHint": "برای این سرویس اختیاری است"
+        "optionalHint": "اختیاری — در صورت نیاز وب‌سایت را مرتبط کنید"
       },
       "subject": {
         "label": "موضوع",
@@ -3011,9 +3759,13 @@
       },
       "attachments": {
         "label": "پیوست‌ها",
-        "hint": "تصویر یا سند اختیاری.",
+        "hint": "تصویر، PDF، ZIP یا متن (حداکثر ۱۰ مگابایت برای هر فایل).",
+        "unavailable": "آپلود فایل به‌زودی",
+        "unavailableHint": "پیوست‌ها پس از فعال‌شدن آپلود S3 در Nest در دسترس خواهند بود.",
         "choose": "انتخاب فایل",
-        "remove": "حذف {name}"
+        "remove": "حذف {name}",
+        "tooLarge": "حجم هر فایل باید حداکثر ۱۰ مگابایت باشد.",
+        "invalidType": "فقط تصویر، PDF، ZIP، CSV یا متن ساده مجاز است."
       },
       "errors": {
         "service": "یک خدمت انتخاب کنید.",
@@ -3021,12 +3773,16 @@
         "subject": "موضوع را وارد کنید.",
         "description": "حداقل ۲۰ نویسه وارد کنید."
       },
+      "loadErrorTitle": "فرم تیکت جدید در دسترس نیست",
+      "loadErrorDescription": "فهرست خدمات بارگذاری نشد. لطفاً بعداً دوباره تلاش کنید.",
+      "loading": "در حال بارگذاری فرم تیکت جدید",
       "submitting": "در حال ارسال...",
       "submit": "ارسال تیکت",
       "cancel": "لغو"
     },
     "detail": {
       "back": "بازگشت به تیکت‌ها",
+      "loading": "در حال بارگذاری تیکت",
       "you": "شما",
       "service": "بخش",
       "website": "وب‌سایت مرتبط",
@@ -3034,19 +3790,26 @@
       "updated": "آخرین به‌روزرسانی",
       "ticketNumber": "شماره تیکت",
       "summary": "خلاصه تیکت",
+      "attachments": "پیوست‌ها",
+      "noAttachments": "پیوستی ندارد",
+      "download": "دانلود",
+      "downloadFailed": "دانلود فایل ممکن نشد.",
       "reply": "پاسخ",
       "reopen": "بازگشایی تیکت",
       "close": "بستن تیکت",
       "resolvedTitle": "این تیکت حل شده است",
-      "resolvedDescription": "اگر مشکل ادامه دارد، تیکت را بازگشایی کنید و تازه‌ترین جزئیات را بنویسید."
+      "resolvedDescription": "اگر مشکل ادامه دارد، تازه‌ترین جزئیات را پاسخ دهید. وقتی راضی بودید تیکت را ببندید.",
+      "resolvedDescriptionWithAutoClose": "اگر مشکل ادامه دارد، تازه‌ترین جزئیات را پاسخ دهید. وقتی راضی بودید تیکت را ببندید؛ در غیر این صورت تیکت به‌صورت خودکار در {date} بسته می‌شود.",
+      "closedTitle": "این تیکت بسته شده است",
+      "closedDescription": "اگر دوباره به کمک نیاز دارید تیکت را بازگشایی کنید و تازه‌ترین جزئیات را بنویسید."
     },
     "conversation": {
       "title": "گفت‌وگو",
       "description": "پیام‌ها به‌ترتیب زمانی نمایش داده می‌شوند.",
       "empty": "هنوز پیامی در این گفت‌وگو وجود ندارد.",
       "roles": {
-        "user": "کاربر",
-        "support": "پشتیبانی یونیکسی"
+        "USER": "کاربر",
+        "SUPPORT": "پشتیبانی یونیکسی"
       },
       "attachmentSize": "{size, number} کیلوبایت"
     },
@@ -3056,8 +3819,11 @@
       "closed": "به‌دلیل بسته بودن تیکت، امکان پاسخ وجود ندارد.",
       "label": "متن پاسخ",
       "placeholder": "پاسخ خود را بنویسید...",
-      "required": "پیش از ارسال، پاسخ را وارد کنید.",
+      "required": "پیش از ارسال، پاسخ بنویسید یا فایلی پیوست کنید.",
       "attach": "پیوست فایل",
+      "attachmentsHint": "تصویر، PDF، ZIP یا متن اختیاری (حداکثر ۱۰ مگابایت برای هر فایل).",
+      "tooLarge": "حجم هر فایل باید حداکثر ۱۰ مگابایت باشد.",
+      "invalidType": "فقط تصویر، PDF، ZIP، CSV یا متن ساده مجاز است.",
       "remove": "حذف {name}",
       "sending": "در حال ارسال...",
       "send": "ارسال پاسخ"
@@ -3088,14 +3854,23 @@
     "personal": {
       "title": "اطلاعات شخصی",
       "description": "اطلاعات تماس و زبان مورد استفاده حساب خود را به‌روز کنید.",
+      "contactRule": "فقط یک راه تماس تأییدشده لازم است: با موبایل تأییدشده، ایمیل اختیاری است و با ایمیل تأییدشده، موبایل اختیاری است.",
       "name": "نام کامل",
       "email": "ایمیل",
       "mobile": "شماره موبایل",
       "language": "زبان ترجیحی",
-      "emailChanged": "پس از ذخیره، تأیید ایمیل لازم است.",
-      "sendEmail": "ارسال ایمیل تأیید",
-      "mobileChanged": "پس از ذخیره، تأیید پیامکی لازم است.",
-      "verifyMobile": "تأیید شماره موبایل",
+      "optional": "اختیاری",
+      "optionalBecausePhone": "اختیاری است چون شماره موبایل تأیید شده است.",
+      "optionalBecauseEmail": "اختیاری است چون ایمیل تأیید شده است.",
+      "notProvided": "ثبت نشده",
+      "emailChanged": "قبل از ذخیره این ایمیل، تأیید لازم است.",
+      "emailNeedsVerify": "این ایمیل هنوز تأیید نشده است.",
+      "sendEmail": "ارسال کد تأیید",
+      "mobileChanged": "قبل از ذخیره این موبایل، تأیید لازم است.",
+      "mobileNeedsVerify": "این شماره موبایل هنوز تأیید نشده است.",
+      "verifyMobile": "ارسال کد تأیید",
+      "contactSaveHint": "تغییر ایمیل و موبایل فقط پس از تأیید ذخیره می‌شود — از «ارسال کد تأیید» استفاده کنید.",
+      "nestUnavailable": "داده زنده حساب در دسترس نیست. نمونه محلی نمایش داده می‌شود.",
       "reset": "بازنشانی تغییرات",
       "save": "ذخیره تغییرات",
       "saving": "در حال ذخیره...",
@@ -3104,7 +3879,27 @@
       "errors": {
         "name": "نام کامل خود را وارد کنید.",
         "email": "یک ایمیل معتبر وارد کنید.",
-        "mobile": "از قالب 09xxxxxxxxx یا +989xxxxxxxxx استفاده کنید."
+        "emailRequired": "ایمیل را وارد کنید، یا ابتدا موبایل را تأیید کنید.",
+        "mobile": "از قالب 09xxxxxxxxx یا +989xxxxxxxxx استفاده کنید.",
+        "mobileRequired": "شماره موبایل را وارد کنید، یا ابتدا ایمیل را تأیید کنید."
+      },
+      "verifyDialog": {
+        "phoneTitle": "تأیید شماره موبایل",
+        "emailTitle": "تأیید ایمیل",
+        "mockDeliveryHint": "محیط توسعه: کد به صندوق mock (مثل ورود) ایمیل می‌شود، نه پیامک و نه لزوماً همین آدرس.",
+        "sending": "در حال ارسال کد…",
+        "resend": "ارسال مجدد کد",
+        "cancel": "لغو",
+        "confirm": "تأیید کد"
+      },
+      "toast": {
+        "phoneCodeSent": "کد تأیید موبایل به صندوق mock ارسال شد.",
+        "emailCodeSent": "کد تأیید ایمیل به صندوق mock ارسال شد.",
+        "phoneVerified": "شماره موبایل تأیید شد.",
+        "emailVerified": "ایمیل تأیید شد.",
+        "invalidCode": "کد شش‌رقمی را وارد کنید.",
+        "profileSaved": "نمایه به‌روز شد.",
+        "avatarLocalOnly": "پیش‌نمایش تصویر فقط محلی است تا ذخیره‌سازی ابری وصل شود."
       }
     },
     "unsaved": {
@@ -3169,6 +3964,117 @@
           "working": "در حال انجام..."
         }
       }
+    }
+  },
+  "Authorization": {
+    "title": "احراز هویت سازمانی",
+    "description": "مشخصات هویتی و عکس کارت ملی را ارسال کنید تا کارکنان شما را به‌عنوان مستأجر تجاری تأیید کنند. ورود به حساب به‌تنهایی کافی نیست.",
+    "searchHeader": "جست‌وجوی احراز هویت…",
+    "loading": "در حال بارگذاری احراز هویت",
+    "banner": {
+      "not_started": "برای تبدیل‌شدن به مستأجر و دریافت خدمات مدیریت‌شده، احراز هویت سازمانی را تکمیل کنید.",
+      "draft": "پیش‌نویس ناتمام احراز هویت دارید. هر زمان آماده بودید ادامه دهید.",
+      "needs_more_info": "کارکنان اصلاحاتی برای بسته احراز هویت شما درخواست کرده‌اند.",
+      "rejected": "احراز هویت رد شد. دلایل را ببینید و در صورت تمایل دوباره ارسال کنید.",
+      "cta": "باز کردن احراز هویت"
+    },
+    "statuses": {
+      "not_started": "شروع‌نشده",
+      "draft": "پیش‌نویس",
+      "pending_review": "در حال بررسی",
+      "needs_more_info": "نیاز به اصلاح",
+      "rejected": "رد شده",
+      "approved": "تأیید شده — مستأجر"
+    },
+    "status": {
+      "not_startedTitle": "تبدیل‌شدن به مستأجر تجاری",
+      "not_startedBody": "بسته هویتی شامل عکس کارت ملی را ارسال کنید. ارسال درخواست پلن مجاز است؛ فروش و فعال‌سازی تا تأیید کارکنان متوقف می‌ماند.",
+      "draftTitle": "ادامه پیش‌نویس",
+      "draftBody": "پاسخ‌های شما ذخیره شده است. مراحل باقی‌مانده را تمام کنید و برای بررسی کارکنان ارسال کنید.",
+      "pendingTitle": "در حال بررسی توسط کارکنان",
+      "pendingBody": "بسته شما دریافت شد. این به‌معنای تأیید احراز هویت یا فعال‌سازی سرویس نیست.",
+      "needsInfoTitle": "نیاز به اطلاعات بیشتر",
+      "needsInfoBody": "کارکنان موارد زیر را برای اصلاح مشخص کرده‌اند؛ پس از اصلاح دوباره ارسال کنید.",
+      "rejectedTitle": "احراز هویت رد شد",
+      "rejectedBody": "دلایل را ببینید، بسته را به‌روز کنید و در صورت تمایل دوباره ارسال کنید.",
+      "approvedTitle": "شما مستأجر تأییدشده هستید",
+      "approvedBody": "کارکنان احراز هویت شما را تأیید کردند. یونیکسی می‌تواند خدمات مدیریت‌شده را برای سازمان شما بفروشد و فعال کند.",
+      "start": "شروع احراز هویت",
+      "continue": "ادامه پیش‌نویس",
+      "fix": "اصلاح و ارسال دوباره",
+      "view": "مشاهده بسته",
+      "dashboard": "بازگشت به داشبورد",
+      "plans": "مشاهده طرح‌ها",
+      "support": "تماس با پشتیبانی"
+    },
+    "steps": {
+      "progress": "مرحله {current} از {total}",
+      "identity": "هویت",
+      "contacts": "تماس",
+      "address": "آدرس",
+      "document": "مدرک",
+      "review": "بازبینی"
+    },
+    "fields": {
+      "nationalId": "کد ملی",
+      "birthDate": "تاریخ تولد",
+      "mobile": "موبایل متعلق به همین کد ملی",
+      "mobileBelongs": "تأیید می‌کنم این شماره موبایل متعلق به همین کد ملی است.",
+      "mobileNeedsVerify": "در حساب شما موبایلی ثبت نشده — برای ادامه این شماره را با OTP تأیید کنید.",
+      "email": "ایمیل",
+      "province": "استان",
+      "city": "شهر",
+      "address": "آدرس کامل",
+      "postalCode": "کد پستی",
+      "document": "عکس کارت ملی",
+      "attestation": "تأیید می‌کنم اطلاعات و مدرک صحیح و متعلق به من است."
+    },
+    "challenges": {
+      "skipped": "قبلاً در ثبت‌نام تأیید شده — چالش جدید لازم نیست",
+      "verified": "تأییدشده",
+      "pending": "در انتظار تأیید",
+      "unverified": "نیاز به تأیید",
+      "sendOtp": "ارسال کد پیامکی",
+      "verifyOtp": "تأیید کد",
+      "otpLabel": "کد تأیید موبایل",
+      "otpHint": "نمونه: کد ۱۲۳۴۵۶ را وارد کنید",
+      "sendEmail": "ارسال تأیید ایمیل",
+      "confirmEmail": "علامت‌گذاری ایمیل به‌عنوان تأییدشده",
+      "emailHint": "نمونه: تأیید ایمیل شبیه‌سازی می‌شود"
+    },
+    "document": {
+      "hint": "JPG، PNG یا WebP تا ۵ مگابایت. در این فاز عکس روی کارت ملی کافی است.",
+      "upload": "بارگذاری عکس",
+      "replace": "جایگزینی عکس",
+      "remove": "حذف عکس",
+      "empty": "هنوز عکسی بارگذاری نشده",
+      "uploaded": "بارگذاری شد: {name}"
+    },
+    "actions": {
+      "next": "بعدی",
+      "back": "قبلی",
+      "saveDraft": "ذخیره پیش‌نویس",
+      "cancelDraft": "لغو پیش‌نویس",
+      "submit": "ارسال برای بررسی",
+      "submitting": "در حال ارسال…",
+      "saving": "در حال ذخیره…",
+      "editSection": "ویرایش"
+    },
+    "review": {
+      "title": "بازبینی پیش از ارسال",
+      "hint": "پس از ارسال، تا تصمیم کارکنان (تأیید، رد، یا درخواست اصلاح) امکان ویرایش نیست."
+    },
+    "alerts": {
+      "saved": "پیش‌نویس ذخیره شد.",
+      "submitted": "برای بررسی ارسال شد. هنوز تأیید نشده‌اید.",
+      "incomplete": "همه فیلدهای الزامی و عکس کارت ملی را قبل از ارسال کامل کنید.",
+      "locked": "تا پایان بررسی یا پس از تأیید، این بسته قابل ویرایش نیست.",
+      "cancelled": "پیش‌نویس لغو شد."
+    },
+    "profileLink": {
+      "title": "احراز هویت سازمانی",
+      "description": "برای تبدیل‌شدن به مستأجر مدارک را ارسال کنید. این مرحله جدا از ورود و تأیید تماس است.",
+      "cta": "باز کردن احراز هویت"
     }
   },
   "WebsiteDetails": {
@@ -3521,6 +4427,7 @@
       "submit": "ثبت درخواست مشاوره",
       "submitting": "در حال ثبت درخواست...",
       "cancel": "لغو",
+      "loading": "در حال بارگذاری فرم درخواست مشاوره",
       "success": {
         "title": "درخواست مشاوره ثبت شد",
         "description": "درخواست نمونه محلی برای بررسی یونیکسی آماده است. هیچ داده یا فایلی ارسال نشد.",
@@ -3529,6 +4436,7 @@
     },
     "detail": {
       "back": "بازگشت به خدمات تکمیلی",
+      "loading": "در حال بارگذاری جزئیات خدمت",
       "createTicket": "ایجاد تیکت پشتیبانی",
       "additionalWork": "درخواست جدید",
       "usageTitle": "سهمیه فعلی",

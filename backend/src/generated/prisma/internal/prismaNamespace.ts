@@ -387,11 +387,14 @@ export const ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Membership: 'Membership',
+  AuthorizationCase: 'AuthorizationCase',
   Server: 'Server',
   ServerEnrollmentToken: 'ServerEnrollmentToken',
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteTrafficSnapshot: 'WebsiteTrafficSnapshot',
+  WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
   WebsiteProbeMetric: 'WebsiteProbeMetric',
@@ -418,7 +421,10 @@ export const ModelName = {
   Activity: 'Activity',
   AuditRecord: 'AuditRecord',
   OperationalAction: 'OperationalAction',
-  IdempotencyRecord: 'IdempotencyRecord'
+  IdempotencyRecord: 'IdempotencyRecord',
+  UnixseeMessage: 'UnixseeMessage',
+  UnixseeMessageAttachment: 'UnixseeMessageAttachment',
+  UnixseeMessageRead: 'UnixseeMessageRead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -434,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord"
+    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteTrafficSnapshot" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -657,6 +663,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MembershipCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MembershipCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthorizationCase: {
+      payload: Prisma.$AuthorizationCasePayload<ExtArgs>
+      fields: Prisma.AuthorizationCaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthorizationCaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthorizationCaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        findFirst: {
+          args: Prisma.AuthorizationCaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthorizationCaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        findMany: {
+          args: Prisma.AuthorizationCaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        create: {
+          args: Prisma.AuthorizationCaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        createMany: {
+          args: Prisma.AuthorizationCaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthorizationCaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        delete: {
+          args: Prisma.AuthorizationCaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        update: {
+          args: Prisma.AuthorizationCaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthorizationCaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthorizationCaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthorizationCaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthorizationCaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthorizationCasePayload>
+        }
+        aggregate: {
+          args: Prisma.AuthorizationCaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthorizationCase>
+        }
+        groupBy: {
+          args: Prisma.AuthorizationCaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthorizationCaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthorizationCaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthorizationCaseCountAggregateOutputType> | number
         }
       }
     }
@@ -1027,6 +1107,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.WebsiteDiscoveryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.WebsiteDiscoveryCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteTrafficSnapshot: {
+      payload: Prisma.$WebsiteTrafficSnapshotPayload<ExtArgs>
+      fields: Prisma.WebsiteTrafficSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteTrafficSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteTrafficSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteTrafficSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteTrafficSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteTrafficSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteTrafficSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteTrafficSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteTrafficSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteTrafficSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        update: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteTrafficSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteTrafficSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteTrafficSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteTrafficSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteTrafficSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteTrafficSnapshot>
+        }
+        groupBy: {
+          args: Prisma.WebsiteTrafficSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteTrafficSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteTrafficSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteTrafficSnapshotCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteActiveVisitorSample: {
+      payload: Prisma.$WebsiteActiveVisitorSamplePayload<ExtArgs>
+      fields: Prisma.WebsiteActiveVisitorSampleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteActiveVisitorSampleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteActiveVisitorSampleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteActiveVisitorSampleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteActiveVisitorSampleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteActiveVisitorSampleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteActiveVisitorSampleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteActiveVisitorSampleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        update: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteActiveVisitorSampleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteActiveVisitorSampleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteActiveVisitorSampleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteActiveVisitorSamplePayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteActiveVisitorSampleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteActiveVisitorSample>
+        }
+        groupBy: {
+          args: Prisma.WebsiteActiveVisitorSampleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteActiveVisitorSampleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteActiveVisitorSampleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteActiveVisitorSampleCountAggregateOutputType> | number
         }
       }
     }
@@ -3028,6 +3256,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UnixseeMessage: {
+      payload: Prisma.$UnixseeMessagePayload<ExtArgs>
+      fields: Prisma.UnixseeMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessage>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    UnixseeMessageAttachment: {
+      payload: Prisma.$UnixseeMessageAttachmentPayload<ExtArgs>
+      fields: Prisma.UnixseeMessageAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessageAttachment>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    UnixseeMessageRead: {
+      payload: Prisma.$UnixseeMessageReadPayload<ExtArgs>
+      fields: Prisma.UnixseeMessageReadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UnixseeMessageReadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UnixseeMessageReadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        findFirst: {
+          args: Prisma.UnixseeMessageReadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UnixseeMessageReadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        findMany: {
+          args: Prisma.UnixseeMessageReadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        create: {
+          args: Prisma.UnixseeMessageReadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        createMany: {
+          args: Prisma.UnixseeMessageReadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UnixseeMessageReadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        delete: {
+          args: Prisma.UnixseeMessageReadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        update: {
+          args: Prisma.UnixseeMessageReadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        deleteMany: {
+          args: Prisma.UnixseeMessageReadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UnixseeMessageReadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UnixseeMessageReadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>[]
+        }
+        upsert: {
+          args: Prisma.UnixseeMessageReadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UnixseeMessageReadPayload>
+        }
+        aggregate: {
+          args: Prisma.UnixseeMessageReadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUnixseeMessageRead>
+        }
+        groupBy: {
+          args: Prisma.UnixseeMessageReadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageReadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UnixseeMessageReadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UnixseeMessageReadCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3080,6 +3530,8 @@ export const UserScalarFieldEnum = {
   hashedRt: 'hashedRt',
   suspendedAt: 'suspendedAt',
   suspendedReason: 'suspendedReason',
+  phoneVerifiedAt: 'phoneVerifiedAt',
+  emailVerifiedAt: 'emailVerifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3111,11 +3563,42 @@ export const MembershipScalarFieldEnum = {
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
 
 
+export const AuthorizationCaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  nationalId: 'nationalId',
+  birthDate: 'birthDate',
+  mobile: 'mobile',
+  mobileChallenge: 'mobileChallenge',
+  mobileBelongsToNationalId: 'mobileBelongsToNationalId',
+  email: 'email',
+  emailChallenge: 'emailChallenge',
+  province: 'province',
+  city: 'city',
+  address: 'address',
+  postalCode: 'postalCode',
+  nationalIdCardFileName: 'nationalIdCardFileName',
+  attestedTruthful: 'attestedTruthful',
+  staffReason: 'staffReason',
+  staffFieldsToFix: 'staffFieldsToFix',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  decidedByUserId: 'decidedByUserId',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuthorizationCaseScalarFieldEnum = (typeof AuthorizationCaseScalarFieldEnum)[keyof typeof AuthorizationCaseScalarFieldEnum]
+
+
 export const ServerScalarFieldEnum = {
   id: 'id',
   name: 'name',
   ipAddress: 'ipAddress',
   notes: 'notes',
+  controlPanelUrl: 'controlPanelUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3142,7 +3625,7 @@ export const VpsNodeScalarFieldEnum = {
   id: 'id',
   serverId: 'serverId',
   userId: 'userId',
-  machineId: 'machineId',
+  agentInstanceId: 'agentInstanceId',
   name: 'name',
   secretKey: 'secretKey',
   status: 'status',
@@ -3154,6 +3637,8 @@ export const VpsNodeScalarFieldEnum = {
   agentVersion: 'agentVersion',
   lastSeenAt: 'lastSeenAt',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  credentialsRevokedAt: 'credentialsRevokedAt',
+  credentialsRevokedReason: 'credentialsRevokedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3169,6 +3654,7 @@ export const WebsiteScalarFieldEnum = {
   planId: 'planId',
   domain: 'domain',
   displayName: 'displayName',
+  wordpressAdminUrl: 'wordpressAdminUrl',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
@@ -3191,18 +3677,70 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   websiteId: 'websiteId',
   domain: 'domain',
+  virtualHostName: 'virtualHostName',
+  discoveredAt: 'discoveredAt',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
+  aliases: 'aliases',
+  appType: 'appType',
+  source: 'source',
+  backendAddress: 'backendAddress',
+  controlPanelUrl: 'controlPanelUrl',
+  wordpressAdminUrl: 'wordpressAdminUrl',
+  wordpressVersion: 'wordpressVersion',
+  phpVersion: 'phpVersion',
+  phpVersionScope: 'phpVersionScope',
+  imagickVersion: 'imagickVersion',
+  wordpressUpdateStatus: 'wordpressUpdateStatus',
+  wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
+  fieldStatus: 'fieldStatus',
+  stackCheckedAt: 'stackCheckedAt',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
+  lastIngestedAt: 'lastIngestedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteTrafficSnapshotScalarFieldEnum = {
+  discoveryId: 'discoveryId',
+  domain: 'domain',
+  activeVisitorCount: 'activeVisitorCount',
+  activeWindowSeconds: 'activeWindowSeconds',
+  activeWindowStartedAt: 'activeWindowStartedAt',
+  activeMeasuredAt: 'activeMeasuredAt',
+  activeStatus: 'activeStatus',
+  visitors24hCount: 'visitors24hCount',
+  visitors24hWindowSeconds: 'visitors24hWindowSeconds',
+  visitors24hCoverageSeconds: 'visitors24hCoverageSeconds',
+  visitors24hMeasuredAt: 'visitors24hMeasuredAt',
+  visitors24hAlgorithm: 'visitors24hAlgorithm',
+  visitors24hStatus: 'visitors24hStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteTrafficSnapshotScalarFieldEnum = (typeof WebsiteTrafficSnapshotScalarFieldEnum)[keyof typeof WebsiteTrafficSnapshotScalarFieldEnum]
+
+
+export const WebsiteActiveVisitorSampleScalarFieldEnum = {
+  recordedAt: 'recordedAt',
+  discoveryId: 'discoveryId',
+  websiteId: 'websiteId',
+  domain: 'domain',
+  uniqueIpCount: 'uniqueIpCount',
+  windowSeconds: 'windowSeconds',
+  windowStartedAt: 'windowStartedAt',
+  measuredAt: 'measuredAt'
+} as const
+
+export type WebsiteActiveVisitorSampleScalarFieldEnum = (typeof WebsiteActiveVisitorSampleScalarFieldEnum)[keyof typeof WebsiteActiveVisitorSampleScalarFieldEnum]
 
 
 export const VpsMetricScalarFieldEnum = {
@@ -3519,9 +4057,13 @@ export const TicketScalarFieldEnum = {
   websiteId: 'websiteId',
   createdById: 'createdById',
   assigneeId: 'assigneeId',
+  number: 'number',
   subject: 'subject',
+  service: 'service',
   status: 'status',
   priority: 'priority',
+  resolvedAt: 'resolvedAt',
+  autoCloseAt: 'autoCloseAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3535,6 +4077,7 @@ export const TicketMessageScalarFieldEnum = {
   authorId: 'authorId',
   body: 'body',
   isInternal: 'isInternal',
+  idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3638,6 +4181,49 @@ export const IdempotencyRecordScalarFieldEnum = {
 } as const
 
 export type IdempotencyRecordScalarFieldEnum = (typeof IdempotencyRecordScalarFieldEnum)[keyof typeof IdempotencyRecordScalarFieldEnum]
+
+
+export const UnixseeMessageScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  authorId: 'authorId',
+  websiteId: 'websiteId',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  contentLocale: 'contentLocale',
+  links: 'links',
+  publishedAt: 'publishedAt',
+  withdrawnAt: 'withdrawnAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageScalarFieldEnum = (typeof UnixseeMessageScalarFieldEnum)[keyof typeof UnixseeMessageScalarFieldEnum]
+
+
+export const UnixseeMessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  storageKey: 'storageKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageAttachmentScalarFieldEnum = (typeof UnixseeMessageAttachmentScalarFieldEnum)[keyof typeof UnixseeMessageAttachmentScalarFieldEnum]
+
+
+export const UnixseeMessageReadScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  readAt: 'readAt'
+} as const
+
+export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3765,6 +4351,41 @@ export type ListEnumMembershipRoleFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'AuthorizationCaseStatus'
+ */
+export type EnumAuthorizationCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthorizationCaseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthorizationCaseStatus[]'
+ */
+export type ListEnumAuthorizationCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthorizationCaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactChallengeState'
+ */
+export type EnumContactChallengeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactChallengeState'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactChallengeState[]'
+ */
+export type ListEnumContactChallengeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactChallengeState[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'EnrollmentTokenStatus'
  */
 export type EnumEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrollmentTokenStatus'>
@@ -3789,13 +4410,6 @@ export type EnumVpsNodeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'VpsNodeStatus[]'
  */
 export type ListEnumVpsNodeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VpsNodeStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -3828,20 +4442,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'DiscoveryStatus'
- */
-export type EnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus'>
-    
-
-
-/**
- * Reference to a field of type 'DiscoveryStatus[]'
- */
-export type ListEnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3852,6 +4452,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscoveryStatus'
+ */
+export type EnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscoveryStatus[]'
+ */
+export type ListEnumDiscoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscoveryStatus[]'>
     
 
 
@@ -3982,6 +4596,20 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
+ * Reference to a field of type 'TicketServiceCategory'
+ */
+export type EnumTicketServiceCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketServiceCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketServiceCategory[]'
+ */
+export type ListEnumTicketServiceCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketServiceCategory[]'>
+    
+
+
+/**
  * Reference to a field of type 'TicketStatus'
  */
 export type EnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus'>
@@ -4048,6 +4676,20 @@ export type EnumOperationalActionStatusFieldRefInput<$PrismaModel> = FieldRefInp
  * Reference to a field of type 'OperationalActionStatus[]'
  */
 export type ListEnumOperationalActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalActionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'UnixseeMessageStatus'
+ */
+export type EnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnixseeMessageStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'UnixseeMessageStatus[]'
+ */
+export type ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnixseeMessageStatus[]'>
     
 
 /**
@@ -4163,11 +4805,14 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   tenant?: Prisma.TenantOmit
   membership?: Prisma.MembershipOmit
+  authorizationCase?: Prisma.AuthorizationCaseOmit
   server?: Prisma.ServerOmit
   serverEnrollmentToken?: Prisma.ServerEnrollmentTokenOmit
   vpsNode?: Prisma.VpsNodeOmit
   website?: Prisma.WebsiteOmit
   websiteDiscovery?: Prisma.WebsiteDiscoveryOmit
+  websiteTrafficSnapshot?: Prisma.WebsiteTrafficSnapshotOmit
+  websiteActiveVisitorSample?: Prisma.WebsiteActiveVisitorSampleOmit
   vpsMetric?: Prisma.VpsMetricOmit
   webMetric?: Prisma.WebMetricOmit
   websiteProbeMetric?: Prisma.WebsiteProbeMetricOmit
@@ -4195,6 +4840,9 @@ export type GlobalOmitConfig = {
   auditRecord?: Prisma.AuditRecordOmit
   operationalAction?: Prisma.OperationalActionOmit
   idempotencyRecord?: Prisma.IdempotencyRecordOmit
+  unixseeMessage?: Prisma.UnixseeMessageOmit
+  unixseeMessageAttachment?: Prisma.UnixseeMessageAttachmentOmit
+  unixseeMessageRead?: Prisma.UnixseeMessageReadOmit
 }
 
 /* Types for Logging */

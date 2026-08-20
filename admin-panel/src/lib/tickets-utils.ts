@@ -1,5 +1,7 @@
 import {
+  TICKET_PRIORITY,
   TICKET_STATUS,
+  type TicketPriorityType,
   type TicketStatusType,
   type TicketType,
 } from "@/lib/data/tickets-data";
@@ -8,7 +10,7 @@ export const TICKET_STATUS_CONFIG: Record<
   TicketStatusType,
   { label: string; emoji: string; className: string }
 > = {
-  [TICKET_STATUS.WAITING_FOR_USER]: {
+  [TICKET_STATUS.WAITING_CUSTOMER]: {
     label: "در انتظار کاربر",
     emoji: "🔵",
     className: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
@@ -18,7 +20,7 @@ export const TICKET_STATUS_CONFIG: Record<
     emoji: "🟡",
     className: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
   },
-  [TICKET_STATUS.NEW]: {
+  [TICKET_STATUS.SUBMITTED]: {
     label: "جدید",
     emoji: "🔵",
     className: "bg-primary text-primary-foreground",
@@ -28,13 +30,29 @@ export const TICKET_STATUS_CONFIG: Record<
     emoji: "🟢",
     className: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   },
+  [TICKET_STATUS.CLOSED]: {
+    label: "بسته‌شده",
+    emoji: "⚫",
+    className: "bg-muted text-muted-foreground",
+  },
+};
+
+export const TICKET_PRIORITY_LABELS: Record<TicketPriorityType, string> = {
+  [TICKET_PRIORITY.LOW]: "کم",
+  [TICKET_PRIORITY.NORMAL]: "عادی",
+  [TICKET_PRIORITY.HIGH]: "بالا",
+  [TICKET_PRIORITY.URGENT]: "فوری",
 };
 
 export function toPersianDigits(value: string | number): string {
   return String(value).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)]);
 }
 
-export function formatTicketNumber(id: string): string {
+export function formatTicketNumber(id: string, number?: string): string {
+  if (number) {
+    return number;
+  }
+
   const match = id.match(/(\d+)$/);
   if (!match) return `#${id}`;
 
@@ -126,12 +144,19 @@ export function filterTickets(
     if (!normalizedQuery) return true;
 
     const lastMessage = getLastMessage(ticket)?.text ?? "";
+    const tenantName = ticket.tenant?.name ?? "";
+    const assigneeName = ticket.assigneeName ?? "";
 
     return (
       ticket.id.toLowerCase().includes(normalizedQuery) ||
       ticket.fullName.toLowerCase().includes(normalizedQuery) ||
+      ticket.subject.toLowerCase().includes(normalizedQuery) ||
+      tenantName.toLowerCase().includes(normalizedQuery) ||
+      assigneeName.toLowerCase().includes(normalizedQuery) ||
       lastMessage.toLowerCase().includes(normalizedQuery) ||
-      formatTicketNumber(ticket.id).includes(normalizedQuery)
+      formatTicketNumber(ticket.id, ticket.number)
+        .toLowerCase()
+        .includes(normalizedQuery)
     );
   });
 }

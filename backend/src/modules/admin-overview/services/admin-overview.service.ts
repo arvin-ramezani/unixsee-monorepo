@@ -21,7 +21,7 @@ export class AdminOverviewService {
           where: {
             status: {
               in: [
-                TicketStatus.OPEN,
+                TicketStatus.SUBMITTED,
                 TicketStatus.IN_PROGRESS,
                 TicketStatus.WAITING_CUSTOMER,
               ],

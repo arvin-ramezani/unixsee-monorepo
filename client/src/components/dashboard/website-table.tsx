@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { Badge } from "@/components/ui/badge";
@@ -138,7 +139,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
           <h2 className="text-lg font-semibold tracking-tight">{t("title")}</h2>
           <Link
             href="dashboard/websites"
-            className="hover:bg-muted focus-visible:ring-ring flex h-10 items-center gap-2 rounded-lg px-2 text-xs font-medium focus-visible:ring-2"
+            className="hover:bg-muted text-link focus-visible:ring-ring flex h-10 items-center gap-2 rounded-lg px-2 text-xs font-medium focus-visible:ring-2"
           >
             {t("viewAll")}{" "}
             <span aria-hidden="true" className="rtl:rotate-180">
@@ -147,6 +148,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
           </Link>
         </div>
 
+        <DashboardFadeIn deferUntilKeyChange animationKey={view}>
         {view === "grid" && (
           <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
             {websites.map((site) => (
@@ -174,7 +176,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
                   <Badge
                     variant="outline"
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[0.7rem] font-normal",
+                      "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[0.7rem] font-normal",
                       statusClasses(site.status),
                     )}
                   >
@@ -185,7 +187,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
                 <Link
                   href={`https://${site.domain}`}
                   dir="ltr"
-                  className="text-muted-foreground hover:text-link mt-4 inline-flex items-center gap-2 truncate text-sm"
+                  className="text-muted-foreground hover:text-link mt-4 inline-flex w-fit items-center gap-2 truncate text-sm"
                 >
                   {site.domain}
                   <ExternalLink
@@ -320,7 +322,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
                     <Badge
                       variant="outline"
                       className={cn(
-                        "inline-flex items-center gap-1.5 px-2 py-1 text-[0.7rem] font-normal",
+                        "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[0.7rem] font-normal",
                         statusClasses(site.status),
                       )}
                     >
@@ -379,14 +381,14 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
                   <h3 className="font-semibold">{site.name}</h3>
                   <p
                     dir="ltr"
-                    className="text-muted-foreground truncate text-xs"
+                    className="text-muted-foreground w-fit truncate text-xs"
                   >
                     {site.domain}
                   </p>
                 </div>
                 <span
                   className={cn(
-                    "rounded-md border px-2 py-1 text-[0.7rem]",
+                    "rounded-full border px-2 py-1 text-[0.7rem]",
                     statusClasses(site.status),
                   )}
                 >
@@ -405,6 +407,7 @@ export function WebsiteTable({ websites }: { websites: Website[] }) {
             </article>
           ))}
         </div>
+        </DashboardFadeIn>
         <div className="border-border text-muted-foreground flex h-13 items-center justify-between border-t px-5 text-xs">
           <span>
             {t("summary", {

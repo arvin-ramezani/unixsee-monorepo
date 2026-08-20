@@ -44,6 +44,7 @@ export type WebsiteMinAggregateOutputType = {
   planId: string | null
   domain: string | null
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -65,6 +66,7 @@ export type WebsiteMaxAggregateOutputType = {
   planId: string | null
   domain: string | null
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -86,6 +88,7 @@ export type WebsiteCountAggregateOutputType = {
   planId: number
   domain: number
   displayName: number
+  wordpressAdminUrl: number
   directAdminUser: number
   homeDirectory: number
   documentRoot: number
@@ -119,6 +122,7 @@ export type WebsiteMinAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -140,6 +144,7 @@ export type WebsiteMaxAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -161,6 +166,7 @@ export type WebsiteCountAggregateInputType = {
   planId?: true
   domain?: true
   displayName?: true
+  wordpressAdminUrl?: true
   directAdminUser?: true
   homeDirectory?: true
   documentRoot?: true
@@ -269,6 +275,7 @@ export type WebsiteGroupByOutputType = {
   planId: string | null
   domain: string
   displayName: string | null
+  wordpressAdminUrl: string | null
   directAdminUser: string | null
   homeDirectory: string | null
   documentRoot: string | null
@@ -313,6 +320,7 @@ export type WebsiteWhereInput = {
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -338,6 +346,7 @@ export type WebsiteWhereInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestListRelationFilter
   tickets?: Prisma.TicketListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
+  unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
 }
 
@@ -349,6 +358,7 @@ export type WebsiteOrderByWithRelationInput = {
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -374,6 +384,7 @@ export type WebsiteOrderByWithRelationInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestOrderByRelationAggregateInput
   tickets?: Prisma.TicketOrderByRelationAggregateInput
   activities?: Prisma.ActivityOrderByRelationAggregateInput
+  unixseeMessages?: Prisma.UnixseeMessageOrderByRelationAggregateInput
   operationalActions?: Prisma.OperationalActionOrderByRelationAggregateInput
 }
 
@@ -388,6 +399,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   vpsNodeId?: Prisma.UuidFilter<"Website"> | string
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -413,6 +425,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   complementaryRequests?: Prisma.ComplementaryServiceRequestListRelationFilter
   tickets?: Prisma.TicketListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
+  unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
 }, "id" | "domain">
 
@@ -424,6 +437,7 @@ export type WebsiteOrderByWithAggregationInput = {
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -453,6 +467,7 @@ export type WebsiteScalarWhereWithAggregatesInput = {
   planId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   domain?: Prisma.StringWithAggregatesFilter<"Website"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
@@ -470,6 +485,7 @@ export type WebsiteCreateInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -495,6 +511,7 @@ export type WebsiteCreateInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -506,6 +523,7 @@ export type WebsiteUncheckedCreateInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -527,6 +545,7 @@ export type WebsiteUncheckedCreateInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -534,6 +553,7 @@ export type WebsiteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -559,6 +579,7 @@ export type WebsiteUpdateInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -570,6 +591,7 @@ export type WebsiteUncheckedUpdateInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -591,6 +613,7 @@ export type WebsiteUncheckedUpdateInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -602,6 +625,7 @@ export type WebsiteCreateManyInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -619,6 +643,7 @@ export type WebsiteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,6 +665,7 @@ export type WebsiteUncheckedUpdateManyInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -671,6 +697,7 @@ export type WebsiteCountOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -697,6 +724,7 @@ export type WebsiteMaxOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -718,6 +746,7 @@ export type WebsiteMinOrderByAggregateInput = {
   planId?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
+  wordpressAdminUrl?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
@@ -870,10 +899,6 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput = {
   update?: Prisma.WebsiteUpdateWithWhereUniqueWithoutVpsNodeInput | Prisma.WebsiteUpdateWithWhereUniqueWithoutVpsNodeInput[]
   updateMany?: Prisma.WebsiteUpdateManyWithWhereWithoutVpsNodeInput | Prisma.WebsiteUpdateManyWithWhereWithoutVpsNodeInput[]
   deleteMany?: Prisma.WebsiteScalarWhereInput | Prisma.WebsiteScalarWhereInput[]
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
 }
 
 export type EnumWebsiteLifecycleStatusFieldUpdateOperationsInput = {
@@ -1100,10 +1125,27 @@ export type WebsiteUpdateOneRequiredWithoutOperationalActionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WebsiteUpdateToOneWithWhereWithoutOperationalActionsInput, Prisma.WebsiteUpdateWithoutOperationalActionsInput>, Prisma.WebsiteUncheckedUpdateWithoutOperationalActionsInput>
 }
 
+export type WebsiteCreateNestedOneWithoutUnixseeMessagesInput = {
+  create?: Prisma.XOR<Prisma.WebsiteCreateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedCreateWithoutUnixseeMessagesInput>
+  connectOrCreate?: Prisma.WebsiteCreateOrConnectWithoutUnixseeMessagesInput
+  connect?: Prisma.WebsiteWhereUniqueInput
+}
+
+export type WebsiteUpdateOneWithoutUnixseeMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.WebsiteCreateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedCreateWithoutUnixseeMessagesInput>
+  connectOrCreate?: Prisma.WebsiteCreateOrConnectWithoutUnixseeMessagesInput
+  upsert?: Prisma.WebsiteUpsertWithoutUnixseeMessagesInput
+  disconnect?: Prisma.WebsiteWhereInput | boolean
+  delete?: Prisma.WebsiteWhereInput | boolean
+  connect?: Prisma.WebsiteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WebsiteUpdateToOneWithWhereWithoutUnixseeMessagesInput, Prisma.WebsiteUpdateWithoutUnixseeMessagesInput>, Prisma.WebsiteUncheckedUpdateWithoutUnixseeMessagesInput>
+}
+
 export type WebsiteCreateWithoutUserInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1128,6 +1170,7 @@ export type WebsiteCreateWithoutUserInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1138,6 +1181,7 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1159,6 +1203,7 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1199,6 +1244,7 @@ export type WebsiteScalarWhereInput = {
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -1216,6 +1262,7 @@ export type WebsiteCreateWithoutTenantInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1240,6 +1287,7 @@ export type WebsiteCreateWithoutTenantInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1250,6 +1298,7 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1271,6 +1320,7 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1304,6 +1354,7 @@ export type WebsiteCreateWithoutVpsNodeInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1328,6 +1379,7 @@ export type WebsiteCreateWithoutVpsNodeInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1338,6 +1390,7 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1359,6 +1412,7 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1392,6 +1446,7 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1416,6 +1471,7 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1427,6 +1483,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1447,6 +1504,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1470,6 +1528,7 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1494,6 +1553,7 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1505,6 +1565,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1525,6 +1586,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1532,6 +1594,7 @@ export type WebsiteCreateWithoutMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1556,6 +1619,7 @@ export type WebsiteCreateWithoutMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1567,6 +1631,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1587,6 +1652,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1610,6 +1676,7 @@ export type WebsiteUpdateWithoutMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1634,6 +1701,7 @@ export type WebsiteUpdateWithoutMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1645,6 +1713,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1665,6 +1734,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1672,6 +1742,7 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1696,6 +1767,7 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1707,6 +1779,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1727,6 +1800,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1750,6 +1824,7 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1774,6 +1849,7 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1785,6 +1861,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1805,6 +1882,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1812,6 +1890,7 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1836,6 +1915,7 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1847,6 +1927,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1867,6 +1948,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1890,6 +1972,7 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1914,6 +1997,7 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1925,6 +2009,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1945,6 +2030,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1952,6 +2038,7 @@ export type WebsiteCreateWithoutSslInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -1976,6 +2063,7 @@ export type WebsiteCreateWithoutSslInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1987,6 +2075,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2007,6 +2096,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2030,6 +2120,7 @@ export type WebsiteUpdateWithoutSslInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2054,6 +2145,7 @@ export type WebsiteUpdateWithoutSslInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2065,6 +2157,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2085,6 +2178,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2092,6 +2186,7 @@ export type WebsiteCreateWithoutAlertsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2116,6 +2211,7 @@ export type WebsiteCreateWithoutAlertsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2127,6 +2223,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2147,6 +2244,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2170,6 +2268,7 @@ export type WebsiteUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2194,6 +2293,7 @@ export type WebsiteUpdateWithoutAlertsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2205,6 +2305,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2225,6 +2326,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2232,6 +2334,7 @@ export type WebsiteCreateWithoutPlanInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2256,6 +2359,7 @@ export type WebsiteCreateWithoutPlanInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2266,6 +2370,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   vpsNodeId: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2287,6 +2392,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2320,6 +2426,7 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2344,6 +2451,7 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2355,6 +2463,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2375,6 +2484,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2398,6 +2508,7 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2422,6 +2533,7 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2433,6 +2545,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2453,6 +2566,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2460,6 +2574,7 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2484,6 +2599,7 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2495,6 +2611,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2515,6 +2632,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2538,6 +2656,7 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2562,6 +2681,7 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   planRequests?: Prisma.PlanRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2573,6 +2693,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2593,6 +2714,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2600,6 +2722,7 @@ export type WebsiteCreateWithoutTicketsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2624,6 +2747,7 @@ export type WebsiteCreateWithoutTicketsInput = {
   planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWebsiteInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2635,6 +2759,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2655,6 +2780,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWebsiteInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2678,6 +2804,7 @@ export type WebsiteUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2702,6 +2829,7 @@ export type WebsiteUpdateWithoutTicketsInput = {
   planRequests?: Prisma.PlanRequestUpdateManyWithoutWebsiteNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2713,6 +2841,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2733,6 +2862,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2740,6 +2870,7 @@ export type WebsiteCreateWithoutActivitiesInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2764,6 +2895,7 @@ export type WebsiteCreateWithoutActivitiesInput = {
   planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWebsiteInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2775,6 +2907,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2795,6 +2928,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWebsiteInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2818,6 +2952,7 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2842,6 +2977,7 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   planRequests?: Prisma.PlanRequestUpdateManyWithoutWebsiteNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2853,6 +2989,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2873,6 +3010,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2880,6 +3018,7 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   id?: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2905,6 +3044,7 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
 }
 
 export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
@@ -2915,6 +3055,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -2936,6 +3077,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
 export type WebsiteCreateOrConnectWithoutOperationalActionsInput = {
@@ -2958,6 +3100,7 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2983,6 +3126,7 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
 }
 
 export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
@@ -2993,6 +3137,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3014,15 +3159,14 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
-export type WebsiteCreateManyUserInput = {
+export type WebsiteCreateWithoutUnixseeMessagesInput = {
   id?: string
-  tenantId: string
-  vpsNodeId: string
-  planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3034,12 +3178,77 @@ export type WebsiteCreateManyUserInput = {
   lastProbeAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
+  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
+  metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
+  probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
+  sslMetrics?: Prisma.WebsiteSslMetricCreateNestedManyWithoutWebsiteInput
+  ssl?: Prisma.SSLCertificateCreateNestedOneWithoutWebsiteInput
+  alerts?: Prisma.AlertCreateNestedManyWithoutWebsiteInput
+  discoveries?: Prisma.WebsiteDiscoveryCreateNestedManyWithoutWebsiteInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWebsiteInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
 }
 
-export type WebsiteUpdateWithoutUserInput = {
+export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
+  id?: string
+  userId?: string | null
+  tenantId: string
+  vpsNodeId: string
+  planId?: string | null
+  domain: string
+  displayName?: string | null
+  wordpressAdminUrl?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  isActive?: boolean
+  status?: $Enums.WebsiteLifecycleStatus
+  lastIsUp?: boolean | null
+  lastStatusCode?: number | null
+  lastResponseTimeMs?: number | null
+  lastProbeAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  metrics?: Prisma.WebMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  sslMetrics?: Prisma.WebsiteSslMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  ssl?: Prisma.SSLCertificateUncheckedCreateNestedOneWithoutWebsiteInput
+  alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutWebsiteInput
+  discoveries?: Prisma.WebsiteDiscoveryUncheckedCreateNestedManyWithoutWebsiteInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWebsiteInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+}
+
+export type WebsiteCreateOrConnectWithoutUnixseeMessagesInput = {
+  where: Prisma.WebsiteWhereUniqueInput
+  create: Prisma.XOR<Prisma.WebsiteCreateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedCreateWithoutUnixseeMessagesInput>
+}
+
+export type WebsiteUpsertWithoutUnixseeMessagesInput = {
+  update: Prisma.XOR<Prisma.WebsiteUpdateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedUpdateWithoutUnixseeMessagesInput>
+  create: Prisma.XOR<Prisma.WebsiteCreateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedCreateWithoutUnixseeMessagesInput>
+  where?: Prisma.WebsiteWhereInput
+}
+
+export type WebsiteUpdateToOneWithWhereWithoutUnixseeMessagesInput = {
+  where?: Prisma.WebsiteWhereInput
+  data: Prisma.XOR<Prisma.WebsiteUpdateWithoutUnixseeMessagesInput, Prisma.WebsiteUncheckedUpdateWithoutUnixseeMessagesInput>
+}
+
+export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3051,6 +3260,7 @@ export type WebsiteUpdateWithoutUserInput = {
   lastProbeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
   vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
@@ -3067,13 +3277,15 @@ export type WebsiteUpdateWithoutUserInput = {
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
-export type WebsiteUncheckedUpdateWithoutUserInput = {
+export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3098,6 +3310,93 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
+export type WebsiteCreateManyUserInput = {
+  id?: string
+  tenantId: string
+  vpsNodeId: string
+  planId?: string | null
+  domain: string
+  displayName?: string | null
+  wordpressAdminUrl?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  isActive?: boolean
+  status?: $Enums.WebsiteLifecycleStatus
+  lastIsUp?: boolean | null
+  lastStatusCode?: number | null
+  lastResponseTimeMs?: number | null
+  lastProbeAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WebsiteUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
+  lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  lastStatusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastResponseTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastProbeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
+  metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
+  sslMetrics?: Prisma.WebsiteSslMetricUpdateManyWithoutWebsiteNestedInput
+  ssl?: Prisma.SSLCertificateUpdateOneWithoutWebsiteNestedInput
+  alerts?: Prisma.AlertUpdateManyWithoutWebsiteNestedInput
+  discoveries?: Prisma.WebsiteDiscoveryUpdateManyWithoutWebsiteNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWebsiteNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+}
+
+export type WebsiteUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
+  lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  lastStatusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastResponseTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastProbeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metrics?: Prisma.WebMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  sslMetrics?: Prisma.WebsiteSslMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  ssl?: Prisma.SSLCertificateUncheckedUpdateOneWithoutWebsiteNestedInput
+  alerts?: Prisma.AlertUncheckedUpdateManyWithoutWebsiteNestedInput
+  discoveries?: Prisma.WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+}
+
 export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3105,6 +3404,7 @@ export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3125,6 +3425,7 @@ export type WebsiteCreateManyTenantInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3142,6 +3443,7 @@ export type WebsiteUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3166,6 +3468,7 @@ export type WebsiteUpdateWithoutTenantInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3176,6 +3479,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3197,6 +3501,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3207,6 +3512,7 @@ export type WebsiteUncheckedUpdateManyWithoutTenantInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3227,6 +3533,7 @@ export type WebsiteCreateManyVpsNodeInput = {
   planId?: string | null
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3244,6 +3551,7 @@ export type WebsiteUpdateWithoutVpsNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3268,6 +3576,7 @@ export type WebsiteUpdateWithoutVpsNodeInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3278,6 +3587,7 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3299,6 +3609,7 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3309,6 +3620,7 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeInput = {
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3329,6 +3641,7 @@ export type WebsiteCreateManyPlanInput = {
   vpsNodeId: string
   domain: string
   displayName?: string | null
+  wordpressAdminUrl?: string | null
   directAdminUser?: string | null
   homeDirectory?: string | null
   documentRoot?: string | null
@@ -3346,6 +3659,7 @@ export type WebsiteUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3370,6 +3684,7 @@ export type WebsiteUpdateWithoutPlanInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3380,6 +3695,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3401,6 +3717,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3411,6 +3728,7 @@ export type WebsiteUncheckedUpdateManyWithoutPlanInput = {
   vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3439,6 +3757,7 @@ export type WebsiteCountOutputType = {
   complementaryRequests: number
   tickets: number
   activities: number
+  unixseeMessages: number
   operationalActions: number
 }
 
@@ -3452,6 +3771,7 @@ export type WebsiteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   complementaryRequests?: boolean | WebsiteCountOutputTypeCountComplementaryRequestsArgs
   tickets?: boolean | WebsiteCountOutputTypeCountTicketsArgs
   activities?: boolean | WebsiteCountOutputTypeCountActivitiesArgs
+  unixseeMessages?: boolean | WebsiteCountOutputTypeCountUnixseeMessagesArgs
   operationalActions?: boolean | WebsiteCountOutputTypeCountOperationalActionsArgs
 }
 
@@ -3531,6 +3851,13 @@ export type WebsiteCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Ty
 /**
  * WebsiteCountOutputType without action
  */
+export type WebsiteCountOutputTypeCountUnixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnixseeMessageWhereInput
+}
+
+/**
+ * WebsiteCountOutputType without action
+ */
 export type WebsiteCountOutputTypeCountOperationalActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OperationalActionWhereInput
 }
@@ -3544,6 +3871,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3569,6 +3897,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   complementaryRequests?: boolean | Prisma.Website$complementaryRequestsArgs<ExtArgs>
   tickets?: boolean | Prisma.Website$ticketsArgs<ExtArgs>
   activities?: boolean | Prisma.Website$activitiesArgs<ExtArgs>
+  unixseeMessages?: boolean | Prisma.Website$unixseeMessagesArgs<ExtArgs>
   operationalActions?: boolean | Prisma.Website$operationalActionsArgs<ExtArgs>
   _count?: boolean | Prisma.WebsiteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["website"]>
@@ -3581,6 +3910,7 @@ export type WebsiteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3606,6 +3936,7 @@ export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3631,6 +3962,7 @@ export type WebsiteSelectScalar = {
   planId?: boolean
   domain?: boolean
   displayName?: boolean
+  wordpressAdminUrl?: boolean
   directAdminUser?: boolean
   homeDirectory?: boolean
   documentRoot?: boolean
@@ -3644,7 +3976,7 @@ export type WebsiteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
+export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "domain" | "displayName" | "wordpressAdminUrl" | "directAdminUser" | "homeDirectory" | "documentRoot" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
 export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -3660,6 +3992,7 @@ export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   complementaryRequests?: boolean | Prisma.Website$complementaryRequestsArgs<ExtArgs>
   tickets?: boolean | Prisma.Website$ticketsArgs<ExtArgs>
   activities?: boolean | Prisma.Website$activitiesArgs<ExtArgs>
+  unixseeMessages?: boolean | Prisma.Website$unixseeMessagesArgs<ExtArgs>
   operationalActions?: boolean | Prisma.Website$operationalActionsArgs<ExtArgs>
   _count?: boolean | Prisma.WebsiteCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -3693,6 +4026,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     complementaryRequests: Prisma.$ComplementaryServiceRequestPayload<ExtArgs>[]
     tickets: Prisma.$TicketPayload<ExtArgs>[]
     activities: Prisma.$ActivityPayload<ExtArgs>[]
+    unixseeMessages: Prisma.$UnixseeMessagePayload<ExtArgs>[]
     operationalActions: Prisma.$OperationalActionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -3703,6 +4037,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     planId: string | null
     domain: string
     displayName: string | null
+    wordpressAdminUrl: string | null
     directAdminUser: string | null
     homeDirectory: string | null
     documentRoot: string | null
@@ -4122,6 +4457,7 @@ export interface Prisma__WebsiteClient<T, Null = never, ExtArgs extends runtime.
   complementaryRequests<T extends Prisma.Website$complementaryRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$complementaryRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplementaryServiceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tickets<T extends Prisma.Website$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.Website$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  unixseeMessages<T extends Prisma.Website$unixseeMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$unixseeMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnixseeMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operationalActions<T extends Prisma.Website$operationalActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$operationalActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperationalActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4159,6 +4495,7 @@ export interface WebsiteFieldRefs {
   readonly planId: Prisma.FieldRef<"Website", 'String'>
   readonly domain: Prisma.FieldRef<"Website", 'String'>
   readonly displayName: Prisma.FieldRef<"Website", 'String'>
+  readonly wordpressAdminUrl: Prisma.FieldRef<"Website", 'String'>
   readonly directAdminUser: Prisma.FieldRef<"Website", 'String'>
   readonly homeDirectory: Prisma.FieldRef<"Website", 'String'>
   readonly documentRoot: Prisma.FieldRef<"Website", 'String'>
@@ -4841,6 +5178,30 @@ export type Website$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+}
+
+/**
+ * Website.unixseeMessages
+ */
+export type Website$unixseeMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UnixseeMessage
+   */
+  select?: Prisma.UnixseeMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UnixseeMessage
+   */
+  omit?: Prisma.UnixseeMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnixseeMessageInclude<ExtArgs> | null
+  where?: Prisma.UnixseeMessageWhereInput
+  orderBy?: Prisma.UnixseeMessageOrderByWithRelationInput | Prisma.UnixseeMessageOrderByWithRelationInput[]
+  cursor?: Prisma.UnixseeMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnixseeMessageScalarFieldEnum | Prisma.UnixseeMessageScalarFieldEnum[]
 }
 
 /**

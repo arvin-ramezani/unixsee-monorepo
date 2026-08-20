@@ -5,7 +5,7 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { TicketsManager } from "@/components/tickets/tickets-manager";
 import { TicketsPageHeader } from "@/components/tickets/tickets-page-header";
 import type { Locale } from "@/i18n/routing";
-import { ticketRecords } from "@/lib/data/tickets/ticket-records";
+import { fetchTicketList } from "@/lib/tickets/tickets-api";
 
 interface TicketsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -32,8 +32,34 @@ export default async function TicketsPage({
   const stateValue = Array.isArray(requestedState)
     ? requestedState[0]
     : requestedState;
-  const initialState =
-    stateValue === "empty" || stateValue === "error" ? stateValue : "ready";
+
+  if (stateValue === "empty") {
+    return (
+      <DashboardShell
+        activeItem="Tickets"
+        breadcrumbs={[{ label: t("title") }]}
+        searchPlaceholder={t("searchHeader")}
+      >
+        <TicketsPageHeader />
+        <TicketsManager tickets={[]} initialState="empty" />
+      </DashboardShell>
+    );
+  }
+
+  if (stateValue === "error") {
+    return (
+      <DashboardShell
+        activeItem="Tickets"
+        breadcrumbs={[{ label: t("title") }]}
+        searchPlaceholder={t("searchHeader")}
+      >
+        <TicketsPageHeader />
+        <TicketsManager tickets={[]} initialState="error" />
+      </DashboardShell>
+    );
+  }
+
+  const result = await fetchTicketList({ take: 50 });
 
   return (
     <DashboardShell
@@ -43,8 +69,8 @@ export default async function TicketsPage({
     >
       <TicketsPageHeader />
       <TicketsManager
-        tickets={initialState === "empty" ? [] : ticketRecords}
-        initialState={initialState}
+        tickets={result.ok ? result.data.items : []}
+        initialState={result.ok ? "ready" : "error"}
       />
     </DashboardShell>
   );

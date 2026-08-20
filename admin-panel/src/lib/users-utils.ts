@@ -17,6 +17,7 @@ import {
 import { COMPLEMENTARY_SERVICE_REQUESTS } from "@/lib/data/complementary-services-data";
 import { TICKETS } from "@/lib/data/tickets-data";
 import { listRuntimeWebsites } from "@/lib/data/websites-runtime";
+import type { UserKycStatusType } from "@/lib/users/map-admin-user";
 
 export const ACCOUNT_STATE_CONFIG: Record<
   AccountStateType,
@@ -73,6 +74,12 @@ export function getCustomerInitials(name: string): string {
   return `${parts[0].slice(0, 1)}${parts[1].slice(0, 1)}`;
 }
 
+/** True when a label is essentially a phone number (e.g. OTP personal tenant). */
+export function looksLikePhoneLabel(value: string): boolean {
+  const normalized = value.replace(/[\s\-()]/g, "");
+  return /^\+?\d{8,15}$/.test(normalized);
+}
+
 export function maskEmail(email: string): string {
   const [localPart, domain] = email.split("@");
   if (!domain) return email;
@@ -106,9 +113,7 @@ export function findCustomerByContact(
     const matchesEmail =
       email.length > 0 && !!user.email && normalizeEmail(user.email) === email;
     const matchesMobile =
-      mobile.length > 0 &&
-      !!user.mobile &&
-      normalizeMobile(user.mobile) === mobile;
+      mobile.length > 0 && normalizeMobile(user.mobile) === mobile;
 
     return matchesEmail || matchesMobile;
   });
@@ -227,6 +232,10 @@ export type CustomerQueueRowType = {
   user: CustomerUserType;
   tenantMemberships: TenantMembershipType[];
   websiteCount: number;
+  /** Nest-derived: tenant membership means organizationally authorized. */
+  authorization?: UserKycStatusType;
+  /** Present when list is Nest-over-fixture hybrid. */
+  source?: "nest" | "fixture";
 };
 
 export function buildCustomerQueueRows(
@@ -312,7 +321,7 @@ export function filterCustomerQueueRows(
       row.user.displayName,
       row.user.id,
       row.user.email ?? "",
-      row.user.mobile ?? "",
+      row.user.mobile,
       ...row.tenantMemberships.map((item) => item.tenant.name),
     ]
       .join(" ")
@@ -351,10 +360,7 @@ export function getCustomerQueueSummary(
 }
 
 export function formatContactSummary(user: CustomerUserType): string {
-  if (user.email) return maskEmail(user.email);
-  if (user.mobile) return maskMobile(user.mobile);
-
-  return "بدون شناسه تماس";
+  return maskMobile(user.mobile);
 }
 
 export function hasUnverifiedContact(user: CustomerUserType): boolean {

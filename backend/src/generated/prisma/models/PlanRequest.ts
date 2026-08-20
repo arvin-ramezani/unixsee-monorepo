@@ -230,7 +230,7 @@ export type PlanRequestGroupByOutputType = {
   planId: string
   status: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone: string | null
   contactEmail: string | null
   websiteDomain: string | null
   notes: string | null
@@ -272,7 +272,7 @@ export type PlanRequestWhereInput = {
   planId?: Prisma.UuidFilter<"PlanRequest"> | string
   status?: Prisma.EnumPlanRequestStatusFilter<"PlanRequest"> | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFilter<"PlanRequest"> | string
-  contactPhone?: Prisma.StringFilter<"PlanRequest"> | string
+  contactPhone?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   websiteDomain?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   notes?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
@@ -298,7 +298,7 @@ export type PlanRequestOrderByWithRelationInput = {
   planId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
-  contactPhone?: Prisma.SortOrder
+  contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   websiteDomain?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -328,7 +328,7 @@ export type PlanRequestWhereUniqueInput = Prisma.AtLeast<{
   planId?: Prisma.UuidFilter<"PlanRequest"> | string
   status?: Prisma.EnumPlanRequestStatusFilter<"PlanRequest"> | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFilter<"PlanRequest"> | string
-  contactPhone?: Prisma.StringFilter<"PlanRequest"> | string
+  contactPhone?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   websiteDomain?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   notes?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
@@ -353,7 +353,7 @@ export type PlanRequestOrderByWithAggregationInput = {
   planId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
-  contactPhone?: Prisma.SortOrder
+  contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   websiteDomain?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -380,7 +380,7 @@ export type PlanRequestScalarWhereWithAggregatesInput = {
   planId?: Prisma.UuidWithAggregatesFilter<"PlanRequest"> | string
   status?: Prisma.EnumPlanRequestStatusWithAggregatesFilter<"PlanRequest"> | $Enums.PlanRequestStatus
   contactName?: Prisma.StringWithAggregatesFilter<"PlanRequest"> | string
-  contactPhone?: Prisma.StringWithAggregatesFilter<"PlanRequest"> | string
+  contactPhone?: Prisma.StringNullableWithAggregatesFilter<"PlanRequest"> | string | null
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"PlanRequest"> | string | null
   websiteDomain?: Prisma.StringNullableWithAggregatesFilter<"PlanRequest"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"PlanRequest"> | string | null
@@ -400,7 +400,7 @@ export type PlanRequestCreateInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -422,7 +422,7 @@ export type PlanRequestUncheckedCreateInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -442,7 +442,7 @@ export type PlanRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -464,7 +464,7 @@ export type PlanRequestUncheckedUpdateInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -485,7 +485,7 @@ export type PlanRequestCreateManyInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -505,7 +505,7 @@ export type PlanRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -522,7 +522,7 @@ export type PlanRequestUncheckedUpdateManyInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -829,7 +829,7 @@ export type PlanRequestCreateWithoutCreatedByUserInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -850,7 +850,7 @@ export type PlanRequestUncheckedCreateWithoutCreatedByUserInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -879,7 +879,7 @@ export type PlanRequestCreateWithoutLinkedUserInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -900,7 +900,7 @@ export type PlanRequestUncheckedCreateWithoutLinkedUserInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -949,7 +949,7 @@ export type PlanRequestScalarWhereInput = {
   planId?: Prisma.UuidFilter<"PlanRequest"> | string
   status?: Prisma.EnumPlanRequestStatusFilter<"PlanRequest"> | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFilter<"PlanRequest"> | string
-  contactPhone?: Prisma.StringFilter<"PlanRequest"> | string
+  contactPhone?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   websiteDomain?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
   notes?: Prisma.StringNullableFilter<"PlanRequest"> | string | null
@@ -985,7 +985,7 @@ export type PlanRequestCreateWithoutTenantInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1006,7 +1006,7 @@ export type PlanRequestUncheckedCreateWithoutTenantInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1051,7 +1051,7 @@ export type PlanRequestCreateWithoutWebsiteInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1072,7 +1072,7 @@ export type PlanRequestUncheckedCreateWithoutWebsiteInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1117,7 +1117,7 @@ export type PlanRequestCreateWithoutPlanInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1137,7 +1137,7 @@ export type PlanRequestUncheckedCreateWithoutPlanInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1184,7 +1184,7 @@ export type PlanRequestCreateManyCreatedByUserInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1204,7 +1204,7 @@ export type PlanRequestCreateManyLinkedUserInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1223,7 +1223,7 @@ export type PlanRequestUpdateWithoutCreatedByUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1244,7 +1244,7 @@ export type PlanRequestUncheckedUpdateWithoutCreatedByUserInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1264,7 +1264,7 @@ export type PlanRequestUncheckedUpdateManyWithoutCreatedByUserInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1283,7 +1283,7 @@ export type PlanRequestUpdateWithoutLinkedUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1304,7 +1304,7 @@ export type PlanRequestUncheckedUpdateWithoutLinkedUserInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1324,7 +1324,7 @@ export type PlanRequestUncheckedUpdateManyWithoutLinkedUserInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1344,7 +1344,7 @@ export type PlanRequestCreateManyTenantInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1363,7 +1363,7 @@ export type PlanRequestUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1384,7 +1384,7 @@ export type PlanRequestUncheckedUpdateWithoutTenantInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1404,7 +1404,7 @@ export type PlanRequestUncheckedUpdateManyWithoutTenantInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1424,7 +1424,7 @@ export type PlanRequestCreateManyWebsiteInput = {
   planId: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1443,7 +1443,7 @@ export type PlanRequestUpdateWithoutWebsiteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1464,7 +1464,7 @@ export type PlanRequestUncheckedUpdateWithoutWebsiteInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1484,7 +1484,7 @@ export type PlanRequestUncheckedUpdateManyWithoutWebsiteInput = {
   planId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1503,7 +1503,7 @@ export type PlanRequestCreateManyPlanInput = {
   id?: string
   status?: $Enums.PlanRequestStatus
   contactName: string
-  contactPhone: string
+  contactPhone?: string | null
   contactEmail?: string | null
   websiteDomain?: string | null
   notes?: string | null
@@ -1523,7 +1523,7 @@ export type PlanRequestUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1543,7 +1543,7 @@ export type PlanRequestUncheckedUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1563,7 +1563,7 @@ export type PlanRequestUncheckedUpdateManyWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPlanRequestStatusFieldUpdateOperationsInput | $Enums.PlanRequestStatus
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   websiteDomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1717,7 +1717,7 @@ export type $PlanRequestPayload<ExtArgs extends runtime.Types.Extensions.Interna
     planId: string
     status: $Enums.PlanRequestStatus
     contactName: string
-    contactPhone: string
+    contactPhone: string | null
     contactEmail: string | null
     websiteDomain: string | null
     notes: string | null

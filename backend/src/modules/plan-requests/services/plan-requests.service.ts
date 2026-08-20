@@ -10,7 +10,15 @@ import { createAppLogger } from '#/common/logging/app-logger.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import { PlanRequestStatus } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { UsersService } from '#/modules/users/services/users.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
+import {
+  normalizeContactEmail,
+  normalizeContactPhoneToE164,
+  normalizeWebsiteDomain,
+} from '#/utils/helpers.js';
+
+export type PublicAccountMatchBy = 'phone' | 'email' | 'website';
 
 @Injectable()
 export class PlanRequestsService {
@@ -20,22 +28,19 @@ export class PlanRequestsService {
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
     private readonly idempotency: IdempotencyService,
+    private readonly usersService: UsersService,
   ) {}
 
   async createPublic(input: {
     planId: string;
     contactName: string;
-    contactPhone: string;
+    contactPhone?: string;
     contactEmail?: string;
     websiteDomain?: string;
     notes?: string;
   }) {
-    const plan = await this.prisma.plan.findFirst({
-      where: { id: input.planId, isPublished: true },
-    });
-    if (!plan) {
-      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
-    }
+    await this.requirePublishedPlan(input.planId);
+    await this.assertNoExistingCustomerAccount(input);
 
     const request = await this.prisma.planRequest.create({
       data: {
@@ -55,6 +60,115 @@ export class PlanRequestsService {
       planId: request.planId,
     });
     return request;
+  }
+
+  async createForUser(
+    userId: string,
+    input: {
+      planId: string;
+      contactName: string;
+      contactPhone?: string;
+      contactEmail?: string;
+      websiteDomain?: string;
+      notes?: string;
+    },
+  ) {
+    await this.requirePublishedPlan(input.planId);
+
+    const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
+    const tenantId = tenantIds[0] ?? null;
+
+    const request = await this.prisma.planRequest.create({
+      data: {
+        planId: input.planId,
+        contactName: input.contactName,
+        contactPhone: input.contactPhone,
+        contactEmail: input.contactEmail,
+        websiteDomain: input.websiteDomain,
+        notes: input.notes,
+        createdByUserId: userId,
+        linkedUserId: userId,
+        ...(tenantId ? { tenantId } : {}),
+        status: PlanRequestStatus.SUBMITTED,
+      },
+      include: { plan: true },
+    });
+
+    this.logger.log('plan_request.created_for_user', {
+      planRequestId: request.id,
+      planId: request.planId,
+      userId,
+      tenantId,
+    });
+    return request;
+  }
+
+  async checkPublicAccount(input: {
+    contactPhone?: string;
+    contactEmail?: string;
+    websiteDomain?: string;
+  }): Promise<{ exists: boolean; matchedBy: PublicAccountMatchBy | null }> {
+    const phoneNumber = input.contactPhone
+      ? normalizeContactPhoneToE164(input.contactPhone)
+      : null;
+    const email = normalizeContactEmail(input.contactEmail);
+    const domain = normalizeWebsiteDomain(input.websiteDomain);
+
+    if (phoneNumber) {
+      const byPhone = await this.usersService.findCustomerByPhoneOrEmail({
+        phoneNumber,
+      });
+      if (byPhone) {
+        return { exists: true, matchedBy: 'phone' };
+      }
+    }
+
+    if (email) {
+      const byEmail = await this.usersService.findCustomerByPhoneOrEmail({
+        email,
+      });
+      if (byEmail) {
+        return { exists: true, matchedBy: 'email' };
+      }
+    }
+
+    if (domain) {
+      const website = await this.usersService.findCustomerOwningWebsiteDomain(
+        domain,
+      );
+      if (website) {
+        return { exists: true, matchedBy: 'website' };
+      }
+    }
+
+    return { exists: false, matchedBy: null };
+  }
+
+  private async requirePublishedPlan(planId: string) {
+    const plan = await this.prisma.plan.findFirst({
+      where: { id: planId, isPublished: true },
+    });
+    if (!plan) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    return plan;
+  }
+
+  private async assertNoExistingCustomerAccount(input: {
+    contactPhone?: string;
+    contactEmail?: string;
+    websiteDomain?: string;
+  }) {
+    const match = await this.checkPublicAccount(input);
+    if (match.exists) {
+      this.logger.warn('plan_request.public.rejected_account_exists', {
+        matchedBy: match.matchedBy,
+      });
+      throw new ConflictException({
+        code: 'ACCOUNT_EXISTS',
+        message: ERROR_MESSAGES.en.conflict,
+      });
+    }
   }
 
   async listForUser(userId: string, params?: { skip?: number; take?: number }) {
@@ -96,7 +210,12 @@ export class PlanRequestsService {
     const [items, total] = await this.prisma.$transaction([
       this.prisma.planRequest.findMany({
         where,
-        include: { plan: true, tenant: true, website: true },
+        include: {
+          plan: true,
+          tenant: true,
+          website: true,
+          linkedUser: true,
+        },
         orderBy: { createdAt: 'desc' },
         skip: params?.skip ?? 0,
         take: params?.take ?? 50,
@@ -153,7 +272,12 @@ export class PlanRequestsService {
         websiteId: input.websiteId,
         status: PlanRequestStatus.LINKED,
       },
-      include: { plan: true, tenant: true, website: true },
+      include: {
+        plan: true,
+        tenant: true,
+        website: true,
+        linkedUser: true,
+      },
     });
 
     this.logger.log('plan_request.linked', {
@@ -209,7 +333,7 @@ export class PlanRequestsService {
             enabledAt: new Date(),
             ...(idempotencyKey ? { idempotencyKey } : {}),
           },
-          include: { plan: true, tenant: true, website: true },
+          include: { plan: true, tenant: true, website: true, linkedUser: true },
         });
       });
 
@@ -250,7 +374,12 @@ export class PlanRequestsService {
         declinedAt: new Date(),
         declineReason: reason ?? null,
       },
-      include: { plan: true },
+      include: {
+        plan: true,
+        tenant: true,
+        website: true,
+        linkedUser: true,
+      },
     });
 
     this.logger.log('plan_request.declined', { planRequestId: id });

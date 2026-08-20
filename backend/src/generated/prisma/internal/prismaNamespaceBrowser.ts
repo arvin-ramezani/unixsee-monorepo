@@ -54,11 +54,14 @@ export const ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Membership: 'Membership',
+  AuthorizationCase: 'AuthorizationCase',
   Server: 'Server',
   ServerEnrollmentToken: 'ServerEnrollmentToken',
   VpsNode: 'VpsNode',
   Website: 'Website',
   WebsiteDiscovery: 'WebsiteDiscovery',
+  WebsiteTrafficSnapshot: 'WebsiteTrafficSnapshot',
+  WebsiteActiveVisitorSample: 'WebsiteActiveVisitorSample',
   VpsMetric: 'VpsMetric',
   WebMetric: 'WebMetric',
   WebsiteProbeMetric: 'WebsiteProbeMetric',
@@ -85,7 +88,10 @@ export const ModelName = {
   Activity: 'Activity',
   AuditRecord: 'AuditRecord',
   OperationalAction: 'OperationalAction',
-  IdempotencyRecord: 'IdempotencyRecord'
+  IdempotencyRecord: 'IdempotencyRecord',
+  UnixseeMessage: 'UnixseeMessage',
+  UnixseeMessageAttachment: 'UnixseeMessageAttachment',
+  UnixseeMessageRead: 'UnixseeMessageRead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -117,6 +123,8 @@ export const UserScalarFieldEnum = {
   hashedRt: 'hashedRt',
   suspendedAt: 'suspendedAt',
   suspendedReason: 'suspendedReason',
+  phoneVerifiedAt: 'phoneVerifiedAt',
+  emailVerifiedAt: 'emailVerifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -148,11 +156,42 @@ export const MembershipScalarFieldEnum = {
 export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
 
 
+export const AuthorizationCaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  nationalId: 'nationalId',
+  birthDate: 'birthDate',
+  mobile: 'mobile',
+  mobileChallenge: 'mobileChallenge',
+  mobileBelongsToNationalId: 'mobileBelongsToNationalId',
+  email: 'email',
+  emailChallenge: 'emailChallenge',
+  province: 'province',
+  city: 'city',
+  address: 'address',
+  postalCode: 'postalCode',
+  nationalIdCardFileName: 'nationalIdCardFileName',
+  attestedTruthful: 'attestedTruthful',
+  staffReason: 'staffReason',
+  staffFieldsToFix: 'staffFieldsToFix',
+  submittedAt: 'submittedAt',
+  decidedAt: 'decidedAt',
+  decidedByUserId: 'decidedByUserId',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuthorizationCaseScalarFieldEnum = (typeof AuthorizationCaseScalarFieldEnum)[keyof typeof AuthorizationCaseScalarFieldEnum]
+
+
 export const ServerScalarFieldEnum = {
   id: 'id',
   name: 'name',
   ipAddress: 'ipAddress',
   notes: 'notes',
+  controlPanelUrl: 'controlPanelUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -179,7 +218,7 @@ export const VpsNodeScalarFieldEnum = {
   id: 'id',
   serverId: 'serverId',
   userId: 'userId',
-  machineId: 'machineId',
+  agentInstanceId: 'agentInstanceId',
   name: 'name',
   secretKey: 'secretKey',
   status: 'status',
@@ -191,6 +230,8 @@ export const VpsNodeScalarFieldEnum = {
   agentVersion: 'agentVersion',
   lastSeenAt: 'lastSeenAt',
   lastHeartbeatAt: 'lastHeartbeatAt',
+  credentialsRevokedAt: 'credentialsRevokedAt',
+  credentialsRevokedReason: 'credentialsRevokedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -206,6 +247,7 @@ export const WebsiteScalarFieldEnum = {
   planId: 'planId',
   domain: 'domain',
   displayName: 'displayName',
+  wordpressAdminUrl: 'wordpressAdminUrl',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
@@ -228,18 +270,70 @@ export const WebsiteDiscoveryScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   websiteId: 'websiteId',
   domain: 'domain',
+  virtualHostName: 'virtualHostName',
+  discoveredAt: 'discoveredAt',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
   homeDirectory: 'homeDirectory',
   documentRoot: 'documentRoot',
+  aliases: 'aliases',
+  appType: 'appType',
+  source: 'source',
+  backendAddress: 'backendAddress',
+  controlPanelUrl: 'controlPanelUrl',
+  wordpressAdminUrl: 'wordpressAdminUrl',
+  wordpressVersion: 'wordpressVersion',
+  phpVersion: 'phpVersion',
+  phpVersionScope: 'phpVersionScope',
+  imagickVersion: 'imagickVersion',
+  wordpressUpdateStatus: 'wordpressUpdateStatus',
+  wordpressUpdateCheckedAt: 'wordpressUpdateCheckedAt',
+  fieldStatus: 'fieldStatus',
+  stackCheckedAt: 'stackCheckedAt',
   status: 'status',
   rawPayload: 'rawPayload',
   assignedAt: 'assignedAt',
+  lastIngestedAt: 'lastIngestedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type WebsiteDiscoveryScalarFieldEnum = (typeof WebsiteDiscoveryScalarFieldEnum)[keyof typeof WebsiteDiscoveryScalarFieldEnum]
+
+
+export const WebsiteTrafficSnapshotScalarFieldEnum = {
+  discoveryId: 'discoveryId',
+  domain: 'domain',
+  activeVisitorCount: 'activeVisitorCount',
+  activeWindowSeconds: 'activeWindowSeconds',
+  activeWindowStartedAt: 'activeWindowStartedAt',
+  activeMeasuredAt: 'activeMeasuredAt',
+  activeStatus: 'activeStatus',
+  visitors24hCount: 'visitors24hCount',
+  visitors24hWindowSeconds: 'visitors24hWindowSeconds',
+  visitors24hCoverageSeconds: 'visitors24hCoverageSeconds',
+  visitors24hMeasuredAt: 'visitors24hMeasuredAt',
+  visitors24hAlgorithm: 'visitors24hAlgorithm',
+  visitors24hStatus: 'visitors24hStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteTrafficSnapshotScalarFieldEnum = (typeof WebsiteTrafficSnapshotScalarFieldEnum)[keyof typeof WebsiteTrafficSnapshotScalarFieldEnum]
+
+
+export const WebsiteActiveVisitorSampleScalarFieldEnum = {
+  recordedAt: 'recordedAt',
+  discoveryId: 'discoveryId',
+  websiteId: 'websiteId',
+  domain: 'domain',
+  uniqueIpCount: 'uniqueIpCount',
+  windowSeconds: 'windowSeconds',
+  windowStartedAt: 'windowStartedAt',
+  measuredAt: 'measuredAt'
+} as const
+
+export type WebsiteActiveVisitorSampleScalarFieldEnum = (typeof WebsiteActiveVisitorSampleScalarFieldEnum)[keyof typeof WebsiteActiveVisitorSampleScalarFieldEnum]
 
 
 export const VpsMetricScalarFieldEnum = {
@@ -556,9 +650,13 @@ export const TicketScalarFieldEnum = {
   websiteId: 'websiteId',
   createdById: 'createdById',
   assigneeId: 'assigneeId',
+  number: 'number',
   subject: 'subject',
+  service: 'service',
   status: 'status',
   priority: 'priority',
+  resolvedAt: 'resolvedAt',
+  autoCloseAt: 'autoCloseAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -572,6 +670,7 @@ export const TicketMessageScalarFieldEnum = {
   authorId: 'authorId',
   body: 'body',
   isInternal: 'isInternal',
+  idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -675,6 +774,49 @@ export const IdempotencyRecordScalarFieldEnum = {
 } as const
 
 export type IdempotencyRecordScalarFieldEnum = (typeof IdempotencyRecordScalarFieldEnum)[keyof typeof IdempotencyRecordScalarFieldEnum]
+
+
+export const UnixseeMessageScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  authorId: 'authorId',
+  websiteId: 'websiteId',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  contentLocale: 'contentLocale',
+  links: 'links',
+  publishedAt: 'publishedAt',
+  withdrawnAt: 'withdrawnAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageScalarFieldEnum = (typeof UnixseeMessageScalarFieldEnum)[keyof typeof UnixseeMessageScalarFieldEnum]
+
+
+export const UnixseeMessageAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  storageKey: 'storageKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UnixseeMessageAttachmentScalarFieldEnum = (typeof UnixseeMessageAttachmentScalarFieldEnum)[keyof typeof UnixseeMessageAttachmentScalarFieldEnum]
+
+
+export const UnixseeMessageReadScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  readAt: 'readAt'
+} as const
+
+export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
 
 
 export const SortOrder = {

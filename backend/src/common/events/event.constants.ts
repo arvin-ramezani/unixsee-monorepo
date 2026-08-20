@@ -1,5 +1,4 @@
 export const EVENT_NAMES = {
-  METRICS_INGESTED: 'metrics.ingested',
   WEBSITE_METRICS_EVALUATED: 'website.metrics.evaluated',
   WEBSITE_PROBE_EVALUATED: 'website.probe.evaluated',
   OVERVIEW_SNAPSHOT: 'overview:snapshot',
@@ -14,7 +13,6 @@ export const EVENT_NAMES = {
 } as const;
 
 export const INTERNAL_EVENTS = {
-  METRICS_INGESTED: 'internal.metrics.ingested',
   INTERNAL_WEBSITE_METRICS_EVALUATED: 'internal.website.metrics.evaluated',
   INTERNAL_WEBSITE_PROBE_EVALUATED: 'internal.website.probe.evaluated',
 } as const;

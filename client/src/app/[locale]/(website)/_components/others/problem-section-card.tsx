@@ -15,6 +15,7 @@ const MotionCardDescription = motion.create(CardDescription);
 const cardBackgroundColor = "var(--problem-card-background)";
 
 type ProblemSectionCardProps = {
+  videoIndex: number;
   title: string;
   description?: string;
   subTitle?: string;
@@ -25,6 +26,7 @@ type ProblemSectionCardProps = {
 };
 
 export function ProblemSectionCard({
+  videoIndex,
   title,
   description,
   subTitle,
@@ -127,7 +129,7 @@ export function ProblemSectionCard({
           {/* <div className="relative h-full w-full lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]"> */}
           <div className="relative aspect-video h-full w-full lg:m-auto lg:h-auto lg:w-full">
             <video
-              src="/videos/unixsee-team/unixsee-team-1.mp4"
+              src={`/videos/unixsee-team/new/${videoIndex === 2 ? "2.mp4" : "3.MP4"}`}
               className="absolute inset-0 h-full w-full object-contain"
               playsInline
               autoPlay
@@ -208,7 +210,10 @@ export function ProblemSectionCard({
           >
             {/* {subTitle} */}
             {tags.map((tag) => (
-              <span className="flex items-center gap-0.5 leading-none">
+              <span
+                key={tag}
+                className="flex items-center gap-0.5 leading-none"
+              >
                 <Hash className="size-3" /> {tag}
               </span>
             ))}

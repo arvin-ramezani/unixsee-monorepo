@@ -6,10 +6,10 @@
 |---|---|
 | Project | Unixsee Admin Panel |
 | Flow or service | Administrator plan-request enablement (`درخواست‌های پلن`) |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
-| Date | 2026-08-08 |
-| Prepared from | Stakeholder scope clarification (2026-08-08): public plan choice → external validation → admin enablement on an existing user/website with one active plan per website; prior draft 0.1; related users and servers/websites flows; current `/plan-requests` placeholder |
+| Date | 2026-08-15 |
+| Prepared from | Stakeholder scope clarification (2026-08-08); guest OTP → account before submit (2026-08-14 / customer-public-plan-request v0.4); prior draft 0.2 |
 | Primary owner | Product and operations |
 | Reviewers required | Product, operations, backend engineering, QA, accessibility |
 
@@ -27,15 +27,15 @@
 ## Executive flow summary
 
 - **Primary user:** Authorized staff working درخواست‌های پلن.
-- **Goal:** Enable a customer-requested plan on exactly one website that already has a usable existing user/tenant connection.
-- **Current problem:** `/plan-requests` is a dead end, so staff cannot complete enablement in-product.
-- **Proposed change:** Provide a thin queue and detail flow: review the requested plan, confirm an existing user/tenant, choose the target website, and enable the plan.
-- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time.
+- **Goal:** Enable a customer-requested plan on exactly one website that already has a usable existing **tenant** (authorized customer).
+- **Current problem:** `/plan-requests` historically lacked an in-product enablement path; enablement also must respect احراز هویت.
+- **Proposed change:** Provide a thin queue and detail flow: review the requested plan on an already user-linked request, confirm **tenant**, choose the target website, and enable the plan. Do **not** surface guest vs logged-in intake badges — public visitors get an account on OTP verify before submit (see `customer-public-plan-request.md`).
+- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time; **request submission is allowed before tenant approval**, but **enablement is not**; admin treats all requests as account-linked (no “درخواست مهمان” queue distinction).
 - **Completion state:** Request is `enabled` (plan active on the target website) or a simple terminal alternative (`declined` / `cancelled`) with history retained.
-- **Highest-risk failure:** Enabling a plan without an existing user, or putting a second active plan on a website that already has one.
+- **Highest-risk failure:** Enabling a plan without a tenant, or putting a second active plan on a website that already has one.
 - **Accessibility risk:** Enable confirmation and blocking reasons may be silent for keyboard or screen-reader users.
 - **Evidence gap:** Exact public-intake payload fields and decline reasons are not finalized.
-- **Next validation:** Prototype queue → link existing user → select website → enable, and confirm the one-plan-per-website block.
+- **Next validation:** Prototype queue → link customer with tenant → select website → enable, and confirm the one-plan-per-website block plus non-tenant enablement block.
 
 ## Problem and desired outcome
 
@@ -61,12 +61,15 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 
 #### In scope
 
-- Admin queue and detail for plan requests at `/plan-requests`.
+- Admin queue at `/plan-requests` and request detail at `/plan-requests/[id]`.
 - Display of the plan the customer already chose on the public web app.
-- Confirming and linking an **existing** user/tenant to the request.
+- Confirming and linking an **existing** customer; enablement requires a usable
+  **tenant** (authorized via احراز هویت or staff approve).
 - Selecting the target website for enablement.
 - Enforcing **one active plan per website**.
 - Enabling the requested plan on that website.
+- Blocking enablement when the linked customer is not yet a tenant, while
+  keeping the request in queue.
 - Simple decline / cancel with reason.
 - Loading, empty, permission, validation, conflict, failure, and recovery states needed for the thin path.
 - Persian RTL and equivalent English LTR behaviour.
@@ -86,7 +89,7 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 ### Success definition
 
 - Staff can enable an eligible request without an offline spreadsheet.
-- Enablement is blocked when no usable existing user/tenant is linked.
+- Enablement is blocked when no usable existing **tenant** is linked.
 - Enablement is blocked when the target website already has another active plan.
 - Enabling a request results in exactly one active plan on the chosen website.
 - Keyboard and screen-reader users can complete queue review and enablement.
@@ -138,8 +141,8 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 
 | Role | Goal | Responsibility | Constraints | Needs |
 |---|---|---|---|---|
-| Enablement staff | Clear pending plan requests | Review request, link existing customer, choose website, enable or decline | Must not create users here; must not enable without website/user | Queue, blockers, confirm enable |
-| Customer admin (supporting) | Resolve missing identity outside this flow | Ensure the correct user/tenant exists in Users before enablement | Identity work stays in `/users` | Clear “user missing” blocker |
+| Enablement staff | Clear pending plan requests | Review request, link existing customer, choose website, enable or decline | Must not create users here; must not enable without website/tenant | Queue, blockers, confirm enable |
+| Customer admin (supporting) | Resolve missing identity / احراز هویت outside this flow | Ensure the correct user and **tenant** exist in Users before enablement | Identity work stays in `/users` | Clear “tenant missing” / “user missing” blocker |
 | Auditor | Inspect enablement history | Read request transitions and resulting website plan link | Read-only | Timeline and reasons |
 
 ### Permissions
@@ -147,7 +150,7 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 | Action | Enablement staff | Customer admin | Auditor | Conditions |
 |---|---:|---:|---:|---|
 | View plan-request queue/detail | Yes | Limited | Yes | Capability + scope |
-| Link existing user/tenant | Yes | Yes | No | Existing match only; no create |
+| Link existing customer / require tenant | Yes | Yes | No | Existing match only; no create; enablement needs tenant |
 | Select target website | Yes | Limited | No | Website eligible and in scope |
 | Enable plan | Capability required | No | No | Existing user + website + one-plan rule |
 | Decline / cancel | Capability required | No | No | Reason required |
@@ -167,7 +170,7 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 **As** enablement staff, **when** a request is not yet tied to a usable account, **I need to** find and link an existing user/tenant **so that** the plan is owned correctly.
 
 - Evidence: E-001, E-004.
-- Success: Enablement stays blocked until an existing user/tenant is linked; create-user is not offered here.
+- Success: Enablement stays blocked until an existing **tenant** is linked; create-user is not offered here.
 - Priority: Critical.
 
 ### UN-003 — Enable one plan on one website
@@ -199,8 +202,8 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 | Stage | Goal | Behaviour | Response | Decision | Backstage | Problem | Need |
 |---|---|---|---|---|---|---|---|
 | 1. Intake | Find work | Open `/plan-requests`, filter by state | Shows chosen plan, link state, blockers | Permitted? | Capability scope | JP-001 | UN-001 |
-| 2. Review | Understand request | Open detail: chosen plan, contacts, current link/website state | Shows what is missing | Ready to enable? | Fixture/API later | JP-002 | UN-001 |
-| 3. Link customer | Attach existing owner | Search/link existing user/tenant only | Request linked, or blocked with “user must exist” | Match found? | Users domain read/search | Missing user | UN-002 |
+| 2. Review | Understand request | Open `/plan-requests/[id]`: chosen plan, contacts, current link/website state | Shows what is missing | Ready to enable? | Fixture/API later | JP-002 | UN-001 |
+| 3. Link customer | Attach existing owner | Search/link existing user; confirm tenant (احراز هویت done) | Request linked, or blocked with “tenant required” | Tenant ready? | Users domain read/search | Missing user/tenant | UN-002 |
 | 4. Choose website | Pick target | Select eligible website for this tenant/context | Website selected or blocked | Website eligible? | Websites domain | Missing/conflicted website | UN-003 |
 | 5. Enable or refuse | Finish | Confirm enable, or decline/cancel with reason | `enabled` or terminal | Valid? | One-plan rule + audit | Wrong plan/site | UN-003, UN-004 |
 
@@ -247,7 +250,7 @@ flowchart LR
 | Step | State | Goal | Entry condition | Information | Actions | System behaviour | Exit |
 |---|---|---|---|---|---|---|---|
 | S-01 | Queue ready | Choose work | Authorized `/plan-requests` | State, chosen plan, user-link state, website readiness, next action | Filter, open | Capability scoping | Request selected |
-| S-02 | Pending review | Understand blockers | Request opened | Chosen plan, contacts, linked user/tenant, website candidate, history | Link existing user, select website, decline/cancel | No create-user action | Ready, still pending, or terminal |
+| S-02 | Pending review | Understand blockers | Request opened at `/plan-requests/[id]` | Chosen plan, contacts, linked user/tenant, website candidate, history | Link existing user, select website, decline/cancel | No create-user action | Ready, still pending, or terminal |
 | S-03 | Ready to enable | Confirm outcome | Existing user linked + website selected + no active-plan conflict | Summary: user, tenant, website, chosen plan | Confirm enable, go back, decline/cancel | Validates one-plan rule | Enabled or blocked |
 | S-04 | Enabled / terminal | Durable outcome | Enable or refuse completed | Timeline, linked website/plan, reasons | Open linked user/website records | Preserves history | Re-entry read-only or related records |
 
@@ -268,7 +271,7 @@ flowchart LR
 | Condition/result | Case 1 | Case 2 | Case 3 | Case 4 | Case 5 |
 |---|---:|---:|---:|---:|---|
 | Actor has enable capability | Yes | No | Yes | Yes | Yes |
-| Existing user/tenant linked | Yes | Yes | No | Yes | Yes |
+| Existing tenant linked | Yes | Yes | No | Yes | Yes |
 | Target website selected | Yes | Yes | Yes | No | Yes |
 | Website has no conflicting active plan | Yes | Yes | Yes | Yes | No |
 | Result | Allow enable | Deny | Block; require existing user | Block; select website | Block; one-plan conflict |
@@ -276,8 +279,9 @@ flowchart LR
 ### Business-rule register
 
 - **BR-001 — Capability scope:** Queue and enablement actions are authorized capabilities. Source: E-001, project access model. Status: Confirmed principle.
-- **BR-002 — Existing user required:** A plan request can be enabled only when linked to an existing usable user/tenant. Source: E-001. Status: Confirmed for this phase.
-- **BR-003 — No create-from-request:** This flow must not create users or tenants; missing identity is resolved in `/users`, then linked here. Source: E-001. Status: Confirmed for this phase.
+- **BR-002 — Existing tenant required for enablement:** A plan request can be enabled only when linked to an existing usable **tenant** (authorized customer). A user account without a tenant is not enough. Source: E-001; [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md). Status: Confirmed for this phase.
+- **BR-002a — Request before tenant allowed:** Customers may submit plan requests before احراز هویت completes; admin must not treat submission as a sale, and customer copy must state certifications are required for delivery. Source: product clarification 2026-08-13. Status: Confirmed for this phase.
+- **BR-003 — No create-from-request:** This flow must not create users or tenants; missing identity or incomplete احراز هویت is resolved in `/users`, then linked here. Source: E-001. Status: Confirmed for this phase.
 - **BR-004 — One active plan per website:** A website may have at most one active plan at a time. Source: E-001. Status: Confirmed; replacement vs hard-block mode is U-003.
 - **BR-005 — Enablement assigns the chosen plan:** Enabling a request makes that request’s chosen plan the website’s active plan. Source: E-001, A-004. Status: Confirmed for this phase.
 - **BR-006 — Reasoned refusal:** Decline and cancel require a reason and retain history. Source: operational completeness. Status: Proposed.
@@ -330,7 +334,7 @@ flowchart LR
 
 | ID | Scenario | Expected behaviour | Rule | Recovery | Criteria |
 |---|---|---|---|---|---|
-| EC-001 | Request has contacts but no existing user | Block enablement; explain that a user must already exist | BR-002, BR-003 | Create/fix user in `/users`, then link | AC-003 |
+| EC-001 | Request has contacts but no existing user or no tenant | Block enablement; explain that a tenant must already exist | BR-002, BR-003 | Create/approve tenant in `/users` (احراز هویت), then link | AC-003 |
 | EC-002 | Website already has an active plan | Block enablement (or follow approved replacement policy from U-003) | BR-004 | Resolve current plan, then retry | AC-005 |
 | EC-003 | User linked but no eligible website | Keep request pending with website blocker | BR-008 | Finish website readiness elsewhere | AC-004 |
 | EC-004 | Two staff enable the same request | One success; the other sees already-enabled state | BR-009 | No duplicate active plan | AC-007 |
@@ -376,10 +380,10 @@ Exclude free-text notes, raw contact values, and secrets.
 **Given** authorized staff open درخواست‌های پلن, **when** requests exist in scope, **then** each item exposes state, chosen plan, user-link state, and next action, **and** the route is not a dead-end heading.
 
 ### AC-002 — Enable chosen plan on a website
-**Given** a pending request with an existing linked user/tenant and an eligible selected website that has no conflicting active plan, **when** staff confirm enablement, **then** the request becomes `enabled` and that website’s active plan is the request’s chosen plan.
+**Given** a pending request with an existing linked **tenant** and an eligible selected website that has no conflicting active plan, **when** staff confirm enablement, **then** the request becomes `enabled` and that website’s active plan is the request’s chosen plan.
 
 ### AC-003 — Existing user required
-**Given** a request has no linked usable user/tenant, **when** staff attempt enablement, **then** the action is blocked, **and** the UI does not offer create-user inside this flow.
+**Given** a request has no linked usable **tenant**, **when** staff attempt enablement, **then** the action is blocked, **and** the UI does not offer create-user inside this flow (resolve احراز هویت / tenant in `/users`).
 
 ### AC-004 — Website required
 **Given** a request has a linked user but no selected eligible website, **when** staff attempt enablement, **then** the action is blocked until a website is selected.
@@ -404,7 +408,7 @@ Exclude free-text notes, raw contact values, and secrets.
 | ID | Question | Decision | Users | Method | Priority |
 |---|---|---|---|---|---|
 | RQ-001 | If a website already has an active plan, does enablement hard-block or offer an explicit replace path? | U-003 | Product/ops | Decision | Critical |
-| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | High |
+| RQ-002 | Does the public request arrive with a user id, or only contact fields for matching? | U-004 | Product/backend | Intake contract | **Resolved:** guest OTP creates/authenticates the user before submit; admin UI no longer distinguishes guest intake. Nest sync still needed for legacy anonymous create | High |
 | RQ-003 | Which decline/cancel reasons are required in Phase 1? | U-002 | Ops | Short list | Medium |
 
 ## Risks and dependencies
@@ -414,7 +418,7 @@ Exclude free-text notes, raw contact values, and secrets.
 | ID | Risk | Source | Likelihood | Impact | Mitigation | Owner | Release effect |
 |---|---|---|---|---|---|---|---|
 | R-001 | Reintroducing sales CRM scope into this flow | Prior draft 0.1 | Medium | High | Keep out-of-scope list authoritative | Product | Block |
-| R-002 | Enabling without an existing user | BR-002 drift | Medium | High | Hard gate + AC-003 | Product/engineering | Block |
+| R-002 | Enabling without an existing tenant | BR-002 drift | Medium | High | Hard gate + AC-003 | Product/engineering | Block |
 | R-003 | Two active plans on one website | U-003 unresolved | Medium | High | Enforce BR-004 before enable | Product/engineering | Block |
 
 ### Dependencies
@@ -433,10 +437,11 @@ Exclude free-text notes, raw contact values, and secrets.
 Sufficient for static Persian RTL admin flows covering:
 
 - plan-request queue and detail
-- link existing user/tenant only
+- link existing customer; enable only when tenant exists
 - select website
 - enable / decline / cancel
 - one-plan-per-website conflict handling
+- authorization note: `docs/product/notes/customer-authorization-and-tenant.md`
 
 **Not ready for production implementation** until D-001–D-004 and U-001/U-004 are resolved.
 
@@ -451,7 +456,7 @@ Sufficient for static Persian RTL admin flows covering:
 ### Must keep for this phase
 
 - **REC-001:** `/plan-requests` is only for reviewing and enabling already-chosen plans. Traces to UN-001, AC-001.
-- **REC-002:** Require an existing user/tenant before enablement; do not create accounts here. Traces to UN-002, BR-002/003, AC-003.
+- **REC-002:** Require an existing **tenant** before enablement; do not create accounts here; do not enable for user-only (non-tenant) customers. Traces to UN-002, BR-002/002a/003, AC-003.
 - **REC-003:** Enablement sets one active plan on one website. Traces to UN-003, BR-004/005, AC-002/005.
 - **REC-004:** Keep public choice and external validation out of this admin flow. Traces to E-001, BR-007.
 
@@ -478,7 +483,10 @@ Sufficient for static Persian RTL admin flows covering:
 - Paths/handoffs: `docs/product/notes/onboarding-paths-and-handoffs.md`
 - Public entry sync: `docs/product/notes/phase-1-public-entry-channels.md`
 - Agent sequence: `docs/product/notes/servers-agent-data-flow.md`
-- Users/tenants: `docs/product/ux-flows/admin-users.md`
+- Users/tenants / احراز هویت: `docs/product/ux-flows/admin-users.md`
+- Authorization review: `docs/product/ux-flows/admin-authorization.md`
+- Customer authorization: `docs/product/ux-flows/client-authorization.md`
+- Authorization note: `docs/product/notes/customer-authorization-and-tenant.md`
 - Servers/agents/websites: `docs/product/ux-flows/admin-servers-websites-agents.md`
 - Product source: `docs/product/phase-1-application-features.md` §11
 

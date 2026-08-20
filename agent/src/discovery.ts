@@ -1,34 +1,49 @@
-import { access, readFile, readdir, stat } from "node:fs/promises";
-import { basename, dirname, isAbsolute, join, normalize } from "node:path";
-import { platform, release } from "node:os";
-import { config } from "./config/config.js";
+import { isIP } from "node:net";
 
-export type WebsiteAppType =
-  | "wordpress"
-  | "woocommerce"
-  | "node"
-  | "php"
-  | "static"
-  | "custom"
-  | "unknown";
+import { readOpenLiteSpeedRoutingConfigs } from "./security/filesystem.js";
 
-export type DiscoverySource = "openlitespeed" | "directadmin" | "filesystem";
+import {
+  updateDiscoveryInventoryState,
+  type DiscoveryInventoryChanges,
+  type DiscoveryInventoryStateOptions,
+} from "./discovery-inventory-state.js";
+
+/**
+ * Phase 1 discovery is intentionally only an OpenLiteSpeed routing inventory.
+ * It does not carry document-root, hosting-user, application, stack, or admin
+ * metadata. Those concerns are owned by other modules/contracts.
+ */
+export type DiscoverySource = "openlitespeed";
 
 export interface DiscoveredDomain {
   domain: string;
-  documentRoot: string;
-  owner: string;
-  appType: WebsiteAppType;
-  source: DiscoverySource;
   aliases: string[];
-  backendAddress?: string;
-  configFile?: string;
-  virtualHostName?: string;
+  virtualHostName: string;
+  source: DiscoverySource;
 }
 
+/**
+ * Transitional engine shape. Identity resolution is intentionally outside this
+ * module; initializeIdentity() requires the already-resolved installation ID.
+ */
 export interface HostIdentity {
-  machineId: string;
+  agentInstanceId: string;
   domains: DiscoveredDomain[];
+  discoveryChanges: DiscoveryInventoryChanges;
+}
+
+export type OpenLiteSpeedDiscoveryFailureReason =
+  | "ols_listener_config_unreadable"
+  | "ols_vhost_declaration_config_unreadable";
+
+export class OpenLiteSpeedDiscoveryError extends Error {
+  readonly reason: OpenLiteSpeedDiscoveryFailureReason;
+
+  constructor(reason: OpenLiteSpeedDiscoveryFailureReason, message: string) {
+    super(message);
+    this.name = "OpenLiteSpeedDiscoveryError";
+    this.reason = reason;
+  }
 }
 
 interface NamedBlock {
@@ -36,151 +51,44 @@ interface NamedBlock {
   body: string;
 }
 
-interface OpenLiteSpeedVirtualHostDeclaration {
-  name: string;
-  vhRoot: string;
-  configFile: string | null;
+interface MappedVirtualHost {
+  virtualHostName: string;
+  hostnames: string[];
 }
 
-const openLiteSpeedServerRoot = config.openLiteSpeedServerRoot;
-const defaultOpenLiteSpeedVhostDeclarationPaths = [
-  `${openLiteSpeedServerRoot}/conf/httpd-vhosts.conf`,
-  `${openLiteSpeedServerRoot}/conf/httpd_config.conf`,
-];
-const defaultOpenLiteSpeedListenerPaths = [
-  `${openLiteSpeedServerRoot}/conf/listeners.conf`,
-  `${openLiteSpeedServerRoot}/conf/httpd_config.conf`,
-];
-const defaultOpenLiteSpeedVhostsRoot = `${openLiteSpeedServerRoot}/conf/vhosts`;
-const defaultDiscoveryRoots = ["/var/www", "/home"];
-const staleNamePattern =
+export interface OpenLiteSpeedConfigBundle {
+  listenerConfigs: readonly string[];
+  vhostDeclarationConfigs: readonly string[];
+}
+
+const STALE_VHOST_NAME_PATTERN =
   /(?:^|[._-])(?:bak|backup|disabled|old|orig|save|tmp|temp)(?:[._-]|$)/i;
 
-async function pathExists(path: string): Promise<boolean> {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
+function uniqueValues(values: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const unique: string[] = [];
 
-async function isReadableFile(path: string): Promise<boolean> {
-  try {
-    await access(path);
-    const fileStats = await stat(path);
-    return fileStats.isFile();
-  } catch {
-    return false;
-  }
-}
-
-async function readOptionalFile(path: string): Promise<string | null> {
-  try {
-    return await readFile(path, "utf-8");
-  } catch {
-    return null;
-  }
-}
-
-function splitConfiguredPaths(value: string | undefined): string[] {
-  if (!value) return [];
-
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function uniqueValues(values: string[]): string[] {
-  return [...new Set(values.filter(Boolean))];
-}
-
-function isStaleName(value: string): boolean {
-  const normalizedValue = value.trim().toLowerCase();
-
-  return (
-    staleNamePattern.test(normalizedValue) ||
-    normalizedValue.includes(".disabled.") ||
-    normalizedValue.includes(".bak.") ||
-    normalizedValue.endsWith(".disabled") ||
-    normalizedValue.endsWith(".bak") ||
-    normalizedValue.endsWith(".old") ||
-    normalizedValue.endsWith("~")
-  );
-}
-
-function normalizeDomain(value: string): string | null {
-  const normalizedValue = value
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/^www\./i, "")
-    .replace(/[,;]+$/g, "")
-    .split("/")[0]
-    .toLowerCase();
-
-  if (
-    !normalizedValue ||
-    normalizedValue === "*" ||
-    normalizedValue.includes("$") ||
-    isStaleName(normalizedValue)
-  ) {
-    return null;
+  for (const value of values) {
+    if (seen.has(value)) continue;
+    seen.add(value);
+    unique.push(value);
   }
 
-  if (!normalizedValue.includes(".")) return null;
-
-  return normalizedValue;
+  return unique;
 }
 
-async function isWslEnvironment(): Promise<boolean> {
-  if (platform() !== "linux") return false;
-  try {
-    const osRelease = release().toLowerCase();
-    const procVersion = await readFile("/proc/version", "utf-8");
-    return (
-      osRelease.includes("microsoft") ||
-      procVersion.toLowerCase().includes("microsoft")
-    );
-  } catch {
-    return false;
-  }
-}
-
-async function getMachineId(): Promise<string> {
-  const paths = ["/etc/machine-id", "/var/lib/dbus/machine-id"];
-
-  for (const path of paths) {
-    try {
-      const content = await readFile(path, "utf-8");
-      return content.trim();
-    } catch {
-      // Fallback chain intentionally continues.
-    }
-  }
-
-  const isWsl = await isWslEnvironment();
-  if (isWsl || platform() === "win32") {
-    console.log(
-      `[INFO] Non-production environment detected. Yielding local development machine-id fingerprint.`,
-    );
-    return "dev-local-machine-id";
-  }
-
-  throw new Error(
-    "[FATAL] Unable to resolve system machine-id fingerprint. Ensure the target node is a supported Linux environment.",
-  );
-}
-
-function removeCommentLines(content: string): string {
+function stripComments(content: string): string {
   return content
-    .split("\n")
-    .filter((line) => !line.trim().startsWith("#"))
+    .split(/\r?\n/)
+    .map((line) => {
+      const commentIndex = line.indexOf("#");
+      return commentIndex >= 0 ? line.slice(0, commentIndex) : line;
+    })
     .join("\n");
 }
 
 function extractNamedBlocks(content: string, blockName: string): NamedBlock[] {
-  const source = removeCommentLines(content);
+  const source = stripComments(content);
   const blocks: NamedBlock[] = [];
   const blockMatcher = new RegExp(`${blockName}\\s+([^\\s{]+)\\s*\\{`, "gi");
 
@@ -191,15 +99,20 @@ function extractNamedBlocks(content: string, blockName: string): NamedBlock[] {
 
     while (cursor < source.length && depth > 0) {
       const char = source[cursor];
-      if (char === "{") depth++;
-      if (char === "}") depth--;
-      cursor++;
+      if (char === "{") depth += 1;
+      if (char === "}") depth -= 1;
+      cursor += 1;
     }
 
-    if (depth === 0) {
-      const body = source.slice(match.index + match[0].length, cursor - 1);
-      blocks.push({ name: match[1].trim(), body });
+    if (depth !== 0) {
+      // Ignore an incomplete/stale block rather than guessing its contents.
+      break;
     }
+
+    blocks.push({
+      name: match[1].trim(),
+      body: source.slice(match.index + match[0].length, cursor - 1),
+    });
 
     blockMatcher.lastIndex = cursor;
   }
@@ -207,913 +120,292 @@ function extractNamedBlocks(content: string, blockName: string): NamedBlock[] {
   return blocks;
 }
 
-function getDirectiveValue(content: string, directive: string): string | null {
-  const source = removeCommentLines(content);
-  const matcher = new RegExp(`^\\s*${directive}\\s+(.+?)\\s*$`, "im");
-  const match = source.match(matcher);
-
-  return match?.[1]?.trim() ?? null;
+function isStaleVirtualHostName(value: string): boolean {
+  const normalized = value.trim().toLowerCase();
+  return (
+    !normalized ||
+    STALE_VHOST_NAME_PATTERN.test(normalized) ||
+    normalized.includes(".disabled.") ||
+    normalized.includes(".bak.") ||
+    normalized.endsWith(".disabled") ||
+    normalized.endsWith(".bak") ||
+    normalized.endsWith(".old") ||
+    normalized.endsWith("~")
+  );
 }
 
-function resolveOpenLiteSpeedPath(
-  rawPath: string,
-  variables: Record<string, string>,
-): string {
-  const expandedPath = Object.entries(variables).reduce(
-    (currentValue, [key, value]) => currentValue.replaceAll(key, value),
-    rawPath.trim().replace(/^['"]|['"]$/g, ""),
+function canonicalVirtualHostKey(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+/**
+ * Normalize an actual Host mapping without collapsing `www.` aliases.
+ * Wildcards, IP literals, variables, URL-shaped values, and invalid labels are
+ * intentionally rejected because they are not discrete website identities.
+ */
+export function normalizeMappedHostname(value: string): string | null {
+  const normalized = value
+    .trim()
+    .replace(/^['"]|['"]$/g, "")
+    .replace(/[,;]+$/g, "")
+    .replace(/\.$/, "")
+    .toLowerCase();
+
+  if (
+    !normalized ||
+    normalized === "*" ||
+    normalized.includes("*") ||
+    normalized.includes("$") ||
+    normalized.includes("/") ||
+    normalized.includes(":") ||
+    normalized.includes("@") ||
+    /\s/.test(normalized) ||
+    isIP(normalized) !== 0 ||
+    normalized.length > 253
+  ) {
+    return null;
+  }
+
+  const labels = normalized.split(".");
+  if (labels.length < 2) return null;
+
+  const labelsAreValid = labels.every(
+    (label) =>
+      label.length >= 1 &&
+      label.length <= 63 &&
+      /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(label),
   );
 
-  if (isAbsolute(expandedPath)) return normalize(expandedPath);
-
-  return normalize(join(variables.$SERVER_ROOT, expandedPath));
+  return labelsAreValid ? normalized : null;
 }
 
-function collectListenerMappedDomains(
-  contents: string[],
-): Map<string, string[]> {
-  const mappedDomains = new Map<string, string[]>();
+function collectDeclaredVirtualHosts(
+  contents: readonly string[],
+): Map<string, string> {
+  const declarations = new Map<string, string>();
 
   for (const content of contents) {
-    const listenerBlocks = extractNamedBlocks(content, "listener");
-
-    for (const listenerBlock of listenerBlocks) {
-      const mapLines = listenerBlock.body.match(/^\s*map\s+.+$/gim) ?? [];
-
-      for (const line of mapLines) {
-        const match = line.trim().match(/^map\s+([^\s]+)\s+(.+)$/i);
-        if (!match) continue;
-
-        const virtualHostName = match[1].trim();
-        if (isStaleName(virtualHostName)) continue;
-
-        const domains = match[2]
-          .split(",")
-          .map((domain) => normalizeDomain(domain))
-          .filter((domain): domain is string => Boolean(domain));
-
-        if (domains.length === 0) continue;
-
-        const existingDomains = mappedDomains.get(virtualHostName) ?? [];
-        mappedDomains.set(
-          virtualHostName,
-          uniqueValues([...existingDomains, ...domains]),
-        );
-      }
-    }
-  }
-
-  return mappedDomains;
-}
-
-function getBackendAddress(configContent: string | null): string | undefined {
-  if (!configContent) return undefined;
-
-  const proxyBlocks = extractNamedBlocks(configContent, "extprocessor").filter(
-    (block) => /^\s*type\s+proxy\s*$/im.test(block.body),
-  );
-
-  for (const block of proxyBlocks) {
-    const address = getDirectiveValue(block.body, "address");
-    if (address) return address;
-  }
-
-  return undefined;
-}
-
-async function hasStrongNodeMarkers(path: string): Promise<boolean> {
-  const nodeMarkers = [
-    join(path, "package.json"),
-    join(dirname(path), "package.json"),
-    join(path, ".next"),
-    join(dirname(path), ".next"),
-    join(path, "server.js"),
-    join(dirname(path), "server.js"),
-    join(path, "ecosystem.config.cjs"),
-    join(dirname(path), "ecosystem.config.cjs"),
-    join(path, "ecosystem.config.js"),
-    join(dirname(path), "ecosystem.config.js"),
-  ];
-
-  const nodeMarkerResults = await Promise.all(
-    nodeMarkers.map((marker) => pathExists(marker)),
-  );
-
-  return nodeMarkerResults.some(Boolean);
-}
-
-async function detectApplicationType(
-  path: string,
-  options?: { forceCustom?: boolean },
-): Promise<WebsiteAppType> {
-  if (options?.forceCustom) {
-    if (await hasStrongNodeMarkers(path)) return "node";
-    return "custom";
-  }
-
-  const wordpressMarkers = [
-    join(path, "wp-config.php"),
-    join(path, "wp-content"),
-    join(path, "wp-includes"),
-  ];
-
-  const wordpressMarkerResults = await Promise.all(
-    wordpressMarkers.map((marker) => pathExists(marker)),
-  );
-
-  if (wordpressMarkerResults.filter(Boolean).length >= 2) {
-    const woocommerceMarkers = [
-      join(path, "wp-content", "plugins", "woocommerce"),
-      join(path, "wp-content", "plugins", "woocommerce", "woocommerce.php"),
-    ];
-    const hasWooCommerce = (
-      await Promise.all(woocommerceMarkers.map((marker) => pathExists(marker)))
-    ).some(Boolean);
-
-    return hasWooCommerce ? "woocommerce" : "wordpress";
-  }
-
-  if (await hasStrongNodeMarkers(path)) return "node";
-  if (await pathExists(join(path, "index.php"))) return "php";
-  if (await pathExists(join(path, "index.html"))) return "static";
-
-  return "unknown";
-}
-
-async function resolveApplicationRoot(
-  path: string,
-  options?: { forceCustom?: boolean },
-): Promise<string> {
-  const candidates = [
-    path,
-    join(path, "public_html"),
-    join(path, "public"),
-    join(path, "html"),
-    dirname(path),
-  ];
-
-  for (const candidate of candidates) {
-    const type = await detectApplicationType(candidate, options);
-    if (type !== "unknown") return candidate;
-  }
-
-  return path;
-}
-
-async function getOwnerFromPath(path: string): Promise<string> {
-  const homeMatch = path.match(/^\/home\/([^/]+)/);
-  if (homeMatch) return homeMatch[1];
-
-  try {
-    const fileStats = await stat(path);
-    const passwd = await readOptionalFile("/etc/passwd");
-    const ownerLine = passwd
-      ?.split("\n")
-      .find((line) => line.split(":")[2] === String(fileStats.uid));
-
-    return ownerLine?.split(":")[0] ?? `uid:${fileStats.uid}`;
-  } catch {
-    return "system";
-  }
-}
-
-async function buildDiscoveredDomain({
-  domain,
-  documentRoot,
-  owner,
-  source,
-  aliases = [],
-  backendAddress,
-  configFile,
-  virtualHostName,
-  forceCustom = false,
-}: {
-  domain: string;
-  documentRoot: string;
-  owner?: string;
-  source: DiscoverySource;
-  aliases?: string[];
-  backendAddress?: string;
-  configFile?: string;
-  virtualHostName?: string;
-  forceCustom?: boolean;
-}): Promise<DiscoveredDomain | null> {
-  const normalizedDomain = normalizeDomain(domain);
-  if (!normalizedDomain) return null;
-
-  const resolvedDocumentRoot = await resolveApplicationRoot(documentRoot, {
-    forceCustom,
-  });
-  const normalizedAliases = uniqueValues([
-    normalizedDomain,
-    ...aliases
-      .map((alias) => normalizeDomain(alias))
-      .filter((alias): alias is string => Boolean(alias)),
-  ]);
-
-  return {
-    domain: normalizedDomain,
-    documentRoot: resolvedDocumentRoot,
-    owner: owner ?? (await getOwnerFromPath(resolvedDocumentRoot)),
-    appType: await detectApplicationType(resolvedDocumentRoot, { forceCustom }),
-    source,
-    aliases: normalizedAliases,
-    backendAddress,
-    configFile,
-    virtualHostName,
-  };
-}
-
-function parseDirectAdminList(content: string): string[] {
-  return content
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"));
-}
-
-function parseDirectAdminConfValue(
-  content: string,
-  key: string,
-): string | null {
-  const matcher = new RegExp(`^${key}=(.*)$`, "im");
-  const match = content.match(matcher);
-  return match?.[1]?.trim() || null;
-}
-
-async function isDirectAdminUserSuspended(userDir: string): Promise<boolean> {
-  const userConf = await readOptionalFile(join(userDir, "user.conf"));
-  if (!userConf) return false;
-
-  const suspended = parseDirectAdminConfValue(userConf, "suspended");
-  return suspended === "yes" || suspended === "YES" || suspended === "1";
-}
-
-async function collectDirectAdminPointers(
-  userDir: string,
-  domain: string,
-): Promise<string[]> {
-  const pointers: string[] = [];
-  const pointersFile = await readOptionalFile(
-    join(userDir, "domains", `${domain}.pointers`),
-  );
-  if (pointersFile) {
-    pointers.push(...parseDirectAdminList(pointersFile));
-  }
-
-  const domainConf = await readOptionalFile(
-    join(userDir, "domains", `${domain}.conf`),
-  );
-  if (domainConf) {
-    const pointerValue = parseDirectAdminConfValue(domainConf, "pointers");
-    if (pointerValue) {
-      pointers.push(
-        ...pointerValue
-          .split(/[,\s]+/)
-          .map((item) => item.trim())
-          .filter(Boolean),
-      );
-    }
-  }
-
-  return uniqueValues(pointers);
-}
-
-async function collectDirectAdminSubdomains(
-  userDir: string,
-  user: string,
-  domain: string,
-): Promise<DiscoveredDomain[]> {
-  const discovered: DiscoveredDomain[] = [];
-  const subdomainNames = new Set<string>();
-
-  const subdomainListFile = await readOptionalFile(
-    join(userDir, "domains", `${domain}.subdomains`),
-  );
-  if (subdomainListFile) {
-    for (const entry of parseDirectAdminList(subdomainListFile)) {
-      if (!isStaleName(entry)) subdomainNames.add(entry);
-    }
-  }
-
-  for (const subdomain of subdomainNames) {
-    const fqdn = `${subdomain}.${domain}`;
-    const nestedDocRoot = join(
-      "/home",
-      user,
-      "domains",
-      domain,
-      "public_html",
-      subdomain,
-    );
-    const standaloneDocRoot = join(
-      "/home",
-      user,
-      "domains",
-      fqdn,
-      "public_html",
-    );
-    const documentRoot = (await pathExists(standaloneDocRoot))
-      ? standaloneDocRoot
-      : nestedDocRoot;
-
-    if (!(await pathExists(documentRoot))) continue;
-
-    const discoveredDomain = await buildDiscoveredDomain({
-      domain: fqdn,
-      owner: user,
-      documentRoot,
-      source: "directadmin",
-      aliases: [fqdn, `www.${fqdn}`],
-    });
-
-    if (discoveredDomain) discovered.push(discoveredDomain);
-  }
-
-  return discovered;
-}
-
-async function scanDirectAdminManifests(): Promise<DiscoveredDomain[]> {
-  const daUsersPath = "/usr/local/directadmin/data/users/";
-  const discovered: DiscoveredDomain[] = [];
-
-  try {
-    const users = await readdir(daUsersPath);
-
-    for (const user of users) {
-      if (isStaleName(user)) continue;
-
-      const userDir = join(daUsersPath, user);
-      if (await isDirectAdminUserSuspended(userDir)) {
-        console.log(
-          `[INFO] Skipping suspended DirectAdmin account: ${user}`,
-        );
-        continue;
-      }
-
-      const domainsPath = join(userDir, "domains.list");
-
-      try {
-        const domainsContent = await readFile(domainsPath, "utf-8");
-        const domains = domainsContent
-          .split("\n")
-          .map((domain) => normalizeDomain(domain))
-          .filter((domain): domain is string => Boolean(domain));
-
-        for (const domain of domains) {
-          const pointers = await collectDirectAdminPointers(userDir, domain);
-          const discoveredDomain = await buildDiscoveredDomain({
-            domain,
-            owner: user,
-            documentRoot: `/home/${user}/domains/${domain}/public_html`,
-            source: "directadmin",
-            aliases: [domain, `www.${domain}`, ...pointers],
-          });
-
-          if (discoveredDomain) discovered.push(discoveredDomain);
-
-          for (const pointer of pointers) {
-            const pointerDomain = await buildDiscoveredDomain({
-              domain: pointer,
-              owner: user,
-              documentRoot: `/home/${user}/domains/${domain}/public_html`,
-              source: "directadmin",
-              aliases: [pointer, `www.${pointer}`, domain],
-            });
-            if (pointerDomain) discovered.push(pointerDomain);
-          }
-
-          discovered.push(
-            ...(await collectDirectAdminSubdomains(userDir, user, domain)),
-          );
-        }
-      } catch (error: any) {
-        if (error.code !== "ENOENT" && error.code !== "EACCES") {
-          console.warn(
-            `[WARNING] Could not read manifest files for hosting account [${user}]: ${error.message}`,
-          );
-        }
-      }
-    }
-  } catch (error: any) {
-    if (error.code === "ENOENT") {
-      console.log(
-        `[INFO] DirectAdmin ecosystem footprint missing at ${daUsersPath}. Skipping DirectAdmin discovery layer.`,
-      );
-    } else if (error.code === "EACCES") {
-      console.log(
-        `[INFO] Access to DirectAdmin paths denied. Skipping DirectAdmin discovery layer.`,
-      );
-    } else {
-      console.error(
-        `[ERROR] DirectAdmin tracking matrix encountered an unexpected error:`,
-        error.message,
-      );
-    }
-  }
-
-  return discovered;
-}
-
-async function readConfiguredFiles(
-  paths: string[],
-): Promise<Array<{ path: string; content: string }>> {
-  const contents: Array<{ path: string; content: string }> = [];
-
-  for (const path of paths) {
-    const content = await readOptionalFile(path);
-    if (content) contents.push({ path, content });
-  }
-
-  return contents;
-}
-
-async function collectOpenLiteSpeedDeclarations(
-  contents: Array<{ path: string; content: string }>,
-  serverRoot: string,
-): Promise<Map<string, OpenLiteSpeedVirtualHostDeclaration>> {
-  const declarations = new Map<string, OpenLiteSpeedVirtualHostDeclaration>();
-
-  for (const { content } of contents) {
-    const virtualHostBlocks = extractNamedBlocks(content, "virtualhost");
-
-    for (const virtualHostBlock of virtualHostBlocks) {
-      const virtualHostName = virtualHostBlock.name;
-      if (isStaleName(virtualHostName)) continue;
-
-      const vhRootRaw = getDirectiveValue(virtualHostBlock.body, "vhRoot");
-      const configFileRaw = getDirectiveValue(
-        virtualHostBlock.body,
-        "configFile",
-      );
-      const inferredVarWwwRoot = `/var/www/${virtualHostName}`;
-      const vhRoot = vhRootRaw
-        ? resolveOpenLiteSpeedPath(vhRootRaw, { $SERVER_ROOT: serverRoot })
-        : (await pathExists(inferredVarWwwRoot))
-          ? inferredVarWwwRoot
-          : join(serverRoot, "conf", "vhosts", virtualHostName);
-
-      const configFile = configFileRaw
-        ? resolveOpenLiteSpeedPath(configFileRaw, {
-            $SERVER_ROOT: serverRoot,
-            $VH_ROOT: vhRoot,
-          })
-        : join(serverRoot, "conf", "vhosts", virtualHostName, "vhconf.conf");
-
-      declarations.set(virtualHostName, {
-        name: virtualHostName,
-        vhRoot,
-        configFile,
-      });
+    for (const block of extractNamedBlocks(content, "virtualhost")) {
+      if (isStaleVirtualHostName(block.name)) continue;
+
+      const key = canonicalVirtualHostKey(block.name);
+      if (!key || declarations.has(key)) continue;
+      declarations.set(key, block.name.trim());
     }
   }
 
   return declarations;
 }
 
-async function scanOpenLiteSpeedDeclarations(): Promise<DiscoveredDomain[]> {
-  const declarationPaths = splitConfiguredPaths(
-    process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS,
-  );
-  const listenerPaths = splitConfiguredPaths(
-    process.env.OPENLITESPEED_LISTENER_PATHS,
-  );
-  const vhostDeclarationPaths =
-    declarationPaths.length > 0
-      ? declarationPaths
-      : defaultOpenLiteSpeedVhostDeclarationPaths;
-  const openLiteSpeedListenerPaths =
-    listenerPaths.length > 0 ? listenerPaths : defaultOpenLiteSpeedListenerPaths;
+function collectMappedVirtualHosts(
+  contents: readonly string[],
+): MappedVirtualHost[] {
+  const byVhost = new Map<string, MappedVirtualHost>();
 
-  const [declarationFiles, listenerFiles] = await Promise.all([
-    readConfiguredFiles(vhostDeclarationPaths),
-    readConfiguredFiles(openLiteSpeedListenerPaths),
-  ]);
+  for (const content of contents) {
+    for (const listenerBlock of extractNamedBlocks(content, "listener")) {
+      const mapLines = stripComments(listenerBlock.body).match(
+        /^\s*map\s+.+$/gim,
+      ) ?? [];
 
-  if (declarationFiles.length === 0 && listenerFiles.length === 0) {
-    console.log(
-      `[INFO] OpenLiteSpeed active config files were not readable. Skipping config discovery layer.`,
-    );
-    return [];
+      for (const line of mapLines) {
+        const match = line.trim().match(/^map\s+([^\s]+)\s+(.+)$/i);
+        if (!match) continue;
+
+        const virtualHostName = match[1].trim();
+        if (isStaleVirtualHostName(virtualHostName)) continue;
+
+        const hostnames = match[2]
+          .split(",")
+          .map(normalizeMappedHostname)
+          .filter((hostname): hostname is string => hostname !== null);
+
+        if (hostnames.length === 0) continue;
+
+        const key = canonicalVirtualHostKey(virtualHostName);
+        const existing = byVhost.get(key);
+
+        if (existing) {
+          existing.hostnames = uniqueValues([
+            ...existing.hostnames,
+            ...hostnames,
+          ]);
+          continue;
+        }
+
+        byVhost.set(key, {
+          virtualHostName,
+          hostnames: uniqueValues(hostnames),
+        });
+      }
+    }
   }
 
-  if (listenerFiles.length === 0) {
-    console.log(
-      `[INFO] OpenLiteSpeed listener files were not readable. Active listener discovery skipped.`,
-    );
-    return [];
-  }
+  return [...byVhost.values()];
+}
 
-  if (declarationFiles.length === 0) {
-    console.log(
-      `[INFO] OpenLiteSpeed vhost declaration files were not readable. Active vhost discovery skipped.`,
-    );
-    return [];
-  }
-
-  const mappedDomains = collectListenerMappedDomains(
-    listenerFiles.map((file) => file.content),
+function selectPrimaryHostname(hostnames: readonly string[]): string | null {
+  return (
+    hostnames.find((hostname) => !hostname.startsWith("www.")) ??
+    hostnames[0] ??
+    null
   );
-  if (mappedDomains.size === 0) {
-    console.log(
-      `[INFO] OpenLiteSpeed listener maps are empty or only contain stale entries.`,
-    );
-    return [];
-  }
+}
 
-  const serverRoot = openLiteSpeedServerRoot;
-  const declarations = await collectOpenLiteSpeedDeclarations(
-    declarationFiles,
-    serverRoot,
+/**
+ * Pure parser used by production discovery and unit tests.
+ *
+ * Only a listener mapping that references an active vhost declaration becomes
+ * inventory. Nothing in this function reads a document root or per-vhost
+ * website configuration.
+ */
+export function parseOpenLiteSpeedInventory(
+  bundle: OpenLiteSpeedConfigBundle,
+): DiscoveredDomain[] {
+  const declarations = collectDeclaredVirtualHosts(
+    bundle.vhostDeclarationConfigs,
   );
+  const mappings = collectMappedVirtualHosts(bundle.listenerConfigs);
+
   const discovered: DiscoveredDomain[] = [];
+  const claimedPrimaryDomains = new Set<string>();
 
-  for (const [virtualHostName, domains] of mappedDomains.entries()) {
-    const declaration = declarations.get(virtualHostName);
+  for (const mapping of mappings) {
+    const declarationName = declarations.get(
+      canonicalVirtualHostKey(mapping.virtualHostName),
+    );
+    if (!declarationName) continue;
 
-    if (!declaration) {
-      console.log(
-        `[INFO] Skipping mapped OpenLiteSpeed vhost without active declaration: ${virtualHostName}`,
-      );
-      continue;
-    }
+    const primary = selectPrimaryHostname(mapping.hostnames);
+    if (!primary || claimedPrimaryDomains.has(primary)) continue;
 
-    if (
-      !declaration.configFile ||
-      !(await isReadableFile(declaration.configFile))
-    ) {
-      console.log(
-        `[INFO] Skipping OpenLiteSpeed vhost with unreadable config: ${virtualHostName}`,
-      );
-      continue;
-    }
+    claimedPrimaryDomains.add(primary);
 
-    const virtualHostConfig = await readOptionalFile(declaration.configFile);
-    const docRootRaw = virtualHostConfig
-      ? getDirectiveValue(virtualHostConfig, "docRoot")
-      : null;
-    const backendAddress = getBackendAddress(virtualHostConfig);
-    const documentRoot = docRootRaw
-      ? resolveOpenLiteSpeedPath(docRootRaw, {
-          $SERVER_ROOT: serverRoot,
-          $VH_ROOT: declaration.vhRoot,
-        })
-      : declaration.vhRoot;
-
-    const hasDocumentRoot = await pathExists(documentRoot);
-    if (!hasDocumentRoot && !backendAddress) {
-      console.log(
-        `[INFO] Skipping OpenLiteSpeed vhost without docRoot or proxy backend: ${virtualHostName}`,
-      );
-      continue;
-    }
-
-    const primaryDomain = domains[0];
-    const discoveredDomain = await buildDiscoveredDomain({
-      domain: primaryDomain,
-      documentRoot,
+    discovered.push({
+      domain: primary,
+      aliases: mapping.hostnames.filter((hostname) => hostname !== primary),
+      virtualHostName: declarationName,
       source: "openlitespeed",
-      aliases: [virtualHostName, ...domains],
-      backendAddress,
-      configFile: declaration.configFile,
-      virtualHostName: declaration.name,
     });
-
-    if (discoveredDomain) discovered.push(discoveredDomain);
   }
 
   return discovered;
 }
 
-async function scanOpenLiteSpeedOrphanVhostDirectory(): Promise<
+/**
+ * Read only the explicitly configured/default OLS listener and vhost
+ * declaration files. No DirectAdmin paths, document roots, /home, /var/www,
+ * /etc/passwd, or orphan-vhost directory enumeration is performed here.
+ */
+export async function discoverOpenLiteSpeedInventory(): Promise<
   DiscoveredDomain[]
 > {
-  if (!config.openLiteSpeedDiscoverOrphanVhosts) return [];
-
-  const configuredVhostsRoot =
-    process.env.OPENLITESPEED_VHOSTS_ROOT || defaultOpenLiteSpeedVhostsRoot;
-  const discovered: DiscoveredDomain[] = [];
-
-  try {
-    const entries = await readdir(configuredVhostsRoot, {
-      withFileTypes: true,
-    });
-
-    for (const entry of entries) {
-      if (!entry.isDirectory() || isStaleName(entry.name)) continue;
-
-      const virtualHostName = entry.name;
-      const configFile = join(
-        configuredVhostsRoot,
-        virtualHostName,
-        "vhconf.conf",
-      );
-      const configContent = await readOptionalFile(configFile);
-      if (!configContent) continue;
-
-      const vhRootRaw = getDirectiveValue(configContent, "vhRoot");
-      const docRootRaw = getDirectiveValue(configContent, "docRoot");
-      const inferredVarWwwRoot = `/var/www/${virtualHostName}`;
-      const vhRoot = vhRootRaw
-        ? resolveOpenLiteSpeedPath(vhRootRaw, {
-            $SERVER_ROOT: openLiteSpeedServerRoot,
-          })
-        : (await pathExists(inferredVarWwwRoot))
-          ? inferredVarWwwRoot
-          : join(configuredVhostsRoot, virtualHostName);
-      const backendAddress = getBackendAddress(configContent);
-      const documentRoot = docRootRaw
-        ? resolveOpenLiteSpeedPath(docRootRaw, {
-            $SERVER_ROOT: openLiteSpeedServerRoot,
-            $VH_ROOT: vhRoot,
-          })
-        : vhRoot;
-      const domain =
-        normalizeDomain(virtualHostName) ??
-        normalizeDomain(basename(documentRoot));
-
-      if (!domain) continue;
-
-      const discoveredDomain = await buildDiscoveredDomain({
-        domain,
-        documentRoot,
-        source: "openlitespeed",
-        aliases: [virtualHostName, domain],
-        backendAddress,
-        configFile,
-        virtualHostName,
-      });
-
-      if (discoveredDomain) discovered.push(discoveredDomain);
-    }
-  } catch (error: any) {
-    if (error.code !== "ENOENT" && error.code !== "EACCES") {
-      console.warn(
-        `[WARNING] OpenLiteSpeed orphan vhost directory scan failed: ${error.message}`,
-      );
-    }
-  }
-
-  return discovered;
-}
-
-async function scanOpenLiteSpeed(): Promise<DiscoveredDomain[]> {
-  const [declaredDomains, orphanDomains] = await Promise.all([
-    scanOpenLiteSpeedDeclarations(),
-    scanOpenLiteSpeedOrphanVhostDirectory(),
+  const [listenerRead, declarationRead] = await Promise.all([
+    readOpenLiteSpeedRoutingConfigs("listener"),
+    readOpenLiteSpeedRoutingConfigs("vhost-declaration"),
   ]);
 
-  return [...declaredDomains, ...orphanDomains];
-}
-
-async function scanVarWwwStyleRoot(rootPath: string): Promise<DiscoveredDomain[]> {
-  const discovered: DiscoveredDomain[] = [];
-
-  try {
-    const entries = await readdir(rootPath, { withFileTypes: true });
-
-    for (const entry of entries) {
-      if (!entry.isDirectory() || isStaleName(entry.name)) continue;
-
-      const domain = normalizeDomain(entry.name);
-      if (!domain) continue;
-
-      const documentRoot = join(rootPath, entry.name);
-      const discoveredDomain = await buildDiscoveredDomain({
-        domain,
-        documentRoot,
-        source: "filesystem",
-        aliases: [domain, `www.${domain}`],
-      });
-
-      if (discoveredDomain) discovered.push(discoveredDomain);
-    }
-  } catch (error: any) {
-    if (error.code !== "ENOENT" && error.code !== "EACCES") {
-      console.warn(
-        `[WARNING] Filesystem discovery failed for ${rootPath}: ${error.message}`,
-      );
-    }
-  }
-
-  return discovered;
-}
-
-async function scanHomeDomainsRoot(rootPath: string): Promise<DiscoveredDomain[]> {
-  const discovered: DiscoveredDomain[] = [];
-
-  try {
-    const users = await readdir(rootPath, { withFileTypes: true });
-
-    for (const user of users) {
-      if (!user.isDirectory()) continue;
-
-      const domainsRoot = join(rootPath, user.name, "domains");
-      const domains = await readdir(domainsRoot, { withFileTypes: true }).catch(
-        () => [],
-      );
-
-      for (const domainEntry of domains) {
-        if (!domainEntry.isDirectory() || isStaleName(domainEntry.name)) continue;
-
-        const domain = normalizeDomain(domainEntry.name);
-        if (!domain) continue;
-
-        const discoveredDomain = await buildDiscoveredDomain({
-          domain,
-          owner: user.name,
-          documentRoot: join(domainsRoot, domainEntry.name, "public_html"),
-          source: "filesystem",
-          aliases: [domain, `www.${domain}`],
-        });
-
-        if (discoveredDomain) discovered.push(discoveredDomain);
-      }
-    }
-  } catch (error: any) {
-    if (error.code !== "ENOENT" && error.code !== "EACCES") {
-      console.warn(
-        `[WARNING] Home directory discovery failed for ${rootPath}: ${error.message}`,
-      );
-    }
-  }
-
-  return discovered;
-}
-
-async function scanManualExactPaths(): Promise<DiscoveredDomain[]> {
-  const exactPaths = splitConfiguredPaths(process.env.WEB_DISCOVERY_EXACT_PATHS);
-  const discovered: DiscoveredDomain[] = [];
-
-  for (const exactPath of exactPaths) {
-    const domain = normalizeDomain(basename(exactPath));
-    if (!domain) continue;
-
-    const discoveredDomain = await buildDiscoveredDomain({
-      domain,
-      documentRoot: exactPath,
-      source: "filesystem",
-      aliases: [domain, `www.${domain}`],
-      forceCustom: true,
-    });
-
-    if (discoveredDomain) discovered.push(discoveredDomain);
-  }
-
-  return discovered;
-}
-
-async function scanFilesystemRoots(): Promise<DiscoveredDomain[]> {
-  const roots = splitConfiguredPaths(process.env.WEB_DISCOVERY_ROOTS);
-  const targetRoots = roots.length > 0 ? roots : defaultDiscoveryRoots;
-  const discovered: DiscoveredDomain[] = [];
-
-  discovered.push(...(await scanManualExactPaths()));
-
-  for (const root of targetRoots) {
-    if (root === "/home") {
-      discovered.push(...(await scanHomeDomainsRoot(root)));
-      continue;
-    }
-
-    discovered.push(...(await scanVarWwwStyleRoot(root)));
-  }
-
-  return discovered;
-}
-
-function preferDirectAdminOwner(owner: string | undefined): boolean {
-  return Boolean(owner && owner !== "system" && !owner.startsWith("uid:"));
-}
-
-function deduplicateDomains(domains: DiscoveredDomain[]): DiscoveredDomain[] {
-  const sourcePriority: Record<DiscoverySource, number> = {
-    openlitespeed: 3,
-    directadmin: 2,
-    filesystem: 1,
-  };
-  const domainMap = new Map<string, DiscoveredDomain>();
-
-  for (const domain of domains) {
-    const previous = domainMap.get(domain.domain);
-
-    if (!previous) {
-      domainMap.set(domain.domain, { ...domain });
-      continue;
-    }
-
-    const previousPriority = sourcePriority[previous.source];
-    const nextPriority = sourcePriority[domain.source];
-
-    if (nextPriority > previousPriority) {
-      domainMap.set(domain.domain, {
-        ...domain,
-        aliases: uniqueValues([...previous.aliases, ...domain.aliases]),
-        owner: preferDirectAdminOwner(previous.owner)
-          ? previous.owner
-          : domain.owner,
-      });
-      continue;
-    }
-
-    if (nextPriority < previousPriority) {
-      previous.aliases = uniqueValues([...previous.aliases, ...domain.aliases]);
-      if (
-        !preferDirectAdminOwner(previous.owner) &&
-        preferDirectAdminOwner(domain.owner)
-      ) {
-        previous.owner = domain.owner;
-      }
-      continue;
-    }
-
-    previous.aliases = uniqueValues([...previous.aliases, ...domain.aliases]);
-    if (
-      !preferDirectAdminOwner(previous.owner) &&
-      preferDirectAdminOwner(domain.owner)
-    ) {
-      previous.owner = domain.owner;
-    }
-  }
-
-  return [...domainMap.values()].sort((first, second) =>
-    first.domain.localeCompare(second.domain),
-  );
-}
-
-function enrichOpenLiteSpeedWithDirectAdmin(
-  openLiteSpeedDomains: DiscoveredDomain[],
-  directAdminDomains: DiscoveredDomain[],
-): DiscoveredDomain[] {
-  const daByDomain = new Map(
-    directAdminDomains.map((domain) => [domain.domain, domain]),
-  );
-
-  return openLiteSpeedDomains.map((olsDomain) => {
-    const daDomain = daByDomain.get(olsDomain.domain);
-    if (!daDomain) return olsDomain;
-
-    return {
-      ...olsDomain,
-      owner: preferDirectAdminOwner(daDomain.owner)
-        ? daDomain.owner
-        : olsDomain.owner,
-      aliases: uniqueValues([...olsDomain.aliases, ...daDomain.aliases]),
-    };
-  });
-}
-
-export async function initializeIdentity(): Promise<HostIdentity> {
-  console.log(`[Discovery] Initiating host identity resolution...`);
-
-  const machineId = await getMachineId();
-  console.log(`[Discovery] Node Fingerprint: ${machineId}`);
-
-  console.log(`[Discovery] Scanning OpenLiteSpeed active routing first...`);
-  const openLiteSpeedDomains = await scanOpenLiteSpeed();
-  const directAdminDomains = await scanDirectAdminManifests();
-  const manualDomains = await scanManualExactPaths();
-
-  if (
-    openLiteSpeedDomains.length > 0 &&
-    !config.webDiscoveryIncludeFallbacks
-  ) {
-    const enrichedOpenLiteSpeed = enrichOpenLiteSpeedWithDirectAdmin(
-      openLiteSpeedDomains,
-      directAdminDomains,
+  if (listenerRead.contents.length === 0) {
+    throw new OpenLiteSpeedDiscoveryError(
+      "ols_listener_config_unreadable",
+      `No readable OpenLiteSpeed listener configuration. Checked: ${
+        listenerRead.failures.join(", ") ||
+        listenerRead.checkedPaths.join(", ") ||
+        "none"
+      }`,
     );
-    const domains = deduplicateDomains([
-      ...enrichedOpenLiteSpeed,
-      ...manualDomains,
-    ]);
+  }
 
+  if (declarationRead.contents.length === 0) {
+    throw new OpenLiteSpeedDiscoveryError(
+      "ols_vhost_declaration_config_unreadable",
+      `No readable OpenLiteSpeed vhost declaration configuration. Checked: ${
+        declarationRead.failures.join(", ") ||
+        declarationRead.checkedPaths.join(", ") ||
+        "none"
+      }`,
+    );
+  }
+
+  const domains = parseOpenLiteSpeedInventory({
+    listenerConfigs: listenerRead.contents,
+    vhostDeclarationConfigs: declarationRead.contents,
+  });
+
+  console.log(
+    `[Discovery] OpenLiteSpeed inventory scan completed. Active mapped sites: ${domains.length}.`,
+  );
+
+  return domains;
+}
+
+/**
+ * Run one successful OLS scan through the persisted effective-inventory state.
+ * Failed raw OLS scans throw before state reconciliation, so they never count
+ * as a missing scan.
+ */
+export async function discoverEffectiveOpenLiteSpeedInventory(
+  options: DiscoveryInventoryStateOptions = {},
+): Promise<{
+  domains: DiscoveredDomain[];
+  changes: DiscoveryInventoryChanges;
+}> {
+  const scannedDomains = await discoverOpenLiteSpeedInventory();
+  const result = await updateDiscoveryInventoryState(scannedDomains, options);
+
+  if (result.changes.added.length > 0) {
     console.log(
-      `[Discovery] Mapped ${domains.length} active web properties: ${domains
-        .map((domain) => `${domain.domain}:${domain.appType}:${domain.source}`)
+      `[Discovery] Added ${result.changes.added.length} site(s): ${result.changes.added
+        .map((site) => site.domain)
         .join(", ")}`,
     );
-
-    return { machineId, domains };
+  }
+  if (result.changes.retainedMissing.length > 0) {
+    console.warn(
+      `[Discovery] Retaining ${result.changes.retainedMissing.length} site(s) after first missing scan: ${result.changes.retainedMissing
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+  if (result.changes.recovered.length > 0) {
+    console.log(
+      `[Discovery] Recovered ${result.changes.recovered.length} site(s) before removal confirmation: ${result.changes.recovered
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+  if (result.changes.removed.length > 0) {
+    console.log(
+      `[Discovery] Removal confirmed for ${result.changes.removed.length} site(s): ${result.changes.removed
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
   }
 
-  console.log(
-    `[Discovery] Scanning DirectAdmin and filesystem fallback footprints...`,
-  );
-  const filesystemDomains = await scanFilesystemRoots();
+  return {
+    domains: result.effectiveDomains,
+    changes: result.changes,
+  };
+}
 
-  const domains = deduplicateDomains([
-    ...enrichOpenLiteSpeedWithDirectAdmin(
-      openLiteSpeedDomains,
-      directAdminDomains,
-    ),
-    ...directAdminDomains,
-    ...filesystemDomains,
-  ]);
+/**
+ * Compatibility wrapper for the current engine. Agent identity must already be
+ * resolved by the caller; discovery itself owns only OLS inventory.
+ */
+export async function initializeIdentity(
+  agentInstanceId: string,
+  options: DiscoveryInventoryStateOptions = {},
+): Promise<HostIdentity> {
+  const normalizedAgentInstanceId = agentInstanceId.trim();
+  if (!normalizedAgentInstanceId) {
+    throw new Error("agentInstanceId is required before OLS discovery.");
+  }
 
-  console.log(
-    `[Discovery] Mapped ${domains.length} active web properties: ${domains
-      .map((domain) => `${domain.domain}:${domain.appType}:${domain.source}`)
-      .join(", ")}`,
-  );
+  const inventory = await discoverEffectiveOpenLiteSpeedInventory(options);
 
-  return { machineId, domains };
+  return {
+    agentInstanceId: normalizedAgentInstanceId,
+    domains: inventory.domains,
+    discoveryChanges: inventory.changes,
+  };
 }

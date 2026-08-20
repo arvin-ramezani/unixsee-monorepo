@@ -143,6 +143,9 @@ export const STAFF_CAPABILITY = {
   VIEW_INTERNAL_NOTES: "VIEW_INTERNAL_NOTES",
   ASSIGN_WEBSITE: "ASSIGN_WEBSITE",
   ENABLE_PLAN_REQUEST: "ENABLE_PLAN_REQUEST",
+  REVIEW_AUTHORIZATION: "REVIEW_AUTHORIZATION",
+  APPROVE_AUTHORIZATION: "APPROVE_AUTHORIZATION",
+  VIEW_AUTHORIZATION_DOCUMENT: "VIEW_AUTHORIZATION_DOCUMENT",
 } as const;
 
 export type StaffCapabilityType =
@@ -185,7 +188,8 @@ export type CustomerUserType = {
   displayName: string;
   email: string | null;
   emailVerification: ContactVerificationType;
-  mobile: string | null;
+  /** Required contact identifier for every customer account. */
+  mobile: string;
   mobileVerification: ContactVerificationType;
   locale: CustomerLocaleType;
   accountState: AccountStateType;
@@ -241,9 +245,13 @@ export const CURRENT_STAFF = {
     STAFF_CAPABILITY.MANAGE_MEMBERSHIP,
     STAFF_CAPABILITY.SUSPEND_RESTORE,
     STAFF_CAPABILITY.REVOKE_SESSIONS,
+    STAFF_CAPABILITY.START_RECOVERY,
     STAFF_CAPABILITY.VIEW_INTERNAL_NOTES,
     STAFF_CAPABILITY.ASSIGN_WEBSITE,
     STAFF_CAPABILITY.ENABLE_PLAN_REQUEST,
+    STAFF_CAPABILITY.REVIEW_AUTHORIZATION,
+    STAFF_CAPABILITY.APPROVE_AUTHORIZATION,
+    STAFF_CAPABILITY.VIEW_AUTHORIZATION_DOCUMENT,
   ] as StaffCapabilityType[],
 } as const;
 
@@ -304,8 +312,8 @@ export const CUSTOMER_USERS: CustomerUserType[] = [
     displayName: "نگار کریمی",
     email: "negar.karimi@alborzsport.ir",
     emailVerification: CONTACT_VERIFICATION.VERIFIED,
-    mobile: null,
-    mobileVerification: CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile: "09123334455",
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: CUSTOMER_LOCALE.FA_IR,
     accountState: ACCOUNT_STATE.ACTIVE,
     origin: ACCOUNT_ORIGIN.PLAN_REQUEST,
@@ -372,8 +380,8 @@ export const CUSTOMER_USERS: CustomerUserType[] = [
     displayName: "الهام نادری",
     email: "elham.naderi@example.com",
     emailVerification: CONTACT_VERIFICATION.PENDING,
-    mobile: null,
-    mobileVerification: CONTACT_VERIFICATION.NOT_PROVIDED,
+    mobile: "09126667788",
+    mobileVerification: CONTACT_VERIFICATION.PENDING,
     locale: CUSTOMER_LOCALE.FA_IR,
     accountState: ACCOUNT_STATE.PENDING_VERIFICATION,
     origin: ACCOUNT_ORIGIN.ADMIN_CREATE,
@@ -416,6 +424,57 @@ export const CUSTOMER_USERS: CustomerUserType[] = [
     activeSessionCount: 0,
     createdAt: "۱۷ مرداد ۱۴۰۵",
     lastSignInAt: null,
+    stateReason: null,
+  },
+  {
+    id: "user-201",
+    displayName: "نیما فرهادی",
+    email: "nima.farhadi@example.com",
+    emailVerification: CONTACT_VERIFICATION.VERIFIED,
+    mobile: "09120001122",
+    mobileVerification: CONTACT_VERIFICATION.VERIFIED,
+    locale: CUSTOMER_LOCALE.FA_IR,
+    accountState: ACCOUNT_STATE.ACTIVE,
+    origin: ACCOUNT_ORIGIN.PLAN_REQUEST,
+    inviteStatus: INVITE_STATUS.ACCEPTED,
+    twoFactorEnabled: false,
+    activeSessionCount: 1,
+    createdAt: "۱۶ مرداد ۱۴۰۵",
+    lastSignInAt: "امروز، ۱۲:۱۰",
+    stateReason: null,
+  },
+  {
+    id: "user-202",
+    displayName: "پریسا اکبری",
+    email: "parisa.akbari@example.com",
+    emailVerification: CONTACT_VERIFICATION.VERIFIED,
+    mobile: "09123334455",
+    mobileVerification: CONTACT_VERIFICATION.VERIFIED,
+    locale: CUSTOMER_LOCALE.FA_IR,
+    accountState: ACCOUNT_STATE.ACTIVE,
+    origin: ACCOUNT_ORIGIN.PUBLIC_SIGNUP,
+    inviteStatus: INVITE_STATUS.ACCEPTED,
+    twoFactorEnabled: false,
+    activeSessionCount: 1,
+    createdAt: "۱۴ مرداد ۱۴۰۵",
+    lastSignInAt: "دیروز، ۱۹:۲۰",
+    stateReason: null,
+  },
+  {
+    id: "user-203",
+    displayName: "کامران یوسفی",
+    email: "kamran.yousefi@example.com",
+    emailVerification: CONTACT_VERIFICATION.VERIFIED,
+    mobile: "09351110022",
+    mobileVerification: CONTACT_VERIFICATION.VERIFIED,
+    locale: CUSTOMER_LOCALE.FA_IR,
+    accountState: ACCOUNT_STATE.ACTIVE,
+    origin: ACCOUNT_ORIGIN.PUBLIC_SIGNUP,
+    inviteStatus: INVITE_STATUS.ACCEPTED,
+    twoFactorEnabled: false,
+    activeSessionCount: 0,
+    createdAt: "۱۰ مرداد ۱۴۰۵",
+    lastSignInAt: "۱۱ مرداد، ۰۸:۰۰",
     stateReason: null,
   },
 ];

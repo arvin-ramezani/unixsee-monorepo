@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { AccountMenu } from "@/components/dashboard/account-menu";
 import { LocaleSwitcher } from "@/components/dashboard/locale-switcher";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { NotificationCenter } from "@/components/dashboard/notification-center";
@@ -9,10 +10,10 @@ import { GlobalSearch } from "@/components/dashboard/global-search";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { Button } from "@/components/ui/button";
 import { useScroll } from "@/hooks/use-scroll";
-import { Link } from "@/i18n/navigation";
 import type { NotificationItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 import { GridIcon } from "../common/grid-icon";
+import { ModeToggle } from "../ui/theme-toggle";
 
 type ActiveItem =
   | "Activities"
@@ -22,6 +23,7 @@ type ActiveItem =
   | "HelpCenter"
   | "Profile"
   | "Tickets"
+  | "UnixseeMessages"
   | "Websites";
 
 interface HeaderProps {
@@ -29,6 +31,7 @@ interface HeaderProps {
   notifications: readonly NotificationItem[];
   showViewToggle?: boolean;
   userName?: string;
+  hasUnreadUnixseeMessages?: boolean;
 }
 
 /**
@@ -47,8 +50,8 @@ export function Header({
   notifications,
   showViewToggle: showViewToggleOverride,
   userName = "Jane",
+  hasUnreadUnixseeMessages = false,
 }: HeaderProps) {
-  const t = useTranslations("Header");
   const views = useTranslations("Common.views");
   const { view, toggleView } = useDashboardView();
   const scrolled = useScroll(8);
@@ -66,7 +69,10 @@ export function Header({
       )}
     >
       <div className="flex h-full items-center gap-3 px-4 sm:px-6 xl:ps-7.5 xl:pe-6.5">
-        <MobileNav activeItem={activeItem} />
+        <MobileNav
+          activeItem={activeItem}
+          hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
+        />
         <GlobalSearch />
         <div className="ms-auto flex h-full items-center gap-1 sm:gap-3 xl:gap-5">
           {showViewToggle && (
@@ -81,27 +87,12 @@ export function Header({
               className="hover:bg-muted focus-visible:ring-ring hidden size-11 place-items-center rounded-lg focus-visible:ring-2 sm:grid"
             >
               <GridIcon view={view === "table" ? "list" : "grid"} />
-              {/* {view === "grid" ? (
-                <LayoutList aria-hidden="true" className="size-5" />
-              ) : (
-                <LayoutGrid aria-hidden="true" className="size-5" />
-              )} */}
             </Button>
           )}
           <NotificationCenter notifications={notifications} />
+          <ModeToggle triggerClassName="size-9" />
           <LocaleSwitcher />
-          <Link
-            href="/dashboard/profile"
-            aria-label={t("profile")}
-            className="focus-visible:ring-ring flex h-12 items-center gap-2 rounded-lg px-1.5 focus-visible:ring-2"
-          >
-            <span className="bg-primary text-primary-foreground grid size-10 place-items-center rounded-full text-xs font-semibold xl:size-12">
-              {userName.slice(0, 1)}
-            </span>
-            <span className="hidden text-sm font-medium sm:inline">
-              {userName}
-            </span>
-          </Link>
+          <AccountMenu userName={userName} />
         </div>
       </div>
     </header>

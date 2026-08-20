@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
   CheckCircle2,
@@ -33,14 +35,12 @@ import {
   type PlanRequestStatusType,
   type PlanRequestType,
 } from "@/lib/data/plan-requests-data";
-import {
-  derivePlanRequestStatus,
-  listRuntimePlanRequests,
-} from "@/lib/data/plan-requests-runtime";
-import { getRuntimeWebsite } from "@/lib/data/websites-runtime";
-import { getRuntimeUser } from "@/lib/data/users-runtime";
 import { cn } from "@/lib/utils";
-import { PlanRequestDetailsSheet } from "./plan-request-details-sheet";
+import {
+  resolvePlanRequestContactPrimary,
+  resolvePlanRequestContactSecondary,
+  resolvePlanRequestWebsiteLabel,
+} from "@/lib/plan-requests/plan-request-display";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
 export const STATUS_FILTER = {
@@ -53,7 +53,7 @@ export type StatusFilterType =
   (typeof STATUS_FILTER)[keyof typeof STATUS_FILTER];
 
 const PLAN_FILTER_ALL = "ALL";
-type PlanFilterType = typeof PLAN_FILTER_ALL | PlanIdType;
+type PlanFilterType = typeof PLAN_FILTER_ALL | PlanIdType | string;
 
 const STATUS_FILTER_OPTIONS: { value: StatusFilterType; label: string }[] = [
   { value: STATUS_FILTER.ALL, label: "همه وضعیت‌ها" },
@@ -92,28 +92,22 @@ const ACTIONABLE_STATUSES = new Set<PlanRequestStatusType>([
 
 type PlanRequestsViewProps = {
   initialStatus?: StatusFilterType;
+  initialRequests?: PlanRequestType[];
+  loadError?: string | null;
 };
 
 export function PlanRequestsView({
   initialStatus = STATUS_FILTER.ACTIONABLE,
+  initialRequests = [],
+  loadError = null,
 }: PlanRequestsViewProps = {}) {
-  const [revision, setRevision] = useState(0);
+  const requests = initialRequests;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
     useState<StatusFilterType>(initialStatus);
   const [planFilter, setPlanFilter] = useState<PlanFilterType>(PLAN_FILTER_ALL);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-
-  const requests = useMemo(() => {
-    void revision;
-    return listRuntimePlanRequests().map((request) => ({
-      ...request,
-      status: derivePlanRequestStatus(request),
-    }));
-  }, [revision]);
+  const router = useRouter();
 
   const summary = useMemo(() => {
     return {
@@ -183,12 +177,6 @@ export function PlanRequestsView({
       if (!statusOk || !planOk) return false;
       if (!q) return true;
 
-      const user = request.linkedUserId
-        ? getRuntimeUser(request.linkedUserId)
-        : null;
-      const website = request.targetWebsiteId
-        ? getRuntimeWebsite(request.targetWebsiteId)
-        : null;
       const haystack = [
         request.id,
         request.chosenPlanName,
@@ -196,8 +184,9 @@ export function PlanRequestsView({
         request.contactEmail ?? "",
         request.contactMobile ?? "",
         request.domainHint ?? "",
-        user?.displayName ?? "",
-        website?.domain ?? "",
+        request.linkedUserName ?? "",
+        request.linkedTenantName ?? "",
+        request.targetWebsiteDomain ?? "",
         request.nextAction,
       ]
         .join(" ")
@@ -207,22 +196,21 @@ export function PlanRequestsView({
     });
   }, [requests, search, statusFilter, planFilter]);
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedId) ?? null;
-
   const openRequest = (requestId: string) => {
-    setSelectedId(requestId);
-    setSheetOpen(true);
-  };
-
-  const handleRequestChanged = (request: PlanRequestType, message: string) => {
-    setSelectedId(request.id);
-    setStatusMessage(message);
-    setRevision((value) => value + 1);
+    router.push(`/plan-requests/${requestId}`);
   };
 
   return (
     <div className="space-y-6">
+      {!!loadError && (
+        <p
+          className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
+          {loadError}
+        </p>
+      )}
+
       <section
         className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
         aria-label="خلاصه درخواست‌های پلن"
@@ -243,7 +231,9 @@ export function PlanRequestsView({
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card hover:bg-muted/30",
                 isSelected && !item.emphasis && "ring-2 ring-primary/30",
-                isSelected && item.emphasis && "ring-2 ring-primary-foreground/40",
+                isSelected &&
+                  item.emphasis &&
+                  "ring-2 ring-primary-foreground/40",
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -288,19 +278,9 @@ export function PlanRequestsView({
         })}
       </section>
 
-      {statusMessage ? (
-        <p
-          className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm"
-          role="status"
-          aria-live="polite"
-        >
-          {statusMessage}
-        </p>
-      ) : null}
-
       <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 lg:max-w-lg">
             <SearchInput
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -330,9 +310,13 @@ export function PlanRequestsView({
               }}
             >
               <SelectTrigger aria-label="فیلتر وضعیت">
-                <SelectValue />
+                <SelectValue>
+                  {STATUS_FILTER_OPTIONS.find(
+                    (option) => option.value === statusFilter,
+                  )?.label ?? "همه وضعیت‌ها"}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent alignItemWithTrigger={false}>
                 {STATUS_FILTER_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -347,9 +331,13 @@ export function PlanRequestsView({
               }}
             >
               <SelectTrigger aria-label="فیلتر پلن">
-                <SelectValue />
+                <SelectValue>
+                  {PLAN_FILTER_OPTIONS.find(
+                    (option) => option.value === planFilter,
+                  )?.label ?? "همه پلن‌ها"}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent alignItemWithTrigger={false}>
                 {PLAN_FILTER_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     <span dir="ltr">{option.label}</span>
@@ -365,11 +353,15 @@ export function PlanRequestsView({
             <TableHeader>
               <TableRow>
                 <TableHead className="px-4 py-3 text-right">پلن</TableHead>
-                <TableHead className="px-4 py-3 text-right">تماس</TableHead>
-                <TableHead className="px-4 py-3 text-right">کاربر / مستأجر</TableHead>
+                <TableHead className="px-4 py-3 text-right">نام</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  تلفن/ایمیل
+                </TableHead>
                 <TableHead className="px-4 py-3 text-right">وب‌سایت</TableHead>
                 <TableHead className="px-4 py-3 text-right">وضعیت</TableHead>
-                <TableHead className="px-4 py-3 text-right">اقدام بعدی</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  اقدام بعدی
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -381,61 +373,60 @@ export function PlanRequestsView({
                   >
                     <div className="inline-flex items-center gap-2">
                       <SearchX className="size-4" aria-hidden />
-                      درخواستی با این فیلترها پیدا نشد.
+                      {loadError
+                        ? "بارگذاری درخواست‌ها ناموفق بود."
+                        : "درخواستی با این فیلترها پیدا نشد."}
                     </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((request) => {
-                  const user = request.linkedUserId
-                    ? getRuntimeUser(request.linkedUserId)
-                    : null;
-                  const website = request.targetWebsiteId
-                    ? getRuntimeWebsite(request.targetWebsiteId)
-                    : null;
-
-                  return (
-                    <TableRow
-                      key={request.id}
-                      className="cursor-pointer"
-                      tabIndex={0}
-                      onClick={() => openRequest(request.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          openRequest(request.id);
-                        }
-                      }}
-                    >
-                      <TableCell className="px-4 py-3">
-                        <div className="font-medium" dir="ltr">
-                          {request.chosenPlanName}
-                        </div>
-                        <div className="text-xs text-muted-foreground" dir="ltr">
-                          {request.id}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <div>{request.contactName}</div>
-                        <div className="text-xs text-muted-foreground" dir="ltr">
-                          {request.contactEmail ?? request.contactMobile ?? "—"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        {user ? user.displayName : "متصل نشده"}
-                      </TableCell>
-                      <TableCell className="px-4 py-3" dir="ltr">
-                        {website?.domain ?? request.domainHint ?? "—"}
-                      </TableCell>
-                      <TableCell className="px-4 py-3">
-                        <PlanRequestStatusBadge status={request.status} />
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-                        {request.nextAction}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                filtered.map((request) => (
+                  <TableRow
+                    key={request.id}
+                    className="cursor-pointer"
+                    tabIndex={0}
+                    role="link"
+                    aria-label={`مشاهده درخواست ${request.chosenPlanName}`}
+                    onClick={() => openRequest(request.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openRequest(request.id);
+                      }
+                    }}
+                  >
+                    <TableCell className="px-4 py-3">
+                      <div className="font-medium w-fit" dir="ltr">
+                        {request.chosenPlanName}
+                      </div>
+                      <div
+                        className="text-xs text-muted-foreground w-fit"
+                        dir="ltr"
+                      >
+                        {request.id}
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      {resolvePlanRequestContactPrimary(request)}
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <p className="w-fit" dir="ltr">
+                        {resolvePlanRequestContactSecondary(request)}
+                      </p>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <p className="w-fit" dir="ltr">
+                        {resolvePlanRequestWebsiteLabel(request)}
+                      </p>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <PlanRequestStatusBadge status={request.status} />
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-sm text-muted-foreground">
+                      {request.nextAction}
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
@@ -444,69 +435,49 @@ export function PlanRequestsView({
         <div className="grid gap-3 md:hidden">
           {filtered.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              درخواستی با این فیلترها پیدا نشد.
+              {loadError
+                ? "بارگذاری درخواست‌ها ناموفق بود."
+                : "درخواستی با این فیلترها پیدا نشد."}
             </p>
           ) : (
-            filtered.map((request) => {
-              const user = request.linkedUserId
-                ? getRuntimeUser(request.linkedUserId)
-                : null;
-              const website = request.targetWebsiteId
-                ? getRuntimeWebsite(request.targetWebsiteId)
-                : null;
-
-              return (
-                <button
-                  key={request.id}
-                  type="button"
-                  className="rounded-xl border border-border bg-background p-4 text-right shadow-sm"
-                  onClick={() => openRequest(request.id)}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold" dir="ltr">
-                        {request.chosenPlanName}
-                      </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {request.contactName}
-                      </p>
-                    </div>
-                    <PlanRequestStatusBadge status={request.status} />
+            filtered.map((request) => (
+              <Link
+                key={request.id}
+                href={`/plan-requests/${request.id}`}
+                className="rounded-xl border border-border bg-background p-4 text-right shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold" dir="ltr">
+                      {request.chosenPlanName}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {resolvePlanRequestContactPrimary(request)}
+                    </p>
                   </div>
-                  <dl className="mt-3 grid gap-2 text-xs text-muted-foreground">
-                    <div className="flex justify-between gap-3">
-                      <dt>کاربر</dt>
-                      <dd>{user?.displayName ?? "متصل نشده"}</dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>وب‌سایت</dt>
-                      <dd dir="ltr">
-                        {website?.domain ?? request.domainHint ?? "—"}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <dt>اقدام بعدی</dt>
-                      <dd>{request.nextAction}</dd>
-                    </div>
-                  </dl>
-                </button>
-              );
-            })
+                  <PlanRequestStatusBadge status={request.status} />
+                </div>
+                <dl className="mt-3 grid gap-2 text-xs text-muted-foreground">
+                  <div className="flex justify-between gap-3">
+                    <dt>تلفن/ایمیل</dt>
+                    <dd dir="ltr">
+                      {resolvePlanRequestContactSecondary(request)}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt>وب‌سایت</dt>
+                    <dd dir="ltr">{resolvePlanRequestWebsiteLabel(request)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt>اقدام بعدی</dt>
+                    <dd>{request.nextAction}</dd>
+                  </div>
+                </dl>
+              </Link>
+            ))
           )}
         </div>
       </div>
-
-      <PlanRequestDetailsSheet
-        request={selectedRequest}
-        open={sheetOpen}
-        onOpenChange={(open) => {
-          setSheetOpen(open);
-          if (!open) {
-            window.setTimeout(() => setSelectedId(null), 220);
-          }
-        }}
-        onRequestChanged={handleRequestChanged}
-      />
     </div>
   );
 }

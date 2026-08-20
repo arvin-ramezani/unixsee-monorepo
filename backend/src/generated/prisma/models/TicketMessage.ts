@@ -30,6 +30,7 @@ export type TicketMessageMinAggregateOutputType = {
   authorId: string | null
   body: string | null
   isInternal: boolean | null
+  idempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +41,7 @@ export type TicketMessageMaxAggregateOutputType = {
   authorId: string | null
   body: string | null
   isInternal: boolean | null
+  idempotencyKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +52,7 @@ export type TicketMessageCountAggregateOutputType = {
   authorId: number
   body: number
   isInternal: number
+  idempotencyKey: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +65,7 @@ export type TicketMessageMinAggregateInputType = {
   authorId?: true
   body?: true
   isInternal?: true
+  idempotencyKey?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +76,7 @@ export type TicketMessageMaxAggregateInputType = {
   authorId?: true
   body?: true
   isInternal?: true
+  idempotencyKey?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +87,7 @@ export type TicketMessageCountAggregateInputType = {
   authorId?: true
   body?: true
   isInternal?: true
+  idempotencyKey?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +171,7 @@ export type TicketMessageGroupByOutputType = {
   authorId: string
   body: string
   isInternal: boolean
+  idempotencyKey: string | null
   createdAt: Date
   updatedAt: Date
   _count: TicketMessageCountAggregateOutputType | null
@@ -196,6 +203,7 @@ export type TicketMessageWhereInput = {
   authorId?: Prisma.UuidFilter<"TicketMessage"> | string
   body?: Prisma.StringFilter<"TicketMessage"> | string
   isInternal?: Prisma.BoolFilter<"TicketMessage"> | boolean
+  idempotencyKey?: Prisma.StringNullableFilter<"TicketMessage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   ticket?: Prisma.XOR<Prisma.TicketScalarRelationFilter, Prisma.TicketWhereInput>
@@ -208,6 +216,7 @@ export type TicketMessageOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   ticket?: Prisma.TicketOrderByWithRelationInput
@@ -216,6 +225,7 @@ export type TicketMessageOrderByWithRelationInput = {
 
 export type TicketMessageWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  ticketId_idempotencyKey?: Prisma.TicketMessageTicketIdIdempotencyKeyCompoundUniqueInput
   AND?: Prisma.TicketMessageWhereInput | Prisma.TicketMessageWhereInput[]
   OR?: Prisma.TicketMessageWhereInput[]
   NOT?: Prisma.TicketMessageWhereInput | Prisma.TicketMessageWhereInput[]
@@ -223,11 +233,12 @@ export type TicketMessageWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.UuidFilter<"TicketMessage"> | string
   body?: Prisma.StringFilter<"TicketMessage"> | string
   isInternal?: Prisma.BoolFilter<"TicketMessage"> | boolean
+  idempotencyKey?: Prisma.StringNullableFilter<"TicketMessage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   ticket?: Prisma.XOR<Prisma.TicketScalarRelationFilter, Prisma.TicketWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "ticketId_idempotencyKey">
 
 export type TicketMessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -235,6 +246,7 @@ export type TicketMessageOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TicketMessageCountOrderByAggregateInput
@@ -251,6 +263,7 @@ export type TicketMessageScalarWhereWithAggregatesInput = {
   authorId?: Prisma.UuidWithAggregatesFilter<"TicketMessage"> | string
   body?: Prisma.StringWithAggregatesFilter<"TicketMessage"> | string
   isInternal?: Prisma.BoolWithAggregatesFilter<"TicketMessage"> | boolean
+  idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"TicketMessage"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TicketMessage"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TicketMessage"> | Date | string
 }
@@ -259,6 +272,7 @@ export type TicketMessageCreateInput = {
   id?: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ticket: Prisma.TicketCreateNestedOneWithoutMessagesInput
@@ -271,6 +285,7 @@ export type TicketMessageUncheckedCreateInput = {
   authorId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -279,6 +294,7 @@ export type TicketMessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticket?: Prisma.TicketUpdateOneRequiredWithoutMessagesNestedInput
@@ -291,6 +307,7 @@ export type TicketMessageUncheckedUpdateInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -301,6 +318,7 @@ export type TicketMessageCreateManyInput = {
   authorId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -309,6 +327,7 @@ export type TicketMessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -319,6 +338,7 @@ export type TicketMessageUncheckedUpdateManyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,12 +353,18 @@ export type TicketMessageOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type TicketMessageTicketIdIdempotencyKeyCompoundUniqueInput = {
+  ticketId: string
+  idempotencyKey: string
+}
+
 export type TicketMessageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   ticketId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -349,6 +375,7 @@ export type TicketMessageMaxOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -359,6 +386,7 @@ export type TicketMessageMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isInternal?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -451,6 +479,7 @@ export type TicketMessageCreateWithoutAuthorInput = {
   id?: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ticket: Prisma.TicketCreateNestedOneWithoutMessagesInput
@@ -461,6 +490,7 @@ export type TicketMessageUncheckedCreateWithoutAuthorInput = {
   ticketId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -500,6 +530,7 @@ export type TicketMessageScalarWhereInput = {
   authorId?: Prisma.UuidFilter<"TicketMessage"> | string
   body?: Prisma.StringFilter<"TicketMessage"> | string
   isInternal?: Prisma.BoolFilter<"TicketMessage"> | boolean
+  idempotencyKey?: Prisma.StringNullableFilter<"TicketMessage"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketMessage"> | Date | string
 }
@@ -508,6 +539,7 @@ export type TicketMessageCreateWithoutTicketInput = {
   id?: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutTicketMessagesInput
@@ -518,6 +550,7 @@ export type TicketMessageUncheckedCreateWithoutTicketInput = {
   authorId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -553,6 +586,7 @@ export type TicketMessageCreateManyAuthorInput = {
   ticketId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -561,6 +595,7 @@ export type TicketMessageUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticket?: Prisma.TicketUpdateOneRequiredWithoutMessagesNestedInput
@@ -571,6 +606,7 @@ export type TicketMessageUncheckedUpdateWithoutAuthorInput = {
   ticketId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -580,6 +616,7 @@ export type TicketMessageUncheckedUpdateManyWithoutAuthorInput = {
   ticketId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -589,6 +626,7 @@ export type TicketMessageCreateManyTicketInput = {
   authorId: string
   body: string
   isInternal?: boolean
+  idempotencyKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -597,6 +635,7 @@ export type TicketMessageUpdateWithoutTicketInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutTicketMessagesNestedInput
@@ -607,6 +646,7 @@ export type TicketMessageUncheckedUpdateWithoutTicketInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -616,6 +656,7 @@ export type TicketMessageUncheckedUpdateManyWithoutTicketInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   isInternal?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -628,6 +669,7 @@ export type TicketMessageSelect<ExtArgs extends runtime.Types.Extensions.Interna
   authorId?: boolean
   body?: boolean
   isInternal?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
@@ -640,6 +682,7 @@ export type TicketMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   authorId?: boolean
   body?: boolean
   isInternal?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
@@ -652,6 +695,7 @@ export type TicketMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   authorId?: boolean
   body?: boolean
   isInternal?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
@@ -664,11 +708,12 @@ export type TicketMessageSelectScalar = {
   authorId?: boolean
   body?: boolean
   isInternal?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TicketMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticketId" | "authorId" | "body" | "isInternal" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketMessage"]>
+export type TicketMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticketId" | "authorId" | "body" | "isInternal" | "idempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketMessage"]>
 export type TicketMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ticket?: boolean | Prisma.TicketDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -694,6 +739,7 @@ export type $TicketMessagePayload<ExtArgs extends runtime.Types.Extensions.Inter
     authorId: string
     body: string
     isInternal: boolean
+    idempotencyKey: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["ticketMessage"]>
@@ -1126,6 +1172,7 @@ export interface TicketMessageFieldRefs {
   readonly authorId: Prisma.FieldRef<"TicketMessage", 'String'>
   readonly body: Prisma.FieldRef<"TicketMessage", 'String'>
   readonly isInternal: Prisma.FieldRef<"TicketMessage", 'Boolean'>
+  readonly idempotencyKey: Prisma.FieldRef<"TicketMessage", 'String'>
   readonly createdAt: Prisma.FieldRef<"TicketMessage", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TicketMessage", 'DateTime'>
 }

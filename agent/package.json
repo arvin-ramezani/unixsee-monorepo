@@ -1,21 +1,26 @@
 {
-  "name": "unixsee-monitor-agent",
-  "version": "1.0.3",
-  "description": "Lightweight Edge Monitoring Agent",
+  "name": "unixsee-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Unixsee Phase 1 VPS agent (inventory, site stack, active visitors)",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
     "start": "node --env-file=.env dist/index.js",
-    "debug:discovery": "node --env-file=.env dist/debug-discovery.js",
-    "debug:discovery:src": "tsx --env-file=.env src/debug-discovery.ts"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=20.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.19",
-    "pm2": "^7.0.1",
     "tsx": "^4.22.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "author": "Unixsee"
 }

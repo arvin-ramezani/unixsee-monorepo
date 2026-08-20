@@ -1,167 +1,76 @@
-# Unixsee Edge Monitoring Agent
+# Unixsee Phase 1 VPS Agent
 
-> A lightweight, zero-dependency Node.js edge monitoring agent engineered for high-performance Ubuntu Linux environments.
+> **Status:** Implemented (Phase 1 slices)  
+> **PRD:** [`../docs/agent/prd.md`](../docs/agent/prd.md)  
+> **Contract:** [`../docs/agent/phase1-api-contract.md`](../docs/agent/phase1-api-contract.md)  
+> **ADR:** [`../docs/architecture/decisions/0008-phase1-agent-typescript-node.md`](../docs/architecture/decisions/0008-phase1-agent-typescript-node.md)  
+> **Not this package:** [`../monitoring-agent/`](../monitoring-agent/)
 
-The Unixsee Edge Monitoring Agent tracks system resources (CPU, Memory) and web server metrics (LiteSpeed), discovers WordPress / WooCommerce sites on DirectAdmin + OpenLiteSpeed hosts, aggregates them into a local memory buffer, and securely pushes a cryptographically signed payload to the central Unixsee backend.
+Outbound-only edge agent for managed DirectAdmin + OpenLiteSpeed WordPress /
+WooCommerce hosts. Reports discovery, site stack/links, and 3-minute active
+visitors to NestJS.
 
-Engineered for extreme performance, it avoids spawning heavy shell subprocesses (like `top` or `free`) by reading directly from the native Linux `/proc` filesystem.
+## Setup the agent on a VPS
 
----
+**Start here:** [`../docs/agent/setup.md`](../docs/agent/setup.md)
 
-## Architecture Highlights
+One-line install (Ubuntu, after admin issues a token):
 
-- **Enrollment-only auth:** Exchanges a one-time `ENROLLMENT_TOKEN` for a long-lived HMAC `AGENT_SECRET`.
-- **Outbound push model:** Heartbeat + ingest over HTTPS; no inbound ports.
-- **Cryptographic Security:** HMAC-SHA256 request signing (`X-Agent-Signature`, `X-Agent-Timestamp`).
-- **Resilient Networking:** In-memory queue with exponential backoff and jitter.
-- **Hybrid Discovery:** OpenLiteSpeed active routes first, DirectAdmin enrichment (owners, aliases, subdomains, pointers), optional filesystem fallbacks, exact-path overrides for rare custom apps.
-- **Periodic rediscovery:** Inventory refreshes every 10 minutes without restart.
+```bash
+curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN
+```
 
----
+Publish install assets to the admin panel static host:
 
-## Prerequisites
+```bash
+bash agent/scripts/pack-for-panel.sh
+```
 
-- **Node.js**: `v20.6.0` or higher (required for native `--env-file` support).
-- **OS**: Ubuntu Linux (production) or Windows 11 / WSL2 (local development).
-
----
-
-## Installation & Development
-
-### 1. Clone & Install
+## Local development
 
 ```bash
 cd agent
 npm install
-```
-
-### 2. Environment Configuration
-
-Copy `.env.example` to `.env`:
-
-```env
-NODE_ENV=development
-API_BASE_URL=http://127.0.0.1:4000
-ENROLLMENT_TOKEN=your_one_time_enrollment_token
-AGENT_SECRET=
-```
-
-Derived endpoints:
-
-- `POST {API_BASE_URL}/api/internal/agent/v1/enroll`
-- `POST {API_BASE_URL}/api/internal/agent/v1/ingest`
-- `POST {API_BASE_URL}/api/internal/agent/v1/heartbeat`
-
-### 3. Run the Development Server
-
-```bash
-npm run dev
-```
-
-> In `development` / `test` mode, network payloads (including enrollment) are mocked locally.
-
----
-
-## Production Deployment
-
-### 1. Compile
-
-```bash
+cp .env.example .env
 npm run build
+npm test
 ```
 
-### 2. Configure production `.env`
+## Runtime env
 
-```env
-NODE_ENV=production
-API_BASE_URL=https://api.unixsee.com
-ENROLLMENT_TOKEN=one_time_token_from_admin
-AGENT_SECRET=
-```
+| Variable | Purpose |
+|---|---|
+| `API_BASE_URL` | NestJS base URL |
+| `ENROLLMENT_TOKEN` | One-time token from admin reveal |
+| `AGENT_SECRET` | Persisted after enroll (`0600` `.env`) |
+| `ACCESS_LOG_DIR` | Default `/var/log/httpd/domains` |
+| `OPENLITESPEED_SERVER_ROOT` | Default `/usr/local/lsws` |
+| `DIRECTADMIN_BASE_URL` | Optional override for control-panel URL |
 
-On first successful enrollment the agent persists `AGENT_SECRET` into `.env`. After that, you can remove `ENROLLMENT_TOKEN` from the host. If credentials are revoked, issue a new enrollment token and restart with `ENROLLMENT_TOKEN` set (clear the old `AGENT_SECRET`).
+## Access logs
 
-### 3. Start with PM2
+Per-site logs: `/var/log/httpd/domains/{domain}.log`  
+Example: `tail -f /var/log/httpd/domains/farcoland.com.log`
+
+## Non-root ACL (Server — Ubuntu)
+
+Do not run as root. Typical pattern:
 
 ```bash
-pm2 start ecosystem.config.cjs
-pm2 save
-pm2 startup
+sudo useradd --system --home /opt/unixsee-agent --shell /usr/sbin/nologin unixsee-agent
+sudo usermod -aG diradmin unixsee-agent
+sudo setfacl -m g:unixsee-agent:rx /usr/local/directadmin/data/users
+sudo setfacl -R -m g:unixsee-agent:r-x /var/log/httpd/domains
+sudo setfacl -m g:unixsee-agent:rx /usr/local/lsws/conf
 ```
 
----
+Install unit: [`systemd/unixsee-agent.service`](./systemd/unixsee-agent.service).
 
-## DirectAdmin Permission Layer Configuration
+## Security
 
-By default, DirectAdmin locks down user account manifests inside `/usr/local/directadmin/data/users/` using strict permissions assigned to `diradmin`.
-
-Do **not** run the agent as root. Grant the restricted execution user read access:
-
-```bash
-sudo usermod -aG diradmin arvin
-sudo chmod g+rx /usr/local/directadmin/data/users/
-sudo setfacl -m u:arvin:rx /usr/local/directadmin/data/users/
-sudo setfacl -d -m u:arvin:rx /usr/local/directadmin/data/users/
-pm2 restart unixsee-agent
-```
-
----
-
-## Security & Firewall (CSF)
-
-- **No inbound ports** required.
-- Allow outbound TCP `443` to the NestJS API host.
-
----
-
-## Discovery Strategy
-
-Default hybrid discovery:
-
-1. OpenLiteSpeed active listener maps + vhost declarations (source of truth for live routes).
-2. DirectAdmin manifests for owners, aliases, pointers, and subdomains (also enriches OLS matches).
-3. Filesystem roots as fallback when OLS is absent or `WEB_DISCOVERY_INCLUDE_FALLBACKS=true`.
-4. Exact paths for intentional non-standard apps.
-
-Application typing:
-
-- `woocommerce` when WordPress markers + WooCommerce plugin are present
-- `wordpress` for other WordPress sites
-- `node` / `custom` only from strong markers or `WEB_DISCOVERY_EXACT_PATHS` (OLS proxy alone does **not** imply node)
-
-OpenLiteSpeed defaults:
-
-```env
-OPENLITESPEED_SERVER_ROOT=/usr/local/lsws
-OPENLITESPEED_VHOST_DECLARATION_PATHS=/usr/local/lsws/conf/httpd-vhosts.conf,/usr/local/lsws/conf/httpd_config.conf
-OPENLITESPEED_LISTENER_PATHS=/usr/local/lsws/conf/listeners.conf,/usr/local/lsws/conf/httpd_config.conf
-OPENLITESPEED_VHOSTS_ROOT=/usr/local/lsws/conf/vhosts
-WEB_DISCOVERY_ROOTS=/var/www,/home
-WEB_DISCOVERY_EXACT_PATHS=
-OPENLITESPEED_DISCOVER_ORPHAN_VHOSTS=false
-WEB_DISCOVERY_INCLUDE_FALLBACKS=false
-```
-
-Use exact paths only for apps outside normal routing:
-
-```env
-WEB_DISCOVERY_EXACT_PATHS=/srv/apps/custom-api,/opt/company/private-dashboard
-```
-
-Debug discovery:
-
-```bash
-npm run build
-npm run debug:discovery
-```
-
-Each site reports `domain`, `documentRoot`, `appType`, `source`, `aliases`, and `backendAddress` when proxied. Ingest always sends this discovery metadata to NestJS.
-
----
-
-## Maintenance Commands
-
-- `pm2 logs unixsee-agent`
-- `pm2 monit`
-- `pm2 restart unixsee-agent`
-- `pm2 stop unixsee-agent`
+- Outbound HTTPS only (enroll / heartbeat / ingest).
+- HMAC-SHA256 over `{timestamp}.{body}`; never log tokens or secrets.
+- On admin revoke (or ingest/heartbeat HTTP 401), the agent clears in-memory and
+  persisted `AGENT_SECRET`. Set a new `ENROLLMENT_TOKEN` and restart to re-enroll.
+- Unreadable access logs report `activeVisitors3m.status.unsupported`, not a
+  silent zero count.

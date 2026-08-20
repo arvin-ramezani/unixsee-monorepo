@@ -1,10 +1,22 @@
 "use client";
 
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import {
+  type FormEvent,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { CheckCircle2, LoaderCircle, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
+import { updateProfileAction } from "@/actions/profile/update-profile";
 import { Panel } from "@/components/dashboard/panel";
+import {
+  ContactVerifyDialog,
+  type ContactVerifyChannel,
+} from "@/components/profile/contact-verify-dialog";
 import { ProfileAvatarField } from "@/components/profile/profile-avatar-field";
 import { VerificationStatus } from "@/components/profile/verification-status";
 import {
@@ -21,7 +33,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import type { UserProfile } from "@/lib/data/profile/profile-data";
+import {
+  getContactFieldRequirements,
+  isValidProfileEmail,
+  isValidProfileMobile,
+  normalizeProfileMobile,
+} from "@/lib/profile/contact-requirements";
+import { mapMeToUserProfile } from "@/lib/profile/map-me-to-profile";
 import { cn } from "@/lib/utils";
 import { locales } from "@/lib/i18n";
 import { DashboardButton } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
@@ -30,12 +50,15 @@ type FormErrors = Partial<Record<"fullName" | "email" | "mobile", string>>;
 
 export function PersonalInformationCard({
   profile,
+  nestBacked = false,
   simulateFailure,
 }: {
   profile: UserProfile;
+  nestBacked?: boolean;
   simulateFailure?: boolean;
 }) {
   const t = useTranslations("Profile.personal");
+  const tApiErrors = useTranslations("ApiErrors");
   const [saved, setSaved] = useState(profile);
   const [draft, setDraft] = useState(profile);
   const [avatarChanged, setAvatarChanged] = useState(false);
@@ -44,9 +67,27 @@ export function PersonalInformationCard({
     "idle" | "saving" | "saved" | "failed"
   >("idle");
   const [showReset, setShowReset] = useState(false);
+  const [verifyChannel, setVerifyChannel] =
+    useState<ContactVerifyChannel | null>(null);
+  const [pending, startTransition] = useTransition();
   const toastRef = useRef<HTMLDivElement>(null);
-  const dirty =
-    JSON.stringify(saved) !== JSON.stringify(draft) || avatarChanged;
+
+  const profileFieldsDirty =
+    draft.fullName !== saved.fullName ||
+    draft.preferredLanguage !== saved.preferredLanguage;
+  const contactDirty =
+    draft.email !== saved.email || draft.mobile !== saved.mobile;
+  const dirty = profileFieldsDirty || contactDirty || avatarChanged;
+  const canSave = nestBacked ? profileFieldsDirty || avatarChanged : dirty;
+  const { emailRequired, mobileRequired } = getContactFieldRequirements(saved);
+
+  useEffect(() => {
+    setSaved(profile);
+    setDraft((current) => ({
+      ...profile,
+      avatarUrl: current.avatarUrl,
+    }));
+  }, [profile]);
 
   useEffect(() => {
     function warn(event: BeforeUnloadEvent) {
@@ -56,19 +97,82 @@ export function PersonalInformationCard({
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
+  function validateProfileFields() {
+    const next: FormErrors = {};
+    if (!draft.fullName.trim()) next.fullName = t("errors.name");
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
+
   function validate() {
     const next: FormErrors = {};
     if (!draft.fullName.trim()) next.fullName = t("errors.name");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.email))
-      next.email = t("errors.email");
-    if (!/^(09\d{9}|\+989\d{9})$/.test(draft.mobile.replace(/[\s-]/g, "")))
-      next.mobile = t("errors.mobile");
+
+    const email = draft.email.trim();
+    const mobile = normalizeProfileMobile(draft.mobile);
+
+    if (emailRequired || email) {
+      if (!email) next.email = t("errors.emailRequired");
+      else if (!isValidProfileEmail(email)) next.email = t("errors.email");
+    }
+
+    if (mobileRequired || mobile) {
+      if (!mobile) next.mobile = t("errors.mobileRequired");
+      else if (!isValidProfileMobile(mobile)) next.mobile = t("errors.mobile");
+    }
+
     setErrors(next);
     return Object.keys(next).length === 0;
   }
 
   function save(event: FormEvent) {
     event.preventDefault();
+
+    if (nestBacked) {
+      if (!validateProfileFields()) return;
+
+      const hadAvatarChange = avatarChanged;
+      if (!profileFieldsDirty && hadAvatarChange) {
+        setAvatarChanged(false);
+        toast.info(t("toast.avatarLocalOnly"));
+        return;
+      }
+      if (!profileFieldsDirty) return;
+
+      setSaveState("saving");
+      startTransition(async () => {
+        const result = await updateProfileAction({
+          fullName: draft.fullName,
+          locale: draft.preferredLanguage,
+        });
+
+        if (!result.ok) {
+          setSaveState("failed");
+          toastMappedApiError(result.error, tApiErrors);
+          return;
+        }
+
+        const mapped = mapMeToUserProfile(result.data, {
+          passwordState: saved.passwordState,
+          twoFactorState: saved.twoFactorState,
+        });
+        const next: UserProfile = {
+          ...mapped,
+          avatarUrl: draft.avatarUrl,
+        };
+        setSaved(next);
+        setDraft(next);
+        setAvatarChanged(false);
+        setSaveState("saved");
+        toast.success(t("toast.profileSaved"));
+        if (hadAvatarChange) {
+          toast.info(t("toast.avatarLocalOnly"));
+        }
+        window.setTimeout(() => setSaveState("idle"), 2500);
+      });
+      return;
+    }
+
     if (!validate()) return;
     setSaveState("saving");
     window.setTimeout(() => {
@@ -76,7 +180,20 @@ export function PersonalInformationCard({
         setSaveState("failed");
         return;
       }
-      setSaved(draft);
+      setSaved({
+        ...draft,
+        email: saved.email,
+        emailStatus: saved.emailStatus,
+        mobile: saved.mobile,
+        mobileStatus: saved.mobileStatus,
+      });
+      setDraft((current) => ({
+        ...current,
+        email: saved.email,
+        emailStatus: saved.emailStatus,
+        mobile: saved.mobile,
+        mobileStatus: saved.mobileStatus,
+      }));
       setAvatarChanged(false);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 2500);
@@ -91,11 +208,59 @@ export function PersonalInformationCard({
     setShowReset(false);
   }
 
+  function openVerify(channel: ContactVerifyChannel) {
+    if (!nestBacked) return;
+    if (channel === "email") {
+      if (!draft.email.trim()) {
+        setErrors((current) => ({
+          ...current,
+          email: t("errors.emailRequired"),
+        }));
+        return;
+      }
+      if (!isValidProfileEmail(draft.email)) {
+        setErrors((current) => ({ ...current, email: t("errors.email") }));
+        return;
+      }
+    } else {
+      if (!normalizeProfileMobile(draft.mobile)) {
+        setErrors((current) => ({
+          ...current,
+          mobile: t("errors.mobileRequired"),
+        }));
+        return;
+      }
+      if (!isValidProfileMobile(draft.mobile)) {
+        setErrors((current) => ({ ...current, mobile: t("errors.mobile") }));
+        return;
+      }
+    }
+    setVerifyChannel(channel);
+  }
+
+  function handleVerified(next: UserProfile) {
+    const merged: UserProfile = {
+      ...draft,
+      email: next.email,
+      emailStatus: next.emailStatus,
+      mobile: next.mobile,
+      mobileStatus: next.mobileStatus,
+      fullName: next.fullName || draft.fullName,
+      preferredLanguage: draft.preferredLanguage,
+      passwordState: saved.passwordState,
+      twoFactorState: saved.twoFactorState,
+      avatarUrl: draft.avatarUrl,
+    };
+    setSaved(merged);
+    setDraft(merged);
+  }
+
   return (
     <Panel className="p-5 sm:p-6">
       <div className="border-border border-b pb-5">
         <h2 className="text-xl font-semibold">{t("title")}</h2>
         <p className="text-muted-foreground mt-1 text-sm">{t("description")}</p>
+        <p className="text-muted-foreground mt-2 text-xs">{t("contactRule")}</p>
       </div>
       <div className="mt-6 flex flex-wrap items-stretch gap-7 xl:gap-8">
         <div className="border-border bg-muted/30 flex w-full shrink-0 items-center rounded-xl border p-4 lg:w-80">
@@ -114,17 +279,27 @@ export function PersonalInformationCard({
             draft={draft}
             saved={saved}
             errors={errors}
+            nestBacked={nestBacked}
+            emailRequired={emailRequired}
+            mobileRequired={mobileRequired}
             onChange={(next) => {
               setDraft(next);
               setSaveState("idle");
             }}
+            onVerifyEmail={() => openVerify("email")}
+            onVerifyMobile={() => openVerify("phone")}
           />
         </div>
       </div>
       <form
         onSubmit={save}
-        className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-end"
+        className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center"
       >
+        {nestBacked && contactDirty && (
+          <p className="text-muted-foreground me-auto text-xs">
+            {t("contactSaveHint")}
+          </p>
+        )}
         {dirty && (
           <DashboardButton
             revealClassName="bg-muted dark:bg-accent"
@@ -141,17 +316,17 @@ export function PersonalInformationCard({
         <DashboardButton
           size="xl"
           type="submit"
-          disabled={!dirty || saveState === "saving"}
+          disabled={!canSave || saveState === "saving" || pending}
           className="min-h-11 px-5"
         >
-          {saveState === "saving" && (
+          {(saveState === "saving" || pending) && (
             <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
           )}
-          {saveState === "saving" ? t("saving") : t("save")}
+          {saveState === "saving" || pending ? t("saving") : t("save")}
         </DashboardButton>
       </form>
       <div ref={toastRef} aria-live="polite">
-        {saveState === "saved" && (
+        {saveState === "saved" && !nestBacked && (
           <div className="border-success/25 bg-popover text-success-foreground fixed inset-e-4 bottom-4 z-50 flex items-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium shadow-lg">
             <CheckCircle2 aria-hidden="true" className="size-4" />
             {t("saved")}
@@ -168,6 +343,17 @@ export function PersonalInformationCard({
         onCancel={() => setShowReset(false)}
         onDiscard={reset}
       />
+      {!!verifyChannel && (
+        <ContactVerifyDialog
+          open
+          channel={verifyChannel}
+          value={verifyChannel === "phone" ? draft.mobile : draft.email}
+          onOpenChange={(open) => {
+            if (!open) setVerifyChannel(null);
+          }}
+          onVerified={handleVerified}
+        />
+      )}
     </Panel>
   );
 }
@@ -176,26 +362,49 @@ export function ProfileForm({
   draft,
   saved,
   errors,
+  nestBacked,
+  emailRequired,
+  mobileRequired,
   onChange,
+  onVerifyEmail,
+  onVerifyMobile,
 }: {
   draft: UserProfile;
   saved: UserProfile;
   errors: FormErrors;
+  nestBacked: boolean;
+  emailRequired: boolean;
+  mobileRequired: boolean;
   onChange: (profile: UserProfile) => void;
+  onVerifyEmail: () => void;
+  onVerifyMobile: () => void;
 }) {
   const t = useTranslations("Profile.personal");
   const emailChanged = draft.email !== saved.email;
   const mobileChanged = draft.mobile !== saved.mobile;
+  const showEmailVerify =
+    nestBacked &&
+    (emailChanged || draft.emailStatus !== "verified") &&
+    Boolean(draft.email.trim());
+  const showMobileVerify =
+    nestBacked &&
+    (mobileChanged || draft.mobileStatus !== "verified") &&
+    Boolean(draft.mobile.trim());
+
   function update<K extends keyof UserProfile>(key: K, value: UserProfile[K]) {
     onChange({ ...draft, [key]: value });
   }
   function normalizeMobile() {
-    const clean = draft.mobile.replace(/[\s-]/g, "");
+    const clean = normalizeProfileMobile(draft.mobile);
+    if (!clean) {
+      update("mobile", "");
+      return;
+    }
     update("mobile", clean.startsWith("09") ? `+98${clean.slice(1)}` : clean);
   }
 
   return (
-    <div className="flex flex-wrap gap-x-5 gap-y-5">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
       <Field
         id="profile-name"
         label={t("name")}
@@ -218,7 +427,8 @@ export function ProfileForm({
         label={t("email")}
         error={errors.email}
         className="min-w-0 basis-full sm:min-w-64 sm:flex-[1_1_calc(50%-0.625rem)]"
-        required
+        required={emailRequired}
+        optionalLabel={!emailRequired ? t("optional") : undefined}
       >
         <Input
           id="profile-email"
@@ -231,17 +441,29 @@ export function ProfileForm({
           className="bg-muted/30 hover:bg-muted/50 focus-visible:bg-background h-11 text-base sm:text-sm"
         />
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <VerificationStatus
-            status={emailChanged ? "unverified" : draft.emailStatus}
-          />
-          {emailChanged && (
+          {draft.email.trim() || saved.email.trim() ? (
+            <VerificationStatus
+              status={
+                emailChanged
+                  ? "unverified"
+                  : draft.emailStatus === "verified"
+                    ? "verified"
+                    : "unverified"
+              }
+            />
+          ) : (
+            <span className="text-muted-foreground text-xs">
+              {t("notProvided")}
+            </span>
+          )}
+          {showEmailVerify && (
             <>
               <span className="text-muted-foreground text-xs">
-                {t("emailChanged")}
+                {emailChanged ? t("emailChanged") : t("emailNeedsVerify")}
               </span>
               <Button
                 type="button"
-                onClick={() => update("emailStatus", "pending")}
+                onClick={onVerifyEmail}
                 variant="link"
                 size="plain"
                 className="text-link text-xs"
@@ -257,7 +479,9 @@ export function ProfileForm({
         label={t("mobile")}
         error={errors.mobile}
         className="min-w-0 basis-full sm:min-w-64 sm:flex-[1_1_30rem]"
-        required
+        required={mobileRequired}
+        optionalLabel={!mobileRequired ? t("optional") : undefined}
+        hint={!mobileRequired ? t("optionalBecauseEmail") : undefined}
       >
         <Input
           id="profile-mobile"
@@ -273,17 +497,30 @@ export function ProfileForm({
           className="bg-muted/30 hover:bg-muted/50 focus-visible:bg-background h-11 text-start text-base sm:text-sm"
         />
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <VerificationStatus
-            status={mobileChanged ? "unverified" : draft.mobileStatus}
-          />
-          {mobileChanged && (
+          {normalizeProfileMobile(draft.mobile) ||
+          normalizeProfileMobile(saved.mobile) ? (
+            <VerificationStatus
+              status={
+                mobileChanged
+                  ? "unverified"
+                  : draft.mobileStatus === "verified"
+                    ? "verified"
+                    : "unverified"
+              }
+            />
+          ) : (
+            <span className="text-muted-foreground text-xs">
+              {t("notProvided")}
+            </span>
+          )}
+          {showMobileVerify && (
             <>
               <span className="text-muted-foreground text-xs">
-                {t("mobileChanged")}
+                {mobileChanged ? t("mobileChanged") : t("mobileNeedsVerify")}
               </span>
               <Button
                 type="button"
-                onClick={() => update("mobileStatus", "pending")}
+                onClick={onVerifyMobile}
                 variant="link"
                 size="plain"
                 className="text-link text-xs"
@@ -344,6 +581,8 @@ function Field({
   label,
   error,
   required,
+  hint,
+  optionalLabel,
   className,
   children,
 }: {
@@ -351,6 +590,8 @@ function Field({
   label: string;
   error?: string;
   required?: boolean;
+  hint?: string;
+  optionalLabel?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -362,14 +603,22 @@ function Field({
           <span className="text-destructive ms-1" aria-hidden="true">
             *
           </span>
+        ) : optionalLabel ? (
+          <span className="text-muted-foreground ms-1 text-xs font-normal">
+            ({optionalLabel})
+          </span>
         ) : null}
       </Label>
+
+      {!!hint && <p className="text-muted-foreground mt-1 text-xs">{hint}</p>}
+
       <div className="mt-2">{children}</div>
-      {error ? (
+
+      {!!error && (
         <p id={`${id}-error`} className="text-destructive mt-2 text-xs">
           {error}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -15,6 +15,7 @@ import { AtGuard } from './modules/auth/guards/at-guard.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { EventModule } from './modules/event/event.module.js';
 import { AgentModule } from './modules/agent/agent.module.js';
+import { AgentCommandsModule } from './modules/agent-commands/agent-commands.module.js';
 import { WebsitesModule } from './modules/websites/websites.module.js';
 import { MetricsModule } from './modules/metrics/metrics.module.js';
 import { SslCertificatesModule } from './modules/ssl-certificates/ssl-certificates.module.js';
@@ -31,15 +32,20 @@ import { ServersModule } from './modules/servers/servers.module.js';
 import { DiscoveriesModule } from './modules/discoveries/discoveries.module.js';
 import { TicketsModule } from './modules/tickets/tickets.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
+import { UnixseeMessagesModule } from './modules/unixsee-messages/unixsee-messages.module.js';
 import { ActivitiesModule } from './modules/activities/activities.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AdminOverviewModule } from './modules/admin-overview/admin-overview.module.js';
 import { OperationalActionsModule } from './modules/operational-actions/operational-actions.module.js';
+import { AuthorizationCasesModule } from './modules/authorization-cases/authorization-cases.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // dotenv-cli injects .env.development for start:dev; also load it here so
+      // watch restarts and plain `nest start` still see mail/OTP SMTP settings.
+      envFilePath: ['.env.development', '.env.staging', '.env.production', '.env'],
       load: [appConfig],
       validate: validateEnv,
       expandVariables: true, // Supports ${VAR} interpolation in .env
@@ -55,6 +61,7 @@ import { OperationalActionsModule } from './modules/operational-actions/operatio
     RealtimeModule,
     EventModule,
     AgentModule,
+    AgentCommandsModule,
     WebsitesModule,
     MetricsModule,
     SslCertificatesModule,
@@ -69,10 +76,12 @@ import { OperationalActionsModule } from './modules/operational-actions/operatio
     DiscoveriesModule,
     TicketsModule,
     NotificationsModule,
+    UnixseeMessagesModule,
     ActivitiesModule,
     AuditModule,
     AdminOverviewModule,
     OperationalActionsModule,
+    AuthorizationCasesModule,
   ],
   controllers: [AppController],
   providers: [

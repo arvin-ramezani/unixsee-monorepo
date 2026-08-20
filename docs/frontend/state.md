@@ -14,6 +14,16 @@ Use React state for local component state.
 
 Do not use Zustand when local state is sufficient.
 
+### Planned auth store (`client/` and `admin-panel/`)
+
+When Nest integration is allowed (ADRs 0011 / 0012), each app’s auth store may
+hold a **memory-only access token** plus a safe user DTO for Bearer calls. That
+is auth-session state only—not a general API or React Query cache. Server
+Components still must not read Zustand; cookies remain the server source of
+truth. Use **separate cookie jars** per app. Detail:
+[`client-data-fetching.md`](./client-data-fetching.md) and
+[`admin-data-fetching.md`](./admin-data-fetching.md).
+
 ## Client Components
 
 Keep state close to where it is consumed.

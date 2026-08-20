@@ -28,7 +28,7 @@ export type VpsNodeMinAggregateOutputType = {
   id: string | null
   serverId: string | null
   userId: string | null
-  machineId: string | null
+  agentInstanceId: string | null
   name: string | null
   secretKey: string | null
   status: $Enums.VpsNodeStatus | null
@@ -40,6 +40,8 @@ export type VpsNodeMinAggregateOutputType = {
   agentVersion: string | null
   lastSeenAt: Date | null
   lastHeartbeatAt: Date | null
+  credentialsRevokedAt: Date | null
+  credentialsRevokedReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,7 +50,7 @@ export type VpsNodeMaxAggregateOutputType = {
   id: string | null
   serverId: string | null
   userId: string | null
-  machineId: string | null
+  agentInstanceId: string | null
   name: string | null
   secretKey: string | null
   status: $Enums.VpsNodeStatus | null
@@ -60,6 +62,8 @@ export type VpsNodeMaxAggregateOutputType = {
   agentVersion: string | null
   lastSeenAt: Date | null
   lastHeartbeatAt: Date | null
+  credentialsRevokedAt: Date | null
+  credentialsRevokedReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,7 +72,7 @@ export type VpsNodeCountAggregateOutputType = {
   id: number
   serverId: number
   userId: number
-  machineId: number
+  agentInstanceId: number
   name: number
   secretKey: number
   status: number
@@ -80,6 +84,8 @@ export type VpsNodeCountAggregateOutputType = {
   agentVersion: number
   lastSeenAt: number
   lastHeartbeatAt: number
+  credentialsRevokedAt: number
+  credentialsRevokedReason: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,7 +96,7 @@ export type VpsNodeMinAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -102,6 +108,8 @@ export type VpsNodeMinAggregateInputType = {
   agentVersion?: true
   lastSeenAt?: true
   lastHeartbeatAt?: true
+  credentialsRevokedAt?: true
+  credentialsRevokedReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -110,7 +118,7 @@ export type VpsNodeMaxAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -122,6 +130,8 @@ export type VpsNodeMaxAggregateInputType = {
   agentVersion?: true
   lastSeenAt?: true
   lastHeartbeatAt?: true
+  credentialsRevokedAt?: true
+  credentialsRevokedReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -130,7 +140,7 @@ export type VpsNodeCountAggregateInputType = {
   id?: true
   serverId?: true
   userId?: true
-  machineId?: true
+  agentInstanceId?: true
   name?: true
   secretKey?: true
   status?: true
@@ -142,6 +152,8 @@ export type VpsNodeCountAggregateInputType = {
   agentVersion?: true
   lastSeenAt?: true
   lastHeartbeatAt?: true
+  credentialsRevokedAt?: true
+  credentialsRevokedReason?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -223,7 +235,7 @@ export type VpsNodeGroupByOutputType = {
   id: string
   serverId: string
   userId: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status: $Enums.VpsNodeStatus
@@ -235,6 +247,8 @@ export type VpsNodeGroupByOutputType = {
   agentVersion: string | null
   lastSeenAt: Date | null
   lastHeartbeatAt: Date | null
+  credentialsRevokedAt: Date | null
+  credentialsRevokedReason: string | null
   createdAt: Date
   updatedAt: Date
   _count: VpsNodeCountAggregateOutputType | null
@@ -264,7 +278,7 @@ export type VpsNodeWhereInput = {
   id?: Prisma.UuidFilter<"VpsNode"> | string
   serverId?: Prisma.UuidFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringFilter<"VpsNode"> | string
   name?: Prisma.StringFilter<"VpsNode"> | string
   secretKey?: Prisma.StringFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -276,6 +290,8 @@ export type VpsNodeWhereInput = {
   agentVersion?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
   lastHeartbeatAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedReason?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   createdAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
   server?: Prisma.XOR<Prisma.ServerScalarRelationFilter, Prisma.ServerWhereInput>
@@ -294,7 +310,7 @@ export type VpsNodeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -306,6 +322,8 @@ export type VpsNodeOrderByWithRelationInput = {
   agentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastHeartbeatAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  credentialsRevokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  credentialsRevokedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   server?: Prisma.ServerOrderByWithRelationInput
@@ -322,7 +340,7 @@ export type VpsNodeOrderByWithRelationInput = {
 
 export type VpsNodeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  machineId?: string
+  agentInstanceId?: string
   AND?: Prisma.VpsNodeWhereInput | Prisma.VpsNodeWhereInput[]
   OR?: Prisma.VpsNodeWhereInput[]
   NOT?: Prisma.VpsNodeWhereInput | Prisma.VpsNodeWhereInput[]
@@ -339,6 +357,8 @@ export type VpsNodeWhereUniqueInput = Prisma.AtLeast<{
   agentVersion?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
   lastHeartbeatAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedReason?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   createdAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
   server?: Prisma.XOR<Prisma.ServerScalarRelationFilter, Prisma.ServerWhereInput>
@@ -351,13 +371,13 @@ export type VpsNodeWhereUniqueInput = Prisma.AtLeast<{
   networkInterfaceMetrics?: Prisma.VpsNetworkInterfaceMetricListRelationFilter
   serviceMetrics?: Prisma.VpsServiceMetricListRelationFilter
   alerts?: Prisma.AlertListRelationFilter
-}, "id" | "machineId">
+}, "id" | "agentInstanceId">
 
 export type VpsNodeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -369,6 +389,8 @@ export type VpsNodeOrderByWithAggregationInput = {
   agentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastHeartbeatAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  credentialsRevokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  credentialsRevokedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VpsNodeCountOrderByAggregateInput
@@ -383,7 +405,7 @@ export type VpsNodeScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"VpsNode"> | string
   serverId?: Prisma.UuidWithAggregatesFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableWithAggregatesFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   name?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   secretKey?: Prisma.StringWithAggregatesFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusWithAggregatesFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -395,13 +417,15 @@ export type VpsNodeScalarWhereWithAggregatesInput = {
   agentVersion?: Prisma.StringNullableWithAggregatesFilter<"VpsNode"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VpsNode"> | Date | string | null
   lastHeartbeatAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedReason?: Prisma.StringNullableWithAggregatesFilter<"VpsNode"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VpsNode"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VpsNode"> | Date | string
 }
 
 export type VpsNodeCreateInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -413,6 +437,8 @@ export type VpsNodeCreateInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -431,7 +457,7 @@ export type VpsNodeUncheckedCreateInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -443,6 +469,8 @@ export type VpsNodeUncheckedCreateInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -457,7 +485,7 @@ export type VpsNodeUncheckedCreateInput = {
 
 export type VpsNodeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -469,6 +497,8 @@ export type VpsNodeUpdateInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -487,7 +517,7 @@ export type VpsNodeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -499,6 +529,8 @@ export type VpsNodeUncheckedUpdateInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -515,7 +547,7 @@ export type VpsNodeCreateManyInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -527,13 +559,15 @@ export type VpsNodeCreateManyInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type VpsNodeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -545,6 +579,8 @@ export type VpsNodeUpdateManyMutationInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -553,7 +589,7 @@ export type VpsNodeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -565,6 +601,8 @@ export type VpsNodeUncheckedUpdateManyInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -583,7 +621,7 @@ export type VpsNodeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -595,6 +633,8 @@ export type VpsNodeCountOrderByAggregateInput = {
   agentVersion?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   lastHeartbeatAt?: Prisma.SortOrder
+  credentialsRevokedAt?: Prisma.SortOrder
+  credentialsRevokedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -603,7 +643,7 @@ export type VpsNodeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -615,6 +655,8 @@ export type VpsNodeMaxOrderByAggregateInput = {
   agentVersion?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   lastHeartbeatAt?: Prisma.SortOrder
+  credentialsRevokedAt?: Prisma.SortOrder
+  credentialsRevokedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -623,7 +665,7 @@ export type VpsNodeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   serverId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  machineId?: Prisma.SortOrder
+  agentInstanceId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   secretKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -635,6 +677,8 @@ export type VpsNodeMinOrderByAggregateInput = {
   agentVersion?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   lastHeartbeatAt?: Prisma.SortOrder
+  credentialsRevokedAt?: Prisma.SortOrder
+  credentialsRevokedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -855,7 +899,7 @@ export type VpsNodeUpdateOneWithoutAlertsNestedInput = {
 
 export type VpsNodeCreateWithoutUserInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -867,6 +911,8 @@ export type VpsNodeCreateWithoutUserInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -883,7 +929,7 @@ export type VpsNodeCreateWithoutUserInput = {
 export type VpsNodeUncheckedCreateWithoutUserInput = {
   id?: string
   serverId: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -895,6 +941,8 @@ export type VpsNodeUncheckedCreateWithoutUserInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -940,7 +988,7 @@ export type VpsNodeScalarWhereInput = {
   id?: Prisma.UuidFilter<"VpsNode"> | string
   serverId?: Prisma.UuidFilter<"VpsNode"> | string
   userId?: Prisma.UuidNullableFilter<"VpsNode"> | string | null
-  machineId?: Prisma.StringFilter<"VpsNode"> | string
+  agentInstanceId?: Prisma.StringFilter<"VpsNode"> | string
   name?: Prisma.StringFilter<"VpsNode"> | string
   secretKey?: Prisma.StringFilter<"VpsNode"> | string
   status?: Prisma.EnumVpsNodeStatusFilter<"VpsNode"> | $Enums.VpsNodeStatus
@@ -952,13 +1000,15 @@ export type VpsNodeScalarWhereInput = {
   agentVersion?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
   lastHeartbeatAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedAt?: Prisma.DateTimeNullableFilter<"VpsNode"> | Date | string | null
+  credentialsRevokedReason?: Prisma.StringNullableFilter<"VpsNode"> | string | null
   createdAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VpsNode"> | Date | string
 }
 
 export type VpsNodeCreateWithoutServerInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -970,6 +1020,8 @@ export type VpsNodeCreateWithoutServerInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutVpsNodesInput
@@ -986,7 +1038,7 @@ export type VpsNodeCreateWithoutServerInput = {
 export type VpsNodeUncheckedCreateWithoutServerInput = {
   id?: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -998,6 +1050,8 @@ export type VpsNodeUncheckedCreateWithoutServerInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1038,7 +1092,7 @@ export type VpsNodeUpdateManyWithWhereWithoutServerInput = {
 
 export type VpsNodeCreateWithoutWebsitesInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1050,6 +1104,8 @@ export type VpsNodeCreateWithoutWebsitesInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1067,7 +1123,7 @@ export type VpsNodeUncheckedCreateWithoutWebsitesInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1079,6 +1135,8 @@ export type VpsNodeUncheckedCreateWithoutWebsitesInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   discoveries?: Prisma.WebsiteDiscoveryUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1108,7 +1166,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutWebsitesInput = {
 
 export type VpsNodeUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1120,6 +1178,8 @@ export type VpsNodeUpdateWithoutWebsitesInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1137,7 +1197,7 @@ export type VpsNodeUncheckedUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1149,6 +1209,8 @@ export type VpsNodeUncheckedUpdateWithoutWebsitesInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discoveries?: Prisma.WebsiteDiscoveryUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1162,7 +1224,7 @@ export type VpsNodeUncheckedUpdateWithoutWebsitesInput = {
 
 export type VpsNodeCreateWithoutDiscoveriesInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1174,6 +1236,8 @@ export type VpsNodeCreateWithoutDiscoveriesInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1191,7 +1255,7 @@ export type VpsNodeUncheckedCreateWithoutDiscoveriesInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1203,6 +1267,8 @@ export type VpsNodeUncheckedCreateWithoutDiscoveriesInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1232,7 +1298,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutDiscoveriesInput = {
 
 export type VpsNodeUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1244,6 +1310,8 @@ export type VpsNodeUpdateWithoutDiscoveriesInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1261,7 +1329,7 @@ export type VpsNodeUncheckedUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1273,6 +1341,8 @@ export type VpsNodeUncheckedUpdateWithoutDiscoveriesInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1286,7 +1356,7 @@ export type VpsNodeUncheckedUpdateWithoutDiscoveriesInput = {
 
 export type VpsNodeCreateWithoutVpsMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1298,6 +1368,8 @@ export type VpsNodeCreateWithoutVpsMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1315,7 +1387,7 @@ export type VpsNodeUncheckedCreateWithoutVpsMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1327,6 +1399,8 @@ export type VpsNodeUncheckedCreateWithoutVpsMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1356,7 +1430,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutVpsMetricsInput = {
 
 export type VpsNodeUpdateWithoutVpsMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1368,6 +1442,8 @@ export type VpsNodeUpdateWithoutVpsMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1385,7 +1461,7 @@ export type VpsNodeUncheckedUpdateWithoutVpsMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1397,6 +1473,8 @@ export type VpsNodeUncheckedUpdateWithoutVpsMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1410,7 +1488,7 @@ export type VpsNodeUncheckedUpdateWithoutVpsMetricsInput = {
 
 export type VpsNodeCreateWithoutWebMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1422,6 +1500,8 @@ export type VpsNodeCreateWithoutWebMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1439,7 +1519,7 @@ export type VpsNodeUncheckedCreateWithoutWebMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1451,6 +1531,8 @@ export type VpsNodeUncheckedCreateWithoutWebMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1480,7 +1562,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutWebMetricsInput = {
 
 export type VpsNodeUpdateWithoutWebMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1492,6 +1574,8 @@ export type VpsNodeUpdateWithoutWebMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1509,7 +1593,7 @@ export type VpsNodeUncheckedUpdateWithoutWebMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1521,6 +1605,8 @@ export type VpsNodeUncheckedUpdateWithoutWebMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1534,7 +1620,7 @@ export type VpsNodeUncheckedUpdateWithoutWebMetricsInput = {
 
 export type VpsNodeCreateWithoutFilesystemMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1546,6 +1632,8 @@ export type VpsNodeCreateWithoutFilesystemMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1563,7 +1651,7 @@ export type VpsNodeUncheckedCreateWithoutFilesystemMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1575,6 +1663,8 @@ export type VpsNodeUncheckedCreateWithoutFilesystemMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1604,7 +1694,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutFilesystemMetricsInput = {
 
 export type VpsNodeUpdateWithoutFilesystemMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1616,6 +1706,8 @@ export type VpsNodeUpdateWithoutFilesystemMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1633,7 +1725,7 @@ export type VpsNodeUncheckedUpdateWithoutFilesystemMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1645,6 +1737,8 @@ export type VpsNodeUncheckedUpdateWithoutFilesystemMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1658,7 +1752,7 @@ export type VpsNodeUncheckedUpdateWithoutFilesystemMetricsInput = {
 
 export type VpsNodeCreateWithoutNetworkInterfaceMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1670,6 +1764,8 @@ export type VpsNodeCreateWithoutNetworkInterfaceMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1687,7 +1783,7 @@ export type VpsNodeUncheckedCreateWithoutNetworkInterfaceMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1699,6 +1795,8 @@ export type VpsNodeUncheckedCreateWithoutNetworkInterfaceMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1728,7 +1826,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutNetworkInterfaceMetricsInput = {
 
 export type VpsNodeUpdateWithoutNetworkInterfaceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1740,6 +1838,8 @@ export type VpsNodeUpdateWithoutNetworkInterfaceMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1757,7 +1857,7 @@ export type VpsNodeUncheckedUpdateWithoutNetworkInterfaceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1769,6 +1869,8 @@ export type VpsNodeUncheckedUpdateWithoutNetworkInterfaceMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1782,7 +1884,7 @@ export type VpsNodeUncheckedUpdateWithoutNetworkInterfaceMetricsInput = {
 
 export type VpsNodeCreateWithoutServiceMetricsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1794,6 +1896,8 @@ export type VpsNodeCreateWithoutServiceMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1811,7 +1915,7 @@ export type VpsNodeUncheckedCreateWithoutServiceMetricsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1823,6 +1927,8 @@ export type VpsNodeUncheckedCreateWithoutServiceMetricsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1852,7 +1958,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutServiceMetricsInput = {
 
 export type VpsNodeUpdateWithoutServiceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1864,6 +1970,8 @@ export type VpsNodeUpdateWithoutServiceMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -1881,7 +1989,7 @@ export type VpsNodeUncheckedUpdateWithoutServiceMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1893,6 +2001,8 @@ export type VpsNodeUncheckedUpdateWithoutServiceMetricsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -1906,7 +2016,7 @@ export type VpsNodeUncheckedUpdateWithoutServiceMetricsInput = {
 
 export type VpsNodeCreateWithoutAlertsInput = {
   id?: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1918,6 +2028,8 @@ export type VpsNodeCreateWithoutAlertsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   server: Prisma.ServerCreateNestedOneWithoutVpsNodesInput
@@ -1935,7 +2047,7 @@ export type VpsNodeUncheckedCreateWithoutAlertsInput = {
   id?: string
   serverId: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -1947,6 +2059,8 @@ export type VpsNodeUncheckedCreateWithoutAlertsInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   websites?: Prisma.WebsiteUncheckedCreateNestedManyWithoutVpsNodeInput
@@ -1976,7 +2090,7 @@ export type VpsNodeUpdateToOneWithWhereWithoutAlertsInput = {
 
 export type VpsNodeUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -1988,6 +2102,8 @@ export type VpsNodeUpdateWithoutAlertsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -2005,7 +2121,7 @@ export type VpsNodeUncheckedUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2017,6 +2133,8 @@ export type VpsNodeUncheckedUpdateWithoutAlertsInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -2031,7 +2149,7 @@ export type VpsNodeUncheckedUpdateWithoutAlertsInput = {
 export type VpsNodeCreateManyUserInput = {
   id?: string
   serverId: string
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2043,13 +2161,15 @@ export type VpsNodeCreateManyUserInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type VpsNodeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2061,6 +2181,8 @@ export type VpsNodeUpdateWithoutUserInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   server?: Prisma.ServerUpdateOneRequiredWithoutVpsNodesNestedInput
@@ -2077,7 +2199,7 @@ export type VpsNodeUpdateWithoutUserInput = {
 export type VpsNodeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2089,6 +2211,8 @@ export type VpsNodeUncheckedUpdateWithoutUserInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -2104,7 +2228,7 @@ export type VpsNodeUncheckedUpdateWithoutUserInput = {
 export type VpsNodeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serverId?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2116,6 +2240,8 @@ export type VpsNodeUncheckedUpdateManyWithoutUserInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2123,7 +2249,7 @@ export type VpsNodeUncheckedUpdateManyWithoutUserInput = {
 export type VpsNodeCreateManyServerInput = {
   id?: string
   userId?: string | null
-  machineId: string
+  agentInstanceId: string
   name: string
   secretKey: string
   status?: $Enums.VpsNodeStatus
@@ -2135,13 +2261,15 @@ export type VpsNodeCreateManyServerInput = {
   agentVersion?: string | null
   lastSeenAt?: Date | string | null
   lastHeartbeatAt?: Date | string | null
+  credentialsRevokedAt?: Date | string | null
+  credentialsRevokedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type VpsNodeUpdateWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2153,6 +2281,8 @@ export type VpsNodeUpdateWithoutServerInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutVpsNodesNestedInput
@@ -2169,7 +2299,7 @@ export type VpsNodeUpdateWithoutServerInput = {
 export type VpsNodeUncheckedUpdateWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2181,6 +2311,8 @@ export type VpsNodeUncheckedUpdateWithoutServerInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   websites?: Prisma.WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput
@@ -2196,7 +2328,7 @@ export type VpsNodeUncheckedUpdateWithoutServerInput = {
 export type VpsNodeUncheckedUpdateManyWithoutServerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  machineId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   secretKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumVpsNodeStatusFieldUpdateOperationsInput | $Enums.VpsNodeStatus
@@ -2208,6 +2340,8 @@ export type VpsNodeUncheckedUpdateManyWithoutServerInput = {
   agentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastHeartbeatAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  credentialsRevokedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2310,7 +2444,7 @@ export type VpsNodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2322,6 +2456,8 @@ export type VpsNodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   agentVersion?: boolean
   lastSeenAt?: boolean
   lastHeartbeatAt?: boolean
+  credentialsRevokedAt?: boolean
+  credentialsRevokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -2341,7 +2477,7 @@ export type VpsNodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2353,6 +2489,8 @@ export type VpsNodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   agentVersion?: boolean
   lastSeenAt?: boolean
   lastHeartbeatAt?: boolean
+  credentialsRevokedAt?: boolean
+  credentialsRevokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -2363,7 +2501,7 @@ export type VpsNodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2375,6 +2513,8 @@ export type VpsNodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   agentVersion?: boolean
   lastSeenAt?: boolean
   lastHeartbeatAt?: boolean
+  credentialsRevokedAt?: boolean
+  credentialsRevokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
@@ -2385,7 +2525,7 @@ export type VpsNodeSelectScalar = {
   id?: boolean
   serverId?: boolean
   userId?: boolean
-  machineId?: boolean
+  agentInstanceId?: boolean
   name?: boolean
   secretKey?: boolean
   status?: boolean
@@ -2397,11 +2537,13 @@ export type VpsNodeSelectScalar = {
   agentVersion?: boolean
   lastSeenAt?: boolean
   lastHeartbeatAt?: boolean
+  credentialsRevokedAt?: boolean
+  credentialsRevokedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VpsNodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "userId" | "machineId" | "name" | "secretKey" | "status" | "hostname" | "publicIp" | "osName" | "osVersion" | "kernelVersion" | "agentVersion" | "lastSeenAt" | "lastHeartbeatAt" | "createdAt" | "updatedAt", ExtArgs["result"]["vpsNode"]>
+export type VpsNodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serverId" | "userId" | "agentInstanceId" | "name" | "secretKey" | "status" | "hostname" | "publicIp" | "osName" | "osVersion" | "kernelVersion" | "agentVersion" | "lastSeenAt" | "lastHeartbeatAt" | "credentialsRevokedAt" | "credentialsRevokedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["vpsNode"]>
 export type VpsNodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   server?: boolean | Prisma.ServerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.VpsNode$userArgs<ExtArgs>
@@ -2442,7 +2584,7 @@ export type $VpsNodePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     serverId: string
     userId: string | null
-    machineId: string
+    agentInstanceId: string
     name: string
     secretKey: string
     status: $Enums.VpsNodeStatus
@@ -2454,6 +2596,8 @@ export type $VpsNodePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     agentVersion: string | null
     lastSeenAt: Date | null
     lastHeartbeatAt: Date | null
+    credentialsRevokedAt: Date | null
+    credentialsRevokedReason: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vpsNode"]>
@@ -2892,7 +3036,7 @@ export interface VpsNodeFieldRefs {
   readonly id: Prisma.FieldRef<"VpsNode", 'String'>
   readonly serverId: Prisma.FieldRef<"VpsNode", 'String'>
   readonly userId: Prisma.FieldRef<"VpsNode", 'String'>
-  readonly machineId: Prisma.FieldRef<"VpsNode", 'String'>
+  readonly agentInstanceId: Prisma.FieldRef<"VpsNode", 'String'>
   readonly name: Prisma.FieldRef<"VpsNode", 'String'>
   readonly secretKey: Prisma.FieldRef<"VpsNode", 'String'>
   readonly status: Prisma.FieldRef<"VpsNode", 'VpsNodeStatus'>
@@ -2904,6 +3048,8 @@ export interface VpsNodeFieldRefs {
   readonly agentVersion: Prisma.FieldRef<"VpsNode", 'String'>
   readonly lastSeenAt: Prisma.FieldRef<"VpsNode", 'DateTime'>
   readonly lastHeartbeatAt: Prisma.FieldRef<"VpsNode", 'DateTime'>
+  readonly credentialsRevokedAt: Prisma.FieldRef<"VpsNode", 'DateTime'>
+  readonly credentialsRevokedReason: Prisma.FieldRef<"VpsNode", 'String'>
   readonly createdAt: Prisma.FieldRef<"VpsNode", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VpsNode", 'DateTime'>
 }

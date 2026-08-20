@@ -16,7 +16,7 @@ import {
 
 import SearchInput from "@/components/common/search-input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -45,7 +45,6 @@ import {
   listRuntimeMemberships,
   listRuntimeTenants,
   listRuntimeUsers,
-  type CreateCustomerResultType,
 } from "@/lib/data/users-runtime";
 import {
   ACCOUNT_ORIGIN_FILTER_ALL,
@@ -62,7 +61,8 @@ import {
 } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { AccountStateBadge } from "./account-status-badge";
-import { CreateCustomerSheet } from "./create-customer-sheet";
+import { AuthorizationStatusBadge } from "./authorization-status-badge";
+import { USER_KYC_STATUS } from "@/lib/users/map-admin-user";
 
 const ACCOUNT_STATE_FILTER_OPTIONS = [
   { value: ACCOUNT_STATE_FILTER.ALL, label: "همه وضعیت‌ها" },
@@ -109,6 +109,22 @@ function loadQueueRows() {
   );
 }
 
+function DataSourceBadge({ source }: { source?: "nest" | "fixture" }) {
+  if (!source) return null;
+  if (source === "nest") {
+    return (
+      <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
+        Nest
+      </span>
+    );
+  }
+  return (
+    <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+      نمونه
+    </span>
+  );
+}
+
 function TenantChips({ row }: { row: CustomerQueueRowType }) {
   if (row.tenantMemberships.length === 0) {
     return (
@@ -135,9 +151,14 @@ function TenantChips({ row }: { row: CustomerQueueRowType }) {
   );
 }
 
+function resolveAuthorization(row: CustomerQueueRowType) {
+  return row.authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
+}
+
 function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
   const router = useRouter();
   const userHref = `/users/${row.user.id}`;
+  const authorization = resolveAuthorization(row);
 
   const navigateToUser = () => {
     router.push(userHref);
@@ -150,7 +171,9 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
     navigateToUser();
   };
 
-  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+  const handleRowKeyDown = (
+    event: React.KeyboardEvent<HTMLTableRowElement>,
+  ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
 
     event.preventDefault();
@@ -174,10 +197,16 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <Link href={userHref} className="truncate hover:underline">
-              {row.user.displayName}
-            </Link>
-            <p className="truncate text-xs text-muted-foreground" dir="ltr">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <Link href={userHref} className="truncate hover:underline">
+                {row.user.displayName}
+              </Link>
+              <DataSourceBadge source={row.source} />
+            </div>
+            <p
+              className="truncate text-xs text-muted-foreground w-fit"
+              dir="ltr"
+            >
               {row.user.id}
             </p>
           </div>
@@ -190,19 +219,21 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
         <TenantChips row={row} />
       </TableCell>
       <TableCell className="px-4 py-3">
+        <AuthorizationStatusBadge status={authorization} />
+      </TableCell>
+      <TableCell className="px-4 py-3">
         <AccountStateBadge state={row.user.accountState} />
       </TableCell>
       <TableCell className="px-4 py-3 text-sm font-medium">
         {row.websiteCount.toLocaleString("fa-IR")}
-      </TableCell>
-      <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground">
-        {ACCOUNT_ORIGIN_LABELS[row.user.origin]}
       </TableCell>
     </TableRow>
   );
 }
 
 function CustomerCard({ row }: { row: CustomerQueueRowType }) {
+  const authorization = resolveAuthorization(row);
+
   return (
     <Link
       href={`/users/${row.user.id}`}
@@ -216,8 +247,14 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="truncate font-medium">{row.user.displayName}</p>
-            <p className="truncate text-xs text-muted-foreground" dir="ltr">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <p className="truncate font-medium">{row.user.displayName}</p>
+              <DataSourceBadge source={row.source} />
+            </div>
+            <p
+              className="truncate text-xs text-muted-foreground w-fit"
+              dir="ltr"
+            >
               {formatContactSummary(row.user)}
             </p>
           </div>
@@ -225,21 +262,16 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
         <AccountStateBadge state={row.user.accountState} />
       </div>
 
-      <div className="mt-3">
+      <div className="mt-3 space-y-2">
+        <AuthorizationStatusBadge status={authorization} />
         <TenantChips row={row} />
       </div>
 
       <div className="mt-3 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-        <div>
+        <div className="flex items-center gap-2">
           <p className="text-xs">وب‌سایت‌ها</p>
-          <p className="mt-1 font-medium text-foreground">
+          <p className="mt-1 text-xs font-medium text-foreground">
             {row.websiteCount.toLocaleString("fa-IR")}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs">منبع ایجاد</p>
-          <p className="mt-1 font-medium text-foreground">
-            {ACCOUNT_ORIGIN_LABELS[row.user.origin]}
           </p>
         </div>
       </div>
@@ -247,8 +279,26 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
   );
 }
 
-export function UsersView() {
-  const [rows, setRows] = useState(loadQueueRows);
+export type UsersViewProps = {
+  initialRows?: CustomerQueueRowType[];
+  /** Hard failure that blanks the list (legacy). Prefer nestWarning for hybrid. */
+  loadError?: string | null;
+  /** Nest fetch failed but fixtures (and any Nest rows) still show. */
+  nestWarning?: string | null;
+  totalCount?: number | null;
+  nestCount?: number | null;
+  fixtureCount?: number | null;
+};
+
+export function UsersView({
+  initialRows,
+  loadError = null,
+  nestWarning = null,
+  totalCount = null,
+  nestCount = null,
+  fixtureCount = null,
+}: UsersViewProps) {
+  const [rows] = useState(() => initialRows ?? loadQueueRows());
   const [query, setQuery] = useState("");
   const [accountState, setAccountState] = useState<AccountStateFilterType>(
     ACCOUNT_STATE_FILTER.ALL,
@@ -257,12 +307,21 @@ export function UsersView() {
     ACCOUNT_ORIGIN_FILTER_ALL,
   );
   const [showFilters, setShowFilters] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const hybrid =
+    nestCount !== null ||
+    fixtureCount !== null ||
+    rows.some((row) => row.source !== undefined);
+  const nestBacked = hybrid || initialRows !== undefined;
 
   const canCreateCustomer = hasCapability(STAFF_CAPABILITY.CREATE_CUSTOMER);
   const summary = useMemo(() => getCustomerQueueSummary(rows), [rows]);
-
+  const notSubmittedCount = useMemo(
+    () =>
+      rows.filter(
+        (row) => resolveAuthorization(row) === USER_KYC_STATUS.NOT_SUBMITTED,
+      ).length,
+    [rows],
+  );
   const filteredRows = useMemo(
     () => filterCustomerQueueRows(rows, { query, accountState, origin }),
     [accountState, origin, query, rows],
@@ -306,28 +365,46 @@ export function UsersView() {
     {
       key: "total",
       label: "همه مشتریان",
-      value: summary.total,
-      hint: "در محدوده دسترسی شما",
+      value: totalCount ?? summary.total,
+      hint: hybrid
+        ? `Nest ${(nestCount ?? 0).toLocaleString("fa-IR")} + نمونه ${(fixtureCount ?? 0).toLocaleString("fa-IR")}`
+        : nestBacked
+          ? "از NestJS — بدون نمایش مدارک هویتی"
+          : "در محدوده دسترسی شما",
       icon: Users,
       emphasis: false,
       filter: ACCOUNT_STATE_FILTER.ALL as AccountStateFilterType,
     },
   ];
 
-  const handleCreated = (result: CreateCustomerResultType) => {
-    setRows(loadQueueRows());
-    setQuery("");
-    setAccountState(ACCOUNT_STATE_FILTER.ALL);
-    setOrigin(ACCOUNT_ORIGIN_FILTER_ALL);
-    setStatusMessage(
-      `مشتری ${result.user.displayName} و مستأجر ${result.tenant.name} ایجاد شد. دعوت‌نامه ارسال شده و حساب تا تکمیل آن تأییدنشده است.`,
-    );
-  };
-
   const hasActiveSearch = query.trim().length > 0;
+
+  if (loadError) {
+    return (
+      <div
+        className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive"
+        role="alert"
+      >
+        <p className="font-medium">بارگذاری فهرست کاربران ناموفق بود</p>
+        <p className="mt-1">{loadError}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
+      {!!nestWarning && (
+        <div
+          className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
+          role="status"
+        >
+          <p className="font-medium">Nest در دسترس نبود</p>
+          <p className="mt-1 text-muted-foreground">
+            {nestWarning} — نمونه‌های محلی همچنان نمایش داده می‌شوند.
+          </p>
+        </div>
+      )}
+
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {summaryItems.map((item) => {
           const Icon = item.icon;
@@ -393,10 +470,6 @@ export function UsersView() {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-lg font-semibold">مشتریان و مستأجرها</h2>
-            <p className="text-sm text-muted-foreground">
-              پیش از ایجاد مشتری جدید، با شناسه تماس جستجو کنید تا رکورد تکراری
-              ساخته نشود.
-            </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -411,20 +484,21 @@ export function UsersView() {
               فیلتر
             </Button>
             {canCreateCustomer && (
-              <Button
-                type="button"
-                size="sm"
-                className="gap-2"
-                onClick={() => setCreateOpen(true)}
+              <Link
+                href="/users/new"
+                className={buttonVariants({
+                  size: "sm",
+                  className: "gap-2",
+                })}
               >
                 <Plus className="size-4" />
                 ایجاد مشتری
-              </Button>
+              </Link>
             )}
           </div>
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[minmax(220px,1fr)_minmax(160px,200px)_minmax(160px,200px)]">
+        <div className="grid gap-2 lg:grid-cols-[minmax(220px,580px)_minmax(160px,200px)_minmax(160px,200px)]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -514,14 +588,6 @@ export function UsersView() {
         )}
       </div>
 
-      <div role="status" aria-live="polite" aria-atomic="true">
-        {statusMessage && (
-          <div className="rounded-xl border border-accent bg-accent/20 px-4 py-3 text-sm text-accent-foreground">
-            {statusMessage}
-          </div>
-        )}
-      </div>
-
       {!canCreateCustomer && (
         <div
           className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground"
@@ -554,9 +620,9 @@ export function UsersView() {
             </p>
           </div>
           {canCreateCustomer && (
-            <Button type="button" onClick={() => setCreateOpen(true)}>
+            <Link href="/users/new" className={buttonVariants()}>
               ایجاد مشتری
-            </Button>
+            </Link>
           )}
         </div>
       ) : (
@@ -568,9 +634,9 @@ export function UsersView() {
                   <TableHead className="px-4 py-3">مشتری</TableHead>
                   <TableHead className="px-4 py-3">شناسه تماس</TableHead>
                   <TableHead className="px-4 py-3">مستأجرها</TableHead>
+                  <TableHead className="px-4 py-3">احراز هویت</TableHead>
                   <TableHead className="px-4 py-3">وضعیت حساب</TableHead>
                   <TableHead className="px-4 py-3">وب‌سایت‌ها</TableHead>
-                  <TableHead className="px-4 py-3">منبع ایجاد</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -588,12 +654,6 @@ export function UsersView() {
           </div>
         </>
       )}
-
-      <CreateCustomerSheet
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onCreated={handleCreated}
-      />
     </div>
   );
 }

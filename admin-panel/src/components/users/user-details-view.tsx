@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  ArrowRight,
   ClipboardList,
   Globe2,
   History,
@@ -16,6 +15,8 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { applyNestUserSecurityAction } from "@/actions/users/user-security-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -34,6 +35,7 @@ import {
   STAFF_CAPABILITY,
   type CustomerUserType,
   type MembershipRoleType,
+  type MembershipType,
   type SecurityActionType,
   type StaffCapabilityType,
   type TenantType,
@@ -57,10 +59,15 @@ import {
   getUserTenantMemberships,
   hasCapability,
 } from "@/lib/users-utils";
+import {
+  USER_KYC_STATUS,
+  type UserKycStatusType,
+} from "@/lib/users/map-admin-user";
 import { cn } from "@/lib/utils";
 import { AccountStateBadge } from "./account-status-badge";
-import { AddMemberSheet } from "./add-member-sheet";
-import { SecurityActionSheet } from "./security-action-sheet";
+import { AuthorizationStatusBadge } from "./authorization-status-badge";
+import { AddMemberDialog } from "./add-member-dialog";
+import { SecurityActionDialog } from "./security-action-dialog";
 import { TenantMembershipsSection } from "./tenant-memberships-section";
 
 const surfaceClassName = "rounded-2xl border border-border bg-card/90";
@@ -79,7 +86,7 @@ const USER_IDENTITY_FIELDS = [
     key: "mobile",
     label: "موبایل",
     dir: "ltr" as const,
-    getValue: (user: CustomerUserType) => user.mobile ?? "ثبت نشده",
+    getValue: (user: CustomerUserType) => user.mobile,
     getHint: (user: CustomerUserType) =>
       CONTACT_VERIFICATION_LABELS[user.mobileVerification],
   },
@@ -98,7 +105,8 @@ const USER_IDENTITY_FIELDS = [
   {
     key: "invite",
     label: "وضعیت دعوت‌نامه",
-    getValue: (user: CustomerUserType) => INVITE_STATUS_LABELS[user.inviteStatus],
+    getValue: (user: CustomerUserType) =>
+      INVITE_STATUS_LABELS[user.inviteStatus],
     getHint: (user: CustomerUserType) =>
       user.inviteStatus === INVITE_STATUS.PENDING
         ? "تا تکمیل دعوت توسط مشتری، دسترسی کامل فعال نمی‌شود."
@@ -173,8 +181,10 @@ const SECURITY_ACTION_CONFIGS: SecurityActionConfigType[] = [
     capability: STAFF_CAPABILITY.START_RECOVERY,
     icon: LifeBuoy,
     variant: "outline",
-    isAvailable: () => true,
-    unavailableReason: "",
+    isAvailable: (user) =>
+      user.mobileVerification === CONTACT_VERIFICATION.VERIFIED ||
+      user.emailVerification === CONTACT_VERIFICATION.VERIFIED,
+    unavailableReason: "کانال تأییدشده‌ای برای شروع بازیابی وجود ندارد.",
   },
 ];
 
@@ -185,26 +195,54 @@ type StatusMessageType = {
 
 type UserDetailsViewProps = {
   initialUser: CustomerUserType;
+  initialTenants?: TenantType[];
+  initialMemberships?: MembershipType[];
+  authorization?: UserKycStatusType;
+  nestBacked?: boolean;
 };
 
-export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
+export function UserDetailsView({
+  initialUser,
+  initialTenants,
+  initialMemberships,
+  authorization,
+  nestBacked = false,
+}: UserDetailsViewProps) {
   const [user, setUser] = useState(initialUser);
-  const [users, setUsers] = useState(listRuntimeUsers);
-  const [tenants] = useState(listRuntimeTenants);
-  const [memberships, setMemberships] = useState(listRuntimeMemberships);
+  const [users, setUsers] = useState(() => {
+    const runtimeUsers = listRuntimeUsers();
+    if (!nestBacked) return runtimeUsers;
+    if (runtimeUsers.some((entry) => entry.id === initialUser.id)) {
+      return runtimeUsers.map((entry) =>
+        entry.id === initialUser.id ? initialUser : entry,
+      );
+    }
+    return [initialUser, ...runtimeUsers];
+  });
+  const [tenants] = useState(
+    () => initialTenants ?? listRuntimeTenants(),
+  );
+  const [memberships, setMemberships] = useState(
+    () => initialMemberships ?? listRuntimeMemberships(),
+  );
   const [auditEntries, setAuditEntries] = useState(() =>
-    listUserAuditEntries(initialUser.id),
+    nestBacked ? [] : listUserAuditEntries(initialUser.id),
   );
   const [statusMessage, setStatusMessage] = useState<StatusMessageType | null>(
     null,
   );
   const [securityAction, setSecurityAction] =
     useState<SecurityActionType | null>(null);
+  const [securityBusy, setSecurityBusy] = useState(false);
   const [memberTenant, setMemberTenant] = useState<TenantType | null>(null);
 
-  const notes = listUserNotes(user.id);
-  const canManageMembership = hasCapability(STAFF_CAPABILITY.MANAGE_MEMBERSHIP);
-  const canViewNotes = hasCapability(STAFF_CAPABILITY.VIEW_INTERNAL_NOTES);
+  const notes = nestBacked ? [] : listUserNotes(user.id);
+  const canManageMembership =
+    !nestBacked && hasCapability(STAFF_CAPABILITY.MANAGE_MEMBERSHIP);
+  const canViewNotes =
+    !nestBacked && hasCapability(STAFF_CAPABILITY.VIEW_INTERNAL_NOTES);
+  const resolvedAuthorization =
+    authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
 
   const tenantMemberships = getUserTenantMemberships(
     user.id,
@@ -238,10 +276,24 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
   };
 
   const handleChangeRole = (membershipId: string, role: MembershipRoleType) => {
+    if (nestBacked) {
+      setStatusMessage({
+        text: "تغییر عضویت هنوز به NestJS وصل نشده است.",
+        isBlocked: true,
+      });
+      return;
+    }
     applyMembershipResult(changeMembershipRole({ membershipId, role }));
   };
 
   const handleRemoveMembership = (membershipId: string) => {
+    if (nestBacked) {
+      setStatusMessage({
+        text: "حذف عضویت هنوز به NestJS وصل نشده است.",
+        isBlocked: true,
+      });
+      return;
+    }
     applyMembershipResult(removeTenantMembership(membershipId));
   };
 
@@ -252,17 +304,40 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
     userId: string;
     role: MembershipRoleType;
   }) => {
-    if (!memberTenant) return;
+    if (nestBacked || !memberTenant) return;
 
     applyMembershipResult(
       addTenantMembership({ tenantId: memberTenant.id, userId, role }),
     );
   };
 
-  const handleSecurityAction = (
+  const handleSecurityAction = async (
     action: SecurityActionType,
     reason: string,
   ) => {
+    if (nestBacked) {
+      setSecurityBusy(true);
+      const result = await applyNestUserSecurityAction({
+        userId: user.id,
+        action,
+        reason,
+      });
+      setSecurityBusy(false);
+      if (!result.ok) {
+        setStatusMessage({ text: result.message, isBlocked: true });
+        return;
+      }
+      setUser(result.user);
+      setUsers((current) =>
+        current.map((entry) =>
+          entry.id === result.user.id ? result.user : entry,
+        ),
+      );
+      setStatusMessage({ text: result.message, isBlocked: false });
+      setSecurityAction(null);
+      return;
+    }
+
     const result = applySecurityAction({ userId: user.id, action, reason });
     if (!result) return;
 
@@ -270,21 +345,45 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
     setUsers(listRuntimeUsers());
     setAuditEntries(listUserAuditEntries(user.id));
     setStatusMessage({ text: result.message, isBlocked: false });
+    setSecurityAction(null);
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href="/users"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "gap-2",
-          )}
-        >
-          <ArrowRight data-icon="inline-start" />
-          بازگشت به کاربران
-        </Link>
+        <AdminBackLink href="/users">بازگشت به کاربران</AdminBackLink>
+      </div>
+
+      <div
+        className={cn(
+          "rounded-xl border px-4 py-3 text-sm",
+          resolvedAuthorization === USER_KYC_STATUS.APPROVED
+            ? "border-emerald-500/30 bg-emerald-500/5"
+            : resolvedAuthorization === USER_KYC_STATUS.REJECTED
+              ? "border-destructive/30 bg-destructive/5"
+              : "border-amber-500/30 bg-amber-500/5",
+        )}
+        role="status"
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <AuthorizationStatusBadge status={resolvedAuthorization} />
+          <p className="text-muted-foreground">
+            {resolvedAuthorization === USER_KYC_STATUS.APPROVED
+              ? "بسته احراز هویت این حساب تایید شده است."
+              : resolvedAuthorization === USER_KYC_STATUS.REJECTED
+                ? "بسته احراز هویت این حساب رد شده است."
+                : "هنوز بسته احراز هویت ارسال نشده یا در صف بررسی است."}
+          </p>
+        </div>
+        <p className="text-muted-foreground mt-2 text-xs">
+          کد ملی و عکس کارت ملی در این صفحه نیست.{" "}
+          <Link
+            href="/users/authorization"
+            className="text-primary underline underline-offset-2"
+          >
+            رفتن به صف بررسی مدارک
+          </Link>
+        </p>
       </div>
 
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
@@ -321,7 +420,9 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
               <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
                 <p className="text-xs text-muted-foreground">{field.label}</p>
                 <p
-                  className="mt-2 text-sm font-medium break-all"
+                  className={cn("mt-2 text-sm font-medium break-all", {
+                    "w-fit": "dir" in field,
+                  })}
                   dir={"dir" in field ? field.dir : undefined}
                 >
                   {field.getValue(user)}
@@ -392,7 +493,7 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
                 size="sm"
                 variant={config.variant}
                 className="gap-2"
-                disabled={!isPermitted || !isAvailable}
+                disabled={!isPermitted || !isAvailable || securityBusy}
                 onClick={() => setSecurityAction(config.action)}
               >
                 <Icon className="size-4" aria-hidden="true" />
@@ -425,7 +526,9 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className={cn(mutedSurfaceClassName, "p-4")}>
-            <p className="text-sm text-muted-foreground">وب‌سایت‌های مستأجرها</p>
+            <p className="text-sm text-muted-foreground">
+              وب‌سایت‌های مستأجرها
+            </p>
             {relatedWebsites.length === 0 ? (
               <p className="mt-3 text-sm">
                 وب‌سایتی به مستأجرهای این مشتری تخصیص نیافته است.
@@ -582,16 +685,17 @@ export function UserDetailsView({ initialUser }: UserDetailsViewProps) {
         )}
       </section>
 
-      <SecurityActionSheet
+      <SecurityActionDialog
         open={!!securityAction}
         action={securityAction}
         user={user}
+        busy={securityBusy}
         onOpenChange={(open) => {
-          if (!open) setSecurityAction(null);
+          if (!open && !securityBusy) setSecurityAction(null);
         }}
         onConfirm={handleSecurityAction}
       />
-      <AddMemberSheet
+      <AddMemberDialog
         open={!!memberTenant}
         tenant={memberTenant}
         candidates={memberCandidates}

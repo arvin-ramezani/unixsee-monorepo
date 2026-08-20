@@ -11,7 +11,12 @@ Use existing boundaries before creating a new architectural layer. This reposito
 ## Application Routes
 
 - `src/app/[locale]/(website)`: public website routes and route-specific components
-- `src/app/[locale]/(dashboard)`: customer-dashboard routes and route-specific composition
+- `src/app/[locale]/(auth)`: public authentication shell (sign-in, sign-up, OTP, recovery)
+- `src/app/[locale]/(dashboard)`: customer-dashboard routes and route-specific composition.
+  Co-locate `loading.tsx` with each async dashboard `page.tsx`; keep feature
+  `*LoadingSkeleton` components under `src/components/<feature>/` and keep them
+  structure-matched to the live page —
+  [`ui.md`](./ui.md#customer-dashboard-loading-skeletons).
 - `src/app/api`: Next.js route handlers
 - Planned `src/app/[locale]/(admin)/admin`: administrator routes
 
@@ -21,9 +26,12 @@ Place route-specific sections and helpers next to their owning route. Do not mov
 
 - `src/components/ui`: low-level shadcn/Radix-style primitives
 - `src/components/common`: reusable brand and presentation components
+- `src/components/common/radial-reveal`: branded `RadialRevealButton` /
+  `RadialRevealLink` for `default` / `outline` / `secondary` /
+  `destructive` CTAs (not ghost, link, plain, or text links)
 - `src/components/layout`: public application layout components
 - `src/components/dashboard`: reusable customer-dashboard components and shell UI
-- `src/components/<feature>`: feature-oriented reusable components such as tickets, websites, plans, and profile
+- `src/components/<feature>`: feature-oriented reusable components such as tickets, websites, plans, profile, and auth
 - `src/hooks`: reusable hooks
 - `src/stores`: Zustand UI stores
 - `src/providers`: React providers and provider composition

@@ -21,7 +21,10 @@ Keep deployables as flat root folders:
 - `admin-panel/`
 - `client/`
 - `backend/`
-- `agent/`
+- `agent/` (Phase 1 VPS agent; see
+  [`0007-two-vps-agents.md`](./0007-two-vps-agents.md))
+- `monitoring-agent/` (formerly the sole `agent/` tree; see
+  [`0006-rename-agent-to-monitoring-agent.md`](./0006-rename-agent-to-monitoring-agent.md))
 - `docs/`
 
 Do not create `apps/` or `packages/` until a later ADR justifies extraction of

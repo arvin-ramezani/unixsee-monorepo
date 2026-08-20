@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
   Paperclip,
@@ -8,71 +8,226 @@ import {
   MessageSquareReply,
   RotateCcw,
   Send,
-  X,
-  ArrowRight,
   ArrowLeft,
+  X,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 
-import { Panel } from "@/components/dashboard/panel";
-import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Link } from "@/i18n/navigation";
-import type {
-  TicketMessage,
-  TicketRecord,
-  TicketStatus,
-} from "@/lib/data/tickets/ticket-records";
-import { cn } from "@/lib/utils";
+import { addTicketMessageAction } from "@/actions/tickets/add-ticket-message";
+import { closeTicketAction } from "@/actions/tickets/close-ticket";
+import { downloadTicketAttachmentAction } from "@/actions/tickets/download-ticket-attachment";
+import { reopenTicketAction } from "@/actions/tickets/reopen-ticket";
+import { uploadTicketAttachmentAction } from "@/actions/tickets/upload-ticket-attachment";
 import {
   DashboardButton,
   DashboardButtonLink,
 } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
+import { Panel } from "@/components/dashboard/panel";
+import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Link, useRouter } from "@/i18n/navigation";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
+import type {
+  TicketAttachment,
+  TicketDetail,
+  TicketMessage,
+  TicketStatus,
+} from "@/lib/tickets/types";
+import { cn } from "@/lib/utils";
 
-export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
+const MAX_ATTACHMENTS = 20;
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "application/pdf",
+  "application/zip",
+  "application/x-zip-compressed",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "text/csv",
+  "text/plain",
+]);
+
+type PendingAttachment = {
+  id: string;
+  file: File;
+};
+
+export function TicketDetailsView({ ticket }: { ticket: TicketDetail }) {
   const t = useTranslations("Tickets");
+  const tApiErrors = useTranslations("ApiErrors");
   const format = useFormatter();
-  const prefersReducedMotion = useReducedMotion();
+  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<TicketStatus>(ticket.status);
   const [messages, setMessages] = useState(ticket.messages);
+  const [attachments, setAttachments] = useState(ticket.attachments);
+  const [autoCloseAt, setAutoCloseAt] = useState(ticket.autoCloseAt);
   const [draft, setDraft] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<PendingAttachment[]>([]);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [mutating, setMutating] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [replyError, setReplyError] = useState(false);
-  const repliesAllowed = status !== "closed";
+  const repliesAllowed = status !== "CLOSED";
+  const attachmentsAllowed = status !== "CLOSED";
 
-  function sendReply(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    setAttachments(ticket.attachments);
+  }, [ticket.attachments]);
+
+  function addFiles(fileList: FileList | null) {
+    const nextFiles = Array.from(fileList ?? []);
+    if (nextFiles.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
+      setAttachmentError(t("reply.tooLarge"));
+      return;
+    }
+    if (
+      nextFiles.some(
+        (file) => !file.type || !ALLOWED_ATTACHMENT_TYPES.has(file.type),
+      )
+    ) {
+      setAttachmentError(t("reply.invalidType"));
+      return;
+    }
+    setAttachmentError(null);
+    setPendingFiles((current) =>
+      [
+        ...current,
+        ...nextFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        })),
+      ].slice(0, Math.max(0, MAX_ATTACHMENTS - attachments.length)),
+    );
+  }
+
+  async function uploadPendingFiles(ticketId: string) {
+    const uploaded: TicketAttachment[] = [];
+    for (const pending of pendingFiles) {
+      const formData = new FormData();
+      formData.append("file", pending.file);
+      const uploadResult = await uploadTicketAttachmentAction(
+        ticketId,
+        formData,
+      );
+      if (!uploadResult.ok) {
+        return { ok: false as const, error: uploadResult.error, uploaded };
+      }
+      uploaded.push(uploadResult.data);
+    }
+    return { ok: true as const, uploaded };
+  }
+
+  async function sendReply(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!draft.trim()) {
+    const hasMessage = Boolean(draft.trim());
+    if (!hasMessage && pendingFiles.length === 0) {
       setReplyError(true);
       return;
     }
     setSending(true);
-    window.setTimeout(() => {
-      const message: TicketMessage = {
-        id: `local-${messages.length + 1}`,
-        sender: "user",
-        senderName: t("detail.you"),
-        occurredAt: "2026-07-19T15:40:00Z",
-        content: draft.trim(),
-        attachments: attachments.map((file, index) => ({
-          id: `local-att-${index}`,
-          name: file.name,
-          sizeKb: Math.max(1, Math.round(file.size / 1024)),
-        })),
-      };
-      setMessages((current) => [...current, message]);
+    setReplyError(false);
+
+    if (hasMessage) {
+      const result = await addTicketMessageAction({
+        ticketId: ticket.id,
+        body: draft,
+        idempotencyKey: crypto.randomUUID(),
+      });
+
+      if (!result.ok) {
+        toastMappedApiError(result.error, tApiErrors);
+        setSending(false);
+        return;
+      }
+
+      setMessages((current) => [...current, result.data]);
       setDraft("");
-      setAttachments([]);
-      setReplyError(false);
-      setSending(false);
-      if (status === "waiting_for_user") setStatus("in_progress");
-    }, 500);
+      if (status === "WAITING_CUSTOMER") setStatus("IN_PROGRESS");
+    }
+
+    if (pendingFiles.length > 0) {
+      const uploadResult = await uploadPendingFiles(ticket.id);
+      if (!uploadResult.ok) {
+        toastMappedApiError(uploadResult.error, tApiErrors);
+        if (uploadResult.uploaded.length > 0) {
+          setAttachments((current) => [...current, ...uploadResult.uploaded]);
+        }
+        setPendingFiles((current) =>
+          current.slice(uploadResult.uploaded.length),
+        );
+        setSending(false);
+        router.refresh();
+        return;
+      }
+      setAttachments((current) => [...current, ...uploadResult.uploaded]);
+      setPendingFiles([]);
+    }
+
+    setSending(false);
+    router.refresh();
+  }
+
+  async function handleDownload(attachment: TicketAttachment) {
+    if (attachment.downloadUrl) {
+      window.open(attachment.downloadUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    setDownloadingId(attachment.id);
+    const result = await downloadTicketAttachmentAction(
+      ticket.id,
+      attachment.id,
+    );
+    setDownloadingId(null);
+
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      return;
+    }
+
+    setAttachments((current) =>
+      current.map((item) =>
+        item.id === attachment.id
+          ? { ...item, downloadUrl: result.data.downloadUrl }
+          : item,
+      ),
+    );
+    window.open(result.data.downloadUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function handleReopen() {
+    setMutating(true);
+    const result = await reopenTicketAction(ticket.id);
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      setMutating(false);
+      return;
+    }
+    setStatus(result.data.status);
+    setAutoCloseAt(result.data.autoCloseAt);
+    setMutating(false);
+    router.refresh();
+  }
+
+  async function handleClose() {
+    setMutating(true);
+    const result = await closeTicketAction(ticket.id);
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      setMutating(false);
+      return;
+    }
+    setStatus(result.data.status);
+    setAutoCloseAt(result.data.autoCloseAt);
+    setMutating(false);
+    router.refresh();
   }
 
   return (
@@ -82,13 +237,13 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center justify-between gap-2 rounded-md text-sm transition-colors focus-visible:ring-2"
       >
         <ArrowLeft aria-hidden="true" className="size-4 rtl:rotate-180" />
-        {t("detail.back")}{" "}
+        {t("detail.back")}
       </Link>
       <header className="border-border mt-3 flex flex-col gap-5 border-b pb-6 lg:flex-row lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight">
-              {t(`fixtures.subjects.${ticket.subjectKey}`)}
+              {ticket.subject}
             </h1>
             <TicketStatusBadge status={status} />
           </div>
@@ -113,10 +268,7 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
             />
             <Meta
               label={t("detail.updated")}
-              value={format.dateTime(
-                new Date(ticket.lastActivityAt),
-                "shortDate",
-              )}
+              value={format.dateTime(new Date(ticket.updatedAt), "shortDate")}
             />
           </dl>
         </div>
@@ -131,36 +283,36 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
                 {t("detail.reply")}
               </DashboardButtonLink>
             )}
-            {status === "resolved" && (
+            {status === "RESOLVED" && (
               <DashboardButton
                 type="button"
                 variant="outline"
                 revealClassName="dark:bg-accent bg-muted"
-                // size="plain"
-                onClick={() => setStatus("in_progress")}
+                disabled={mutating}
+                onClick={handleClose}
+                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
+              >
+                {t("detail.close")}
+              </DashboardButton>
+            )}
+            {status === "CLOSED" && (
+              <DashboardButton
+                type="button"
+                variant="outline"
+                revealClassName="dark:bg-accent bg-muted"
+                disabled={mutating}
+                onClick={handleReopen}
                 className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
               >
                 <RotateCcw aria-hidden="true" className="size-4" />
                 {t("detail.reopen")}
               </DashboardButton>
             )}
-            {status !== "closed" && (
-              <DashboardButton
-                type="button"
-                variant="outline"
-                revealClassName="dark:bg-accent bg-muted"
-                // size="plain"
-                onClick={() => setStatus("closed")}
-                className="border-border hover:bg-muted data-[radial-active=true]:text-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium focus-visible:ring-2"
-              >
-                {t("detail.close")}
-              </DashboardButton>
-            )}
           </div>
         </div>
       </header>
 
-      {status === "resolved" && (
+      {status === "RESOLVED" && (
         <Alert className="border-success/25 bg-success/10 dark:text-success text-success-foreground mt-6 flex items-start gap-3 rounded-xl p-4">
           <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
           <div>
@@ -168,7 +320,25 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
               {t("detail.resolvedTitle")}
             </AlertTitle>
             <AlertDescription className="mt-1 text-sm leading-6 text-current">
-              {t("detail.resolvedDescription")}
+              {autoCloseAt
+                ? t("detail.resolvedDescriptionWithAutoClose", {
+                    date: format.dateTime(new Date(autoCloseAt), "shortDate"),
+                  })
+                : t("detail.resolvedDescription")}
+            </AlertDescription>
+          </div>
+        </Alert>
+      )}
+
+      {status === "CLOSED" && (
+        <Alert className="border-border bg-muted/40 text-foreground mt-6 flex items-start gap-3 rounded-xl p-4">
+          <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+          <div>
+            <AlertTitle className="font-semibold">
+              {t("detail.closedTitle")}
+            </AlertTitle>
+            <AlertDescription className="mt-1 text-sm leading-6 text-current">
+              {t("detail.closedDescription")}
             </AlertDescription>
           </div>
         </Alert>
@@ -218,12 +388,60 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
                   <TicketStatusBadge status={status} />
                 </dd>
               </div>
+              <div>
+                <dt className="text-muted-foreground text-xs">
+                  {t("detail.attachments")}
+                </dt>
+                <dd className="mt-2">
+                  {attachments.length > 0 ? (
+                    <ul className="space-y-2">
+                      {attachments.map((attachment) => (
+                        <li key={attachment.id} className="min-w-0">
+                          <button
+                            type="button"
+                            disabled={downloadingId === attachment.id}
+                            onClick={() => {
+                              void handleDownload(attachment);
+                            }}
+                            className="text-link inline-flex max-w-full items-center gap-1.5 text-start text-sm hover:underline disabled:opacity-60"
+                          >
+                            {downloadingId === attachment.id ? (
+                              <LoaderCircle
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0 animate-spin"
+                              />
+                            ) : (
+                              <Paperclip
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0"
+                              />
+                            )}
+                            <span className="truncate">
+                              {attachment.fileName}
+                            </span>
+                            <span className="text-muted-foreground sr-only">
+                              {t("detail.download")}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      {t("detail.noAttachments")}
+                    </p>
+                  )}
+                </dd>
+              </div>
             </dl>
           </Panel>
         </aside>
       </div>
 
-      <Panel id="ticket-reply" className="mt-6 p-5 sm:p-6">
+      <Panel
+        id="ticket-reply"
+        className="mt-6 p-5 sm:p-6 xl:w-[calc(100%-344px)]"
+      >
         <h2 className="text-xl font-semibold">{t("reply.title")}</h2>
         <p className="text-muted-foreground mt-1 text-sm">
           {repliesAllowed ? t("reply.description") : t("reply.closed")}
@@ -250,90 +468,68 @@ export function TicketDetailsView({ ticket }: { ticket: TicketRecord }) {
                 {t("reply.required")}
               </p>
             )}
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
-              <div>
-                <Label className="border-border dark:hover:border-link/12 dark:hover:bg-accent dark:hover:text-accent-foreground hover:bg-muted focus-within:ring-ring inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 text-sm font-medium focus-within:ring-2">
-                  <Paperclip aria-hidden="true" className="size-4" />
-                  {t("reply.attach")}
-                  <Input
-                    type="file"
-                    multiple
-                    className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
-                    onChange={(event) =>
-                      setAttachments(Array.from(event.target.files ?? []))
-                    }
-                  />
-                </Label>
-                <ul
-                  className={cn(
-                    "flex flex-wrap gap-2",
-                    attachments.length > 0 && "mt-2",
-                  )}
-                >
-                  <AnimatePresence initial={false} mode="popLayout">
-                    {attachments.map((file, index) => (
-                      <motion.li
-                        key={`${file.name}-${file.size}`}
-                        layout={!prefersReducedMotion}
-                        initial={
-                          prefersReducedMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, y: 6, scale: 0.9 }
-                        }
-                        animate={
-                          prefersReducedMotion
-                            ? { opacity: 1 }
-                            : { opacity: 1, y: 0, scale: 1 }
-                        }
-                        exit={
-                          prefersReducedMotion
-                            ? { opacity: 0, transition: { duration: 0.12 } }
-                            : {
-                                opacity: 0,
-                                scale: 0.85,
-                                y: -4,
-                                transition: { duration: 0.15, ease: "easeOut" },
-                              }
-                        }
-                        transition={
-                          prefersReducedMotion
-                            ? { duration: 0.15 }
-                            : {
-                                duration: 0.28,
-                                ease: [0.22, 1, 0.36, 1],
-                                delay: index * 0.05,
-                                layout: {
-                                  duration: 0.25,
-                                  ease: [0.22, 1, 0.36, 1],
-                                },
-                              }
-                        }
-                        className="bg-muted inline-flex items-center gap-2 rounded-md px-2 py-1 text-xs"
-                      >
-                        <span className="max-w-48 truncate" dir="auto">
-                          {file.name}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() =>
-                            setAttachments((files) =>
-                              files.filter((item) => item !== file),
-                            )
-                          }
-                          aria-label={t("reply.remove", { name: file.name })}
-                        >
-                          <X aria-hidden="true" className="size-3.5" />
-                        </Button>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </ul>
+            {attachmentError && (
+              <p className="text-destructive mt-2 text-xs">{attachmentError}</p>
+            )}
+            {pendingFiles.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {pendingFiles.map((pending) => (
+                  <li
+                    key={pending.id}
+                    className="border-border bg-muted/20 flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"
+                  >
+                    <span className="truncate">{pending.file.name}</span>
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-foreground inline-flex size-8 items-center justify-center rounded-md"
+                      aria-label={t("reply.remove", {
+                        name: pending.file.name,
+                      })}
+                      onClick={() =>
+                        setPendingFiles((current) =>
+                          current.filter((item) => item.id !== pending.id),
+                        )
+                      }
+                    >
+                      <X aria-hidden="true" className="size-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex flex-col gap-2">
+                {attachmentsAllowed && (
+                  <>
+                    <Input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept=".pdf,.zip,.gif,.jpg,.jpeg,.png,.webp,.csv,.txt,application/pdf,application/zip,image/gif,image/jpeg,image/png,image/webp,text/csv,text/plain"
+                      className="hidden"
+                      onChange={(event) => {
+                        addFiles(event.target.files);
+                        event.target.value = "";
+                      }}
+                    />
+                    <DashboardButton
+                      type="button"
+                      variant="outline"
+                      disabled={sending}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-border hover:bg-muted inline-flex min-h-10 w-fit items-center gap-2 rounded-lg border px-3 text-sm"
+                    >
+                      <Paperclip aria-hidden="true" className="size-3.5" />
+                      {t("reply.attach")}
+                    </DashboardButton>
+                    <p className="text-muted-foreground text-xs">
+                      {t("reply.attachmentsHint")}
+                    </p>
+                  </>
+                )}
               </div>
               <DashboardButton
                 type="submit"
-                // size="plain"
                 disabled={sending}
                 className="bg-primary text-primary-foreground focus-visible:ring-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-medium focus-visible:ring-2 disabled:opacity-60 sm:w-fit"
               >
@@ -370,54 +566,36 @@ function Meta({ label, value }: { label: string; value: string }) {
 function TicketMessageBlock({ message }: { message: TicketMessage }) {
   const t = useTranslations("Tickets");
   const format = useFormatter();
+  const senderName =
+    message.sender === "USER"
+      ? message.author.fullName?.trim() || t("detail.you")
+      : message.author.fullName?.trim() || t("conversation.roles.SUPPORT");
 
   return (
     <article
       className={cn(
         "px-5 py-5 sm:px-6",
-        message.sender === "support" && "bg-muted/30",
+        message.sender === "SUPPORT" && "bg-muted/30",
       )}
     >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold">{message.senderName}</h3>
+          <h3 className="font-semibold">{senderName}</h3>
           <p className="text-muted-foreground mt-1 text-xs">
             {t(`conversation.roles.${message.sender}`)}
           </p>
         </div>
         <time
-          dateTime={message.occurredAt}
+          dateTime={message.createdAt}
           className="text-muted-foreground text-xs tabular-nums"
         >
-          {format.dateTime(new Date(message.occurredAt), "shortDate")} ·{" "}
-          {format.dateTime(new Date(message.occurredAt), "shortTime")}
+          {format.dateTime(new Date(message.createdAt), "shortDate")} ·{" "}
+          {format.dateTime(new Date(message.createdAt), "shortTime")}
         </time>
       </header>
       <p className="mt-4 text-sm leading-7 whitespace-pre-line">
-        {message.content ??
-          (message.contentKey && t(`fixtures.messages.${message.contentKey}`))}
+        {message.body}
       </p>
-      {message.attachments.length && (
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {message.attachments.map((attachment) => (
-            <li
-              key={attachment.id}
-              className="border-border bg-background inline-flex min-h-9 items-center gap-2 rounded-lg border px-3 text-xs"
-            >
-              <Paperclip
-                aria-hidden="true"
-                className="text-muted-foreground size-3.5"
-              />
-              <span dir="ltr">{attachment.name}</span>
-              <span className="text-muted-foreground">
-                {t("conversation.attachmentSize", {
-                  size: attachment.sizeKb,
-                })}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
     </article>
   );
 }

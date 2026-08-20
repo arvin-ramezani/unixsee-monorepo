@@ -6,10 +6,10 @@
 |---|---|
 | Project | Unixsee Admin Panel |
 | Flow or service | Administrator servers, websites, and agent enrollment |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
-| Date | 2026-08-07 |
-| Prepared from | `docs/product/phase-1-application-features.md` §§12–14, 23, 25; `docs/architecture/project.md`; `docs/product/notes/servers-agent-data-flow.md`; `docs/product/notes/onboarding-plan-request-user-website.md`; `docs/product/ux-flows/admin-users.md`; `docs/product/ux-flows/admin-plan-requests.md`; current `/servers` and `/websites` routes; operator-described current agent workflow |
+| Date | 2026-08-15 |
+| Prepared from | `docs/product/phase-1-application-features.md` §§12–14, 21, 23, 25; prior draft 0.2; fixture renew/replace on `/websites/[id]` |
 | Primary owner | Product, operations, and platform security |
 | Reviewers required | Product, operations, backend engineering, security, QA, accessibility |
 
@@ -30,7 +30,7 @@
 - **Goal:** Register a VPS once, enroll its agent safely, see discovered websites, and assign them to the correct tenant without handling secrets or talking to agents from the browser.
 - **Current problem:** `/servers` is a placeholder; websites UI shows monitoring status but has no enrollment, token, or assignment workflow. Agents are started manually per VPS by developers.
 - **Proposed change:** Keep NestJS as the only control plane for agents. Use the admin panel only to create server records, issue one-time enrollment tokens, monitor agent health, and assign discovered websites. Plan entitlement comes from درخواست‌های پلن (or explicit staff plan selection); missing customers use the users-flow create-and-continue path.
-- **Main decisions:** Do not run or host agents from this Next.js project. Tokens are created by NestJS, shown once in admin, never re-readable. Agents push to NestJS; the browser never receives agent credentials or agent addresses. Discovery assignment may consume a linked plan request’s chosen plan as default plan source but never treats discovery as plan enablement.
+- **Main decisions:** Do not run or host agents from this Next.js project. Tokens are created by NestJS, shown once in admin, never re-readable. Agents push to NestJS; the browser never receives agent credentials or agent addresses. Discovery assignment may consume a linked plan request’s chosen plan as default plan source but never treats discovery as plan enablement. Website details may **renew the commercial period** (advance renewal date by billing period, no payment) and **replace the active plan** as staff fixture actions; Nest persistence is deferred. First-time plan enablement stays in درخواست‌های پلن.
 - **Completion state:** Agent is healthy, websites are discovered and assigned, telemetry is fresh, and enrollment secrets are no longer visible.
 - **Highest-risk failure:** Enrollment token leakage, reused install credentials, or browser exposure of agent secrets.
 - **Accessibility risk:** One-time secret display and copy actions may be inaccessible or lost without announced state.
@@ -77,7 +77,7 @@ Unixsee can onboard infrastructure consistently while NestJS remains the sole tr
 - Browser-direct agent or VPS SSH/API access.
 - Showing plaintext long-lived agent credentials after enrollment.
 - Designing public plan-request or public signup journeys.
-- Owning plan enablement; that belongs to `admin-plan-requests.md` v0.2.
+- Owning first-time plan enablement; that belongs to `admin-plan-requests.md` (website details may renew period / replace active plan as staff commercial fixture actions — Nest later).
 - DirectAdmin, OpenLiteSpeed, or WooCommerce console embedding.
 - Customer-facing agent management.
 - Final NestJS DTO/event contracts; architecture owns those.
@@ -164,7 +164,8 @@ Recommended behaviour:
 
 - Staff selects a server and chooses “ایجاد توکن اتصال”.
 - NestJS creates a high-entropy token, stores only a hash + metadata, returns plaintext once.
-- Admin shows plaintext in a one-time reveal surface with copy and install guidance.
+- Admin shows plaintext in a one-time reveal surface with copy and install guidance
+  that points operators to [`../../agent/setup.md`](../../agent/setup.md).
 - After dismiss/navigation/refresh, plaintext is no longer retrievable; only status (`unused`, `used`, `expired`, `revoked`) remains.
 - Agent exchanges the enrollment token for long-lived agent credentials over NestJS.
 - Staff can revoke unused enrollment tokens and revoke/re-enroll compromised agents without seeing prior secrets.
@@ -606,6 +607,7 @@ Sufficient to build static Persian RTL admin flows for:
 - **REC-004:** Standardize connected/stale/disconnected/never-enrolled across `/servers` and `/websites`. Traces to UN-002, BR-010, AC-005.
 - **REC-005:** Require revoke-before-reissue after compromise or credential loss. Traces to UN-004, BR-009, AC-008.
 - **REC-006:** Consume linked plan requests’ chosen plans as default plan source during assignment handoff; keep plan enablement in درخواست‌های پلن. Traces to AC-006b and `admin-plan-requests.md` v0.2.
+- **REC-006b:** On website details, staff may renew the commercial period (advance renewal date by billing period, no payment) or explicitly replace the active plan; fixture prototype only until Nest commercial records exist. Traces to Phase 1 §21.
 - **REC-007:** Follow the shared onboarding operating model for request-led enablement vs discovery-led assignment. Traces to `docs/product/notes/onboarding-plan-request-user-website.md` and `docs/product/notes/onboarding-paths-and-handoffs.md`.
 
 ### Must validate during prototyping

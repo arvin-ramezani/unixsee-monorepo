@@ -1,0 +1,21 @@
+{
+  "name": "unixsee-monitor-agent",
+  "version": "1.0.3",
+  "description": "Lightweight Edge Monitoring Agent",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/index.js",
+    "debug:discovery": "node --env-file=.env dist/debug-discovery.js",
+    "debug:discovery:src": "tsx --env-file=.env src/debug-discovery.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "pm2": "^7.0.1",
+    "tsx": "^4.22.3",
+    "typescript": "^5.9.3"
+  },
+  "author": "Unixsee"
+}

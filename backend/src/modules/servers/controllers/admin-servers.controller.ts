@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -18,6 +19,7 @@ import { RolesGuard } from '#/modules/auth/guards/roles.guard.js';
 import {
   CreateEnrollmentTokenDto,
   CreateServerDto,
+  RevokeAgentCredentialsDto,
   UpdateServerDto,
 } from '../dto/servers.dto.js';
 import { ServersService } from '../services/servers.service.js';
@@ -59,6 +61,13 @@ export class AdminServersController {
     return ApiResponseBuilder.ok(data);
   }
 
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: string) {
+    const data = await this.serversService.delete(id);
+    return ApiResponseBuilder.ok(data);
+  }
+
   @Post(':id/enrollment-tokens')
   @HttpCode(HttpStatus.CREATED)
   async createToken(
@@ -76,6 +85,19 @@ export class AdminServersController {
     @Param('tokenId') tokenId: string,
   ) {
     const data = await this.serversService.revokeEnrollmentToken(id, tokenId);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Post(':id/agent/revoke')
+  @HttpCode(HttpStatus.OK)
+  async revokeAgent(
+    @Param('id') id: string,
+    @Body() body: RevokeAgentCredentialsDto,
+  ) {
+    const data = await this.serversService.revokeAgentCredentials(
+      id,
+      body.reason,
+    );
     return ApiResponseBuilder.ok(data);
   }
 }

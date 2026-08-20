@@ -1,17 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
-  ArrowRight,
   Globe2,
   KeyRound,
   Monitor,
   Server,
   ShieldAlert,
-  Wifi,
+  Trash2,
 } from "lucide-react";
 
+import {
+  issueEnrollmentTokenAction,
+  revokeAgentCredentialsAction,
+  revokeEnrollmentTokenAction,
+  deleteServerAction,
+  type EnrollmentRevealPayload,
+} from "@/actions/servers/server-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Table,
@@ -21,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import {
   DISCOVERY_ASSIGNMENT_STATUS,
   ENROLLMENT_TOKEN_STATUS,
@@ -29,17 +37,14 @@ import {
   type ServerType,
   type WebsiteDiscoveryType,
 } from "@/lib/data/servers-data";
-import { upsertRuntimeServer } from "@/lib/data/servers-runtime";
 import { cn } from "@/lib/utils";
 import {
-  AssignDiscoverySheet,
+  AssignDiscoveryDialog,
   type AssignDiscoveryValues,
-} from "./assign-discovery-sheet";
-import {
-  EnrollmentRevealSheet,
-  RevokeAgentSheet,
-  type EnrollmentRevealPayload,
-} from "./enrollment-reveal-sheet";
+} from "./assign-discovery-dialog";
+import { DeleteServerDialog } from "./delete-server-dialog";
+import { EnrollmentRevealDialog } from "./enrollment-reveal-dialog";
+import { RevokeAgentDialog } from "./revoke-agent-dialog";
 import { ServerStatusBadge } from "./server-status-badge";
 
 const surfaceClassName = "rounded-2xl border border-border bg-card/90";
@@ -47,14 +52,15 @@ const mutedSurfaceClassName = "rounded-2xl border border-border bg-muted/30";
 
 const SERVER_IDENTITY_FIELDS = [
   {
-    key: "location",
-    label: "موقعیت",
-    getValue: (server: ServerType) => server.location,
+    key: "ip",
+    label: "آدرس IP",
+    getValue: (server: ServerType) => server.ip || "—",
+    dir: "ltr" as const,
   },
   {
     key: "capacitySummary",
     label: "ظرفیت",
-    getValue: (server: ServerType) => server.capacitySummary,
+    getValue: (server: ServerType) => server.capacitySummary || "—",
     dir: "ltr" as const,
   },
   {
@@ -72,19 +78,58 @@ const SERVER_IDENTITY_FIELDS = [
 
 type ServerDetailsViewProps = {
   initialServer: ServerType;
+  initialAssignDiscoveryId?: string | null;
+  initialTenantId?: string | null;
 };
 
-export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
+export function ServerDetailsView({
+  initialServer,
+  initialAssignDiscoveryId = null,
+  initialTenantId = null,
+}: ServerDetailsViewProps) {
+  const router = useRouter();
+  const didResumeAssign = useRef(false);
   const [server, setServer] = useState(initialServer);
   const [enrollmentOpen, setEnrollmentOpen] = useState(false);
-  const [enrollmentMode, setEnrollmentMode] = useState<"issue" | "reissue">(
-    "issue",
-  );
+  const [revealPayload, setRevealPayload] =
+    useState<EnrollmentRevealPayload | null>(null);
   const [revokeOpen, setRevokeOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [selectedDiscovery, setSelectedDiscovery] =
     useState<WebsiteDiscoveryType | null>(null);
+  const [resumeTenantId, setResumeTenantId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setServer(initialServer);
+  }, [initialServer]);
+
+  useEffect(() => {
+    if (didResumeAssign.current || !initialAssignDiscoveryId) return;
+
+    const discovery = initialServer.discoveries.find(
+      (item) => item.id === initialAssignDiscoveryId,
+    );
+    if (
+      !discovery ||
+      discovery.assignmentStatus !== DISCOVERY_ASSIGNMENT_STATUS.UNASSIGNED
+    ) {
+      return;
+    }
+
+    didResumeAssign.current = true;
+    setSelectedDiscovery(discovery);
+    setResumeTenantId(initialTenantId);
+    setAssignOpen(true);
+    router.replace(`/servers/${initialServer.id}`, { scroll: false });
+  }, [
+    initialAssignDiscoveryId,
+    initialServer,
+    initialTenantId,
+    router,
+  ]);
 
   const unassignedDiscoveries = server.discoveries.filter(
     (discovery) =>
@@ -93,6 +138,10 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
   const assignedDiscoveries = server.discoveries.filter(
     (discovery) =>
       discovery.assignmentStatus === DISCOVERY_ASSIGNMENT_STATUS.ASSIGNED,
+  );
+
+  const activeToken = server.enrollmentTokens.find(
+    (token) => token.status === "ACTIVE",
   );
 
   const canIssueToken =
@@ -108,90 +157,85 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
     server.agent.state === SERVER_AGENT_STATE.STALE ||
     server.agent.state === SERVER_AGENT_STATE.CONNECTED;
 
-  const canSimulateConnect =
-    server.agent.state === SERVER_AGENT_STATE.ENROLLMENT_ISSUED ||
-    server.agent.state === SERVER_AGENT_STATE.PENDING_AGENT;
-
-  const canRevoke =
+  const canRevokeAgent =
     server.agent.state === SERVER_AGENT_STATE.CONNECTED ||
     server.agent.state === SERVER_AGENT_STATE.STALE ||
-    server.agent.state === SERVER_AGENT_STATE.ENROLLMENT_ISSUED;
+    server.agent.state === SERVER_AGENT_STATE.DISCONNECTED;
 
-  const persistServer = (next: ServerType, message: string) => {
-    setServer(next);
-    upsertRuntimeServer(next);
-    setStatusMessage(message);
+  const canRevokeUnusedToken =
+    Boolean(activeToken) &&
+    server.enrollment.status === ENROLLMENT_TOKEN_STATUS.UNUSED;
+
+  const issueToken = (mode: "issue" | "reissue") => {
+    startTransition(async () => {
+      const result = await issueEnrollmentTokenAction({
+        serverId: server.id,
+        mode,
+      });
+
+      if (!result.ok) {
+        toastApiErrorMessage(result.message);
+        return;
+      }
+
+      setServer(result.server);
+      setRevealPayload(result.reveal);
+      setEnrollmentOpen(true);
+      setStatusMessage(
+        mode === "reissue"
+          ? "توکن جدید صادر شد. مقدار متنی فقط در این پنل قابل مشاهده است."
+          : "توکن اتصال صادر شد. مقدار متنی فقط در این پنل قابل مشاهده است.",
+      );
+      router.refresh();
+    });
   };
 
-  const handleEnrollmentIssued = (payload: EnrollmentRevealPayload) => {
-    persistServer(
-      {
-        ...server,
-        agent: {
-          state: SERVER_AGENT_STATE.ENROLLMENT_ISSUED,
-        },
-        enrollment: {
-          status: ENROLLMENT_TOKEN_STATUS.UNUSED,
-          issuedAt: payload.issuedAt,
-          expiresAt: payload.expiresAt,
-        },
-      },
-      payload.mode === "reissue"
-        ? "توکن جدید صادر شد. مقدار متنی دیگر در دسترس نیست."
-        : "توکن اتصال صادر شد. مقدار متنی دیگر در دسترس نیست.",
-    );
+  const handleRevokeAgent = async (reason: string) => {
+    const result = await revokeAgentCredentialsAction({
+      serverId: server.id,
+      reason,
+    });
+
+    if (!result.ok) {
+      toastApiErrorMessage(result.message);
+      return false;
+    }
+
+    setServer(result.server);
+    setStatusMessage(`Agent باطل شد: ${reason}`);
+    router.refresh();
+    return true;
   };
 
-  const handleSimulateConnect = () => {
-    persistServer(
-      {
-        ...server,
-        agent: {
-          state: SERVER_AGENT_STATE.CONNECTED,
-          version: "1.4.2",
-          lastSeenAt: "اکنون",
-          dataFreshness: "UP_TO_DATE",
-        },
-        enrollment: {
-          ...server.enrollment,
-          status: ENROLLMENT_TOKEN_STATUS.USED,
-        },
-        discoveries:
-          server.discoveries.length > 0
-            ? server.discoveries
-            : [
-                {
-                  id: `discovery-${server.id}-demo`,
-                  domain: `${server.label.toLowerCase().replace(/[^a-z0-9]/g, "")}.example.ir`,
-                  title: `فروشگاه ${server.label}`,
-                  controlPanel: SERVER_STACK.CONTROL_PANEL,
-                  webServer: SERVER_STACK.WEB_SERVER,
-                  application: SERVER_STACK.APPLICATION,
-                  assignmentStatus: DISCOVERY_ASSIGNMENT_STATUS.UNASSIGNED,
-                  discoveredAt: "اکنون",
-                },
-              ],
-      },
-      "اتصال Agent شبیه‌سازی شد. در محیط واقعی Agent به NestJS وصل می‌شود.",
-    );
+  const handleDeleteServer = async () => {
+    const result = await deleteServerAction({ serverId: server.id });
+    if (!result.ok) {
+      toastApiErrorMessage(result.message);
+      return false;
+    }
+    router.push("/servers");
+    router.refresh();
+    return true;
   };
 
-  const handleRevoke = (reason: string) => {
-    persistServer(
-      {
-        ...server,
-        agent: {
-          ...server.agent,
-          state: SERVER_AGENT_STATE.DISCONNECTED,
-          dataFreshness: "STALE",
-        },
-        enrollment: {
-          ...server.enrollment,
-          status: ENROLLMENT_TOKEN_STATUS.REVOKED,
-        },
-      },
-      `Agent باطل شد: ${reason}`,
-    );
+  const handleRevokeUnusedToken = () => {
+    if (!activeToken) return;
+
+    startTransition(async () => {
+      const result = await revokeEnrollmentTokenAction({
+        serverId: server.id,
+        tokenId: activeToken.id,
+      });
+
+      if (!result.ok) {
+        toastApiErrorMessage(result.message);
+        return;
+      }
+
+      setServer(result.server);
+      setStatusMessage("توکن استفاده‌نشده باطل شد.");
+      router.refresh();
+    });
   };
 
   const handleAssignDiscovery = (
@@ -200,40 +244,44 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
   ) => {
     const websiteId = `website-${discovery.id}`;
 
-    persistServer(
-      {
-        ...server,
-        discoveries: server.discoveries.map((item) =>
-          item.id === discovery.id
-            ? {
-                ...item,
-                title: values.title,
-                assignmentStatus: DISCOVERY_ASSIGNMENT_STATUS.ASSIGNED,
-                assignedWebsiteId: websiteId,
-              }
-            : item,
-        ),
-        websiteIds: server.websiteIds.includes(websiteId)
-          ? server.websiteIds
-          : [...server.websiteIds, websiteId],
-      },
-      `وب‌سایت ${discovery.domain} به ${values.tenantName} تخصیص داده شد.`,
+    setServer((current) => ({
+      ...current,
+      discoveries: current.discoveries.map((item) =>
+        item.id === discovery.id
+          ? {
+              ...item,
+              assignmentStatus: DISCOVERY_ASSIGNMENT_STATUS.ASSIGNED,
+              assignedWebsiteId: websiteId,
+              title: values.tenantName
+                ? `${item.domain} · ${values.tenantName}`
+                : item.title,
+            }
+          : item,
+      ),
+      websiteIds: current.websiteIds.includes(websiteId)
+        ? current.websiteIds
+        : [...current.websiteIds, websiteId],
+    }));
+    setStatusMessage(
+      `وب‌سایت ${discovery.domain} به ${values.tenantName} تخصیص داده شد (محلی؛ هنوز به Nest وصل نیست).`,
     );
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link
-          href="/servers"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "gap-2",
-          )}
+        <AdminBackLink href="/servers">بازگشت به سرورها</AdminBackLink>
+        <Button
+          type="button"
+          size="sm"
+          variant="destructive"
+          className="gap-2"
+          disabled={isPending}
+          onClick={() => setDeleteOpen(true)}
         >
-          <ArrowRight data-icon="inline-start" />
-          بازگشت به سرورها
-        </Link>
+          <Trash2 className="size-4" aria-hidden="true" />
+          حذف سرور
+        </Button>
       </div>
 
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
@@ -263,7 +311,9 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
             <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
               <p className="text-xs text-muted-foreground">{field.label}</p>
               <p
-                className="mt-2 text-sm font-medium"
+                className={cn("mt-2 text-sm font-medium", {
+                  "w-fit": "dir" in field,
+                })}
                 dir={"dir" in field ? field.dir : undefined}
               >
                 {field.getValue(server)}
@@ -295,13 +345,11 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                 type="button"
                 size="sm"
                 className="gap-2"
-                onClick={() => {
-                  setEnrollmentMode("issue");
-                  setEnrollmentOpen(true);
-                }}
+                disabled={isPending}
+                onClick={() => issueToken("issue")}
               >
                 <KeyRound className="size-4" aria-hidden="true" />
-                صدور توکن اتصال
+                {isPending ? "در حال صدور…" : "صدور توکن اتصال"}
               </Button>
             )}
             {canReissueToken && !canIssueToken && (
@@ -310,10 +358,8 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                 size="sm"
                 variant="outline"
                 className="gap-2"
-                onClick={() => {
-                  setEnrollmentMode("reissue");
-                  setEnrollmentOpen(true);
-                }}
+                disabled={isPending}
+                onClick={() => issueToken("reissue")}
               >
                 <KeyRound className="size-4" aria-hidden="true" />
                 صدور مجدد توکن
@@ -325,36 +371,35 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                 size="sm"
                 variant="outline"
                 className="gap-2"
-                onClick={() => {
-                  setEnrollmentMode("reissue");
-                  setEnrollmentOpen(true);
-                }}
+                disabled={isPending}
+                onClick={() => issueToken("reissue")}
               >
                 صدور مجدد
               </Button>
             )}
-            {canSimulateConnect && (
+            {canRevokeUnusedToken && (
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 className="gap-2"
-                onClick={handleSimulateConnect}
+                disabled={isPending}
+                onClick={handleRevokeUnusedToken}
               >
-                <Wifi className="size-4" aria-hidden="true" />
-                شبیه‌سازی اتصال Agent
+                باطل‌سازی توکن
               </Button>
             )}
-            {canRevoke && (
+            {canRevokeAgent && (
               <Button
                 type="button"
                 size="sm"
                 variant="destructive"
                 className="gap-2"
+                disabled={isPending}
                 onClick={() => setRevokeOpen(true)}
               >
                 <ShieldAlert className="size-4" aria-hidden="true" />
-                باطل‌سازی
+                باطل‌سازی Agent
               </Button>
             )}
           </div>
@@ -369,7 +414,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
           </div>
           <div className={cn(mutedSurfaceClassName, "p-4")}>
             <p className="text-sm text-muted-foreground">نسخه Agent</p>
-            <p className="mt-3 text-lg font-semibold" dir="ltr">
+            <p className="mt-3 text-lg font-semibold w-fit" dir="ltr">
               {server.agent.version ?? "—"}
             </p>
           </div>
@@ -436,7 +481,7 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                   return (
                     <TableRow key={discovery.id}>
                       <TableCell className="px-4 py-3">
-                        <p className="font-medium" dir="ltr">
+                        <p className="font-medium w-fit" dir="ltr">
                           {discovery.domain}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -460,28 +505,15 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         {isAssigned && discovery.assignedWebsiteId ? (
-                          discovery.assignedWebsiteId.startsWith(
-                            "website-00",
-                          ) ? (
-                            <Link
-                              href={`/websites/${discovery.assignedWebsiteId}`}
-                              className={buttonVariants({
-                                variant: "outline",
-                                size: "sm",
-                              })}
-                            >
-                              مشاهده وب‌سایت
-                            </Link>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">
-                              تخصیص محلی ثبت شد
-                            </span>
-                          )
+                          <span className="text-sm text-muted-foreground">
+                            تخصیص ثبت شده
+                          </span>
                         ) : (
                           <Button
                             type="button"
                             size="sm"
                             onClick={() => {
+                              setResumeTenantId(null);
                               setSelectedDiscovery(discovery);
                               setAssignOpen(true);
                             }}
@@ -536,48 +568,60 @@ export function ServerDetailsView({ initialServer }: ServerDetailsViewProps) {
                 )}
               >
                 <div className="min-w-0">
-                  <p className="truncate font-medium" dir="ltr">
+                  <p className="truncate font-medium w-fit" dir="ltr">
                     {item.domain}
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {item.title}
                   </p>
                 </div>
-                {item.assignedWebsiteId?.startsWith("website-00") && (
-                  <Link
-                    href={`/websites/${item.assignedWebsiteId}`}
-                    className={buttonVariants({
-                      variant: "outline",
-                      size: "sm",
-                    })}
-                  >
-                    جزئیات
-                  </Link>
-                )}
               </li>
             ))}
           </ul>
         )}
       </section>
 
-      <EnrollmentRevealSheet
+      <EnrollmentRevealDialog
         open={enrollmentOpen}
         serverLabel={server.label}
-        mode={enrollmentMode}
-        onOpenChange={setEnrollmentOpen}
-        onIssued={handleEnrollmentIssued}
+        payload={revealPayload}
+        onOpenChange={(nextOpen) => {
+          setEnrollmentOpen(nextOpen);
+          if (!nextOpen) {
+            setRevealPayload(null);
+          }
+        }}
+        onDismissed={() => {
+          setRevealPayload(null);
+          setStatusMessage(
+            "پنل توکن بسته شد. مقدار متنی دیگر قابل بازیابی نیست.",
+          );
+        }}
       />
-      <RevokeAgentSheet
+      <RevokeAgentDialog
         open={revokeOpen}
         serverLabel={server.label}
         onOpenChange={setRevokeOpen}
-        onRevoke={handleRevoke}
+        onRevoke={handleRevokeAgent}
       />
-      <AssignDiscoverySheet
+      <DeleteServerDialog
+        open={deleteOpen}
+        serverLabel={server.label}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDeleteServer}
+      />
+      <AssignDiscoveryDialog
         open={assignOpen}
         discovery={selectedDiscovery}
+        serverId={server.id}
         serverLabel={server.label}
-        onOpenChange={setAssignOpen}
+        initialTenantId={resumeTenantId}
+        onOpenChange={(open) => {
+          setAssignOpen(open);
+          if (!open) {
+            setResumeTenantId(null);
+          }
+        }}
         onAssign={handleAssignDiscovery}
       />
     </div>

@@ -5,7 +5,7 @@ description: Research UI/UX patterns, accessibility, layout, typography, color, 
 
 # UI/UX Pro Max
 
-Use the bundled searchable database as advisory design research. Repository instructions and approved screenshots always take precedence.
+Use the bundled searchable database as advisory design research. Repository instructions and approved screenshots always take precedence. Reject database tips that conflict with project JSX rules (positive-only branches use `condition && <Component />`, not `? … : null` — see `react-19`, app `AGENTS.md`, and `docs/frontend/nextjs.md`).
 
 ## Read First
 

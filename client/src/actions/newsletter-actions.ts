@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import { routing } from "@/i18n/routing";
 import { sendNewsletterEmail } from "@/lib/email/services/newsletter-email-service";
-import { prisma } from "@/lib/prisma";
 import type { ServerActionState } from "@/types/server-action-state";
 
 const newsletterSchema = z.object({
@@ -24,23 +23,10 @@ export type NewsletterActionMessageKey =
   | "submissionSucceeded"
   | "alreadySubscribed";
 
-function isUniqueConstraintError(error: unknown): error is { code: "P2002" } {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "P2002"
-  );
-}
-
-function createAlreadySubscribedState(): ServerActionState {
-  return {
-    ok: true,
-    message: "alreadySubscribed",
-    submittedAt: Date.now(),
-  };
-}
-
+/**
+ * Public newsletter intake.
+ * Persistence belongs in NestJS; this client action only validates and notifies.
+ */
 export async function subscribeNewsletterAction(
   _previousState: ServerActionState,
   input: NewsletterInput,
@@ -58,41 +44,9 @@ export async function subscribeNewsletterAction(
     };
   }
 
-  const { email, locale, source } = parsed.data;
+  const { email, locale } = parsed.data;
 
   try {
-    const existingSubscription = await prisma.newsletterSubscription.findUnique(
-      {
-        where: {
-          email,
-        },
-        select: {
-          id: true,
-        },
-      },
-    );
-
-    if (existingSubscription) {
-      return createAlreadySubscribedState();
-    }
-
-    try {
-      await prisma.newsletterSubscription.create({
-        data: {
-          email,
-          locale,
-          source: source ?? "footer",
-        },
-      });
-    } catch (error) {
-      // Handles two simultaneous requests for the same email.
-      if (isUniqueConstraintError(error)) {
-        return createAlreadySubscribedState();
-      }
-
-      throw error;
-    }
-
     await sendNewsletterEmail({
       email,
       locale,

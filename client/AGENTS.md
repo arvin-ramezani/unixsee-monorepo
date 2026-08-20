@@ -23,7 +23,7 @@ experience; English is the secondary LTR experience.
 - Forms: React Hook Form and Zod
 - UI state: Zustand
 - Internationalization: next-intl (Persian RTL / English LTR)
-- Application data: NestJS APIs (not Prisma/DB ownership in this app long-term)
+- Application data: NestJS APIs only (no Prisma / no direct database access)
 
 Use the existing stack unless the user explicitly approves a change.
 
@@ -31,9 +31,11 @@ Use the existing stack unless the user explicitly approves a change.
 
 - This app is presentation-only for managed-service data: NestJS owns auth,
   persistence, orchestration, and agent control.
+- Do not add Prisma, PostgreSQL clients, or other database access in this app.
 - Do not talk to VPS agents or infrastructure hosts from the browser.
-- Follow UI-only phase boundaries until a superseding ADR allows Nest
-  integration: [`../docs/architecture/decisions/0003-ui-only-phase-boundaries.md`](../docs/architecture/decisions/0003-ui-only-phase-boundaries.md).
+- Follow Nest integration rules for this app:
+  [`../docs/architecture/decisions/0011-client-nest-auth-integration.md`](../docs/architecture/decisions/0011-client-nest-auth-integration.md)
+  (supersedes UI-only ADR 0003 for `client/`).
 - WordPress and WooCommerce are customer workloads, not Unixsee CMS/control-plane dependencies.
 - Do not implement Nest modules, edge agents, or staff admin shell here.
   Staff UI belongs in `admin-panel/`.
@@ -45,11 +47,25 @@ Use the existing stack unless the user explicitly approves a change.
 | Product behavior | [`../docs/product/phase-1-application-features.md`](../docs/product/phase-1-application-features.md) |
 | Monorepo ownership | [`../docs/architecture/monorepo.md`](../docs/architecture/monorepo.md) |
 | Shared frontend conventions | [`../docs/frontend/README.md`](../docs/frontend/README.md) |
+| Auth session / Nest data fetching | [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md) + [`../docs/frontend/client-domain-data-fetching.md`](../docs/frontend/client-domain-data-fetching.md) + ADRs [`0010`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0011`](../docs/architecture/decisions/0011-client-nest-auth-integration.md) |
 | File placement in this app | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md) |
 | App Router / data / i18n | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md) |
 | UI / RTL / a11y | [`docs/engineering/ui.md`](docs/engineering/ui.md) |
+| Dashboard page loading skeletons | [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons) — create `loading.tsx` + matching skeleton; update skeleton when layout changes |
 | Review / validation | [`docs/engineering/quality-and-review.md`](docs/engineering/quality-and-review.md) |
 | Local ops | [`docs/runbooks/`](docs/runbooks/) |
+
+## Agent skills
+
+Framework skills live under [`.agents/skills/`](.agents/skills/) (parity with `admin-panel/`):
+
+| Skill | Use for |
+| --- | --- |
+| [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
+| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 / Compiler, components, Hooks, and JSX conditionals |
+| [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
+
+Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain authoritative over skill defaults.
 
 ## Engineering rules
 
@@ -60,6 +76,32 @@ Use the existing stack unless the user explicitly approves a change.
 - Keep business mapping out of low-level UI primitives.
 - Avoid unrelated refactors and premature abstractions.
 - Keep code, comments, file names, and technical docs in English.
+- Customer dashboard pages: add co-located `loading.tsx` with a skeleton that
+  mirrors the live layout; when the page structure changes, update the
+  skeleton in the same change —
+  [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons).
+- Positive-only JSX: write `{condition && <Component />}`; never
+  `{condition ? <Component /> : null}`. Coerce strings/numbers first
+  (`!!label`, `count > 0`). Keep ternaries only when both branches
+  render UI. Shared rule:
+  [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md#positive-only-jsx-branches);
+  detail: [`.agents/skills/react-19`](.agents/skills/react-19/SKILL.md).
+
+## Next.js version-matched documentation
+
+For Next.js-specific implementation, do not rely on model memory.
+
+Before implementing or modifying version-sensitive behavior such as data
+fetching, caching, revalidation, Server Components, Server Actions / Server
+Functions, Route Handlers, Cache Components, or Suspense / streaming:
+
+1. Inspect the installed Next.js version and cache configuration in this app.
+2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from
+   this directory; the package may not be visible from the monorepo root).
+
+The installed Next.js documentation is authoritative over model knowledge.
+App conventions: [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md).
+Shared monorepo rules: [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md).
 
 ## Security
 
@@ -80,3 +122,13 @@ npm run build:static
 ```
 
 Do not invent unavailable root monorepo scripts.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

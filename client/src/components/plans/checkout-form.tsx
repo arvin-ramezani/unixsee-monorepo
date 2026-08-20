@@ -4,19 +4,30 @@ import { type FormEvent, useState } from "react";
 import { LoaderCircle, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { createPlanRequestAction } from "@/actions/plans/create-plan-request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "@/i18n/navigation";
-import type { PlanRecord } from "@/lib/data/plans/plan-records";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
+import type { DashboardPlan } from "@/lib/plans/types";
 
-type FieldErrors = Partial<Record<"name" | "phone", string>>;
+type FieldErrors = Partial<Record<"name" | "phone" | "form", string>>;
 
-export function CheckoutForm({ plan }: { plan: PlanRecord }) {
+export function CheckoutForm({
+  plan,
+  initialName = "",
+  initialPhone = "",
+}: {
+  plan: DashboardPlan;
+  initialName?: string;
+  initialPhone?: string;
+}) {
   const t = useTranslations("Checkout");
+  const tApiErrors = useTranslations("ApiErrors");
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -28,15 +39,28 @@ export function CheckoutForm({ plan }: { plan: PlanRecord }) {
     return Object.keys(next).length === 0;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
-    // Fake purchase: no payment processing, just a short delay then redirect.
-    window.setTimeout(
-      () => router.push(`/dashboard/plans/success?plan=${plan.id}`),
-      650,
+    setErrors({});
+
+    const result = await createPlanRequestAction({
+      planId: plan.id,
+      contactName: name,
+      contactPhone: phone,
+    });
+
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      setSubmitting(false);
+      return;
+    }
+
+    router.push(
+      `/dashboard/plans/success?plan=${plan.id}&request=${result.data.id}`,
     );
+    router.refresh();
   }
 
   return (
@@ -48,7 +72,7 @@ export function CheckoutForm({ plan }: { plan: PlanRecord }) {
           value={name}
           onChange={(event) => {
             setName(event.target.value);
-            setErrors((prev) => ({ ...prev, name: undefined }));
+            setErrors((prev) => ({ ...prev, name: undefined, form: undefined }));
           }}
           placeholder={t("namePlaceholder")}
           aria-invalid={Boolean(errors.name)}
@@ -71,7 +95,11 @@ export function CheckoutForm({ plan }: { plan: PlanRecord }) {
           value={phone}
           onChange={(event) => {
             setPhone(event.target.value);
-            setErrors((prev) => ({ ...prev, phone: undefined }));
+            setErrors((prev) => ({
+              ...prev,
+              phone: undefined,
+              form: undefined,
+            }));
           }}
           placeholder={t("phonePlaceholder")}
           aria-invalid={Boolean(errors.phone)}
@@ -91,11 +119,14 @@ export function CheckoutForm({ plan }: { plan: PlanRecord }) {
         {submitting && (
           <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
         )}
-        {submitting ? t("processing") : t("pay")}
+        {submitting ? t("processing") : t("submit")}
       </Button>
 
       <p className="flex items-start gap-2 text-sm text-muted-foreground">
-        <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-success" />
+        <ShieldCheck
+          aria-hidden="true"
+          className="mt-0.5 size-4 shrink-0 text-success"
+        />
         {t("reassurance")}
       </p>
     </form>

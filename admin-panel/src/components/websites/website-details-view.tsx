@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Activity,
   AlertTriangle,
-  ArrowRight,
+  CalendarClock,
   CheckCircle2,
   Clock3,
   Globe2,
@@ -16,8 +17,23 @@ import {
   Wifi,
   Wrench,
 } from "lucide-react";
+import { toast } from "sonner";
 
+import {
+  changeWebsitePlanAction,
+  renewWebsitePlanAction,
+} from "@/actions/websites/website-plan-actions";
+import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -26,11 +42,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PLANS, websiteHasActivePlan } from "@/lib/data/plans-data";
 import {
+  formatWebsiteRenewalDate,
   WEBSITE_STATUS,
   type WebsiteStatusType,
   type WebsiteType,
 } from "@/lib/data/websites-data";
+import { previewRenewalAt } from "@/lib/data/websites-runtime";
 import { cn } from "@/lib/utils";
 import WebsiteNavicon from "./website-navicon";
 
@@ -100,7 +119,8 @@ const WEBSITE_SERVICE_FIELDS = [
   {
     key: "plan",
     label: "پلن",
-    getValue: (website: WebsiteType) => website.service.plan,
+    getValue: (website: WebsiteType) =>
+      websiteHasActivePlan(website.service.plan) ? website.service.plan : "—",
   },
   {
     key: "server",
@@ -131,7 +151,8 @@ const WEBSITE_SERVICE_FIELDS = [
   {
     key: "renewalDate",
     label: "تاریخ تمدید",
-    getValue: (website: WebsiteType) => website.service.renewalDate,
+    getValue: (website: WebsiteType) =>
+      formatWebsiteRenewalDate(website.service.renewalAt),
   },
   {
     key: "billingPeriod",
@@ -168,13 +189,32 @@ function formatStatusBadge(status: WebsiteStatusType) {
   );
 }
 
-export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
+export function WebsiteDetailsView({
+  website: initialWebsite,
+}: {
+  website: WebsiteType;
+}) {
+  const router = useRouter();
+  const [website, setWebsite] = useState(initialWebsite);
   const [adminStatus, setAdminStatus] = useState<WebsiteStatusType>(
-    website.status,
+    initialWebsite.status,
   );
   const [hasPendingStatusChange, setHasPendingStatusChange] = useState(false);
+  const [renewOpen, setRenewOpen] = useState(false);
+  const [changeOpen, setChangeOpen] = useState(false);
+  const [selectedPlanName, setSelectedPlanName] = useState(
+    websiteHasActivePlan(initialWebsite.service.plan)
+      ? initialWebsite.service.plan
+      : (PLANS[0]?.name ?? ""),
+  );
   const selectedStatusConfig = statusConfig[adminStatus];
   const SelectedStatusIcon = selectedStatusConfig.icon;
+  const hasActivePlan = websiteHasActivePlan(website.service.plan);
+  const nextRenewalAt = previewRenewalAt(website);
+  const nextRenewalLabel = formatWebsiteRenewalDate(nextRenewalAt);
+  const currentRenewalLabel = formatWebsiteRenewalDate(
+    website.service.renewalAt,
+  );
 
   const handleStatusChange = (value: string | null) => {
     if (value === null) {
@@ -189,33 +229,70 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
     setHasPendingStatusChange(false);
   };
 
+  const handleConfirmRenew = async () => {
+    const result = await renewWebsitePlanAction(website.id);
+    if (!result.ok) {
+      toast.error(result.message);
+      setRenewOpen(false);
+      return;
+    }
+
+    setWebsite(result.website);
+    setRenewOpen(false);
+    toast.success(
+      `پلن ${result.website.service.plan} تا ${formatWebsiteRenewalDate(result.website.service.renewalAt)} تمدید شد.`,
+    );
+    router.refresh();
+  };
+
+  const handleConfirmChangePlan = async () => {
+    if (!selectedPlanName.trim()) {
+      toast.error("یک پلن را انتخاب کنید.");
+      return;
+    }
+
+    if (selectedPlanName === website.service.plan) {
+      toast.error("پلن انتخاب‌شده با پلن فعلی یکسان است.");
+      return;
+    }
+
+    const result = await changeWebsitePlanAction(website.id, selectedPlanName);
+    if (!result.ok) {
+      toast.error(result.message);
+      setChangeOpen(false);
+      return;
+    }
+
+    setWebsite(result.website);
+    setChangeOpen(false);
+    toast.success(
+      `پلن فعال وب‌سایت به ${result.website.service.plan} تغییر کرد.`,
+    );
+    router.refresh();
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4 pt-4">
+      <AdminBackLink href="/websites" aria-label="بازگشت به لیست وب‌سایت‌ها">
+        بازگشت به وب‌سایت‌ها
+      </AdminBackLink>
+
       <header className={cn(surfaceClassName, "p-4 shadow-sm")}>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-end gap-3">
-            <Link
-              href="/websites"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:bg-muted"
-              aria-label="بازگشت به لیست وب‌سایت‌ها"
-            >
-              <ArrowRight className="size-4" />
-            </Link>
-            <div>
-              <p className="text-sm lg:text-base mb-2 text-muted-foreground">
-                وب‌سایت‌ها
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <WebsiteNavicon
-                    className="size-9"
-                    status={website.status}
-                    icon={website.domain.slice(0, 1)}
-                  />
-                  <h1 className="text-lg font-semibold">{website.domain}</h1>
-                </div>
-                {formatStatusBadge(adminStatus)}
+          <div className="min-w-0">
+            <p className="text-sm lg:text-base mb-2 text-muted-foreground">
+              وب‌سایت‌ها
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
+                <WebsiteNavicon
+                  className="size-9"
+                  status={website.status}
+                  icon={website.domain.slice(0, 1)}
+                />
+                <h1 className="text-lg font-semibold">{website.domain}</h1>
               </div>
+              {formatStatusBadge(adminStatus)}
             </div>
           </div>
 
@@ -231,7 +308,9 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
                   src="/avatars/ali-rezaei.jpg"
                   alt={website.tenantName}
                 />
-                <AvatarFallback>{website.tenantName.slice(0, 1)}</AvatarFallback>
+                <AvatarFallback>
+                  {website.tenantName.slice(0, 1)}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">{website.tenantName}</p>
@@ -360,21 +439,36 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
           </div>
 
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">WordPress</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.wordpress}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">PHP</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.php}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-3")}>
+            <div
+              className={cn(
+                mutedSurfaceClassName,
+                "flex items-center justify-between gap-3 p-3",
+              )}
+            >
               <p className="text-xs text-muted-foreground">Imagick</p>
-              <p className="mt-1 text-lg font-semibold">
+              <p className="text-sm font-semibold" dir="ltr">
                 {website.technical.imagick}
               </p>
             </div>
@@ -383,7 +477,9 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">به‌روزرسانی وردپرس</p>
+                <p className="text-sm text-muted-foreground font-medium">
+                  به‌روزرسانی وردپرس
+                </p>
                 <CheckCircle2 className="size-4 text-emerald-600" />
               </div>
               <p className="mt-2 text-lg font-semibold">
@@ -395,7 +491,9 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
             </div>
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">اسکن امنیتی</p>
+                <p className="text-sm text-muted-foreground font-medium">
+                  اسکن امنیتی
+                </p>
                 <ShieldCheck className="size-4 text-emerald-600" />
               </div>
               <p className="mt-2 text-lg font-semibold">
@@ -414,14 +512,14 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
             <h3 className="font-semibold">ترافیک و فعالیت</h3>
           </div>
 
-          <div className="mt-4 space-y-3">
-            <div className={cn(mutedSurfaceClassName, "p-4")}>
+          <div className="mt-4 space-y-3 sm:flex gap-4 sm:space-y-0">
+            <div className={cn(mutedSurfaceClassName, "p-4 flex-1")}>
               <p className="text-sm text-muted-foreground">فعال در حال حاضر</p>
               <p className="mt-2 text-2xl font-semibold">
                 {website.activeVisitors}
               </p>
             </div>
-            <div className={cn(mutedSurfaceClassName, "p-4")}>
+            <div className={cn(mutedSurfaceClassName, "p-4 flex-1")}>
               <p className="text-sm text-muted-foreground">
                 بازدیدکنندگان ۲۴ ساعت اخیر
               </p>
@@ -433,20 +531,51 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
         </section>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
+      <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <section className={cn(surfaceClassName, "p-4 shadow-sm")}>
-          <div className="flex items-center gap-2">
-            <Server className="size-5" />
-            <h3 className="font-semibold">اطلاعات سرویس</h3>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Server className="size-5" />
+              <h3 className="font-semibold">اطلاعات سرویس</h3>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!hasActivePlan}
+                onClick={() => setRenewOpen(true)}
+              >
+                <CalendarClock className="size-4" aria-hidden />
+                تمدید پلن
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => {
+                  setSelectedPlanName(
+                    hasActivePlan
+                      ? website.service.plan
+                      : (PLANS[0]?.name ?? ""),
+                  );
+                  setChangeOpen(true);
+                }}
+              >
+                تغییر پلن
+              </Button>
+            </div>
           </div>
 
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {WEBSITE_SERVICE_FIELDS.map((field) => {
               const value = field.getValue(website);
               const href = "href" in field ? field.href(website) : undefined;
 
               return (
-                <div key={field.key} className={cn(mutedSurfaceClassName, "p-3")}>
+                <div
+                  key={field.key}
+                  className={cn(mutedSurfaceClassName, "p-3")}
+                >
                   <p className="text-xs text-muted-foreground">{field.label}</p>
                   {href ? (
                     <Link
@@ -457,7 +586,15 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
                       {value}
                     </Link>
                   ) : (
-                    <p className="mt-1 font-medium">{value}</p>
+                    <p
+                      className={cn(
+                        "mt-1 font-medium",
+                        field.key === "plan" && "w-fit",
+                      )}
+                      dir={field.key === "plan" ? "ltr" : undefined}
+                    >
+                      {value}
+                    </p>
                   )}
                 </div>
               );
@@ -471,7 +608,7 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
             <h3 className="font-semibold">Agent / Monitoring</h3>
           </div>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-3 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
             <div className={cn(mutedSurfaceClassName, "p-4")}>
               <p className="text-sm text-muted-foreground">Agent</p>
               <p className="mt-2 flex items-center gap-2 text-lg font-semibold">
@@ -523,6 +660,105 @@ export function WebsiteDetailsView({ website }: { website: WebsiteType }) {
       <div className="flex justify-end">
         <Button variant="outline">مشاهده لاگ‌های وب‌سایت</Button>
       </div>
+
+      <AlertDialog open={renewOpen} onOpenChange={setRenewOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader className="border-b border-border">
+            <AlertDialogTitle>تمدید پلن</AlertDialogTitle>
+            <AlertDialogDescription>
+              پلن فعلی برای یک دوره دیگر تمدید می‌شود. پرداختی در این مرحله ثبت
+              نمی‌شود.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2 px-4 text-sm">
+            <p>
+              پلن:{" "}
+              <span className="font-medium" dir="ltr">
+                {website.service.plan}
+              </span>
+            </p>
+            <p>
+              دوره:{" "}
+              <span className="font-medium">
+                {website.service.billingPeriod}
+              </span>
+            </p>
+            <p>
+              تاریخ تمدید فعلی:{" "}
+              <span className="font-medium">{currentRenewalLabel}</span>
+            </p>
+            <p>
+              تاریخ تمدید بعدی:{" "}
+              <span className="font-medium">{nextRenewalLabel}</span>
+            </p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <Button type="button" onClick={handleConfirmRenew}>
+              تأیید تمدید
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={changeOpen} onOpenChange={setChangeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader className="border-b border-border">
+            <AlertDialogTitle>تغییر پلن</AlertDialogTitle>
+            <AlertDialogDescription>
+              پلن فعال وب‌سایت جایگزین می‌شود. هر وب‌سایت فقط یک پلن فعال دارد.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-3 px-4">
+            <div>
+              <p className="text-xs text-muted-foreground">پلن فعلی</p>
+              <p className="mt-1 font-medium w-fit" dir="ltr">
+                {hasActivePlan ? website.service.plan : "بدون پلن"}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <label
+                className="text-xs text-muted-foreground"
+                htmlFor="change-plan"
+              >
+                پلن جدید
+              </label>
+              <Select
+                value={selectedPlanName}
+                onValueChange={(value) => {
+                  if (value) setSelectedPlanName(value);
+                }}
+              >
+                <SelectTrigger id="change-plan" aria-label="انتخاب پلن جدید">
+                  <SelectValue>
+                    <span dir="ltr">{selectedPlanName || "انتخاب پلن"}</span>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  {PLANS.map((plan) => (
+                    <SelectItem key={plan.id} value={plan.name}>
+                      <span dir="ltr">{plan.name}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <Button
+              type="button"
+              onClick={handleConfirmChangePlan}
+              disabled={
+                !selectedPlanName.trim() ||
+                selectedPlanName === website.service.plan
+              }
+            >
+              تأیید تغییر
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -1,27 +1,31 @@
 import {
   IsBoolean,
   IsEnum,
-  IsInt,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
-  Min,
   MinLength,
 } from 'class-validator';
 
-import { TicketPriority } from '#/generated/prisma/enums.js';
+import {
+  TicketServiceCategory,
+  TicketStatus,
+} from '#/generated/prisma/enums.js';
 
 export class CreateTicketDto {
+  @IsEnum(TicketServiceCategory)
+  service!: TicketServiceCategory;
+
   @IsString()
   @MinLength(1)
   @MaxLength(300)
   subject!: string;
 
   @IsString()
-  @MinLength(1)
+  @MinLength(20)
   @MaxLength(10000)
-  body!: string;
+  description!: string;
 
   @IsOptional()
   @IsUUID()
@@ -30,10 +34,6 @@ export class CreateTicketDto {
   @IsOptional()
   @IsUUID()
   tenantId?: string;
-
-  @IsOptional()
-  @IsEnum(TicketPriority)
-  priority?: TicketPriority;
 }
 
 export class CreateTicketMessageDto {
@@ -45,27 +45,28 @@ export class CreateTicketMessageDto {
   @IsOptional()
   @IsBoolean()
   isInternal?: boolean;
-}
 
-export class CreateTicketAttachmentDto {
-  @IsString()
-  @MaxLength(255)
-  fileName!: string;
-
+  @IsOptional()
   @IsString()
   @MaxLength(128)
-  contentType!: string;
-
-  @IsInt()
-  @Min(0)
-  sizeBytes!: number;
-
-  @IsString()
-  @MaxLength(512)
-  storageKey!: string;
+  idempotencyKey?: string;
 }
 
 export class AssignTicketDto {
   @IsUUID()
   assigneeId!: string;
+}
+
+export class ListTicketsQueryDto {
+  @IsOptional()
+  @IsEnum(TicketStatus)
+  status?: TicketStatus;
+
+  @IsOptional()
+  @IsEnum(TicketServiceCategory)
+  service?: TicketServiceCategory;
+
+  @IsOptional()
+  @IsUUID()
+  websiteId?: string;
 }

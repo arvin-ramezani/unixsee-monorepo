@@ -1,6 +1,6 @@
 # Documentation standards
 
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-10
 
 ## Canonical source
 
@@ -17,6 +17,7 @@
 | Short operational clarification | Product note | `docs/product/notes/` |
 | Durable structural / stack decision | ADR | `docs/architecture/decisions/` |
 | Engineering convention | Rule sheet | `docs/frontend/`, `docs/backend/`, `docs/agent/`, `docs/quality/` |
+| Nest request/response + lifecycle wire contract | Backend API contract | `docs/backend/contracts/` (agent plane uses `docs/agent/*-api-contract.md`) |
 | Repo ownership / system map | Architecture doc | `docs/architecture/` |
 
 ## Status vocabulary
@@ -52,3 +53,8 @@ See [`../architecture/decisions/README.md`](../architecture/decisions/README.md)
 - `AGENTS.md` defines read order and hard boundaries.
 - `.cursor/rules/*.mdc` stay concise (about 50 lines) and route to these docs.
 - Do not paste full UX flows into Cursor rules.
+- For Next.js apps (`admin-panel/`, `client/`), version-sensitive framework
+  behavior is governed by the installed package docs under that app’s
+  `node_modules/next/dist/docs/`, as stated in
+  [`../frontend/nextjs.md`](../frontend/nextjs.md) and each app’s `AGENTS.md`.
+  Those installed docs override model memory.

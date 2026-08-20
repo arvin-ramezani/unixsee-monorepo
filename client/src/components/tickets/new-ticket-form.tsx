@@ -12,10 +12,17 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+import {
+  DashboardButton,
+  DashboardButtonLink,
+} from "@/app/[locale]/(dashboard)/dashboard/_components/common";
+import { createTicketAction } from "@/actions/tickets/create-ticket";
+import { uploadTicketAttachmentAction } from "@/actions/tickets/upload-ticket-attachment";
 import { Panel } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import {
   Select,
   SelectContent,
@@ -24,59 +31,72 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import type {
-  TicketService,
-  TicketWebsite,
-} from "@/lib/data/tickets/ticket-records";
+  TicketServiceCatalogItem,
+  TicketServiceCategory,
+  TicketWebsiteRef,
+} from "@/lib/tickets/types";
 import { cn } from "@/lib/utils";
-import {
-  DashboardButton,
-  DashboardButtonLink,
-} from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 
 type FieldErrors = Partial<
-  Record<"service" | "website" | "subject" | "description", string>
+  Record<"service" | "website" | "subject" | "description" | "form", string>
 >;
 
 const controlClassName =
   "w-full h-11! border border-border bg-background px-4 text-base shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground)_6%,transparent)] outline-none transition-[border-color,box-shadow,background-color] hover:border-ring/55 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/10 sm:text-sm";
 
-const websiteRequiredServices: TicketService[] = [
-  "managed_server",
-  "migration_optimization",
-  "woocommerce_support",
-  "seo",
-  "product_data_entry",
-];
+const WEBSITE_NONE_VALUE = "__none__";
+const MAX_ATTACHMENTS = 20;
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "application/pdf",
+  "application/zip",
+  "application/x-zip-compressed",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "text/csv",
+  "text/plain",
+]);
+
+type SelectedAttachment = {
+  id: string;
+  file: File;
+};
+
+const attachmentEase = [0.22, 1, 0.36, 1] as const;
+const attachmentExitEase = [0.4, 0, 1, 1] as const;
 
 export function NewTicketForm({
   services,
   websites,
+  initialWebsiteId,
+  loadError,
 }: {
-  services: TicketService[];
-  websites: TicketWebsite[];
+  services: TicketServiceCatalogItem[];
+  websites: TicketWebsiteRef[];
+  initialWebsiteId?: string;
+  loadError?: "unavailable";
 }) {
   const t = useTranslations("Tickets.new");
   const serviceT = useTranslations("Tickets.services");
+  const tApiErrors = useTranslations("ApiErrors");
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
-  const [service, setService] = useState<"" | TicketService>("");
-  const [website, setWebsite] = useState("");
+  const [service, setService] = useState<"" | TicketServiceCategory>("");
+  const [website, setWebsite] = useState(initialWebsiteId ?? "");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
-
-  const requiresWebsite = service
-    ? websiteRequiredServices.includes(service)
-    : false;
 
   function validate() {
     const nextErrors: FieldErrors = {};
     if (!service) nextErrors.service = t("errors.service");
-    if (requiresWebsite && !website) nextErrors.website = t("errors.website");
     if (!subject.trim()) nextErrors.subject = t("errors.subject");
     if (description.trim().length < 20)
       nextErrors.description = t("errors.description");
@@ -84,11 +104,92 @@ export function NewTicketForm({
     return Object.keys(nextErrors).length === 0;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function addFiles(fileList: FileList | null) {
+    const nextFiles = Array.from(fileList ?? []);
+    if (nextFiles.some((file) => file.size > MAX_ATTACHMENT_BYTES)) {
+      setAttachmentError(t("attachments.tooLarge"));
+      return;
+    }
+    if (
+      nextFiles.some(
+        (file) => !file.type || !ALLOWED_ATTACHMENT_TYPES.has(file.type),
+      )
+    ) {
+      setAttachmentError(t("attachments.invalidType"));
+      return;
+    }
+    setAttachmentError(null);
+    setAttachments((current) =>
+      [
+        ...current,
+        ...nextFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        })),
+      ].slice(0, MAX_ATTACHMENTS),
+    );
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!validate()) return;
+    if (!validate() || !service) return;
     setSubmitting(true);
-    window.setTimeout(() => router.push("/dashboard/tickets/TCK-1052"), 650);
+    setErrors({});
+
+    const result = await createTicketAction({
+      service,
+      subject,
+      description,
+      ...(website ? { websiteId: website } : {}),
+    });
+
+    if (!result.ok) {
+      toastMappedApiError(result.error, tApiErrors);
+      setSubmitting(false);
+      return;
+    }
+
+    for (const attachment of attachments) {
+      const formData = new FormData();
+      formData.append("file", attachment.file);
+      const uploadResult = await uploadTicketAttachmentAction(
+        result.data.id,
+        formData,
+      );
+      if (!uploadResult.ok) {
+        toastMappedApiError(uploadResult.error, tApiErrors);
+        router.push(`/dashboard/tickets/${result.data.id}`);
+        router.refresh();
+        setSubmitting(false);
+        return;
+      }
+    }
+
+    router.push(`/dashboard/tickets/${result.data.id}`);
+    router.refresh();
+  }
+
+  if (loadError || services.length === 0) {
+    return (
+      <Panel className="grid min-h-60 place-items-center px-6 text-center">
+        <div className="max-w-md">
+          <span className="bg-warning/15 text-warning-foreground mx-auto grid size-12 place-items-center rounded-full">
+            <AlertCircle aria-hidden="true" className="size-6" />
+          </span>
+          <h2 className="mt-4 text-lg font-semibold">{t("loadErrorTitle")}</h2>
+          <p className="text-muted-foreground mt-2 text-sm leading-6">
+            {t("loadErrorDescription")}
+          </p>
+          <DashboardButtonLink
+            href="/dashboard/tickets"
+            variant="outline"
+            className="mt-5 min-h-10"
+          >
+            {t("back")}
+          </DashboardButtonLink>
+        </div>
+      </Panel>
+    );
   }
 
   return (
@@ -96,7 +197,6 @@ export function NewTicketForm({
       onSubmit={handleSubmit}
       noValidate
       className="grid w-full items-start gap-5 pb-8 xl:grid-cols-2"
-      // className="grid w-full items-start gap-5 pb-8 xl:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.2fr)]"
     >
       <Panel className="min-w-0 self-start overflow-hidden">
         <div className="border-border bg-muted/20 flex items-start gap-3 border-b px-5 py-5 sm:px-6">
@@ -116,18 +216,18 @@ export function NewTicketForm({
               htmlFor="ticket-service"
               label={t("service.label")}
               hint={t("service.hint")}
-              labelClassName=""
               error={errors.service}
               required
             >
               <Select
                 value={service}
                 onValueChange={(value) => {
-                  setService(value as TicketService);
-                  setErrors((value) => ({
-                    ...value,
+                  setService(value as TicketServiceCategory);
+                  setErrors((current) => ({
+                    ...current,
                     service: undefined,
                     website: undefined,
+                    form: undefined,
                   }));
                 }}
               >
@@ -142,9 +242,9 @@ export function NewTicketForm({
                   <SelectValue placeholder={t("service.placeholder")} />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {services.map((value) => (
-                    <SelectItem key={value} value={value}>
-                      {serviceT(value)}
+                  {services.map((item) => (
+                    <SelectItem key={item.code} value={item.code}>
+                      {serviceT(item.code)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -154,20 +254,20 @@ export function NewTicketForm({
             <Field
               htmlFor="ticket-website"
               label={t("website.label")}
-              hint={
-                requiresWebsite
-                  ? t("website.requiredHint")
-                  : t("website.optionalHint")
-              }
+              hint={t("website.optionalHint")}
               error={errors.website}
-              required={requiresWebsite}
             >
               <Select
-                value={website}
+                value={website || WEBSITE_NONE_VALUE}
                 onValueChange={(value) => {
-                  setWebsite(value);
-                  setErrors((value) => ({ ...value, website: undefined }));
+                  setWebsite(value === WEBSITE_NONE_VALUE ? "" : value);
+                  setErrors((current) => ({
+                    ...current,
+                    website: undefined,
+                    form: undefined,
+                  }));
                 }}
+                disabled={websites.length === 0}
               >
                 <SelectTrigger
                   id="ticket-website"
@@ -179,9 +279,18 @@ export function NewTicketForm({
                   }
                   className={`${controlClassName} text-start`}
                 >
-                  <SelectValue placeholder={t("website.placeholder")} />
+                  <SelectValue
+                    placeholder={
+                      websites.length === 0
+                        ? t("website.emptyPlaceholder")
+                        : t("website.placeholder")
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent position="popper">
+                  <SelectItem value={WEBSITE_NONE_VALUE}>
+                    {t("website.none")}
+                  </SelectItem>
                   {websites.map((value) => (
                     <SelectItem key={value.id} value={value.id}>
                       {value.name} — {value.domain}
@@ -204,14 +313,17 @@ export function NewTicketForm({
               value={subject}
               onChange={(event) => {
                 setSubject(event.target.value);
-                setErrors((value) => ({ ...value, subject: undefined }));
+                setErrors((current) => ({
+                  ...current,
+                  subject: undefined,
+                  form: undefined,
+                }));
               }}
               placeholder={t("subject.placeholder")}
               aria-invalid={Boolean(errors.subject)}
               aria-describedby={
                 errors.subject ? "ticket-subject-error" : undefined
               }
-
               className="border-border bg-background placeholder:text-muted-foreground hover:border-ring/55 focus-visible:border-ring focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:ring-destructive/10 min-h-11! w-full resize-none rounded-xl border px-4 py-3 text-base leading-7 shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground)_6%,transparent)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3 aria-invalid:ring-3 sm:text-sm rtl:placeholder:font-light"
             />
           </Field>
@@ -244,7 +356,11 @@ export function NewTicketForm({
               value={description}
               onChange={(event) => {
                 setDescription(event.target.value);
-                setErrors((value) => ({ ...value, description: undefined }));
+                setErrors((current) => ({
+                  ...current,
+                  description: undefined,
+                  form: undefined,
+                }));
               }}
               placeholder={t("descriptionField.placeholder")}
               aria-invalid={Boolean(errors.description)}
@@ -256,24 +372,35 @@ export function NewTicketForm({
               className="border-border bg-background placeholder:text-muted-foreground hover:border-ring/55 focus-visible:border-ring focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:ring-destructive/10 min-h-24 w-full resize-y rounded-xl border px-4 py-3 text-base leading-7 shadow-[0_1px_2px_color-mix(in_oklch,var(--foreground)_6%,transparent)] transition-[border-color,box-shadow,background-color] outline-none focus-visible:ring-3 aria-invalid:ring-3 sm:text-sm rtl:placeholder:font-light"
             />
           </Field>
-          <Field label={t("attachments.label")} hint={t("attachments.hint")}>
-            <Label className="border-border bg-muted/20 hover:border-ring/55 hover:bg-muted/50 dark:hover:bg-accent/50 focus-within:border-ring focus-within:ring-ring/15 flex min-h-16 w-fit cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed px-4 text-sm font-medium transition-[border-color,background-color] focus-within:ring-3">
+          <Field
+            label={t("attachments.label")}
+            hint={t("attachments.hint")}
+            error={attachmentError ?? undefined}
+          >
+            <Label className="border-border bg-muted/20 hover:border-ring/55 hover:bg-muted/50 dark:hover:bg-accent/50 focus-within:border-ring focus-within:ring-ring/15 relative flex min-h-16 w-fit cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed px-4 text-sm font-medium transition-[border-color,background-color] focus-within:ring-3">
               <Paperclip aria-hidden="true" className="size-4" />
               {t("attachments.choose")}
               <Input
                 type="file"
                 multiple
+                accept=".pdf,.zip,.gif,.jpg,.jpeg,.png,.webp,.csv,.txt,application/pdf,application/zip,image/gif,image/jpeg,image/png,image/webp,text/csv,text/plain"
                 className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
-                onChange={(event) =>
-                  setAttachments(Array.from(event.target.files ?? []))
-                }
+                onChange={(event) => {
+                  addFiles(event.target.files);
+                  event.target.value = "";
+                }}
               />
             </Label>
-            <ul className={cn("space-y-2", attachments.length > 0 && "mt-3")}>
+            <ul
+              className={cn(
+                "relative flex w-full min-w-0 max-w-full flex-col gap-2",
+                attachments.length > 0 && "mt-3",
+              )}
+            >
               <AnimatePresence initial={false} mode="popLayout">
-                {attachments.map((file, index) => (
+                {attachments.map(({ id, file }, index) => (
                   <motion.li
-                    key={`${file.name}-${file.size}`}
+                    key={id}
                     layout={!prefersReducedMotion}
                     initial={
                       prefersReducedMotion
@@ -282,60 +409,71 @@ export function NewTicketForm({
                     }
                     animate={
                       prefersReducedMotion
-                        ? { opacity: 1 }
-                        : { opacity: 1, y: 0, scale: 1 }
+                        ? {
+                            opacity: 1,
+                            transition: { duration: 0.12, delay: index * 0.03 },
+                          }
+                        : {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: {
+                              duration: 0.28,
+                              ease: attachmentEase,
+                              delay: index * 0.03,
+                            },
+                          }
                     }
                     exit={
                       prefersReducedMotion
                         ? {
                             opacity: 0,
-                            height: 0,
-                            marginBottom: 0,
-                            transition: { duration: 0.12 },
+                            transition: { duration: 0.12, delay: 0 },
                           }
                         : {
                             opacity: 0,
-                            height: 0,
-                            marginBottom: 0,
-                            scale: 0.98,
-                            transition: { duration: 0.18, ease: "easeOut" },
+                            scale: 0.96,
+                            y: -4,
+                            transition: {
+                              duration: 0.2,
+                              ease: attachmentExitEase,
+                              delay: 0,
+                            },
                           }
                     }
                     transition={
                       prefersReducedMotion
-                        ? { duration: 0.15 }
+                        ? { duration: 0.12 }
                         : {
-                            duration: 0.28,
-                            ease: [0.22, 1, 0.36, 1],
-                            delay: index * 0.05,
                             layout: {
-                              duration: 0.25,
-                              ease: [0.22, 1, 0.36, 1],
+                              duration: 0.28,
+                              ease: attachmentEase,
                             },
                           }
                     }
-                    className="border-border bg-muted/40 flex min-h-11 items-center gap-3 rounded-xl border px-3 text-sm"
+                    className="border-border bg-muted/40 flex min-h-11 w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-xl border px-3 text-sm sm:gap-3"
                   >
                     <Paperclip
                       aria-hidden="true"
-                      className="text-muted-foreground size-4"
+                      className="text-muted-foreground size-4 shrink-0"
                     />
-                    <span className="min-w-0 flex-1 truncate" dir="auto">
+                    <span className="min-w-0 flex-1 truncate" title={file.name}>
                       {file.name}
+                    </span>
+                    <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
+                      {Math.ceil(file.size / 1024)} KB
                     </span>
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-lg"
+                      size="icon-sm"
+                      className="shrink-0"
                       onClick={() =>
-                        setAttachments((files) =>
-                          files.filter((item) => item !== file),
+                        setAttachments((current) =>
+                          current.filter((item) => item.id !== id),
                         )
                       }
-                      aria-label={t("attachments.remove", {
-                        name: file.name,
-                      })}
-                      className="hover:bg-background focus-visible:ring-ring grid size-9 place-items-center rounded-lg focus-visible:ring-2"
+                      aria-label={t("attachments.remove", { name: file.name })}
                     >
                       <X aria-hidden="true" className="size-4" />
                     </Button>
@@ -366,7 +504,7 @@ export function NewTicketForm({
             size="xl"
             href="/dashboard/tickets"
             revealClassName="bg-accent"
-            className="border-border hover:bg-muted focus-visible:ring-ring/20 inline-flex w-full items-center justify-center border px-5 text-sm font-medium transition-colors focus-visible:ring-3 sm:w-auto"
+            className="border-border focus-visible:ring-ring/20 hover:text-accent-foreground! hover:border-accent inline-flex h-11! w-full items-center justify-center border px-5 text-sm font-medium transition-colors focus-visible:ring-3 sm:w-auto"
           >
             {t("cancel")}
           </DashboardButtonLink>

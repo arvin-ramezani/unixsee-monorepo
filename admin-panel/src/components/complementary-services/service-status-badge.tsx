@@ -1,4 +1,9 @@
-import { CheckCircle2, CirclePause, Clock3, MessageCircleMore } from "lucide-react";
+import {
+  CheckCircle2,
+  CirclePause,
+  Clock3,
+  MessageCircleMore,
+} from "lucide-react";
 
 import {
   SERVICE_ASSIGNMENT_STATUS,
@@ -94,7 +99,7 @@ export function ServiceStatusBadge(props: ServiceStatusBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+        "inline-flex w-fit items-center text-nowrap gap-1.5 rounded-full px-2.5 py-2 text-xs",
         config.className,
       )}
     >

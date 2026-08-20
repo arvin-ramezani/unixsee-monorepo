@@ -6,14 +6,17 @@ import { ACCOUNT_STATE_CONFIG, TENANT_STATE_CONFIG } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 
 const badgeClassName =
-  "inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs whitespace-nowrap";
+  "inline-flex w-fit items-center gap-1 rounded-full px-2 py-1 text-xs whitespace-nowrap";
 
 type AccountStateBadgeProps = {
   state: AccountStateType;
   className?: string;
 };
 
-export function AccountStateBadge({ state, className }: AccountStateBadgeProps) {
+export function AccountStateBadge({
+  state,
+  className,
+}: AccountStateBadgeProps) {
   const config = ACCOUNT_STATE_CONFIG[state];
 
   return (

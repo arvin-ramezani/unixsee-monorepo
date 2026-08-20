@@ -11,16 +11,20 @@ type RequestAssessmentLabels = {
   requestId: string;
   fullName: string;
   email: string;
+  phone?: string;
   service: string;
   description: string;
+  serviceDetails?: string;
 };
 
 type RequestAssessmentDetails = {
   requestId: string;
   fullName: string;
   workEmail: string;
+  phone?: string;
   serviceLabel: string;
   description?: string;
+  serviceDetails?: string;
 };
 
 type RenderRequestAssessmentCustomerEmailInput = {
@@ -115,6 +119,15 @@ export function renderRequestAssessmentAdminEmail({
             value: details.workEmail,
             valueDirection: "ltr",
           },
+          ...(details.phone
+            ? [
+                {
+                  label: labels.phone ?? "",
+                  value: details.phone,
+                  valueDirection: "ltr" as const,
+                },
+              ]
+            : []),
           { label: labels.service, value: details.serviceLabel },
         ],
       }),
@@ -123,6 +136,15 @@ export function renderRequestAssessmentAdminEmail({
         label: labels.description,
         content: details.description,
       }),
+      ...(details.serviceDetails && labels.serviceDetails
+        ? [
+            renderEmailTextPanel({
+              locale,
+              label: labels.serviceDetails,
+              content: details.serviceDetails,
+            }),
+          ]
+        : []),
     ].join(""),
   });
 }

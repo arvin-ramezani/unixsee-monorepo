@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -15,6 +15,7 @@ import {
   Unplug,
 } from "lucide-react";
 
+import { createServerAction } from "@/actions/servers/server-actions";
 import SearchInput from "@/components/common/search-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,23 +33,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import {
-  ENROLLMENT_TOKEN_STATUS,
   SERVER_AGENT_STATE,
   SERVER_AGENT_STATE_LABELS,
   getServersSummary,
   type ServerType,
 } from "@/lib/data/servers-data";
-import {
-  listRuntimeServers,
-  setRuntimeServers,
-  upsertRuntimeServer,
-} from "@/lib/data/servers-runtime";
 import { cn } from "@/lib/utils";
 import {
-  CreateServerSheet,
+  CreateServerDialog,
   type CreateServerValues,
-} from "./create-server-sheet";
+} from "./create-server-dialog";
 import { ServerStatusBadge } from "./server-status-badge";
 
 export const SERVER_AGENT_FILTER = {
@@ -99,6 +95,7 @@ const ACTIONABLE_STATES: ReadonlySet<string> = new Set([
 type ServersViewProps = {
   initialServers?: ServerType[];
   initialAgentFilter?: ServerAgentFilterType;
+  loadError?: string | null;
 };
 
 function getAgentFilterLabel(value: ServerAgentFilterType) {
@@ -134,7 +131,9 @@ function ServerTableRow({ server }: { server: ServerType }) {
     navigateToServer();
   };
 
-  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+  const handleRowKeyDown = (
+    event: React.KeyboardEvent<HTMLTableRowElement>,
+  ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
 
     event.preventDefault();
@@ -152,20 +151,20 @@ function ServerTableRow({ server }: { server: ServerType }) {
     >
       <TableCell className="px-4 py-3">
         <Link href={serverHref} className="block min-w-0">
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Server className="size-5" aria-hidden="true" />
             </span>
-            <div className="min-w-0">
-              <p className="truncate font-medium text-foreground" dir="ltr">
-                {server.label}
-              </p>
-              <p className="truncate text-sm text-muted-foreground">
-                {server.location}
-              </p>
-            </div>
+            <span className="truncate font-medium text-foreground" dir="ltr">
+              {server.label}
+            </span>
           </div>
         </Link>
+      </TableCell>
+      <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground">
+        <span dir="ltr" className="w-fit">
+          {server.ip || "—"}
+        </span>
       </TableCell>
       <TableCell className="px-4 py-3">
         <ServerStatusBadge state={server.agent.state} />
@@ -182,9 +181,6 @@ function ServerTableRow({ server }: { server: ServerType }) {
             {unassignedCount.toLocaleString("fa-IR")} کشف‌نشده
           </span>
         )}
-      </TableCell>
-      <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground" dir="ltr">
-        {server.capacitySummary}
       </TableCell>
     </TableRow>
   );
@@ -203,7 +199,9 @@ function ServerCard({ server }: { server: ServerType }) {
           <p className="font-medium text-foreground" dir="ltr">
             {server.label}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">{server.location}</p>
+          <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
+            {server.ip}
+          </p>
         </div>
         <ServerStatusBadge state={server.agent.state} />
       </div>
@@ -230,17 +228,21 @@ function ServerCard({ server }: { server: ServerType }) {
 }
 
 export function ServersView({
-  initialServers,
+  initialServers = [],
   initialAgentFilter = SERVER_AGENT_FILTER.ACTIONABLE,
+  loadError = null,
 }: ServersViewProps) {
-  const [servers, setServers] = useState(() =>
-    initialServers ?? listRuntimeServers(),
-  );
+  const router = useRouter();
+  const [servers, setServers] = useState(initialServers);
   const [query, setQuery] = useState("");
   const [agentFilter, setAgentFilter] =
     useState<ServerAgentFilterType>(initialAgentFilter);
   const [showFilters, setShowFilters] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    setServers(initialServers);
+  }, [initialServers]);
 
   const summary = useMemo(() => getServersSummary(servers), [servers]);
   const agentFilterLabel = getAgentFilterLabel(agentFilter);
@@ -251,7 +253,7 @@ export function ServersView({
     return servers.filter((server) => {
       const matchesQuery =
         normalizedQuery.length === 0 ||
-        [server.label, server.location, server.notes, server.capacitySummary]
+        [server.label, server.ip, server.notes]
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
@@ -309,36 +311,35 @@ export function ServersView({
     },
   ];
 
-  const handleCreateServer = (values: CreateServerValues) => {
-    const nextId = `server-${String(Date.now())}`;
-    const createdServer: ServerType = {
-      id: nextId,
-      label: values.label,
-      location: values.location,
-      capacitySummary: values.capacitySummary,
+  const handleCreateServer = async (values: CreateServerValues) => {
+    const result = await createServerAction({
+      name: values.name,
+      ipAddress: values.ipAddress,
       notes: values.notes,
-      createdAt: "اکنون",
-      agent: {
-        state: SERVER_AGENT_STATE.PENDING_AGENT,
-      },
-      enrollment: {
-        status: ENROLLMENT_TOKEN_STATUS.NONE,
-      },
-      discoveries: [],
-      websiteIds: [],
-    };
-
-    upsertRuntimeServer(createdServer);
-    setServers((current) => {
-      const next = [createdServer, ...current];
-      setRuntimeServers(next);
-      return next;
     });
+
+    if (!result.ok) {
+      toastApiErrorMessage(result.message);
+      return false;
+    }
+
+    setServers((current) => [result.server, ...current]);
     setAgentFilter(SERVER_AGENT_FILTER.PENDING_AGENT);
+    router.push(`/servers/${result.server.id}`);
+    router.refresh();
+    return true;
   };
 
   return (
     <div className="flex flex-col gap-4">
+      {!!loadError && (
+        <div
+          className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
+          {loadError}
+        </div>
+      )}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {summaryItems.map((item) => {
           const Icon = item.icon;
@@ -432,11 +433,11 @@ export function ServersView({
           </div>
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[minmax(220px,1fr)_minmax(180px,220px)]">
+        <div className="grid gap-2 lg:grid-cols-[minmax(220px,580px)_minmax(180px,220px)]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="جستجو در شناسه، موقعیت یا یادداشت..."
+            placeholder="جستجو در شناسه، IP یا یادداشت..."
           />
 
           <div className="hidden lg:block">
@@ -509,10 +510,10 @@ export function ServersView({
               <TableHeader>
                 <TableRow className="bg-muted/40 hover:bg-muted/40">
                   <TableHead className="px-4 py-3">سرور</TableHead>
+                  <TableHead className="px-4 py-3">آدرس IP</TableHead>
                   <TableHead className="px-4 py-3">وضعیت Agent</TableHead>
                   <TableHead className="px-4 py-3">آخرین ارتباط</TableHead>
                   <TableHead className="px-4 py-3">وب‌سایت‌ها</TableHead>
-                  <TableHead className="px-4 py-3">ظرفیت</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -531,7 +532,7 @@ export function ServersView({
         </>
       )}
 
-      <CreateServerSheet
+      <CreateServerDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onCreate={handleCreateServer}

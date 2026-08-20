@@ -35,6 +35,9 @@ and [`../architecture/overview.md`](../architecture/overview.md).
 
 Canonical map: [`modules-and-routes.md`](./modules-and-routes.md).
 
+Audience DTO/lifecycle contracts: [`contracts/`](./contracts/) (start with
+customer tickets).
+
 ADRs:
 
 - [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md)
@@ -52,13 +55,16 @@ notifications, activities, audit, operational-actions, admin overview, and
 proper alerts REST. See the module map for routes and slices.
 
 Do not invent final DTOs in UI apps; implement contracts in Nest and document
-them when endpoints ship.
+them under [`contracts/`](./contracts/) before or with the Nest change.
 
 ## Related docs
 
 - Stack: [`../architecture/decisions/0002-stack-choices.md`](../architecture/decisions/0002-stack-choices.md)
 - Agent: [`../agent/README.md`](../agent/README.md)
 - Phase 1 features: [`../product/phase-1-application-features.md`](../product/phase-1-application-features.md)
+- Customer assistant (deferred): [`../product/customer-assistant-prd.md`](../product/customer-assistant-prd.md),
+  ADR [`0013`](../architecture/decisions/0013-customer-assistant-nest-pgvector-rag.md),
+  engineering [`customer-assistant.md`](./customer-assistant.md)
 - Local design notes under `backend/docs/` are secondary; where they conflict
   with monorepo ADRs or [`modules-and-routes.md`](./modules-and-routes.md), the
   monorepo docs win.

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
@@ -41,22 +41,19 @@ import {
 } from "@/components/common/motion/motion-grow-dialog";
 import { FormErrorKey } from "@/lib/form-errors";
 import {
+  getRequestAssessmentDefaultValues,
   requestAssessmentSchema,
+  SERVICE_VALUES,
   RequestAssessmentSchemaType,
 } from "@/lib/zod-schemas/request-assessment-schema";
-import { RequestAssessmentFormType } from "@/app/[locale]/(website)/_components/others/request-assessment-form";
+import {
+  RequestAssessmentContactTabs,
+  type ContactOtpChannel,
+} from "@/app/[locale]/(website)/_components/others/request-assessment-contact-tabs";
 import { cn } from "@/lib/utils";
 // import { RequiredInputIcon } from "../required-input-icon";
 
-const SERVICE_KEYS = [
-  "managedServer",
-  "migrationOptimization",
-  "woocommerceSupport",
-  "seo",
-  "graphicDesign",
-  "productDataEntry",
-  "socialMedia",
-] as const;
+const SERVICE_KEYS = SERVICE_VALUES;
 
 type RequestAssessmentDialogProps = {
   side?: LogicalGrowSide;
@@ -73,16 +70,15 @@ export function RequestAssessmentDialog({
   );
   const tFormErrors = useTranslations("FormErrors");
 
+  const [verifiedChannel, setVerifiedChannel] =
+    React.useState<ContactOtpChannel | null>(null);
+
   const form = useForm<RequestAssessmentSchemaType>({
     resolver: zodResolver(requestAssessmentSchema),
-    defaultValues: {
-      fullName: "",
-      businessEmail: "",
-      services: "managedServer",
-    },
+    defaultValues: getRequestAssessmentDefaultValues(),
   });
 
-  function onSubmit(data: RequestAssessmentFormType) {
+  function onSubmit(data: RequestAssessmentSchemaType) {
     toast("You submitted the following values:", {
       description: (
         <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
@@ -123,9 +119,11 @@ export function RequestAssessmentDialog({
           </MotionGrowDialogDescription>
         </MotionGrowDialogHeader>
 
+        <FormProvider {...form}>
         <form
           id="request-assessment-form-dialog-mobile"
           onSubmit={form.handleSubmit(onSubmit)}
+          noValidate
         >
           <FieldGroup>
             <Controller
@@ -159,35 +157,11 @@ export function RequestAssessmentDialog({
               )}
             />
 
-            <Controller
-              name="businessEmail"
+            <RequestAssessmentContactTabs
               control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel
-                    htmlFor="request-assessment-form-business-email"
-                    className="sr-only"
-                  >
-                    {t("fields.email.label")}
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="request-assessment-form-business-email"
-                    aria-invalid={fieldState.invalid}
-                    placeholder={t("fields.email.placeholder")}
-                    autoComplete="off"
-                  />
-                  {fieldState.error?.message && (
-                    <FieldError
-                      errors={[
-                        {
-                          message: translateError(fieldState.error.message),
-                        },
-                      ]}
-                    />
-                  )}
-                </Field>
-              )}
+              translateError={translateError}
+              verifiedChannel={verifiedChannel}
+              onVerifiedChannelChange={setVerifiedChannel}
             />
 
             <Controller
@@ -271,7 +245,7 @@ export function RequestAssessmentDialog({
                     >
                       <SelectValue
                         className="dark:text-white"
-                        placeholder={t("fields.budget.placeholder")}
+                        placeholder={t("fields.service.placeholder")}
                       />
                     </SelectTrigger>
                     <SelectContent className="py-4" position="item-aligned">
@@ -287,6 +261,7 @@ export function RequestAssessmentDialog({
             />
           </FieldGroup>
         </form>
+        </FormProvider>
 
         <MotionGrowDialogFooter className="flex flex-col-reverse!">
           <MotionGrowDialogClose asChild>
@@ -298,6 +273,7 @@ export function RequestAssessmentDialog({
             type="submit"
             form="request-assessment-form-dialog-mobile"
             className="h-12"
+            disabled={!verifiedChannel}
           >
             {t("actions.sendMessage")}
           </Button>

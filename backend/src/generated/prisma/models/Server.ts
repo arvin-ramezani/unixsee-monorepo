@@ -29,6 +29,7 @@ export type ServerMinAggregateOutputType = {
   name: string | null
   ipAddress: string | null
   notes: string | null
+  controlPanelUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type ServerMaxAggregateOutputType = {
   name: string | null
   ipAddress: string | null
   notes: string | null
+  controlPanelUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type ServerCountAggregateOutputType = {
   name: number
   ipAddress: number
   notes: number
+  controlPanelUrl: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type ServerMinAggregateInputType = {
   name?: true
   ipAddress?: true
   notes?: true
+  controlPanelUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type ServerMaxAggregateInputType = {
   name?: true
   ipAddress?: true
   notes?: true
+  controlPanelUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type ServerCountAggregateInputType = {
   name?: true
   ipAddress?: true
   notes?: true
+  controlPanelUrl?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type ServerGroupByOutputType = {
   name: string
   ipAddress: string
   notes: string | null
+  controlPanelUrl: string | null
   createdAt: Date
   updatedAt: Date
   _count: ServerCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type ServerWhereInput = {
   name?: Prisma.StringFilter<"Server"> | string
   ipAddress?: Prisma.StringFilter<"Server"> | string
   notes?: Prisma.StringNullableFilter<"Server"> | string | null
+  controlPanelUrl?: Prisma.StringNullableFilter<"Server"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   vpsNodes?: Prisma.VpsNodeListRelationFilter
@@ -201,6 +209,7 @@ export type ServerOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vpsNodes?: Prisma.VpsNodeOrderByRelationAggregateInput
@@ -217,6 +226,7 @@ export type ServerWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ServerWhereInput | Prisma.ServerWhereInput[]
   ipAddress?: Prisma.StringFilter<"Server"> | string
   notes?: Prisma.StringNullableFilter<"Server"> | string | null
+  controlPanelUrl?: Prisma.StringNullableFilter<"Server"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   vpsNodes?: Prisma.VpsNodeListRelationFilter
@@ -230,6 +240,7 @@ export type ServerOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServerCountOrderByAggregateInput
@@ -245,6 +256,7 @@ export type ServerScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Server"> | string
   ipAddress?: Prisma.StringWithAggregatesFilter<"Server"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
+  controlPanelUrl?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Server"> | Date | string
 }
@@ -254,6 +266,7 @@ export type ServerCreateInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutServerInput
@@ -267,6 +280,7 @@ export type ServerUncheckedCreateInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutServerInput
@@ -280,6 +294,7 @@ export type ServerUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutServerNestedInput
@@ -293,6 +308,7 @@ export type ServerUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutServerNestedInput
@@ -306,6 +322,7 @@ export type ServerCreateManyInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -315,6 +332,7 @@ export type ServerUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -324,6 +342,7 @@ export type ServerUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,6 +352,7 @@ export type ServerCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -342,6 +362,7 @@ export type ServerMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -351,6 +372,7 @@ export type ServerMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  controlPanelUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -428,6 +450,7 @@ export type ServerCreateWithoutEnrollmentTokensInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutServerInput
@@ -440,6 +463,7 @@ export type ServerUncheckedCreateWithoutEnrollmentTokensInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutServerInput
@@ -468,6 +492,7 @@ export type ServerUpdateWithoutEnrollmentTokensInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutServerNestedInput
@@ -480,6 +505,7 @@ export type ServerUncheckedUpdateWithoutEnrollmentTokensInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutServerNestedInput
@@ -492,6 +518,7 @@ export type ServerCreateWithoutVpsNodesInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   alerts?: Prisma.AlertCreateNestedManyWithoutServerInput
@@ -504,6 +531,7 @@ export type ServerUncheckedCreateWithoutVpsNodesInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutServerInput
@@ -532,6 +560,7 @@ export type ServerUpdateWithoutVpsNodesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   alerts?: Prisma.AlertUpdateManyWithoutServerNestedInput
@@ -544,6 +573,7 @@ export type ServerUncheckedUpdateWithoutVpsNodesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutServerNestedInput
@@ -556,6 +586,7 @@ export type ServerCreateWithoutDiscoveriesInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutServerInput
@@ -568,6 +599,7 @@ export type ServerUncheckedCreateWithoutDiscoveriesInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutServerInput
@@ -596,6 +628,7 @@ export type ServerUpdateWithoutDiscoveriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutServerNestedInput
@@ -608,6 +641,7 @@ export type ServerUncheckedUpdateWithoutDiscoveriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutServerNestedInput
@@ -620,6 +654,7 @@ export type ServerCreateWithoutAlertsInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeCreateNestedManyWithoutServerInput
@@ -632,6 +667,7 @@ export type ServerUncheckedCreateWithoutAlertsInput = {
   name: string
   ipAddress: string
   notes?: string | null
+  controlPanelUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedCreateNestedManyWithoutServerInput
@@ -660,6 +696,7 @@ export type ServerUpdateWithoutAlertsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUpdateManyWithoutServerNestedInput
@@ -672,6 +709,7 @@ export type ServerUncheckedUpdateWithoutAlertsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  controlPanelUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vpsNodes?: Prisma.VpsNodeUncheckedUpdateManyWithoutServerNestedInput
@@ -742,6 +780,7 @@ export type ServerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name?: boolean
   ipAddress?: boolean
   notes?: boolean
+  controlPanelUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vpsNodes?: boolean | Prisma.Server$vpsNodesArgs<ExtArgs>
@@ -756,6 +795,7 @@ export type ServerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   name?: boolean
   ipAddress?: boolean
   notes?: boolean
+  controlPanelUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["server"]>
@@ -765,6 +805,7 @@ export type ServerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   name?: boolean
   ipAddress?: boolean
   notes?: boolean
+  controlPanelUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["server"]>
@@ -774,11 +815,12 @@ export type ServerSelectScalar = {
   name?: boolean
   ipAddress?: boolean
   notes?: boolean
+  controlPanelUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ipAddress" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["server"]>
+export type ServerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ipAddress" | "notes" | "controlPanelUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["server"]>
 export type ServerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vpsNodes?: boolean | Prisma.Server$vpsNodesArgs<ExtArgs>
   alerts?: boolean | Prisma.Server$alertsArgs<ExtArgs>
@@ -802,6 +844,7 @@ export type $ServerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     name: string
     ipAddress: string
     notes: string | null
+    controlPanelUrl: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["server"]>
@@ -1235,6 +1278,7 @@ export interface ServerFieldRefs {
   readonly name: Prisma.FieldRef<"Server", 'String'>
   readonly ipAddress: Prisma.FieldRef<"Server", 'String'>
   readonly notes: Prisma.FieldRef<"Server", 'String'>
+  readonly controlPanelUrl: Prisma.FieldRef<"Server", 'String'>
   readonly createdAt: Prisma.FieldRef<"Server", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Server", 'DateTime'>
 }

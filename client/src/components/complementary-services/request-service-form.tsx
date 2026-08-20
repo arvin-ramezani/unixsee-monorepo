@@ -4,11 +4,11 @@ import { type FormEvent, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
-  FileText,
   LoaderCircle,
   Paperclip,
   X,
 } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 import { Panel } from "@/components/dashboard/panel";
@@ -47,6 +47,15 @@ const SEO_SCOPE_OPTIONS = [
   "unsure",
 ] as const;
 const DESIGN_SCOPE_OPTIONS = ["logo", "banner", "socialPost", "other"] as const;
+
+const MAX_ATTACHMENTS = 5;
+const attachmentEase = [0.22, 1, 0.36, 1] as const;
+const attachmentExitEase = [0.4, 0, 1, 1] as const;
+
+type SelectedAttachment = {
+  id: string;
+  file: File;
+};
 
 type ServiceScopeOption =
   (typeof SEO_SCOPE_OPTIONS)[number] | (typeof DESIGN_SCOPE_OPTIONS)[number];
@@ -230,6 +239,7 @@ export function RequestServiceForm({
   previewState?: string;
 }) {
   const t = useTranslations("ComplementaryServices");
+  const prefersReducedMotion = useReducedMotion();
   const [service, setService] = useState<ComplementaryServiceType | "">(
     initialService,
   );
@@ -240,7 +250,7 @@ export function RequestServiceForm({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [scope, setScope] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<SelectedAttachment[]>([]);
   const [fileError, setFileError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(previewState === "submitting");
@@ -281,8 +291,8 @@ export function RequestServiceForm({
   }
 
   function addFiles(fileList: FileList | null) {
-    const next = Array.from(fileList ?? []);
-    const invalid = next.find(
+    const nextFiles = Array.from(fileList ?? []);
+    const invalid = nextFiles.find(
       (file) =>
         file.size > 5 * 1024 * 1024 ||
         ![
@@ -299,7 +309,15 @@ export function RequestServiceForm({
       return;
     }
     setFileError("");
-    setFiles((current) => [...current, ...next].slice(0, 5));
+    setFiles((current) =>
+      [
+        ...current,
+        ...nextFiles.map((file) => ({
+          id: crypto.randomUUID(),
+          file,
+        })),
+      ].slice(0, MAX_ATTACHMENTS),
+    );
   }
 
   if (success)
@@ -348,9 +366,8 @@ export function RequestServiceForm({
             error={errors.service}
           />
           <div className="lg:grid lg:grid-cols-2 lg:gap-4">
-            {" "}
             <Label className="inline-block w-full flex-1 gap-2 text-sm font-medium">
-              {t("form.website.label")}{" "}
+              {t("form.website.label")}
               <span className="text-destructive">*</span>
               <Select
                 value={website}
@@ -383,7 +400,7 @@ export function RequestServiceForm({
               )}
             </Label>
             <ServiceSpecificFields
-              className="mt-6 flex-1"
+              className="mt-6 flex-1 lg:mt-0"
               service={service}
               value={scope}
               onChange={setScope}
@@ -452,7 +469,6 @@ export function RequestServiceForm({
               value={description}
               maxLength={800}
               rows={6}
-              data-lenis-prevent
               onChange={(event) => {
                 setDescription(event.target.value);
                 setErrors((current) => ({ ...current, description: "" }));
@@ -472,45 +488,106 @@ export function RequestServiceForm({
               <span className="tabular-nums">{description.length}/800</span>
             </span>
           </Label>
-          <div>
+          <div className="min-w-0">
             <span className="text-sm font-medium">
               {t("form.attachments.label")}
             </span>
             <p className="text-muted-foreground mt-1 text-xs">
               {t("form.attachments.hint")}
             </p>
-            <Label className="border-border hover:bg-muted focus-within:ring-ring dark:hover:bg-accent dark:hover:text-accent-foreground dark:hover:border-link/12 mt-3 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border px-3 text-sm focus-within:ring-2 ltr:font-medium">
-              <Paperclip aria-hidden="true" className="size-4" />
+            <Label className="border-border bg-muted/20 hover:border-ring/55 hover:bg-muted/50 dark:hover:bg-accent/50 focus-within:border-ring focus-within:ring-ring/15 relative mt-3 flex min-h-16 w-fit max-w-full cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed px-4 text-sm font-medium transition-[border-color,background-color] focus-within:ring-3">
+              <Paperclip aria-hidden="true" className="size-4 shrink-0" />
               {t("form.attachments.add")}
               <Input
                 type="file"
                 multiple
                 className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
-                onChange={(event) => addFiles(event.target.files)}
+                onChange={(event) => {
+                  addFiles(event.target.files);
+                  event.target.value = "";
+                }}
               />
             </Label>
             {!!fileError && (
               <p className="text-destructive mt-2 text-xs">{fileError}</p>
             )}
-            {!!files.length && (
-              <ul className="mt-3 grid gap-2">
-                {files.map((file) => (
-                  <li
-                    key={`${file.name}-${file.size}`}
-                    className="bg-muted flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm"
+            <ul
+              className={cn(
+                "relative flex w-full min-w-0 max-w-full flex-col gap-2",
+                files.length > 0 && "mt-3",
+              )}
+            >
+              <AnimatePresence initial={false} mode="popLayout">
+                {files.map(({ id, file }, index) => (
+                  <motion.li
+                    key={id}
+                    layout={!prefersReducedMotion}
+                    initial={
+                      prefersReducedMotion
+                        ? { opacity: 0 }
+                        : { opacity: 0, y: 8, scale: 0.98 }
+                    }
+                    animate={
+                      prefersReducedMotion
+                        ? {
+                            opacity: 1,
+                            transition: { duration: 0.12, delay: index * 0.03 },
+                          }
+                        : {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            transition: {
+                              duration: 0.28,
+                              ease: attachmentEase,
+                              delay: index * 0.03,
+                            },
+                          }
+                    }
+                    exit={
+                      prefersReducedMotion
+                        ? {
+                            opacity: 0,
+                            transition: { duration: 0.12, delay: 0 },
+                          }
+                        : {
+                            opacity: 0,
+                            scale: 0.96,
+                            y: -4,
+                            transition: {
+                              duration: 0.2,
+                              ease: attachmentExitEase,
+                              delay: 0,
+                            },
+                          }
+                    }
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0.12 }
+                        : {
+                            layout: {
+                              duration: 0.28,
+                              ease: attachmentEase,
+                            },
+                          }
+                    }
+                    className="border-border bg-muted/40 flex min-h-11 w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-xl border px-3 text-sm sm:gap-3"
                   >
-                    <FileText aria-hidden="true" className="size-4 shrink-0" />
-                    <span className="min-w-0 flex-1 truncate" dir="auto">
+                    <Paperclip
+                      aria-hidden="true"
+                      className="text-muted-foreground size-4 shrink-0"
+                    />
+                    <span className="min-w-0 flex-1 truncate" title={file.name}>
                       {file.name}
                     </span>
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
                       {Math.ceil(file.size / 1024)} KB
                     </span>
                     <Button
                       type="button"
                       onClick={() =>
                         setFiles((current) =>
-                          current.filter((item) => item !== file),
+                          current.filter((item) => item.id !== id),
                         )
                       }
                       aria-label={t("form.attachments.remove", {
@@ -518,13 +595,14 @@ export function RequestServiceForm({
                       })}
                       variant="ghost"
                       size="icon-sm"
+                      className="shrink-0"
                     >
                       <X aria-hidden="true" className="size-4" />
                     </Button>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            )}
+              </AnimatePresence>
+            </ul>
           </div>
         </div>
       </Panel>

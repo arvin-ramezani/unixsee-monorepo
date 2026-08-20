@@ -28,7 +28,8 @@ npm run lint
 npm run build:static
 ```
 
-The full `npm run build` generates Prisma and deploys migrations before building. Run it only when a configured database and migration execution are appropriate for the task.
+`npm run build` runs a Next.js production build. This app does not generate
+Prisma clients or deploy database migrations.
 
 The repository currently has no test runner or test script. Do not document or claim tests that do not exist. Add focused tests when introducing a runner is within scope; otherwise document the unvalidated behavior.
 
@@ -42,7 +43,10 @@ Review in this order:
 2. Broken behavior, data loss, incorrect state, and contract incompatibility.
 3. Architecture-boundary violations and accidental legacy WordPress expansion.
 4. Accessibility, RTL/LTR, responsive behavior, and interaction regressions.
-5. Missing error, loading, empty, permission, and cleanup states.
+5. Missing error, loading, empty, permission, and cleanup states — for
+   customer-dashboard routes, also verify `loading.tsx` + skeleton structure
+   still match the live page
+   ([`ui.md`](./ui.md#customer-dashboard-loading-skeletons)).
 6. Performance regressions, unnecessary dependencies, and avoidable client work.
 7. Maintainability, duplication, naming, and documentation drift.
 

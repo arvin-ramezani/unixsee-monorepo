@@ -8,7 +8,8 @@ import { Panel } from "@/components/dashboard/panel";
 import { CheckoutForm } from "@/components/plans/checkout-form";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { planRecords } from "@/lib/data/plans/plan-records";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
+import { fetchPublishedPlanById } from "@/lib/plans/plans-api";
 
 export async function generateMetadata({
   params,
@@ -32,15 +33,15 @@ export default async function CheckoutPage({
   setRequestLocale(locale);
   const { plan: planId } = await searchParams;
 
-  const plan =
-    planRecords.find((record) => record.id === planId) ?? planRecords[0];
+  if (!planId) notFound();
+
+  const plan = await fetchPublishedPlanById(planId, locale);
   if (!plan) notFound();
 
+  const user = await getCurrentUser();
   const t = await getTranslations("Checkout");
   const plans = await getTranslations("Plans");
   const navigation = await getTranslations("Navigation");
-  const common = await getTranslations("Common");
-  const planName = common(`plans.${plan.nameKey}`);
 
   return (
     <DashboardShell
@@ -54,22 +55,28 @@ export default async function CheckoutPage({
       <section className="flex min-h-27 -translate-y-1 flex-col justify-center gap-2 px-1.5">
         <Link
           href="/dashboard/plans"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground mt-4 inline-flex w-fit items-center gap-1.5 text-sm transition-colors"
         >
           <ArrowLeft aria-hidden="true" className="size-4 rtl:-scale-x-100" />
           {t("back")}
         </Link>
-        <h1 className="text-[2rem] font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("description")}</p>
+        <h1 className="text-[2rem] font-semibold tracking-tight">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground text-sm">{t("description")}</p>
       </section>
 
       <div className="grid max-w-4xl items-start gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Panel className="order-2 p-5 sm:p-6 lg:order-1">
           <h2 className="text-lg font-semibold">{t("contactTitle")}</h2>
-          <p className="mt-1 mb-5 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-1 mb-5 text-sm">
             {t("contactDescription")}
           </p>
-          <CheckoutForm plan={plan} />
+          <CheckoutForm
+            plan={plan}
+            initialName={user?.fullName ?? ""}
+            initialPhone={user?.phoneNumber ?? ""}
+          />
         </Panel>
 
         <Panel className="order-1 self-start p-5 sm:p-6 lg:order-2">
@@ -77,22 +84,15 @@ export default async function CheckoutPage({
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex items-center justify-between gap-4">
               <dt className="text-muted-foreground">{t("planLabel")}</dt>
-              <dd className="font-medium">{planName}</dd>
+              <dd className="font-medium">{plan.name}</dd>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">{t("billingLabel")}</dt>
-              <dd className="font-medium">{t("billingValue")}</dd>
-            </div>
+            {plan.description ? (
+              <div className="space-y-1">
+                <dt className="text-muted-foreground">{t("detailsLabel")}</dt>
+                <dd className="text-sm leading-6">{plan.description}</dd>
+              </div>
+            ) : null}
           </dl>
-          <div className="mt-4 flex items-end justify-between gap-4 border-t border-border pt-4">
-            <span className="text-sm text-muted-foreground">{t("totalLabel")}</span>
-            <span className="text-2xl font-bold">
-              ${plan.priceUsd}
-              <span className="text-sm font-normal text-muted-foreground">
-                {t("perMonth")}
-              </span>
-            </span>
-          </div>
         </Panel>
       </div>
     </DashboardShell>

@@ -4,21 +4,20 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
-  Ip,
   Post,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
 import { AgentSignatureGuard } from './guards/agent-signature.guard.js';
-import { IngestAgentMetricsDto } from './dto/ingest-agent-metrics.dto.js';
 import {
+  AgentCommandResultDto,
   EnrollAgentDto,
   HeartbeatAgentDto,
-} from './dto/enroll-agent.dto.js';
+  Phase1IngestDto,
+} from './dto/agent.dto.js';
 import { AgentService } from './agent.service.js';
 import { Public } from '../auth/decorators/public.decorator.js';
-import { IsFirstProvisioning } from './decorators/is-first-provisioning.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
@@ -43,10 +42,14 @@ export class AgentController {
       throw new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
     }
 
-    const result = await this.agentService.enroll(token, body.machineId);
+    const result = await this.agentService.enroll(
+      token,
+      body.agentInstanceId,
+      body.agentVersion,
+    );
 
     this.logger.log('agent.enroll.completed', {
-      machineId: body.machineId,
+      agentInstanceId: body.agentInstanceId,
       vpsNodeId: result.vpsNodeId,
       serverId: result.serverId,
     });
@@ -63,7 +66,17 @@ export class AgentController {
   @UseGuards(AgentSignatureGuard)
   @HttpCode(HttpStatus.OK)
   async heartbeat(@Body() body: HeartbeatAgentDto) {
-    const data = await this.agentService.heartbeat(body.machineId);
+    const data = await this.agentService.heartbeat(body);
+    return ApiResponseBuilder.ok(data);
+  }
+
+
+  @Public()
+  @Post('command-results')
+  @UseGuards(AgentSignatureGuard)
+  @HttpCode(HttpStatus.OK)
+  async commandResult(@Body() payload: AgentCommandResultDto) {
+    const data = await this.agentService.completeCommand(payload);
     return ApiResponseBuilder.ok(data);
   }
 
@@ -71,42 +84,27 @@ export class AgentController {
   @Post('ingest')
   @UseGuards(AgentSignatureGuard)
   @HttpCode(HttpStatus.CREATED)
-  async ingestAgentMetrics(
-    @Ip() clientIp: string,
-    @IsFirstProvisioning() isFirstProvisioningCycle: boolean,
-    @Body() payload: IngestAgentMetricsDto,
-  ) {
-    const batchSize = payload.batch.length;
-    const websiteEntryCount = payload.batch.reduce(
-      (total, entry) => total + entry.websites.length,
-      0,
-    );
-    const machineId = payload.batch[0]?.machineId ?? 'unknown';
-
+  async ingest(@Body() payload: Phase1IngestDto) {
     this.logger.debug('agent.ingest.received', {
-      machineId,
-      batchSize,
-      websiteEntryCount,
-      firstProvisioning: isFirstProvisioningCycle,
+      agentInstanceId: payload.agentInstanceId,
+      discoveryCount: payload.discoveries?.length ?? 0,
+      stackSnapshotCount: payload.stackSnapshots?.length ?? 0,
+      activeVisitorSampleCount: payload.activeVisitors3m?.length ?? 0,
+      visitors24hCount: payload.visitors24h?.length ?? 0,
+      hasDiscoverySection: payload.discoveries !== undefined,
     });
 
-    const result = await this.agentService.processTelemetryIngestion(
-      payload,
-      isFirstProvisioningCycle,
-      clientIp,
-    );
+    const result = await this.agentService.processPhase1Ingest(payload);
 
     this.logger.log('agent.ingest.completed', {
-      machineId,
+      agentInstanceId: payload.agentInstanceId,
       vpsNodeId: result.vpsNodeId,
-      hasAssignedCredential: Boolean(result.assignedSecretKey),
+      discoveryCount: result.discoveryCount,
+      stackSnapshotsUpdated: result.stackSnapshotsUpdated,
+      visitorSamplesInserted: result.visitorSamplesInserted,
+      visitors24hUpdated: result.visitors24hUpdated,
     });
 
-    return {
-      status: 'success',
-      ...(result.assignedSecretKey && {
-        assignedSecretKey: result.assignedSecretKey,
-      }),
-    };
+    return ApiResponseBuilder.created(result);
   }
 }

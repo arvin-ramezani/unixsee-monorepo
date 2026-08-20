@@ -6,9 +6,7 @@ import {
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
-import {
-  WebsiteLifecycleStatus,
-} from '#/generated/prisma/enums.js';
+import { WebsiteLifecycleStatus } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -55,14 +53,37 @@ export class WebsitesService {
     skip?: number;
     take?: number;
     tenantId?: string;
+    userId?: string;
     search?: string;
   }) {
+    let tenantFilter:
+      | { tenantId: string }
+      | { tenantId: { in: string[] } }
+      | undefined;
+
+    if (params?.userId) {
+      const tenantIds = await this.tenantAccess.getAccessibleTenantIds(
+        params.userId,
+      );
+      if (tenantIds.length === 0) {
+        return { items: [], total: 0 };
+      }
+      tenantFilter = { tenantId: { in: tenantIds } };
+    } else if (params?.tenantId) {
+      tenantFilter = { tenantId: params.tenantId };
+    }
+
     const where = {
-      ...(params?.tenantId ? { tenantId: params.tenantId } : {}),
+      ...tenantFilter,
       ...(params?.search
         ? {
             OR: [
-              { domain: { contains: params.search, mode: 'insensitive' as const } },
+              {
+                domain: {
+                  contains: params.search,
+                  mode: 'insensitive' as const,
+                },
+              },
               {
                 displayName: {
                   contains: params.search,
@@ -91,6 +112,41 @@ export class WebsitesService {
     return { items, total };
   }
 
+  async getAdmin(websiteId: string) {
+    const website = await this.prisma.website.findUnique({
+      where: { id: websiteId },
+      include: {
+        tenant: { select: { id: true, name: true } },
+        user: { select: { id: true, username: true, fullName: true } },
+        plan: { select: { id: true, code: true, nameEn: true, nameFa: true } },
+        vpsNode: {
+          select: {
+            id: true,
+            serverId: true,
+            agentInstanceId: true,
+            agentVersion: true,
+            status: true,
+            lastHeartbeatAt: true,
+            server: {
+              select: {
+                id: true,
+                name: true,
+                ipAddress: true,
+                controlPanelUrl: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!website) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    return website;
+  }
+
   async createAdmin(input: {
     tenantId: string;
     vpsNodeId: string;
@@ -98,6 +154,7 @@ export class WebsitesService {
     displayName?: string;
     planId?: string;
     userId?: string;
+    wordpressAdminUrl?: string | null;
   }) {
     const website = await this.prisma.website.create({
       data: {
@@ -107,6 +164,7 @@ export class WebsitesService {
         displayName: input.displayName,
         planId: input.planId,
         userId: input.userId,
+        wordpressAdminUrl: input.wordpressAdminUrl ?? null,
         isActive: true,
         status: WebsiteLifecycleStatus.ACTIVE,
       },
@@ -119,6 +177,36 @@ export class WebsitesService {
     });
 
     return website;
+  }
+
+  async updateAdmin(
+    websiteId: string,
+    input: {
+      displayName?: string | null;
+      wordpressAdminUrl?: string | null;
+    },
+  ) {
+    await this.ensureWebsite(websiteId);
+
+    const updated = await this.prisma.website.update({
+      where: { id: websiteId },
+      data: {
+        ...(input.displayName !== undefined
+          ? { displayName: input.displayName }
+          : {}),
+        ...(input.wordpressAdminUrl !== undefined
+          ? { wordpressAdminUrl: input.wordpressAdminUrl }
+          : {}),
+      },
+    });
+
+    this.logger.log('website.admin_metadata.updated', {
+      websiteId,
+      displayNameChanged: input.displayName !== undefined,
+      wordpressAdminUrlChanged: input.wordpressAdminUrl !== undefined,
+    });
+
+    return updated;
   }
 
   async assign(websiteId: string, input: { tenantId: string; planId?: string }) {
@@ -181,5 +269,18 @@ export class WebsitesService {
 
     this.logger.log('website.retired', { websiteId });
     return updated;
+  }
+
+  private async ensureWebsite(websiteId: string) {
+    const website = await this.prisma.website.findUnique({
+      where: { id: websiteId },
+      select: { id: true },
+    });
+
+    if (!website) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+
+    return website;
   }
 }

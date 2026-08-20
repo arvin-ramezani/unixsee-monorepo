@@ -4,12 +4,9 @@ import * as React from "react";
 import {
   AudioWaveform,
   Command,
-  Frame,
   GalleryVerticalEnd,
   GlobeIcon,
   HomeIcon,
-  Map,
-  PieChart,
   ServerIcon,
   TicketIcon,
   UserIcon,
@@ -18,14 +15,15 @@ import {
   SettingsIcon,
   Puzzle,
   ClipboardList,
+  ShieldCheck,
   ChevronRightIcon,
   ChevronLeftIcon,
+  MessageSquareText,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-// import { NavMain } from "@/components/nav-main";
-// import { NavProjects } from "@/components/nav-projects";
-// import { NavUser } from "@/components/nav-user";
+import { NavUser } from "@/components/layout/nav-user";
 import { TeamSwitcher } from "@/components/layout/team-switcher";
 import {
   Sidebar,
@@ -38,17 +36,14 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-// This is sample data.
 const data = {
   navMain: [
     {
       title: "نمای‌کلی",
       url: "/",
       icon: HomeIcon,
-      isActive: true,
     },
     {
       title: "وب‌سایت‌ها",
@@ -66,9 +61,19 @@ const data = {
       icon: UserIcon,
     },
     {
+      title: "بررسی احراز هویت",
+      url: "/users/authorization",
+      icon: ShieldCheck,
+    },
+    {
       title: "تیکت‌ها",
       url: "/tickets",
       icon: TicketIcon,
+    },
+    {
+      title: "پیام‌های یونیکسی",
+      url: "/unixsee-messages",
+      icon: MessageSquareText,
     },
     {
       title: "خدمات تکمیلی",
@@ -96,11 +101,6 @@ const data = {
       icon: SettingsIcon,
     },
   ],
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -118,32 +118,29 @@ const data = {
       plan: "Free",
     },
   ],
-
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { open } = useSidebar();
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  user: {
+    name: string;
+    email: string;
+  };
+}) {
+  const { open, setOpenMobile } = useSidebar();
   const pathname = usePathname();
-  const activeUrl = data.navMain.find(
-    (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
-  )?.url;
+
+  React.useEffect(() => {
+    setOpenMobile(false);
+  }, [pathname, setOpenMobile]);
+
+  const activeUrl = [...data.navMain]
+    .sort((a, b) => b.url.length - a.url.length)
+    .find(
+      (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
+    )?.url;
 
   return (
     <Sidebar className="" side="right" dir="rtl" collapsible="icon" {...props}>
@@ -166,22 +163,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
+        <NavUser user={user} />
         <SidebarTrigger
-          className={cn("transition-all duration-100", !open ? "w-8 h-8" : "")}
+          aria-label={open ? "بستن منو" : "باز کردن منو"}
+          className={cn(
+            "hidden transition-[width,padding] duration-100 xl:flex",
+            open
+              ? "h-10 w-full justify-center px-2.5"
+              : "size-8 shrink-0 justify-center px-0",
+          )}
         >
           {open ? (
-            <ChevronRightIcon className="size-4" />
+            <ChevronRightIcon className="size-4 shrink-0" />
           ) : (
-            <ChevronLeftIcon className="size-4" />
+            <ChevronLeftIcon className="size-4 shrink-0" />
           )}
-          {/* <ChevronRightIcon className="size-4" /> */}
-          {open && "بستن منو"}
+          {open && (
+            <span className="truncate text-sm font-medium">بستن منو</span>
+          )}
         </SidebarTrigger>
-
-        {/* <NavUser user={data.user} /> */}
       </SidebarFooter>
     </Sidebar>
   );

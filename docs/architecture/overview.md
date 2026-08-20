@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-10
 
 ## Product
 
@@ -17,7 +17,8 @@ and WooCommerce websites. Phase 1 product behavior is defined in
 | Public website + customer dashboard | `client/` | Customer-facing Next.js application |
 | Administrator panel | `admin-panel/` | Staff workflows for operating the platform |
 | API and control plane | `backend/` | NestJS: auth, persistence, orchestration, agent control |
-| VPS edge agent | `agent/` | Discovers and reports server/website data to NestJS |
+| Phase 1 VPS agent | `agent/` | Inventory, site stack, 3m visitors (PRD; build from scratch) |
+| Monitoring edge agent | `monitoring-agent/` | Host/LiteSpeed monitoring (existing; develop later) |
 
 Shared documentation lives in `docs/`. There is no shared application package
 yet; see [`monorepo.md`](./monorepo.md).
@@ -26,17 +27,19 @@ yet; see [`monorepo.md`](./monorepo.md).
 
 ```text
 client ──────────────┐
-                     ├──► NestJS (backend) ◄── agent (outbound HTTPS)
+                     ├──► NestJS (backend) ◄── agent / monitoring-agent (outbound HTTPS)
 admin-panel ─────────┘
 ```
 
 - NestJS is the authority for business rules, authorization, persistence, and
   agent validation.
-- The agent communicates with NestJS only (outbound HTTPS).
+- Edge agents communicate with NestJS only (outbound HTTPS).
 - Admin and client applications never talk to agents or VPS hosts directly.
 - Website customer visibility follows assignment and activation rules, not raw
   agent discovery. Details:
   [`docs/product/notes/servers-agent-data-flow.md`](../product/notes/servers-agent-data-flow.md).
+- Two-agent split:
+  [`decisions/0007-two-vps-agents.md`](./decisions/0007-two-vps-agents.md).
 
 ## Language and direction
 
@@ -47,16 +50,21 @@ Persian and RTL-first; see [`docs/frontend/styling.md`](../frontend/styling.md).
 
 - `backend/` is an active NestJS control plane. Module and route targets:
   [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
-- `agent/` is an active VPS edge agent (enrollment + discovery + HMAC
-  ingest/heartbeat). See [`../agent/README.md`](../agent/README.md).
-- `client/` is an active public + customer Next.js app (UI-first until Nest
-  integration is allowed). App-scoped docs live under `client/docs/`; product
+- `agent/` is the Phase 1 VPS agent scaffold owned by
+  [`../agent/prd.md`](../agent/prd.md).
+- `monitoring-agent/` holds the existing monitoring codebase for later
+  development. See [`../../monitoring-agent/README.md`](../../monitoring-agent/README.md).
+- `client/` is an active public + customer Next.js app (Nest auth/JWT fetch
+  allowed under ADR 0011). App-scoped docs live under `client/docs/`; product
   and architecture truth stay in monorepo `docs/`.
-- `admin-panel/` is an active staff Next.js app (UI-first / fixtures). App-scoped
-  docs live under `admin-panel/docs/`; product UX flows stay in monorepo
-  `docs/product/`.
-- Follow [`decisions/0003-ui-only-phase-boundaries.md`](./decisions/0003-ui-only-phase-boundaries.md)
-  for Next.js apps until a superseding integration ADR lands.
+- `admin-panel/` is an active staff Next.js app (Nest auth/admin JWT fetch
+  allowed under ADR 0012; domains migrate from fixtures per Layer 2).
+  App-scoped docs live under `admin-panel/docs/`; product UX flows stay in
+  monorepo `docs/product/`.
+- Next.js Nest integration ADRs:
+  [`decisions/0011-client-nest-auth-integration.md`](./decisions/0011-client-nest-auth-integration.md),
+  [`decisions/0012-admin-nest-auth-integration.md`](./decisions/0012-admin-nest-auth-integration.md)
+  (ADR 0003 superseded).
 - API audience namespaces:
   [`decisions/0004-api-audience-namespaces.md`](./decisions/0004-api-audience-namespaces.md).
 

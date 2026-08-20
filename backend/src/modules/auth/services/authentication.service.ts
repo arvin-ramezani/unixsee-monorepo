@@ -21,6 +21,7 @@ import { User } from '#/generated/prisma/client.js';
 import { OtpService } from './otp-service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { RequestContext } from '#/common/logging/request-context.js';
+import { MailService } from '#/modules/mail/mail.service.js';
 
 @Injectable()
 export class AuthenticationService {
@@ -32,6 +33,7 @@ export class AuthenticationService {
     private readonly tenantsService: TenantsService,
     private readonly jwtService: JwtService,
     private readonly otpService: OtpService,
+    private readonly mailService: MailService,
     private readonly config: ConfigService<AppConfigType, true>,
   ) {}
 
@@ -157,12 +159,27 @@ export class AuthenticationService {
 
   async sendOtp({
     phoneNumber,
+    email,
     context,
   }: {
-    phoneNumber: string;
+    phoneNumber?: string;
+    email?: string;
     context?: OtpContext;
   }) {
     const resolvedContext = context ?? 'LOGIN';
+    const normalizedEmail = email?.trim().toLowerCase();
+
+    if (normalizedEmail) {
+      return this.sendEmailLoginOtp({
+        email: normalizedEmail,
+        context: resolvedContext,
+      });
+    }
+
+    if (!phoneNumber) {
+      throw new BadRequestException('Phone number or email is required.');
+    }
+
     this.logger.log('auth.otp.requested', {
       context: resolvedContext,
       phoneNumber,
@@ -172,14 +189,21 @@ export class AuthenticationService {
       const otp = await this.otpService.createAndOverwrite({
         length: 6,
         phoneNumber,
-        context,
+        context: resolvedContext,
       });
+
+      // TODO: later opt should be send to users phone/email
+
+      // await this.mailService.sendPhoneOtpMockEmail({
+      //   phoneNumber,
+      //   otp: otp.otp,
+      // });
 
       this.logger.log('auth.otp.created', {
         context: resolvedContext,
         otpId: otp.id,
       });
-      return { otp: otp.otp };
+      return { delivered: true as const, otp: otp.otp };
     } catch (error) {
       this.logger.error('auth.otp.create_failed', error as Error, {
         context: resolvedContext,
@@ -189,15 +213,66 @@ export class AuthenticationService {
     }
   }
 
+  async sendEmailLoginOtp({
+    email,
+    context,
+  }: {
+    email: string;
+    context: OtpContext;
+  }) {
+    this.logger.log('auth.otp.email.requested', { context, email });
+
+    try {
+      const otp = await this.otpService.createAndOverwriteByIdentifier({
+        length: 6,
+        identifier: email,
+        context,
+      });
+
+      await this.mailService.sendEmailOtpMockEmail({
+        email,
+        otp: otp.otp,
+      });
+
+      this.logger.log('auth.otp.email.created', {
+        context,
+        otpId: otp.id,
+      });
+      return { delivered: true as const };
+    } catch (error) {
+      this.logger.error('auth.otp.email.create_failed', error as Error, {
+        context,
+        email,
+      });
+      throw error;
+    }
+  }
+
   async validateOtp({
     otp,
     phoneNumber,
+    email,
     context,
   }: {
-    phoneNumber: string;
+    phoneNumber?: string;
+    email?: string;
     otp: string;
     context: OtpContext;
   }) {
+    const normalizedEmail = email?.trim().toLowerCase();
+
+    if (normalizedEmail) {
+      return this.validateEmailLoginOtp({
+        email: normalizedEmail,
+        otp,
+        context,
+      });
+    }
+
+    if (!phoneNumber) {
+      throw new BadRequestException('Phone number or email is required.');
+    }
+
     this.logger.log('auth.otp.validation_attempt', { context, phoneNumber });
 
     const isOtpValid = await this.otpService.validateOtp({
@@ -222,25 +297,100 @@ export class AuthenticationService {
       userToSignIn = await this.userService.create({
         phoneNumber,
         role: 'USER',
+        phoneVerifiedAt: new Date(),
       });
     } else {
-      userToSignIn = userExist;
+      userToSignIn = await this.prisma.user.update({
+        where: { id: userExist.id },
+        data: { phoneVerifiedAt: new Date() },
+        omit: {
+          password: true,
+          hashedRt: true,
+        },
+      });
     }
+
+    await this.tenantsService.ensurePersonalTenantForUser(
+      userToSignIn.id,
+      userToSignIn.fullName ?? userToSignIn.phoneNumber ?? undefined,
+    );
+
     const tokens = await this.createTokens({
       userId: userToSignIn.id,
     });
 
-    const updateRtHashPromise = this.userService.updateRtHash({
-      userId: userToSignIn.id,
-      rt: tokens.refreshToken,
-    });
-
-    const removeOtpPromise = this.otpService.remove(otp);
-
-    await Promise.all([updateRtHashPromise, removeOtpPromise]);
+    await this.otpService.remove(otp);
 
     RequestContext.setUserId(userToSignIn.id);
     this.logger.log('auth.otp.validation_completed', {
+      userId: userToSignIn.id,
+      context,
+    });
+    return {
+      ...tokens,
+      ...userToSignIn,
+    };
+  }
+
+  async validateEmailLoginOtp({
+    email,
+    otp,
+    context,
+  }: {
+    email: string;
+    otp: string;
+    context: OtpContext;
+  }) {
+    this.logger.log('auth.otp.email.validation_attempt', { context, email });
+
+    const isOtpValid = await this.otpService.validateOtpByIdentifier({
+      identifier: email,
+      otp,
+      context,
+    });
+
+    if (!isOtpValid) {
+      this.logger.warn('auth.otp.email.validation_rejected', {
+        context,
+        email,
+      });
+      throw new UnauthorizedException('wrong credentials.');
+    }
+
+    let userToSignIn: Omit<User, 'password' | 'hashedRt'>;
+    const userExist = await this.userService.findOneByEmail(email);
+
+    if (!userExist) {
+      this.logger.log('auth.otp.email.creating_user', { context, email });
+      userToSignIn = await this.userService.create({
+        email,
+        role: 'USER',
+        emailVerifiedAt: new Date(),
+      });
+    } else {
+      userToSignIn = await this.prisma.user.update({
+        where: { id: userExist.id },
+        data: { emailVerifiedAt: new Date() },
+        omit: {
+          password: true,
+          hashedRt: true,
+        },
+      });
+    }
+
+    await this.tenantsService.ensurePersonalTenantForUser(
+      userToSignIn.id,
+      userToSignIn.fullName ?? userToSignIn.email ?? undefined,
+    );
+
+    const tokens = await this.createTokens({
+      userId: userToSignIn.id,
+    });
+
+    await this.otpService.remove(otp);
+
+    RequestContext.setUserId(userToSignIn.id);
+    this.logger.log('auth.otp.email.validation_completed', {
       userId: userToSignIn.id,
       context,
     });
@@ -277,8 +427,13 @@ export class AuthenticationService {
       context: 'MONITORING_ACCESS',
     });
 
+    await this.mailService.sendPhoneOtpMockEmail({
+      phoneNumber,
+      otp: otp.otp,
+    });
+
     this.logger.log('auth.monitoring_otp.created', { userId, otpId: otp.id });
-    return { otp: otp.otp };
+    return { delivered: true as const };
   }
 
   async verifyMonitoringAccessOtp({
@@ -379,6 +534,8 @@ export class AuthenticationService {
       accessTokenPromise,
       refreshTokenPromise,
     ]);
+
+    await this.userService.updateRtHash({ userId, rt: refreshToken });
 
     const serverTimeInSeconds = Math.floor(Date.now() / 1000);
 

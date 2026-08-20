@@ -1,17 +1,33 @@
 export const TICKET_STATUS = {
-  WAITING_FOR_USER: "WAITING_FOR_USER",
+  WAITING_CUSTOMER: "WAITING_CUSTOMER",
   IN_PROGRESS: "IN_PROGRESS",
-  NEW: "NEW",
+  SUBMITTED: "SUBMITTED",
   RESOLVED: "RESOLVED",
+  CLOSED: "CLOSED",
 } as const;
 
 export type TicketStatusType =
   (typeof TICKET_STATUS)[keyof typeof TICKET_STATUS];
 
+export const TICKET_PRIORITY = {
+  LOW: "LOW",
+  NORMAL: "NORMAL",
+  HIGH: "HIGH",
+  URGENT: "URGENT",
+} as const;
+
+export type TicketPriorityType =
+  (typeof TICKET_PRIORITY)[keyof typeof TICKET_PRIORITY];
+
 export type TicketType = {
   id: string;
+  number?: string;
   userId: string;
   fullName: string;
+  /** Customer phone from Nest createdBy; never a secret. */
+  phoneNumber?: string | null;
+  /** Customer email from Nest createdBy; never a secret. */
+  email?: string | null;
   subject: string;
   section: TicketServiceType;
   website?: {
@@ -27,6 +43,7 @@ export type TicketType = {
     id: string;
     text: string;
     sender: "ADMIN" | "USER";
+    isInternal?: boolean;
     files: {
       url: string;
       name?: string;
@@ -34,7 +51,22 @@ export type TicketType = {
     }[];
     createdAt: string;
   }[];
+  /** Ticket-scoped attachments (not message-scoped). */
+  attachments?: {
+    url: string;
+    name: string;
+    type: string;
+  }[];
   status: TicketStatusType;
+  priority?: TicketPriorityType;
+  tenant?: {
+    id: string;
+    name: string;
+  };
+  assigneeId?: string | null;
+  assigneeName?: string | null;
+  resolvedAt?: string | null;
+  autoCloseAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -53,10 +85,11 @@ export type TicketServiceType =
   (typeof TICKET_SERVICE)[keyof typeof TICKET_SERVICE];
 
 export const TICKET_STATUS_LABELS: Record<TicketStatusType, string> = {
-  [TICKET_STATUS.WAITING_FOR_USER]: "در انتظار کاربر",
+  [TICKET_STATUS.WAITING_CUSTOMER]: "در انتظار کاربر",
   [TICKET_STATUS.IN_PROGRESS]: "در حال بررسی",
-  [TICKET_STATUS.NEW]: "جدید",
+  [TICKET_STATUS.SUBMITTED]: "جدید",
   [TICKET_STATUS.RESOLVED]: "حل شده",
+  [TICKET_STATUS.CLOSED]: "بسته‌شده",
 };
 
 export const TICKET_SERVICE_LABELS: Record<TicketServiceType, string> = {
@@ -135,7 +168,7 @@ export const TICKETS: TicketType[] = [
         createdAt: "2026-08-05T05:18:00Z",
       },
     ],
-    status: TICKET_STATUS.WAITING_FOR_USER,
+    status: TICKET_STATUS.WAITING_CUSTOMER,
     createdAt: "2026-08-05T05:18:00Z",
     updatedAt: "2026-08-05T05:18:00Z",
   },
@@ -177,7 +210,7 @@ export const TICKETS: TicketType[] = [
         createdAt: "2026-08-04T16:27:00Z",
       },
     ],
-    status: TICKET_STATUS.NEW,
+    status: TICKET_STATUS.SUBMITTED,
     createdAt: "2026-08-04T15:32:00Z",
     updatedAt: "2026-08-04T16:27:00Z",
   },
@@ -237,7 +270,7 @@ export const TICKETS: TicketType[] = [
         createdAt: "2026-08-04T09:21:00Z",
       },
     ],
-    status: TICKET_STATUS.WAITING_FOR_USER,
+    status: TICKET_STATUS.WAITING_CUSTOMER,
     createdAt: "2026-08-04T09:21:00Z",
     updatedAt: "2026-08-04T09:21:00Z",
   },
@@ -331,7 +364,7 @@ export const TICKETS: TicketType[] = [
         createdAt: "2026-08-03T13:29:00Z",
       },
     ],
-    status: TICKET_STATUS.NEW,
+    status: TICKET_STATUS.SUBMITTED,
     createdAt: "2026-08-03T13:08:00Z",
     updatedAt: "2026-08-03T13:29:00Z",
   },
@@ -354,7 +387,7 @@ export const TICKETS: TicketType[] = [
         createdAt: "2026-08-02T20:41:00Z",
       },
     ],
-    status: TICKET_STATUS.WAITING_FOR_USER,
+    status: TICKET_STATUS.WAITING_CUSTOMER,
     createdAt: "2026-08-02T20:41:00Z",
     updatedAt: "2026-08-02T20:41:00Z",
   },

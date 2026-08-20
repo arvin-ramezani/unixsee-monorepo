@@ -1,5 +1,10 @@
 import { generatePayloadSignature } from "../security.js";
-import { config } from "../config/config.js";
+import { getConfig } from "../config/config.js";
+import type {
+  AgentCommandResultPayload,
+  HeartbeatResult,
+  LeasedAgentCommand,
+} from "../commands/types.js";
 
 export class AgentApiError extends Error {
   readonly status: number;
@@ -33,7 +38,6 @@ async function parseJsonResponse(response: Response): Promise<unknown> {
   if (!contentType.includes("application/json")) {
     return null;
   }
-
   return response.json();
 }
 
@@ -48,10 +52,10 @@ export async function postJson({
 
   while (attempt < maxRetries) {
     try {
-      if (config.nodeEnv !== "production") {
+      if (getConfig().nodeEnv !== "production") {
         console.log(`[Network-Dev] Mocking POST ${url}`);
-        await sleep(100);
-        return null;
+        await sleep(50);
+        return { data: { mocked: true } };
       }
 
       const response = await fetch(url, {
@@ -75,14 +79,18 @@ export async function postJson({
       return await parseJsonResponse(response);
     } catch (error) {
       attempt += 1;
-      if (attempt >= maxRetries || (error instanceof AgentApiError && error.status < 500 && error.status !== 429)) {
+      if (
+        attempt >= maxRetries ||
+        (error instanceof AgentApiError &&
+          error.status < 500 &&
+          error.status !== 429)
+      ) {
         throw error;
       }
 
-      const baseDelay = Math.pow(2, attempt) * 1000;
-      const jitteredDelay = baseDelay + Math.random() * 500;
+      const jitteredDelay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
       console.warn(
-        `[Network] Request failed. Retrying in ${Math.round(jitteredDelay)}ms... (Attempt ${attempt}/${maxRetries})`,
+        `[Network] Request failed. Retrying in ${Math.round(jitteredDelay)}ms... (${attempt}/${maxRetries})`,
       );
       await sleep(jitteredDelay);
     }
@@ -99,7 +107,11 @@ export async function postSignedJson(
 ): Promise<unknown> {
   const payloadString = JSON.stringify(body);
   const timestamp = new Date().toISOString();
-  const signature = generatePayloadSignature(payloadString, secretKey, timestamp);
+  const signature = generatePayloadSignature(
+    payloadString,
+    secretKey,
+    timestamp,
+  );
 
   return postJson({
     url,
@@ -119,12 +131,13 @@ export interface EnrollResult {
 }
 
 export async function enrollAgent(
-  machineId: string,
+  agentInstanceId: string,
   enrollmentToken: string,
 ): Promise<EnrollResult> {
-  if (config.nodeEnv !== "production") {
+  const cfg = getConfig();
+  if (cfg.nodeEnv !== "production") {
     console.log(
-      `[Network-Dev] Mocking enrollment for machineId=${machineId} at ${config.endpoints.enroll}`,
+      `[Network-Dev] Mocking enrollment for agentInstanceId=${agentInstanceId}`,
     );
     return {
       vpsNodeId: "dev-vps-node-id",
@@ -134,8 +147,8 @@ export async function enrollAgent(
   }
 
   const response = await postJson({
-    url: config.endpoints.enroll,
-    body: { machineId },
+    url: cfg.endpoints.enroll,
+    body: { agentInstanceId, agentVersion: cfg.agentVersion },
     maxRetries: 2,
     headers: {
       "X-Enrollment-Token": enrollmentToken,
@@ -156,22 +169,123 @@ export async function enrollAgent(
     typeof vpsNodeId !== "string" ||
     typeof serverId !== "string"
   ) {
-    throw new Error("Enrollment response missing secretKey, vpsNodeId, or serverId.");
+    throw new Error(
+      "Enrollment response missing secretKey, vpsNodeId, or serverId.",
+    );
   }
 
   return { secretKey, vpsNodeId, serverId };
 }
 
-export async function sendHeartbeat(
-  machineId: string,
-  secretKey: string,
-): Promise<unknown> {
-  return postSignedJson(config.endpoints.heartbeat, { machineId }, secretKey);
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function parseLeasedCommand(value: unknown): LeasedAgentCommand | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.id !== "string" ||
+    !UUID_PATTERN.test(value.id) ||
+    value.type !== "REFRESH_SITE_STACK" ||
+    typeof value.domain !== "string" ||
+    typeof value.expiresAt !== "string" ||
+    !Number.isFinite(Date.parse(value.expiresAt))
+  ) {
+    return null;
+  }
+
+  return {
+    id: value.id,
+    type: "REFRESH_SITE_STACK",
+    domain: value.domain,
+    expiresAt: value.expiresAt,
+  };
 }
 
-export async function sendIngestBatch(
-  batch: unknown[],
+function parseHeartbeatResult(
+  response: unknown,
+  agentInstanceId: string,
+): HeartbeatResult {
+  if (!isRecord(response) || !isRecord(response.data)) {
+    throw new Error("Heartbeat response missing data payload.");
+  }
+
+  const data = response.data;
+  const commands = Array.isArray(data.commands)
+    ? data.commands.flatMap((item) => {
+        const command = parseLeasedCommand(item);
+        return command ? [command] : [];
+      })
+    : [];
+
+  const agent = isRecord(data.agent) ? data.agent : {};
+  const responseAgentInstanceId =
+    typeof agent.agentInstanceId === "string"
+      ? agent.agentInstanceId
+      : agentInstanceId;
+
+  return {
+    agent: {
+      agentInstanceId: responseAgentInstanceId,
+      status: typeof agent.status === "string" ? agent.status : "ONLINE",
+      ...(typeof agent.agentVersion === "string"
+        ? { agentVersion: agent.agentVersion }
+        : {}),
+      ...(typeof agent.lastHeartbeatAt === "string"
+        ? { lastHeartbeatAt: agent.lastHeartbeatAt }
+        : {}),
+      ...(typeof agent.lastSeenAt === "string"
+        ? { lastSeenAt: agent.lastSeenAt }
+        : {}),
+    },
+    commands,
+  };
+}
+
+export async function sendHeartbeat(
+  agentInstanceId: string,
+  secretKey: string,
+): Promise<HeartbeatResult> {
+  const cfg = getConfig();
+
+  if (cfg.nodeEnv !== "production") {
+    return {
+      agent: {
+        agentInstanceId,
+        status: "ONLINE",
+        agentVersion: cfg.agentVersion,
+      },
+      commands: [],
+    };
+  }
+
+  const response = await postSignedJson(
+    cfg.endpoints.heartbeat,
+    {
+      schemaVersion: "phase1",
+      agentInstanceId,
+      agentVersion: cfg.agentVersion,
+      sentAt: new Date().toISOString(),
+    },
+    secretKey,
+  );
+
+  return parseHeartbeatResult(response, agentInstanceId);
+}
+
+export async function sendPhase1Ingest(
+  payload: unknown,
   secretKey: string,
 ): Promise<unknown> {
-  return postSignedJson(config.endpoints.ingest, { batch }, secretKey);
+  return postSignedJson(getConfig().endpoints.ingest, payload, secretKey);
+}
+
+export async function sendCommandResult(
+  payload: AgentCommandResultPayload,
+  secretKey: string,
+): Promise<unknown> {
+  return postSignedJson(
+    getConfig().endpoints.commandResult,
+    payload,
+    secretKey,
+  );
 }

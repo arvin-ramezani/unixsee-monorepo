@@ -57,6 +57,11 @@ export type Tenant = Prisma.TenantModel
  */
 export type Membership = Prisma.MembershipModel
 /**
+ * Model AuthorizationCase
+ * Customer احراز هویت package for staff review → tenant approval.
+ */
+export type AuthorizationCase = Prisma.AuthorizationCaseModel
+/**
  * Model Server
  * 
  */
@@ -81,6 +86,16 @@ export type Website = Prisma.WebsiteModel
  * 
  */
 export type WebsiteDiscovery = Prisma.WebsiteDiscoveryModel
+/**
+ * Model WebsiteTrafficSnapshot
+ * Latest Phase 1 traffic read model. Raw visitor identities never reach NestJS.
+ */
+export type WebsiteTrafficSnapshot = Prisma.WebsiteTrafficSnapshotModel
+/**
+ * Model WebsiteActiveVisitorSample
+ * Phase 1 agent 3-minute unique-IP visitor samples (append-only).
+ */
+export type WebsiteActiveVisitorSample = Prisma.WebsiteActiveVisitorSampleModel
 /**
  * Model VpsMetric
  * 
@@ -216,3 +231,19 @@ export type OperationalAction = Prisma.OperationalActionModel
  * 
  */
 export type IdempotencyRecord = Prisma.IdempotencyRecordModel
+/**
+ * Model UnixseeMessage
+ * Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی).
+ * Distinct from Notification (News) and ticket thread messages.
+ */
+export type UnixseeMessage = Prisma.UnixseeMessageModel
+/**
+ * Model UnixseeMessageAttachment
+ * 
+ */
+export type UnixseeMessageAttachment = Prisma.UnixseeMessageAttachmentModel
+/**
+ * Model UnixseeMessageRead
+ * 
+ */
+export type UnixseeMessageRead = Prisma.UnixseeMessageReadModel

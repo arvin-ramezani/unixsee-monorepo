@@ -1,31 +1,17 @@
 import { useLocale, useTranslations } from "next-intl";
 
 import { TicketStatusBadge } from "@/components/tickets/ticket-status-badge";
-import { formatRelativeValue } from "@/i18n/formats";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import type { TicketRecord } from "@/lib/data/tickets/ticket-records";
-
-const fixtureNow = new Date("2026-07-19T15:40:00Z");
-
-function relativeActivity(ticket: TicketRecord, locale: Locale) {
-  const diffMinutes = Math.round(
-    (new Date(ticket.lastActivityAt).getTime() - fixtureNow.getTime()) / 60000,
-  );
-  if (Math.abs(diffMinutes) < 60)
-    return formatRelativeValue(locale, diffMinutes, "minute");
-  const diffHours = Math.round(diffMinutes / 60);
-  if (Math.abs(diffHours) < 24)
-    return formatRelativeValue(locale, diffHours, "hour");
-  return formatRelativeValue(locale, Math.round(diffHours / 24), "day");
-}
+import { formatTicketRelativeActivity } from "@/lib/tickets/relative-activity";
+import type { TicketListItem } from "@/lib/tickets/types";
 
 /**
  * Grid presentation of a single ticket. Mirrors the mobile card in
  * TicketsManager — same fields, same badge, same link — but extracted as a
  * reusable component for the grid view.
  */
-export function TicketCard({ ticket }: { ticket: TicketRecord }) {
+export function TicketCard({ ticket }: { ticket: TicketListItem }) {
   const t = useTranslations("Tickets");
   const locale = useLocale() as Locale;
 
@@ -45,11 +31,14 @@ export function TicketCard({ ticket }: { ticket: TicketRecord }) {
                 href={`/dashboard/tickets/${ticket.id}`}
                 className="hover:text-link focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {t(`fixtures.subjects.${ticket.subjectKey}`)}
+                {ticket.subject}
               </Link>
             </h3>
           </div>
-          <p dir="ltr" className="mt-1 text-start text-xs text-muted-foreground">
+          <p
+            dir="ltr"
+            className="text-muted-foreground mt-1 w-fit text-start text-xs"
+          >
             #{ticket.number}
           </p>
         </div>
@@ -71,7 +60,7 @@ export function TicketCard({ ticket }: { ticket: TicketRecord }) {
 
       <div className="mt-4 flex items-center justify-between gap-4">
         <p className="text-xs leading-5 text-muted-foreground">
-          {relativeActivity(ticket, locale)}
+          {formatTicketRelativeActivity(ticket.lastActivityAt, locale)}
           <br />
           {t(`activity.${ticket.lastActor}`)}
         </p>

@@ -11,6 +11,7 @@ import {
   type DashboardBreadcrumbItem,
 } from "@/components/dashboard/dashboard-breadcrumb";
 import { DashboardViewProvider } from "@/components/dashboard/views/dashboard-view-context";
+import { UnixseeMessagesPresence } from "@/components/unixsee-messages/unixsee-messages-presence";
 import { notifications } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ interface DashboardShellProps {
     | "HelpCenter"
     | "Profile"
     | "Tickets"
+    | "UnixseeMessages"
     | "Websites";
   children: ReactNode;
   breadcrumbs?: readonly DashboardBreadcrumbItem[];
@@ -47,6 +49,8 @@ export function DashboardShell({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
     () => sidebarCollapsedPreference,
   );
+  const [hasUnreadUnixseeMessages, setHasUnreadUnixseeMessages] =
+    useState(false);
 
   function handleSidebarCollapsedChange(collapsed: boolean) {
     sidebarCollapsedPreference = collapsed;
@@ -60,10 +64,12 @@ export function DashboardShell({
         previewTheme === "dark" && "dark",
       )}
     >
+      <UnixseeMessagesPresence onUnreadChange={setHasUnreadUnixseeMessages} />
       <DesktopSidebar
         activeItem={activeItem}
         collapsed={isSidebarCollapsed}
         onCollapsedChange={handleSidebarCollapsedChange}
+        hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
       />
       <div
         className={
@@ -78,6 +84,7 @@ export function DashboardShell({
             notifications={notifications}
             showViewToggle={showViewToggle}
             userName={userName === "Jane" ? common("userName") : userName}
+            hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
           />
           <main className="px-4 pb-8 sm:px-6 xl:ps-5.75 xl:pe-6.5">
             {!!breadcrumbs?.length && (

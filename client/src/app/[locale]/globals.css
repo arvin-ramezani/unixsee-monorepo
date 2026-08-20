@@ -156,6 +156,14 @@
   --os-scrollbar-offset-bottom: 8px;
 
   --radius: 0.75rem;
+
+  /* Auth shell surfaces — derived from existing blue tokens */
+  --auth-panel: color-mix(
+    in oklch,
+    var(--background) 88%,
+    var(--blue-light) 12%
+  );
+  --auth-panel-border: color-mix(in oklch, var(--border) 70%, var(--ring) 30%);
 }
 
 .dark {
@@ -185,6 +193,9 @@
   --warning: oklch(0.78 0.14 80);
   --warning-foreground: oklch(0.18 0.01 80);
   --blue-light: #030b16;
+
+  --auth-panel: color-mix(in oklch, var(--background) 82%, var(--card) 18%);
+  --auth-panel-border: color-mix(in oklch, var(--border) 65%, var(--ring) 35%);
 
   --button-radial-reveal: color-mix(
     in oklch,
@@ -331,6 +342,8 @@
   --color-danger: var(--destructive);
 
   --color-blue-light: var(--blue-light);
+  --color-auth-panel: var(--auth-panel);
+  --color-auth-panel-border: var(--auth-panel-border);
 
   --color-select-item-hover: var(--select-item-hover);
 
@@ -438,6 +451,18 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-yekan-bakh-family);
+  }
+
+  label,
+  input,
+  textarea,
+  select,
+  [data-slot="label"],
+  [data-slot="field-label"],
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="select-trigger"] {
     font-family: var(--font-yekan-bakh-family);
   }
 
@@ -612,7 +637,7 @@
 ========================= */
 @layer components {
   .container {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-4 md:px-8 lg:px-20;
+    @apply 3xl:max-w-384! mx-auto w-full max-w-7xl px-4 sm:px-4 md:px-8 lg:px-20;
   }
 
   .container-header {

@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 
 import Section from "@/components/common/section";
 import ConsultationTabsSection from "../others/consultation-tabs-section";
-// import StarsBackground from "@/components/common/stars-background";
 import { cn } from "@/lib/utils";
 import { ScaleTitle } from "@/components/common/motion/scale-title";
 import {
@@ -35,7 +34,7 @@ export default function ConsultationSection({ id }: ConsultationSectionType) {
             scaleFrom={0.6}
             scaleTo={1}
             transformOrigin="center center"
-            className="flex justify-center text-4xl!"
+            className="flex justify-center"
           >
             {t(`FAQSection.title`)}
           </ScaleTitle>
@@ -44,26 +43,26 @@ export default function ConsultationSection({ id }: ConsultationSectionType) {
             scaleFrom={0.6}
             scaleTo={1}
             transformOrigin="center center"
-            className="mt-2 flex justify-center text-center text-sm! 2xl:mt-4 2xl:text-lg!"
+            className="mt-4 flex justify-center text-center lg:mt-6"
           >
             {t(`FAQSection.description`)}
           </ScaleTitle>
 
           <Accordion
             type="multiple"
-            className="mx-auto mt-8 max-w-2xl lg:mt-12"
+            className="mx-auto mt-8 max-w-2xl lg:mt-12 2xl:mx-0"
           >
             {itemKeys.map((item) => (
               <AccordionItem
-                key={t(`FAQSection.items.${item}.question`)}
-                value={t(`FAQSection.items.${item}.question`)}
+                key={t(`FAQSection.items.${item}.question` as never)}
+                value={t(`FAQSection.items.${item}.question` as never)}
               >
                 <AccordionTrigger className="py-4 no-underline! lg:py-8">
-                  {t(`FAQSection.items.${item}.question`)}
+                  {t(`FAQSection.items.${item}.question` as never)}
                 </AccordionTrigger>
 
                 <AccordionContent>
-                  <p>{t(`FAQSection.items.${item}.answer`)}</p>
+                  {t(`FAQSection.items.${item}.answer` as never)}
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -95,8 +94,6 @@ export default function ConsultationSection({ id }: ConsultationSectionType) {
           </ScaleTitle>
 
           <ConsultationTabsSection className="2xl:mt-22" />
-
-          {/* <StarsBackground id="footer-stars" particlesCount={40} /> */}
         </Section>
       </div>
     </div>

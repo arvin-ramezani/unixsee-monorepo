@@ -20,8 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import RequestAssessmentDialogMobile from "./request-assessment-dialog-mobile";
-import { Button } from "../ui/button";
+import { HeaderAuthControl } from "./header-auth-control";
 
 type NavigationItem = {
   key: string;
@@ -38,8 +37,6 @@ export default function MobileNavigation({
 }: MobileNavigationProps) {
   // const tHomePage = useTranslations("HomePage");
   const tNavigation = useTranslations("Layout.Navigation");
-  const tDashboardNavigation = useTranslations("Navigation");
-
   const pathname = usePathname();
 
   const activeAccordionValue = useMemo(() => {
@@ -124,29 +121,10 @@ export default function MobileNavigation({
       </Accordion>
 
       <div className="flex flex-col gap-3">
-        <Button asChild variant="outline" className="h-12 w-full">
-          <Link href="/dashboard" onClick={() => setOpen(false)}>
-            {tDashboardNavigation("dashboard")}
-          </Link>
-        </Button>
-
-        {/* <div className="flex gap-4">
-          <LocaleSwitcher className="ms-0" />
-          <ModeToggle />
-          <LinkButton
-            variant={"outline"}
-            className="ms-auto h-auto text-xs"
-            href="register"
-          >
-            Login
-          </LinkButton>
-        </div> */}
-
-        {/* <RequestAssessmentDialog side="bottom" /> */}
-        <RequestAssessmentDialogMobile />
-        {/* <Button className="h-12 w-full">
-          {tHomePage("HeroSection.primaryCTA")}
-        </Button> */}
+        <HeaderAuthControl
+          layout="stacked"
+          onNavigate={() => setOpen(false)}
+        />
       </div>
     </MobileMenu>
   );

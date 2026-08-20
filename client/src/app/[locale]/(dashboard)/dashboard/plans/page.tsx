@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
-import PlansList from "@/components/plans/plans-list";
+import { DashboardPlanCard } from "@/components/plans/dashboard-plan-card";
 import type { Locale } from "@/i18n/routing";
+import { fetchPublishedPlans } from "@/lib/plans/plans-api";
 
 export async function generateMetadata({
   params,
@@ -25,6 +26,7 @@ export default async function PlansPage({
   setRequestLocale(locale);
   const t = await getTranslations("Plans");
   const navigation = await getTranslations("Navigation");
+  const plansResult = await fetchPublishedPlans(locale);
 
   return (
     <DashboardShell
@@ -41,7 +43,25 @@ export default async function PlansPage({
         <p className="text-muted-foreground text-sm">{t("description")}</p>
       </section>
 
-      <PlansList className="[&_article]:border" />
+      {!plansResult.ok ? (
+        <p className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {t("loadError")}
+        </p>
+      ) : plansResult.plans.length === 0 ? (
+        <p className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+          {t("empty")}
+        </p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {plansResult.plans.map((plan, index) => (
+            <DashboardPlanCard
+              key={plan.id}
+              plan={plan}
+              recommended={index === 1}
+            />
+          ))}
+        </div>
+      )}
     </DashboardShell>
   );
 }

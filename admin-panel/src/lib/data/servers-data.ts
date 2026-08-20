@@ -34,6 +34,11 @@ export const SERVER_STACK = {
   APPLICATION: "WooCommerce",
 } as const;
 
+/**
+ * Fixture shape aligned with Nest admin server/discovery read models
+ * (`GET /api/v1/admin/servers`, discoveries). Optional Phase 1 fields mirror
+ * `docs/agent/phase1-api-contract.md` for a thin swap when ADR 0003 is lifted.
+ */
 export type WebsiteDiscoveryType = {
   id: string;
   domain: string;
@@ -44,12 +49,35 @@ export type WebsiteDiscoveryType = {
   assignmentStatus: DiscoveryAssignmentStatusType;
   assignedWebsiteId?: string;
   discoveredAt: string;
+  /** Phase 1 agent-sourced fields (optional on fixtures until Nest wiring). */
+  controlPanelUrl?: string;
+  wordpressAdminUrl?: string;
+  wordpressVersion?: string;
+  phpVersion?: string;
+  phpVersionScope?: "site" | "host" | "unknown";
+  imagickVersion?: string;
+  wordpressUpdateStatus?: string;
+  wordpressUpdateCheckedAt?: string;
+  activeVisitors3m?: {
+    uniqueIpCount: number;
+    windowSeconds: number;
+    measuredAt: string;
+  };
 };
 
 export type ServerEnrollmentType = {
   status: EnrollmentTokenStatusType;
   issuedAt?: string;
   expiresAt?: string;
+};
+
+export type ServerEnrollmentTokenRow = {
+  id: string;
+  status: "ACTIVE" | "USED" | "REVOKED" | "EXPIRED" | string;
+  createdAt: string;
+  expiresAt?: string | null;
+  usedAt?: string | null;
+  revokedAt?: string | null;
 };
 
 export type ServerAgentType = {
@@ -62,12 +90,14 @@ export type ServerAgentType = {
 export type ServerType = {
   id: string;
   label: string;
-  location: string;
+  /** Host IP address (Nest `ipAddress`). */
+  ip: string;
   capacitySummary: string;
   notes: string;
   createdAt: string;
   agent: ServerAgentType;
   enrollment: ServerEnrollmentType;
+  enrollmentTokens: ServerEnrollmentTokenRow[];
   discoveries: WebsiteDiscoveryType[];
   websiteIds: string[];
 };
@@ -88,7 +118,7 @@ export const SERVERS: ServerType[] = [
   {
     id: "server-001",
     label: "VPS-DE-03",
-    location: "فرانکفورت، آلمان",
+    ip: "185.199.108.153",
     capacitySummary: "۸ vCPU · ۳۲ GB RAM · ۴۰۰ GB NVMe",
     notes: "سرور اصلی فروشگاه‌های اروپایی",
     createdAt: "۱۲ اردیبهشت ۱۴۰۳",
@@ -114,14 +144,28 @@ export const SERVERS: ServerType[] = [
         assignmentStatus: DISCOVERY_ASSIGNMENT_STATUS.ASSIGNED,
         assignedWebsiteId: "website-001",
         discoveredAt: "۱۲ اردیبهشت ۱۴۰۳",
+        controlPanelUrl: "https://vps-de-03.example:2222",
+        wordpressAdminUrl: "https://greenario.com/wp-admin/",
+        wordpressVersion: "6.8.1",
+        phpVersion: "8.2.28",
+        phpVersionScope: "host",
+        imagickVersion: "3.7.0",
+        wordpressUpdateStatus: "up_to_date",
+        wordpressUpdateCheckedAt: "2026-08-09T11:55:00.000Z",
+        activeVisitors3m: {
+          uniqueIpCount: 14,
+          windowSeconds: 180,
+          measuredAt: "2026-08-09T12:00:00.000Z",
+        },
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-001"],
   },
   {
     id: "server-002",
     label: "VPS-IR-07",
-    location: "تهران، ایران",
+    ip: "91.107.10.21",
     capacitySummary: "۴ vCPU · ۱۶ GB RAM · ۲۰۰ GB NVMe",
     notes: "ترافیک کمپین اخیر روی این سرور است",
     createdAt: "۲۰ خرداد ۱۴۰۲",
@@ -159,12 +203,13 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۵ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-002"],
   },
   {
     id: "server-003",
     label: "VPS-IR-11",
-    location: "مشهد، ایران",
+    ip: "5.34.200.88",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "Agent قطع شده؛ نیاز به صدور مجدد توکن",
     createdAt: "۸ مرداد ۱۴۰۶",
@@ -192,12 +237,13 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۸ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-003"],
   },
   {
     id: "server-004",
     label: "VPS-DE-04",
-    location: "فرانکفورت، آلمان",
+    ip: "185.199.110.42",
     capacitySummary: "۸ vCPU · ۳۲ GB RAM · ۵۰۰ GB NVMe",
     notes: "",
     createdAt: "۵ اسفند ۱۴۰۲",
@@ -235,12 +281,13 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۲ مرداد ۱۴۰۶",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-004"],
   },
   {
     id: "server-005",
     label: "VPS-UK-02",
-    location: "لندن، انگلستان",
+    ip: "51.89.42.17",
     capacitySummary: "۱۶ vCPU · ۶۴ GB RAM · ۱ TB NVMe",
     notes: "VIP customers",
     createdAt: "۱۵ فروردین ۱۴۰۳",
@@ -268,12 +315,13 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۱۵ فروردین ۱۴۰۳",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-005"],
   },
   {
     id: "server-006",
     label: "VPS-IR-09",
-    location: "تهران، ایران",
+    ip: "91.107.22.45",
     capacitySummary: "۴ vCPU · ۱۶ GB RAM · ۲۵۰ GB NVMe",
     notes: "داده‌های Agent قدیمی است",
     createdAt: "۲۵ تیر ۱۴۰۱",
@@ -301,12 +349,13 @@ export const SERVERS: ServerType[] = [
         discoveredAt: "۲۵ تیر ۱۴۰۱",
       },
     ],
+    enrollmentTokens: [],
     websiteIds: ["website-006"],
   },
   {
     id: "server-007",
     label: "VPS-IR-14",
-    location: "تهران، ایران",
+    ip: "91.107.33.90",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "توکن صادر شده؛ در انتظار اولین ارتباط Agent",
     createdAt: "۶ مرداد ۱۴۰۶",
@@ -319,12 +368,13 @@ export const SERVERS: ServerType[] = [
       expiresAt: "۷ مرداد ۱۴۰۶، ۱۴:۲۰",
     },
     discoveries: [],
+    enrollmentTokens: [],
     websiteIds: [],
   },
   {
     id: "server-008",
     label: "VPS-IR-15",
-    location: "اصفهان، ایران",
+    ip: "37.32.11.64",
     capacitySummary: "۲ vCPU · ۸ GB RAM · ۱۰۰ GB SSD",
     notes: "سرور جدید؛ هنوز Agent نصب نشده",
     createdAt: "۷ مرداد ۱۴۰۶",
@@ -335,6 +385,7 @@ export const SERVERS: ServerType[] = [
       status: ENROLLMENT_TOKEN_STATUS.NONE,
     },
     discoveries: [],
+    enrollmentTokens: [],
     websiteIds: [],
   },
 ];
@@ -376,14 +427,3 @@ export function getServersSummary(servers: ServerType[]) {
   };
 }
 
-export function createEnrollmentToken(serverLabel: string) {
-  const suffix = Math.random().toString(36).slice(2, 10);
-  const token = `uxs_enroll_${serverLabel.toLowerCase().replace(/[^a-z0-9]/g, "")}_${suffix}`;
-
-  return {
-    token,
-    installCommand: `curl -fsSL https://agent.unixsee.example/install.sh | bash -s -- --token ${token}`,
-    issuedAt: "اکنون",
-    expiresAt: "۲۴ ساعت دیگر",
-  };
-}

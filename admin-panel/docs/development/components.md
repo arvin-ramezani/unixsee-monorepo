@@ -89,17 +89,75 @@ Before creating a UI primitive:
 
 Project-specific components should compose shadcn components rather than recreate or replace their primitives.
 
+## Overlays
+
+Choose the overlay from the task, not from habit:
+
+- Durable work record → dedicated page (`/[id]`).
+- Short focused create or pick → `Dialog`.
+- Irreversible confirm → `AlertDialog`.
+- Inspector, filters, or mobile nav → `Sheet`.
+
+Do not use `Sheet` as the default overlay. Do not change `src/components/ui/sidebar.tsx` (mobile nav Sheet).
+
 ## Select
 
-When using the shadcn Select component, always use the project's Base UI implementation with:
+The project uses **shadcn/ui Select on Base UI** (`@base-ui/react/select`).
+
+**Confirmed (runtime / display):** Base UI does **not** auto-render the selected
+item’s text the way many Radix examples do. Pass the visible label as
+**children of `SelectValue`**. Omitting children shows raw `value` (UUID,
+`__none__`, locale codes). Always set `alignItemWithTrigger={false}` on
+`SelectContent` or the popup mis-aligns in RTL layouts.
 
 ```tsx
-    <SelectTrigger aria-label="aria_label">
-        <SelectValue>{label}</SelectValue>
-    </SelectTrigger>
-    <SelectContent alignItemWithTrigger={false}>
+<SelectTrigger aria-label="aria_label">
+  <SelectValue>{label}</SelectValue>
+</SelectTrigger>
+<SelectContent alignItemWithTrigger={false}>
+  {/* SelectItem value=… — label text still required in SelectValue above */}
+</SelectContent>
 ```
 
-Do not omit `alignItemWithTrigger={false}` from Select implementations.
+Do not omit `alignItemWithTrigger={false}`. Do not leave `SelectValue`
+childless. Resolve `label` from the selected option (or placeholder), not from
+the raw value alone.
 
-Follow the existing Select component structure in the repository and place the prop on the appropriate Base UI Select element.
+Follow existing Select usage in the repository (for example tenant / website
+pickers) rather than generic Radix snippets.
+
+## Nest API errors (POST mutations)
+
+When a Server Action POST to Nest fails, show the resolved Persian message with
+`toastApiErrorMessage` from `src/lib/api/toast-api-error.ts`. Map
+`error.code` first via `map-api-error.ts` → `STAFF_API_ERROR_MESSAGES`.
+
+Keep inline errors for client-side validation only. Contract:
+[`docs/backend/contracts/api-errors.md`](../../../docs/backend/contracts/api-errors.md).
+
+## DropdownMenu
+
+The project uses **shadcn/ui DropdownMenu on Base UI** (`@base-ui/react/menu`).
+
+**Confirmed (runtime):** `DropdownMenuLabel` is implemented as Base UI `Menu.GroupLabel` and **must** be nested inside `DropdownMenuGroup`. Placing a label (or separator used as a group divider) directly under `DropdownMenuContent` throws at runtime:
+
+```text
+MenuGroupContext is missing. Menu group parts must be used within <Menu.Group> or <Menu.RadioGroup>.
+```
+
+Use this structure (reference: `src/components/layout/team-switcher.tsx`):
+
+```tsx
+<DropdownMenuContent align="end">
+  <DropdownMenuGroup>
+    <DropdownMenuLabel>عنوان گروه</DropdownMenuLabel>
+    <DropdownMenuItem onClick={...}>اقدام</DropdownMenuItem>
+  </DropdownMenuGroup>
+</DropdownMenuContent>
+```
+
+Rules:
+
+- Wrap every `DropdownMenuLabel` in `DropdownMenuGroup`.
+- Prefer `DropdownMenuGroup` for related items even when no label is shown.
+- Use `DropdownMenu` for **action lists** (for example رد/لغو in plan-request detail); pick the action in the menu, then confirm with reason in the panel—do not duplicate action type with a second Select.

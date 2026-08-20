@@ -16,6 +16,7 @@ import {
   IsOptional,
   IsString,
   MaxLength,
+  MinLength,
 } from 'class-validator';
 
 import { Role } from '#/generated/prisma/enums.js';
@@ -73,11 +74,11 @@ class AdminUpdateUserDto {
   locale?: string;
 }
 
-class SuspendUserDto {
-  @IsOptional()
+class AccountSecurityActionDto {
   @IsString()
+  @MinLength(3)
   @MaxLength(500)
-  reason?: string;
+  reason!: string;
 }
 
 @Controller('v1/admin/users')
@@ -121,15 +122,41 @@ export class AdminUsersController {
 
   @Post(':id/suspend')
   @HttpCode(HttpStatus.OK)
-  async suspend(@Param('id') id: string, @Body() body: SuspendUserDto) {
+  async suspend(
+    @Param('id') id: string,
+    @Body() body: AccountSecurityActionDto,
+  ) {
     const data = await this.usersService.suspend(id, body.reason);
     return ApiResponseBuilder.ok(data);
   }
 
   @Post(':id/restore')
   @HttpCode(HttpStatus.OK)
-  async restore(@Param('id') id: string) {
-    const data = await this.usersService.restore(id);
+  async restore(
+    @Param('id') id: string,
+    @Body() body: AccountSecurityActionDto,
+  ) {
+    const data = await this.usersService.restore(id, body.reason);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Post(':id/revoke-sessions')
+  @HttpCode(HttpStatus.OK)
+  async revokeSessions(
+    @Param('id') id: string,
+    @Body() body: AccountSecurityActionDto,
+  ) {
+    const data = await this.usersService.revokeSessions(id, body.reason);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Post(':id/start-recovery')
+  @HttpCode(HttpStatus.OK)
+  async startRecovery(
+    @Param('id') id: string,
+    @Body() body: AccountSecurityActionDto,
+  ) {
+    const data = await this.usersService.startRecovery(id, body.reason);
     return ApiResponseBuilder.ok(data);
   }
 }

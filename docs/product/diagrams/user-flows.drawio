@@ -1,0 +1,592 @@
+<mxfile host="app.diagrams.net" agent="Unixsee" version="24.7.17" type="device">
+  <diagram id="overview" name="Overview">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ov-title" value="Unixsee — User flows overview" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="480" y="30" width="640" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-sub" value="Three entry paths into managed websites, plan enablement, and complementary services.&#xa;Admin links users ↔ websites; agents only discover inventory; OTP phone match verifies newly created accounts." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="360" y="70" width="880" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ov-legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F9FAFB;strokeColor=#D1D5DB;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="1480" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l1" value="Customer / public" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="155" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l2" value="Admin panel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="155" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l3" value="System / agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="155" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l4" value="Decision" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l5" value="Archived (kept in DB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5E7EB;strokeColor=#6B7280;fontColor=#374151;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="155" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-l6" value="See tabs: Flow A / B / C for detail" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#6B7280;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="155" width="460" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Flow A card -->
+        <mxCell id="ov-a" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="460" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a-t" value="Flow A — Guest consultant intake" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="80" y="265" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a1" value="Not signed in&#xa;Public website" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="160" y="310" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a2" value="Submit consultant form&#xa;(website build or complementary)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="160" y="390" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a3" value="Team analyzes needs&#xa;Consulting completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="160" y="475" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a4" value="Admin creates / links&#xa;user + website" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="160" y="560" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a5" value="OTP verify with same phone&#xa;(no invite token for now)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="1">
+          <mxGeometry x="160" y="645" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-a6" value="Complementary path requires&#xa;existing tenant + managed Woo site" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#6B7280;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="720" width="400" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ae1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="ov-a1" target="ov-a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ae2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="ov-a2" target="ov-a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ae3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="ov-a3" target="ov-a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ae4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="ov-a4" target="ov-a5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow B card -->
+        <mxCell id="ov-b" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="560" y="250" width="460" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b-t" value="Flow B — Signed-up plan / website request" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="580" y="265" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b1" value="User signed up&#xa;Requests plan to add a website" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="660" y="310" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b2" value="Admin reviews queue&#xa;Website exists or will be deployed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="660" y="395" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b3" value="Agent detects website&#xa;on managed server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="1">
+          <mxGeometry x="660" y="480" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b4" value="Admin links&#xa;user + website + enables plan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="660" y="565" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b5" value="Reject + reason&#xa;(archived, not deleted)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5E7EB;strokeColor=#6B7280;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="660" y="650" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-b6" value="User already exists in database&#xa;Linking is admin-owned" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#6B7280;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="590" y="720" width="400" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-be1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="ov-b1" target="ov-b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-be2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="ov-b2" target="ov-b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-be3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="ov-b3" target="ov-b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-be4" value="or reject" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#6B7280;dashed=1;fontColor=#6B7280;" edge="1" parent="1" source="ov-b2" target="ov-b5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="423" />
+              <mxPoint x="950" y="678" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow C card -->
+        <mxCell id="ov-c" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="250" width="480" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c-t" value="Flow C — Complementary service (dashboard)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#14532D;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="265" width="440" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c1" value="Signed-in tenant&#xa;Dashboard request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="310" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c2" value="Form: service, website,&#xa;نوع همکاری, title, desc, files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="395" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c3" value="Admin audits &amp; scopes&#xa;(products, period, contract)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="480" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c4" value="Create &amp; activate&#xa;service assignment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="565" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c5" value="Prerequisite: tenant + managed&#xa;WooCommerce website already exist" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="650" width="260" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-c6" value="نوع همکاری = preferred engagement:&#xa;یکباره / دوره‌ای / مطمئن نیستم" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#6B7280;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="720" width="420" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ce1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="ov-c1" target="ov-c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ce2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="ov-c2" target="ov-c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ov-ce3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="ov-c3" target="ov-c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="flow-a" name="Flow A — Guest consultant">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="a-title" value="Flow A — Guest consultant intake (not signed in)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="720" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="a-sub" value="Public consultant form → needs analysis → admin provisions user/website → phone OTP verifies account.&#xa;Request may be website build OR complementary service (complementary requires existing tenant + managed Woo site)." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1100" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlanes -->
+        <mxCell id="a-lane-pub" value="Public / Customer" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontStyle=1;fontColor=#1E3A8A;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="1700" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="a-lane-adm" value="Admin panel" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontStyle=1;fontColor=#9A3412;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="1700" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="a-lane-sys" value="System / Agent" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;fontColor=#14532D;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="1700" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Public steps -->
+        <mxCell id="a1" value="Visit public website&#xa;(not signed in)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="70" y="70" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="Fill consultant form" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="310" y="70" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Request type?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="560" y="55" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="Website build /&#xa;managed hosting need" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="780" y="30" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="Complementary service&#xa;(SEO, design, …)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="780" y="120" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="Later: login with phone&#xa;→ OTP verify" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="a-lane-pub">
+          <mxGeometry x="1400" y="70" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Admin steps -->
+        <mxCell id="a7" value="Receive &amp; analyze&#xa;consultant request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="70" y="50" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" value="Consulting done" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="310" y="50" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" value="User exists?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="540" y="35" width="130" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a10" value="Create user in&#xa;/users (phone recorded)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="740" y="20" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a11" value="Use existing user / tenant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="740" y="110" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a12" value="Website action?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="1000" y="160" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a13" value="Create / deploy website&#xa;on managed server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="1220" y="90" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a14" value="Link website to&#xa;existing user/tenant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="1220" y="200" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a15" value="Complementary only if&#xa;tenant + managed Woo site exist" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;dashed=1;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="1220" y="310" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a16" value="Account ready for&#xa;phone OTP verification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="a-lane-adm">
+          <mxGeometry x="1490" y="160" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- System -->
+        <mxCell id="a17" value="Agent running on server&#xa;auto-detects website" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="a-lane-sys">
+          <mxGeometry x="1220" y="60" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="a18" value="OTP: same phone as admin entered&#xa;Pass → user verified&#xa;(no invite token for now)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="a-lane-sys">
+          <mxGeometry x="1480" y="50" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="a19" value="Persist consultant request,&#xa;user, website links in DB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="a-lane-sys">
+          <mxGeometry x="70" y="60" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Edges public -->
+        <mxCell id="ae1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="a1" target="a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="a2" target="a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae3" value="build site" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;fontColor=#2563EB;fontSize=10;" edge="1" parent="1" source="a3" target="a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae4" value="complementary" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;fontColor=#2563EB;fontSize=10;" edge="1" parent="1" source="a3" target="a5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae5" value="submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="a2" target="a7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Admin edges -->
+        <mxCell id="ae6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a7" target="a8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a8" target="a9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae8" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="a9" target="a10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae9" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="a9" target="a11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a10" target="a12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="915" y="410" />
+              <mxPoint x="915" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a11" target="a12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="915" y="500" />
+              <mxPoint x="915" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae12" value="create" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="a12" target="a13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae13" value="link" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="a12" target="a14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae14" value="if complementary" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;dashed=1;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="a12" target="a15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="a13" target="a17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a13" target="a16">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="485" />
+              <mxPoint x="1400" y="555" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="a14" target="a16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="a16" target="a18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="a18" target="a6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;dashed=1;" edge="1" parent="1" source="a17" target="a14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="895" />
+              <mxPoint x="1180" y="895" />
+              <mxPoint x="1180" y="595" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="a-note" value="Notes&#xa;• Admin may create the user if missing; phone is the verification key.&#xa;• Agent discovery does not grant plan or complementary entitlement by itself.&#xa;• Complementary services require tenant + managed WooCommerce website already in DB/admin." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;align=left;spacingLeft=8;spacingTop=6;size=16;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1050" width="560" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="flow-b" name="Flow B — Plan / website request">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="b-title" value="Flow B — Signed-up user requests a plan to add a website" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="b-sub" value="User exists → plan request → admin reviews → website exists or is deployed on a server → agent detects → admin links user + website and enables plan.&#xa;Rejection stores a reason and archives the request (never hard-deletes)." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1200" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b-lane-cust" value="Customer" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontStyle=1;fontColor=#1E3A8A;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="1600" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="b-lane-adm" value="Admin panel" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontStyle=1;fontColor=#9A3412;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="1600" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="b-lane-sys" value="System / Agent" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;fontColor=#14532D;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="1600" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1" value="Signed-up user&#xa;(exists in database)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="b-lane-cust">
+          <mxGeometry x="60" y="55" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="Request a plan&#xa;to add a website" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="b-lane-cust">
+          <mxGeometry x="310" y="55" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="See request status&#xa;(pending / enabled / rejected)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="b-lane-cust">
+          <mxGeometry x="1280" y="55" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b4" value="See plan requests queue&#xa;(درخواست‌های پلن)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="60" y="40" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" value="Approve?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="340" y="25" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="b6" value="Reject + write reason&#xa;Archive in DB&#xa;(do not delete)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5E7EB;strokeColor=#6B7280;fontColor=#374151;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="540" y="180" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="b7" value="Website ready?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontColor=#92400E;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="540" y="25" width="130" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="b8" value="Develop / deploy website&#xa;on existing managed server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="760" y="20" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b9" value="Website already exists&#xa;(discovered or known)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="760" y="100" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b10" value="Link user + website&#xa;Enable requested plan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="1060" y="55" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b11" value="One active plan&#xa;per website" style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;size=14;align=left;spacingLeft=6;" vertex="1" parent="b-lane-adm">
+          <mxGeometry x="1340" y="40" width="180" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b12" value="Persist plan request&#xa;in database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="b-lane-sys">
+          <mxGeometry x="310" y="55" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b13" value="Agent detects website&#xa;on server inventory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="b-lane-sys">
+          <mxGeometry x="760" y="55" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b14" value="Keep rejected request&#xa;+ reason (archived)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5E7EB;strokeColor=#6B7280;fontColor=#374151;" vertex="1" parent="b-lane-sys">
+          <mxGeometry x="540" y="55" width="180" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="be1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="b2" target="b12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="b12" target="b4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="750" />
+              <mxPoint x="220" y="395" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="be4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="b4" target="b5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be5" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#6B7280;fontColor=#6B7280;fontSize=10;" edge="1" parent="1" source="b5" target="b6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be6" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="b5" target="b7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be7" value="not yet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="b7" target="b8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be8" value="exists" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;fontColor=#EA580C;fontSize=10;" edge="1" parent="1" source="b7" target="b9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="b8" target="b13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;dashed=1;" edge="1" parent="1" source="b13" target="b9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="b8" target="b10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="370" />
+              <mxPoint x="1000" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="be12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="b9" target="b10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#6B7280;" edge="1" parent="1" source="b6" target="b14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="b10" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="be15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#6B7280;dashed=1;" edge="1" parent="1" source="b6" target="b3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1430" y="540" />
+              <mxPoint x="1430" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="b-note" value="Notes&#xa;• User already exists; admin links records together (does not invent auth tokens).&#xa;• Discovery is staff inventory; enablement is the commercial outcome on the website.&#xa;• Rejected requests remain queryable with reason for audit/history." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;align=left;spacingLeft=8;spacingTop=6;size=16;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="900" width="560" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="flow-c" name="Flow C — Complementary service">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c-title" value="Flow C — Signed-in complementary service request" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#1F2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="800" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="c-sub" value="Tenant already has managed WooCommerce website. Customer submits service request from dashboard; admin audits needs and activates the assignment." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1100" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c-pre" value="Prerequisite: user (tenant) + managed WooCommerce website already exist in DB / admin panel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="700" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c-lane-cust" value="Customer dashboard" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontStyle=1;fontColor=#1E3A8A;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="170" width="1600" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="c-lane-adm" value="Admin panel" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#FFEDD5;strokeColor=#EA580C;fontStyle=1;fontColor=#9A3412;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="470" width="1600" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="c-lane-sys" value="System" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontStyle=1;fontColor=#14532D;startSize=36;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="1600" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="Signed-in tenant&#xa;opens dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="c-lane-cust">
+          <mxGeometry x="60" y="90" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="Start complementary&#xa;service request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="c-lane-cust">
+          <mxGeometry x="290" y="90" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="Request form fields" style="swimlane;rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;fontColor=#1E3A8A;startSize=28;" vertex="1" parent="c-lane-cust">
+          <mxGeometry x="530" y="40" width="520" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="c3a" value="Service name&#xa;(SEO, graphic design, data entry, social, …)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;fontColor=#1E3A8A;fontSize=11;" vertex="1" parent="c3">
+          <mxGeometry x="20" y="40" width="230" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c3b" value="Website&#xa;(owned managed site)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;fontColor=#1E3A8A;fontSize=11;" vertex="1" parent="c3">
+          <mxGeometry x="270" y="40" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c3c" value="نوع همکاری (preferred engagement)&#xa;یکباره / دوره‌ای / مطمئن نیستم" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;fontColor=#1E3A8A;fontSize=11;" vertex="1" parent="c3">
+          <mxGeometry x="20" y="105" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c3d" value="Title + description&#xa;+ optional attachments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;fontColor=#1E3A8A;fontSize=11;" vertex="1" parent="c3">
+          <mxGeometry x="270" y="105" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="Submit request&#xa;&amp; track status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="c-lane-cust">
+          <mxGeometry x="1120" y="90" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="Active service visible&#xa;in dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontColor=#1E3A8A;" vertex="1" parent="c-lane-cust">
+          <mxGeometry x="1360" y="90" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c6" value="Queue: complementary&#xa;service requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="c-lane-adm">
+          <mxGeometry x="60" y="110" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" value="Audit request &amp; needs&#xa;(e.g. product count,&#xa;contract period)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="c-lane-adm">
+          <mxGeometry x="320" y="100" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" value="Scope &amp; define&#xa;commercial terms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="c-lane-adm">
+          <mxGeometry x="600" y="110" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" value="Create assignment&#xa;&amp; activate service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontColor=#9A3412;" vertex="1" parent="c-lane-adm">
+          <mxGeometry x="880" y="110" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" value="Examples&#xa;• Data entry: N products&#xa;• Retainer: period from contract&#xa;• Project: fixed deliverable" style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;size=14;align=left;spacingLeft=6;fontSize=11;" vertex="1" parent="c-lane-adm">
+          <mxGeometry x="1140" y="70" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c11" value="Store request + attachments&#xa;Preserve history / periods" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="c-lane-sys">
+          <mxGeometry x="320" y="45" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" value="Active assignment record&#xa;(quota / milestones / period)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;fontColor=#14532D;" vertex="1" parent="c-lane-sys">
+          <mxGeometry x="880" y="45" width="230" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ce1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="c1" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="c2" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="c3" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="c4" target="c11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="c11" target="c6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="195" y="890" />
+              <mxPoint x="195" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ce6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="c6" target="c7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="c7" target="c8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#EA580C;" edge="1" parent="1" source="c8" target="c9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#16A34A;" edge="1" parent="1" source="c9" target="c12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ce10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#2563EB;" edge="1" parent="1" source="c9" target="c5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1485" y="615" />
+              <mxPoint x="1485" y="295" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="c-note" value="Docs wording for نوع همکاری&#xa;Phase 1 §16.4: Preferred engagement = one-time, recurring, or not sure.&#xa;Persian UI: یکباره / دوره‌ای / مطمئن نیستم." style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;align=left;spacingLeft=8;spacingTop=6;size=16;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1000" width="520" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

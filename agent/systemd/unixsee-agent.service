@@ -1,0 +1,19 @@
+[Unit]
+Description=Unixsee Phase 1 VPS Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=unixsee-agent
+Group=unixsee-agent
+WorkingDirectory=/opt/unixsee-agent
+EnvironmentFile=/opt/unixsee-agent/.env
+ExecStart=/usr/bin/node --env-file=/opt/unixsee-agent/.env /opt/unixsee-agent/dist/index.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

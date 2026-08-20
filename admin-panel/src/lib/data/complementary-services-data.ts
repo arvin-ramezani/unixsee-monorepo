@@ -84,14 +84,59 @@ export type ComplementaryServiceRequestType = {
   customerNote: string | null;
 };
 
+export const SERVICE_ENGAGEMENT = {
+  ONE_TIME: "ONE_TIME",
+  RECURRING: "RECURRING",
+} as const;
+
+export type ServiceEngagementType =
+  (typeof SERVICE_ENGAGEMENT)[keyof typeof SERVICE_ENGAGEMENT];
+
+export const SERVICE_ENGAGEMENT_LABELS: Record<ServiceEngagementType, string> =
+  {
+    [SERVICE_ENGAGEMENT.ONE_TIME]: "یک‌باره",
+    [SERVICE_ENGAGEMENT.RECURRING]: "همکاری مستمر",
+  };
+
+export const SEO_SCOPE_OPTIONS = [
+  { value: "technical", label: "فنی" },
+  { value: "audit", label: "ممیزی" },
+  { value: "content", label: "محتوا" },
+  { value: "ongoing", label: "مستمر" },
+  { value: "unsure", label: "نامشخص" },
+] as const;
+
+export const DESIGN_SCOPE_OPTIONS = [
+  { value: "logo", label: "لوگو" },
+  { value: "banner", label: "بنر" },
+  { value: "socialPost", label: "پست شبکه اجتماعی" },
+  { value: "other", label: "سایر" },
+] as const;
+
+export const ASSIGNMENT_CREATE_SOURCE = {
+  REQUEST: "REQUEST",
+  STAFF: "STAFF",
+} as const;
+
+export type AssignmentCreateSourceType =
+  (typeof ASSIGNMENT_CREATE_SOURCE)[keyof typeof ASSIGNMENT_CREATE_SOURCE];
+
 export type ComplementaryServiceAssignmentType = {
   id: string;
-  requestId: string;
+  requestId: string | null;
+  source: AssignmentCreateSourceType;
+  createReason: string | null;
   customerName: string;
   websiteId: string;
   websiteDomain: string;
+  websiteTitle?: string;
   family: ComplementaryServiceFamilyType;
   title: string;
+  description?: string;
+  engagement: ServiceEngagementType | null;
+  serviceScope: string | null;
+  scopeSummary: string | null;
+  exclusions: string | null;
   ownerName: string;
   commercialModel: ServiceCommercialModelType;
   status: ServiceAssignmentStatusType;
@@ -228,11 +273,18 @@ export const COMPLEMENTARY_SERVICE_ASSIGNMENTS: ComplementaryServiceAssignmentTy
     {
       id: "CSA-3021",
       requestId: "CSR-1039",
+      source: ASSIGNMENT_CREATE_SOURCE.REQUEST,
+      createReason: null,
       customerName: "سارا محمدی",
       websiteId: "website-004",
       websiteDomain: "parsmod.com",
+      websiteTitle: "پارس مد",
       family: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
       title: "پاک‌سازی اطلاعات محصولات پارس مد",
+      engagement: SERVICE_ENGAGEMENT.ONE_TIME,
+      serviceScope: "250",
+      scopeSummary: "ورود و پاک‌سازی حدود ۲۵۰ محصول",
+      exclusions: null,
       ownerName: "رضا اکبری",
       commercialModel: SERVICE_COMMERCIAL_MODEL.QUOTA_PACKAGE,
       status: SERVICE_ASSIGNMENT_STATUS.ACTIVE,
@@ -244,11 +296,18 @@ export const COMPLEMENTARY_SERVICE_ASSIGNMENTS: ComplementaryServiceAssignmentTy
     {
       id: "CSA-3018",
       requestId: "CSR-1027",
+      source: ASSIGNMENT_CREATE_SOURCE.REQUEST,
+      createReason: null,
       customerName: "علی رضایی",
       websiteId: "website-001",
       websiteDomain: "greenario.com",
+      websiteTitle: "فروشگاه آرتین",
       family: COMPLEMENTARY_SERVICE_FAMILY.SEO,
       title: "پشتیبانی ماهانه سئو",
+      engagement: SERVICE_ENGAGEMENT.RECURRING,
+      serviceScope: "ongoing",
+      scopeSummary: "پایش و بهینه‌سازی ماهانه",
+      exclusions: null,
       ownerName: "مهدی کریمی",
       commercialModel: SERVICE_COMMERCIAL_MODEL.RECURRING_RETAINER,
       status: SERVICE_ASSIGNMENT_STATUS.ACTIVE,
@@ -260,11 +319,18 @@ export const COMPLEMENTARY_SERVICE_ASSIGNMENTS: ComplementaryServiceAssignmentTy
     {
       id: "CSA-3011",
       requestId: "CSR-1014",
+      source: ASSIGNMENT_CREATE_SOURCE.REQUEST,
+      createReason: null,
       customerName: "محمد احمدی",
       websiteId: "website-005",
       websiteDomain: "mohammadi-design.ir",
+      websiteTitle: "استودیو طراحی محمدی",
       family: COMPLEMENTARY_SERVICE_FAMILY.GRAPHIC_DESIGN,
       title: "بسته طراحی هویت بصری",
+      engagement: SERVICE_ENGAGEMENT.ONE_TIME,
+      serviceScope: "logo",
+      scopeSummary: "بسته هویت بصری",
+      exclusions: null,
       ownerName: "نگار احمدی",
       commercialModel: SERVICE_COMMERCIAL_MODEL.MILESTONE_PROJECT,
       status: SERVICE_ASSIGNMENT_STATUS.PAUSED,

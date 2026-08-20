@@ -2,11 +2,13 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-10
 >
 > **ADRs:**
 > [`../architecture/decisions/0004-api-audience-namespaces.md`](../architecture/decisions/0004-api-audience-namespaces.md),
-> [`../architecture/decisions/0005-domain-modules-multi-audience-controllers.md`](../architecture/decisions/0005-domain-modules-multi-audience-controllers.md)
+> [`../architecture/decisions/0005-domain-modules-multi-audience-controllers.md`](../architecture/decisions/0005-domain-modules-multi-audience-controllers.md),
+> [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md),
+> [`../architecture/decisions/0009-nest-agent-kind-module-split.md`](../architecture/decisions/0009-nest-agent-kind-module-split.md)
 
 High-level NestJS module and route map for Phase 1. Resource paths are planning
 contracts, not final OpenAPI. Keep authentication as implemented in
@@ -18,7 +20,7 @@ contracts, not final OpenAPI. Keep authentication as implemented in
 /api/v1/public/...          # unauthenticated intake + published catalogs
 /api/v1/...                 # customer (tenant JWT)
 /api/v1/admin/...           # staff JWT + role/capability
-/api/internal/agent/v1/...  # agent plane (not browser-facing)
+/api/internal/agent/v1/...  # Phase 1 agent plane (`agent/`; not browser-facing)
 ```
 
 Socket.io: `/realtime` for **customer monitoring** only in Phase 1. Admin
@@ -30,7 +32,9 @@ queues are REST-first.
 - Lifecycle mutations prefer explicit actions: `enable`, `assign`, `decline`.
 - Idempotency keys on enablement, assignment, message create, operational actions.
 - Lists: filter + cursor/page; never leak other tenants.
-- Errors: stable codes + localized `fa`/`en` messages; auth failures non-enumerating.
+- Errors: stable `error.code` on every failure; EN/FA copy lives in frontends
+  (see [`contracts/api-errors.md`](./contracts/api-errors.md)); auth failures
+  non-enumerating.
 - Split public / customer / admin **controllers**; do not branch one handler on a role flag.
 
 ## Trust and authz
@@ -79,14 +83,40 @@ Module: `auth`. No redesign.
 |---|---|---|
 | GET | `/api/v1/users/me` | Customer (existing) |
 | PATCH | `/api/v1/users/me` | Customer |
+| POST | `/api/v1/users/me/contacts/phone/otp/request` | Customer |
+| POST | `/api/v1/users/me/contacts/phone/otp/verify` | Customer |
+| POST | `/api/v1/users/me/contacts/email/otp/request` | Customer |
+| POST | `/api/v1/users/me/contacts/email/otp/verify` | Customer |
 | GET | `/api/v1/admin/users` | Admin |
 | GET | `/api/v1/admin/users/:id` | Admin |
 | POST | `/api/v1/admin/users` | Admin |
 | PATCH | `/api/v1/admin/users/:id` | Admin |
 | POST | `/api/v1/admin/users/:id/suspend` | Admin |
 | POST | `/api/v1/admin/users/:id/restore` | Admin |
+| POST | `/api/v1/admin/users/:id/revoke-sessions` | Admin |
+| POST | `/api/v1/admin/users/:id/start-recovery` | Admin |
 
 Never return passwords, OTP codes, recovery secrets, refresh hashes, or agent keys.
+Admin user payloads may include `hasActiveSession` (boolean) derived from refresh
+state without exposing the hash.
+
+### Authorization cases (احراز هویت) — add `authorization-cases`
+
+Customer identity package submit + staff review. Approve creates tenant +
+OWNER membership. Package fields stay off `/admin/users` list.
+
+| Method | Path | Audience |
+|---|---|---|
+| GET | `/api/v1/authorization-cases/me` | Customer (own case or `null`) |
+| PUT | `/api/v1/authorization-cases/me/draft` | Customer |
+| POST | `/api/v1/authorization-cases/me/submit` | Customer |
+| GET | `/api/v1/admin/authorization-cases` | Admin |
+| GET | `/api/v1/admin/authorization-cases/:id` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/approve` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/needs-info` | Admin |
+| POST | `/api/v1/admin/authorization-cases/:id/reject` | Admin |
+
+Contract: [`contracts/authorization-cases.md`](./contracts/authorization-cases.md).
 
 ### Tenants — add
 
@@ -125,16 +155,26 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 | Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires |
 | Fix stub | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
 
-### Agent — keep / extend carefully
+### Agent plane — Phase 1 (`agent/`)
 
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/internal/agent/v1/enroll` | Agent (one-time `x-enrollment-token` → `secretKey`) |
-| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC after enrollment) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness) |
+| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; `schemaVersion: "phase1"` discoveries + `activeVisitors3m`) |
+| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + leased `REFRESH_SITE_STACK` commands) |
+| POST | `/api/internal/agent/v1/command-results` | Agent (HMAC; idempotent command result + optional stack snapshot) |
 
-Product agent install uses enrollment, then HMAC. See
-[`../agent/README.md`](../agent/README.md) and [`../../agent/README.md`](../../agent/README.md).
+Product install uses enrollment, then HMAC. **Source of truth:**
+[`../agent/prd.md`](../agent/prd.md) and
+[`../agent/phase1-api-contract.md`](../agent/phase1-api-contract.md).
+Deployable: [`../../agent/`](../../agent/). Nest module:
+[`../../backend/src/modules/agent/`](../../backend/src/modules/agent/) (ADR 0009).
+
+Archived monitoring-agent Nest leftovers (batch ingest DTOs/events, not wired
+into `AppModule`) live under
+[`../../backend/src/modules/monitoring-agent/`](../../backend/src/modules/monitoring-agent/).
+When monitoring work returns, resume under `/api/internal/monitoring-agent/v1`
+(ADR 0007 / 0008 / 0009).
 
 ---
 
@@ -155,7 +195,9 @@ Consultant requests are modeled as **complementary-service** public intake
 
 | Method | Path | Audience |
 |---|---|---|
-| POST | `/api/v1/public/plan-requests` | Public |
+| POST | `/api/v1/public/plan-requests/account-check` | Public (early phone/email/website match; `{ exists, matchedBy }`) |
+| POST | `/api/v1/public/plan-requests` | Public (**legacy** anonymous create — superseded guest intent; prefer OTP → user → customer create) |
+| POST | `/api/v1/plan-requests` | Customer (logged-in create; **target** after guest OTP verify) |
 | GET | `/api/v1/plan-requests` | Customer (own) |
 | GET | `/api/v1/plan-requests/:id` | Customer (own) |
 | GET | `/api/v1/admin/plan-requests` | Admin |
@@ -163,6 +205,12 @@ Consultant requests are modeled as **complementary-service** public intake
 | POST | `/api/v1/admin/plan-requests/:id/link` | Admin (existing user/tenant) |
 | POST | `/api/v1/admin/plan-requests/:id/enable` | Admin |
 | POST | `/api/v1/admin/plan-requests/:id/decline` | Admin |
+
+Guest product intent: verify phone **or** email via auth OTP → create user on
+success → `POST /api/v1/plan-requests`. Contracts:
+[`contracts/plan-requests-public.md`](./contracts/plan-requests-public.md)
+(Draft), [`contracts/plan-requests-customer.md`](./contracts/plan-requests-customer.md).
+UX: [`../product/ux-flows/customer-public-plan-request.md`](../product/ux-flows/customer-public-plan-request.md).
 
 Rules: public submit ≠ payment ≠ enablement; enablement links an **existing**
 user/tenant and at most one active plan per website.
@@ -190,9 +238,20 @@ user/tenant and at most one active plan per website.
 | Method | Path | Audience |
 |---|---|---|
 | GET/POST | `/api/v1/admin/servers` | Admin |
-| GET/PATCH | `/api/v1/admin/servers/:id` | Admin |
+| GET/PATCH/DELETE | `/api/v1/admin/servers/:id` | Admin (DELETE revokes tokens + agent, then removes row) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens` | Admin (one-time reveal) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
+| POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |
+
+### Agent commands — add `agent-commands`
+
+| Method | Path | Audience |
+|---|---|---|
+| POST | `/api/v1/admin/agent-commands/refresh-site-stack` | Admin/Operator; body contains `discoveryId` only |
+| GET | `/api/v1/admin/agent-commands/:id` | Admin/Operator; command state/freshness |
+
+Phase 1 allows only `REFRESH_SITE_STACK`. Commands contain identifiers, never
+executable text, arbitrary URLs, or filesystem paths.
 
 ### Discoveries — add `discoveries`
 
@@ -212,6 +271,7 @@ Owned with `websites` + `discoveries` services:
 | Method | Path | Audience |
 |---|---|---|
 | POST | `/api/v1/admin/websites` | Admin |
+| GET/PATCH | `/api/v1/admin/websites/:id` | Admin (detail + admin-owned metadata) |
 | POST | `/api/v1/admin/websites/:id/assign` | Admin |
 | POST | `/api/v1/admin/websites/:id/transfer` | Admin (audited) |
 | POST | `/api/v1/admin/websites/:id/retire` | Admin |
@@ -222,15 +282,38 @@ Owned with `websites` + `discoveries` services:
 
 ### Tickets — add `tickets`
 
+Customer DTO/lifecycle contract:
+[`contracts/tickets-customer.md`](./contracts/tickets-customer.md).
+Shared service taxonomy:
+[`contracts/ticket-service-categories.md`](./contracts/ticket-service-categories.md).
+
 | Method | Path | Audience |
 |---|---|---|
+| GET | `/api/v1/tickets/services` | Customer (service category catalog) |
 | GET/POST | `/api/v1/tickets` | Customer |
 | GET | `/api/v1/tickets/:id` | Customer |
 | POST | `/api/v1/tickets/:id/messages` | Customer |
-| POST | `/api/v1/tickets/:id/attachments` | Customer |
+| POST | `/api/v1/tickets/:id/attachments/upload` | Customer (multipart `file` → Supabase) |
+| GET | `/api/v1/tickets/:id/attachments/:attachmentId/download` | Customer (signed download URL) |
+| POST | `/api/v1/tickets/:id/close` | Customer (`RESOLVED` → `CLOSED`) |
+| POST | `/api/v1/tickets/:id/reopen` | Customer (`CLOSED` → `IN_PROGRESS`) |
 | GET | `/api/v1/admin/tickets` | Admin |
+| GET | `/api/v1/admin/tickets/:id` | Admin (incl. internal notes) |
+| POST | `/api/v1/admin/tickets/:id/in-progress` | Admin (`SUBMITTED` → `IN_PROGRESS`) |
 | POST | `/api/v1/admin/tickets/:id/assign` | Admin |
-| POST | `/api/v1/admin/tickets/:id/messages` | Admin (incl. internal notes where allowed) |
+| POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
+| POST | `/api/v1/admin/tickets/:id/reopen` | Admin (`RESOLVED` → `IN_PROGRESS`) |
+| POST | `/api/v1/admin/tickets/:id/messages` | Admin (blocked when `RESOLVED`/`CLOSED`) |
+| POST | `/api/v1/admin/tickets/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
+| GET | `/api/v1/admin/tickets/:id/attachments/:attachmentId/download` | Admin (signed download URL) |
+
+Staff shapes:
+[`contracts/tickets-admin.md`](./contracts/tickets-admin.md).
+
+Create body includes required `service`, optional `websiteId`, `subject`,
+`description`. Default status is `SUBMITTED` (customer «ارسال‌شده»). Do **not**
+send attachment metadata on create — upload bytes after create via
+`POST /api/v1/tickets/:id/attachments/upload` (`StorageModule` / Supabase).
 
 ### Notifications — add `notifications`
 
@@ -239,6 +322,31 @@ Owned with `websites` + `discoveries` services:
 | GET | `/api/v1/notifications` | Customer |
 | POST | `/api/v1/notifications/:id/read` | Customer |
 | GET/POST/PATCH | `/api/v1/admin/notifications` | Admin (`locales.fa` + `locales.en`) |
+
+### Unixsee messages — add `unixsee-messages`
+
+Tenant-targeted one-way staff → customer messages (پیام‌های یونیکسی). Distinct
+from News `notifications` and from ticket thread `/tickets/:id/messages`.
+Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
+
+| Method | Path | Audience |
+|---|---|---|
+| GET | `/api/v1/unixsee-messages` | Customer (`items`, `total`, `hasUnread`) |
+| GET | `/api/v1/unixsee-messages/:id` | Customer |
+| GET | `/api/v1/unixsee-messages/:id/attachments/:attachmentId/download` | Customer (signed URL) |
+| POST | `/api/v1/unixsee-messages/:id/read` | Customer |
+| GET/POST | `/api/v1/admin/unixsee-messages` | Admin |
+| GET | `/api/v1/admin/unixsee-messages/tenants/:tenantId/compose-context` | Admin |
+| GET/PATCH | `/api/v1/admin/unixsee-messages/:id` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/publish` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/withdraw` | Admin |
+| POST | `/api/v1/admin/unixsee-messages/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
+| GET | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId/download` | Admin (signed URL) |
+| DELETE | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId` | Admin |
+
+Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
+`websiteId`, `links[]`. Attachments upload after create via
+`StorageModule` / Supabase (max 5 × 5 MB; png/jpeg/webp/pdf).
 
 ### Activities — add `activities`
 
@@ -294,6 +402,9 @@ Reconnect must refetch REST as source of truth.
 - Payments / checkout / refunds
 - Customer domain/DNS
 - CMS, impersonation, microservices
+- Customer `assistant` module (tools + pgvector RAG; no route table until
+  implement) — [`../product/customer-assistant-prd.md`](../product/customer-assistant-prd.md),
+  [`customer-assistant.md`](./customer-assistant.md)
 
 ---
 
@@ -312,6 +423,13 @@ backend/src/modules/<domain>/
 ```
 
 Omit controllers that an audience does not need.
+
+### Infrastructure modules (no audience routes)
+
+| Module | Role |
+|---|---|
+| `mail` | SMTP / OTP delivery helper |
+| `storage` | Supabase Object Storage (`StorageService`: upload, download, remove, signed URL). Import into domain modules; no HTTP controllers yet. Env: `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`. |
 
 ## Implementation slices
 
