@@ -56,7 +56,7 @@ export class AgentSignatureGuard implements CanActivate {
     const requestTime = new Date(normalizedTimestamp).getTime();
     const driftMs = Math.abs(Date.now() - requestTime);
 
-    if (isNaN(requestTime) || driftMs > 5 * 60 * 1000) {
+    if (Number.isNaN(requestTime) || driftMs > 5 * 60 * 1000) {
       this.logger.warn('agent.auth.timestamp_drift', {
         agentInstanceId,
         ip: request.ip,
@@ -105,7 +105,7 @@ export class AgentSignatureGuard implements CanActivate {
       throw this.authenticationFailed();
     }
 
-    request.vpsAgentInstanceId = agentInstanceId;
+    request.agentInstanceId = agentInstanceId;
 
     this.logger.debug('agent.auth.signature_verified', {
       agentInstanceId,

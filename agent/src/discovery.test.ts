@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
+  discoverEffectiveOpenLiteSpeedInventory,
   discoverOpenLiteSpeedInventory,
   normalizeMappedHostname,
   OpenLiteSpeedDiscoveryError,
@@ -27,11 +28,13 @@ describe("OpenLiteSpeed inventory discovery", () => {
   const originalListenerPaths = process.env.OPENLITESPEED_LISTENER_PATHS;
   const originalDeclarationPaths =
     process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS;
+  const originalStateDir = process.env.UNIXSEE_AGENT_STATE_DIR;
 
   beforeEach(() => {
     loadTestConfig();
     delete process.env.OPENLITESPEED_LISTENER_PATHS;
     delete process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS;
+    delete process.env.UNIXSEE_AGENT_STATE_DIR;
   });
 
   afterEach(() => {
@@ -46,6 +49,12 @@ describe("OpenLiteSpeed inventory discovery", () => {
     } else {
       process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS =
         originalDeclarationPaths;
+    }
+
+    if (originalStateDir === undefined) {
+      delete process.env.UNIXSEE_AGENT_STATE_DIR;
+    } else {
+      process.env.UNIXSEE_AGENT_STATE_DIR = originalStateDir;
     }
   });
 
@@ -198,6 +207,53 @@ listener HTTP {
     >({
       reason: "ols_listener_config_unreadable",
     });
+  });
+
+
+  it("does not count a failed OLS scan toward the two-scan removal threshold", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "unixsee-ols-discovery-state-"));
+    const listenersPath = join(dir, "listeners.conf");
+    const declarationsPath = join(dir, "httpd-vhosts.conf");
+    process.env.UNIXSEE_AGENT_STATE_DIR = dir;
+
+    await writeFile(
+      listenersPath,
+      `listener HTTP {\n  map shop-vhost example.com,www.example.com\n}\n`,
+    );
+    await writeFile(declarationsPath, vhosts);
+
+    process.env.OPENLITESPEED_LISTENER_PATHS = listenersPath;
+    process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS = declarationsPath;
+
+    const initial = await discoverEffectiveOpenLiteSpeedInventory({
+      observedAt: new Date("2026-08-19T12:00:00.000Z"),
+    });
+    expect(initial.changes.added).toHaveLength(1);
+
+    process.env.OPENLITESPEED_LISTENER_PATHS = join(dir, "missing.conf");
+    await expect(
+      discoverEffectiveOpenLiteSpeedInventory({
+        observedAt: new Date("2026-08-19T12:10:00.000Z"),
+      }),
+    ).rejects.toMatchObject({ reason: "ols_listener_config_unreadable" });
+
+    await writeFile(listenersPath, `listener HTTP {\n  address *:80\n}\n`);
+    process.env.OPENLITESPEED_LISTENER_PATHS = listenersPath;
+
+    const firstSuccessfulMiss = await discoverEffectiveOpenLiteSpeedInventory({
+      observedAt: new Date("2026-08-19T12:20:00.000Z"),
+    });
+
+    expect(firstSuccessfulMiss.domains).toEqual([
+      {
+        domain: "example.com",
+        aliases: ["www.example.com"],
+        virtualHostName: "shop-vhost",
+        source: "openlitespeed",
+      },
+    ]);
+    expect(firstSuccessfulMiss.changes.retainedMissing).toHaveLength(1);
+    expect(firstSuccessfulMiss.changes.removed).toEqual([]);
   });
 
   it("treats a readable configuration with no maps as a successful empty inventory", () => {

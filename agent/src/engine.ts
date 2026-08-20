@@ -1,47 +1,105 @@
-import { hostname } from "node:os";
-
 import {
   AgentApiError,
+  sendCommandResult as defaultSendCommandResult,
   sendHeartbeat as defaultSendHeartbeat,
   sendPhase1Ingest as defaultSendPhase1Ingest,
 } from "./api/client.js";
 import { getConfig } from "./config/config.js";
 import {
   toPhase1DiscoveryPayload,
+  toPhase1StackSnapshotPayload,
   type Phase1IngestPayload,
 } from "./contracts/phase1-ingest.js";
-import { initializeIdentity, type HostIdentity } from "./discovery.js";
-import { clearPersistedAgentSecret } from "./security.js";
 import {
-  collectActiveVisitors3m,
-  ensureTrafficTails,
+  initializeIdentity as defaultInitializeIdentity,
+  type DiscoveredDomain,
+  type HostIdentity,
+} from "./discovery.js";
+import { clearPersistedAgentSecret } from "./security.js";
+import { createTypedIngestOutbox } from "./outbox.js";
+import { executeLeasedCommand } from "./commands/executor.js";
+import {
+  createCommandResultOutbox,
+  type CommandResultOutbox,
+} from "./commands/command-result-outbox.js";
+import type {
+  AgentCommandResultPayload,
+  HeartbeatResult,
+  LeasedAgentCommand,
+} from "./commands/types.js";
+import {
+  createPeriodicScheduler,
+  type PeriodicSchedulerHandle,
+} from "./schedulers/periodic-scheduler.js";
+import {
+  createStackScheduler,
+  STACK_SCHEDULER_TICK_MS,
+  type StackRefreshReason,
+  type StackSchedulerHandle,
+} from "./schedulers/stack-scheduler.js";
+import type { SiteStackPayload } from "./runtime-probe/types.js";
+import { enrichSiteStack as defaultEnrichSiteStack } from "./site-stack.js";
+import {
+  collectActiveVisitors3m as defaultCollectActiveVisitors3m,
+  collectVisitors24h as defaultCollectVisitors24h,
+  ensureTrafficTails as defaultEnsureTrafficTails,
+  stopTrafficTails,
 } from "./traffic.js";
 
-const MAX_QUEUE_SIZE = 30;
 
 export type EngineDependencies = {
   sendIngest?: (payload: unknown, secretKey: string) => Promise<unknown>;
   sendHeartbeat?: (
     agentInstanceId: string,
     secretKey: string,
-    hostname?: string,
+  ) => Promise<HeartbeatResult>;
+  sendCommandResult?: (
+    payload: AgentCommandResultPayload,
+    secretKey: string,
   ) => Promise<unknown>;
+  commandResultOutbox?: CommandResultOutbox;
   clearSecret?: () => Promise<void>;
-  resolveHostname?: () => string;
+  initializeIdentity?: (agentInstanceId: string) => Promise<HostIdentity>;
+  enrichSiteStack?: (
+    domains: readonly DiscoveredDomain[],
+  ) => ReturnType<typeof defaultEnrichSiteStack>;
+  stackScheduler?: StackSchedulerHandle;
+  ensureTrafficTails?: (domains: readonly string[]) => Promise<void>;
+  collectActiveVisitors3m?: typeof defaultCollectActiveVisitors3m;
+  collectVisitors24h?: typeof defaultCollectVisitors24h;
   now?: () => Date;
-  /** When false, skip intervals and initial ticks (tests). Default true. */
+  /** When false, skip scheduler startup and initial ticks (tests). Default true. */
   autoStart?: boolean;
 };
 
 export type EngineHandle = {
-  enqueue: (payload: unknown) => void;
+  enqueue: (payload: Phase1IngestPayload) => void;
   flushQueue: () => Promise<void>;
   runHeartbeat: () => Promise<void>;
-  runTransmit: () => Promise<void>;
-  buildIngestPayload: () => Promise<Phase1IngestPayload>;
+  flushCommandResults: () => Promise<void>;
+  executeCommand: (command: LeasedAgentCommand) => Promise<void>;
+  runDiscovery: () => Promise<void>;
+  runStackRefresh: (
+    domains?: readonly DiscoveredDomain[],
+    reason?: StackRefreshReason,
+  ) => Promise<void>;
+  runDueStackRefreshes: () => Promise<void>;
+  runActiveVisitors: () => Promise<void>;
+  runVisitors24h: () => Promise<void>;
+  buildDiscoveryPayload: (
+    domains?: readonly DiscoveredDomain[],
+  ) => Phase1IngestPayload;
+  buildStackPayload: (
+    domains?: readonly DiscoveredDomain[],
+  ) => Promise<Phase1IngestPayload>;
+  buildActiveVisitorsPayload: () => Promise<Phase1IngestPayload>;
+  buildVisitors24hPayload: () => Promise<Phase1IngestPayload>;
   getQueueLength: () => number;
+  getPendingCommandResultCount: () => Promise<number>;
   isSecretInvalidated: () => boolean;
   getActiveSecret: () => string | null;
+  getIdentity: () => HostIdentity | null;
+  getStackScheduleRecords: () => ReturnType<StackSchedulerHandle["getRecords"]>;
   stop: () => void;
 };
 
@@ -52,16 +110,30 @@ export function createEngine(
 ): EngineHandle {
   const sendIngest = deps.sendIngest ?? defaultSendPhase1Ingest;
   const sendHeartbeatFn = deps.sendHeartbeat ?? defaultSendHeartbeat;
+  const sendCommandResultFn =
+    deps.sendCommandResult ?? defaultSendCommandResult;
   const clearSecret = deps.clearSecret ?? clearPersistedAgentSecret;
-  const resolveHostname = deps.resolveHostname ?? hostname;
+  const initializeIdentityFn =
+    deps.initializeIdentity ?? defaultInitializeIdentity;
+  const enrichSiteStack = deps.enrichSiteStack ?? defaultEnrichSiteStack;
+  const ensureTrafficTails =
+    deps.ensureTrafficTails ?? defaultEnsureTrafficTails;
+  const collectActiveVisitors3m =
+    deps.collectActiveVisitors3m ?? defaultCollectActiveVisitors3m;
+  const collectVisitors24h =
+    deps.collectVisitors24h ?? defaultCollectVisitors24h;
   const now = deps.now ?? (() => new Date());
 
-  let offlineQueue: unknown[] = [];
+  const offlineQueue = createTypedIngestOutbox();
+  const commandResultOutbox =
+    deps.commandResultOutbox ?? createCommandResultOutbox();
+  const commandIdsInFlight = new Set<string>();
   let isTransmitting = false;
   let activeSecretKey: string | null = secretKey;
   let secretInvalidated = false;
   let identity: HostIdentity | null = hostIdentity;
-  const timers: ReturnType<typeof setInterval>[] = [];
+  let stopped = false;
+  const schedulers: PeriodicSchedulerHandle[] = [];
 
   function assertSecretReady(): string {
     if (!activeSecretKey || secretInvalidated) {
@@ -72,66 +144,163 @@ export function createEngine(
     return activeSecretKey;
   }
 
+  function stopSchedulers(): void {
+    for (const scheduler of schedulers) {
+      scheduler.stop();
+    }
+  }
+
   async function invalidateSecret(reason: string): Promise<void> {
+    if (secretInvalidated) return;
+
     secretInvalidated = true;
     activeSecretKey = null;
+    stopSchedulers();
+    stopTrafficTails();
+
     try {
       await clearSecret();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`[Security] Failed to clear persisted secret: ${message}`);
     }
+
     console.error(
       `[Security] ${reason} Re-issue an enrollment token from the admin panel and restart with ENROLLMENT_TOKEN.`,
     );
   }
 
-  async function buildIngestPayload(): Promise<Phase1IngestPayload> {
+  function requireIdentity(): HostIdentity {
     if (!identity) {
       throw new Error("Host identity not initialized.");
     }
+    return identity;
+  }
 
-    const discoveryObservedAt = now().toISOString();
-    const discoveryPairs = identity.domains.flatMap((domain) => {
-      const outbound = toPhase1DiscoveryPayload(domain, discoveryObservedAt);
-      return outbound ? [{ internal: domain, outbound }] : [];
+  function findDiscoveredDomain(domain: string): DiscoveredDomain {
+    const normalized = domain.trim().toLowerCase().replace(/\.$/, "");
+    const discovered = requireIdentity().domains.find(
+      (item) => item.domain === normalized,
+    );
+    if (!discovered) {
+      throw new Error(`Stack scheduler domain is no longer active: ${domain}`);
+    }
+    return discovered;
+  }
+
+  const cfg = getConfig();
+  const stackScheduler =
+    deps.stackScheduler ??
+    createStackScheduler({
+      intervalMs: cfg.stackProbeIntervalMs,
+      concurrency: cfg.stackProbeConcurrency,
+      probeDomain: async (domain) => {
+        const [result] = await enrichSiteStack([findDiscoveredDomain(domain)]);
+        if (!result) {
+          throw new Error(`Stack probe returned no result for ${domain}.`);
+        }
+        return result;
+      },
+      now,
     });
 
-    const discoveries = discoveryPairs.map((item) => item.outbound);
+  function buildEnvelopeBase(currentIdentity: HostIdentity) {
+    return {
+      schemaVersion: "phase1" as const,
+      agentInstanceId: currentIdentity.agentInstanceId,
+      agentVersion: getConfig().agentVersion,
+      sentAt: now().toISOString(),
+    };
+  }
 
-    // Step 5 removes the legacy filesystem/DirectAdmin stack dependency from
-    // discovery. Stack snapshots are intentionally omitted until the protected
-    // OLS/PHP runtime probe is introduced in the dedicated stack-probe step.
-    const domains = discoveries.map((discovery) => discovery.domain);
-    await ensureTrafficTails(domains);
-    const activeVisitors3m = collectActiveVisitors3m(domains);
-    const cfg = getConfig();
+  function buildDiscoveryPayload(
+    domains: readonly DiscoveredDomain[] = requireIdentity().domains,
+  ): Phase1IngestPayload {
+    const currentIdentity = requireIdentity();
+    const discoveredAt = now().toISOString();
+    const discoveries = domains.flatMap((domain) => {
+      const outbound = toPhase1DiscoveryPayload(domain, discoveredAt);
+      return outbound ? [outbound] : [];
+    });
 
     return {
-      schemaVersion: "phase1",
-      agentInstanceId: identity.agentInstanceId,
-      agentVersion: cfg.agentVersion,
-      sentAt: now().toISOString(),
+      ...buildEnvelopeBase(currentIdentity),
       discoveries,
-      activeVisitors3m,
+    };
+  }
+
+  async function buildStackPayload(
+    domains: readonly DiscoveredDomain[] = requireIdentity().domains,
+  ): Promise<Phase1IngestPayload> {
+    const currentIdentity = requireIdentity();
+    const stackResults = await enrichSiteStack(domains);
+
+    return {
+      ...buildEnvelopeBase(currentIdentity),
+      stackSnapshots: stackResults.map((stack) =>
+        toPhase1StackSnapshotPayload(stack, stack.checkedAt),
+      ),
+    };
+  }
+
+  function buildStackPayloadFromSnapshots(
+    snapshots: readonly SiteStackPayload[],
+  ): Phase1IngestPayload {
+    const currentIdentity = requireIdentity();
+    return {
+      ...buildEnvelopeBase(currentIdentity),
+      stackSnapshots: snapshots.map((stack) =>
+        toPhase1StackSnapshotPayload(stack, stack.checkedAt),
+      ),
+    };
+  }
+
+  async function buildActiveVisitorsPayload(): Promise<Phase1IngestPayload> {
+    const currentIdentity = requireIdentity();
+    const domains = currentIdentity.domains.map((site) => site.domain);
+    await ensureTrafficTails(domains);
+
+    return {
+      ...buildEnvelopeBase(currentIdentity),
+      activeVisitors3m: collectActiveVisitors3m(domains),
+    };
+  }
+
+  async function buildVisitors24hPayload(): Promise<Phase1IngestPayload> {
+    const currentIdentity = requireIdentity();
+    const domains = currentIdentity.domains.map((site) => site.domain);
+    await ensureTrafficTails(domains);
+
+    return {
+      ...buildEnvelopeBase(currentIdentity),
+      visitors24h: await collectVisitors24h(domains),
     };
   }
 
   async function flushQueue(): Promise<void> {
-    if (isTransmitting || offlineQueue.length === 0 || secretInvalidated) {
+    if (
+      isTransmitting ||
+      offlineQueue.size() === 0 ||
+      secretInvalidated ||
+      stopped
+    ) {
       return;
     }
+
     isTransmitting = true;
     let transmitted = 0;
 
     try {
-      while (offlineQueue.length > 0 && !secretInvalidated) {
+      while (offlineQueue.size() > 0 && !secretInvalidated && !stopped) {
         const secret = assertSecretReady();
-        const payload = offlineQueue[0];
-        await sendIngest(payload, secret);
-        offlineQueue.shift();
+        const queued = offlineQueue.peek();
+        if (!queued) break;
+
+        await sendIngest(queued.payload, secret);
+        offlineQueue.ack(queued);
         transmitted += 1;
       }
+
       if (transmitted > 0) {
         console.log(`[Network] Transmitted ${transmitted} ingest payload(s).`);
       }
@@ -140,95 +309,291 @@ export function createEngine(
         await invalidateSecret("Ingest rejected with HTTP 401.");
         return;
       }
+
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Network] Transmission failed:`, message);
+      console.error(`[Network] Transmission failed: ${message}`);
     } finally {
       isTransmitting = false;
     }
   }
 
-  function enqueue(payload: unknown): void {
-    offlineQueue.push(payload);
-    if (offlineQueue.length > MAX_QUEUE_SIZE) {
-      offlineQueue.shift();
-      console.warn("[Network] Offline queue full; dropped oldest payload.");
+  function enqueue(payload: Phase1IngestPayload): void {
+    if (stopped || secretInvalidated) return;
+    offlineQueue.enqueue(payload);
+  }
+
+  async function enqueueAndFlush(payload: Phase1IngestPayload): Promise<void> {
+    enqueue(payload);
+    await flushQueue();
+  }
+
+  async function flushCommandResults(): Promise<void> {
+    if (secretInvalidated || stopped) return;
+
+    const pending = await commandResultOutbox.list(now());
+    for (const item of pending) {
+      if (secretInvalidated || stopped) return;
+
+      try {
+        const secret = assertSecretReady();
+        await sendCommandResultFn(item.result, secret);
+        await commandResultOutbox.ack(item.result.commandId);
+      } catch (error: unknown) {
+        if (error instanceof AgentApiError && error.status === 401) {
+          await invalidateSecret("Command result rejected with HTTP 401.");
+          return;
+        }
+
+        const message = error instanceof Error ? error.message : String(error);
+        console.warn(
+          `[Command] Result delivery deferred for ${item.result.commandId}: ${message}`,
+        );
+        return;
+      }
+    }
+  }
+
+  async function executeCommand(command: LeasedAgentCommand): Promise<void> {
+    if (!identity || secretInvalidated || stopped) return;
+    if (commandIdsInFlight.has(command.id)) return;
+
+    if (await commandResultOutbox.has(command.id)) {
+      await flushCommandResults();
+      return;
+    }
+
+    commandIdsInFlight.add(command.id);
+    try {
+      const result = await executeLeasedCommand(command, {
+        agentInstanceId: identity.agentInstanceId,
+        getActiveDomains: () => requireIdentity().domains,
+        stackScheduler,
+        now,
+      });
+
+      // Persist before network delivery. A crash after the probe but before the
+      // POST therefore does not force the command to run again.
+      await commandResultOutbox.enqueue(result, command.expiresAt);
+      await flushCommandResults();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[Command] ${command.id} execution failed: ${message}`);
+    } finally {
+      commandIdsInFlight.delete(command.id);
     }
   }
 
   async function runHeartbeat(): Promise<void> {
-    if (!identity || secretInvalidated) return;
+    if (!identity || secretInvalidated || stopped) return;
+
     try {
+      await flushCommandResults();
+      if (secretInvalidated || stopped) return;
+
       const secret = assertSecretReady();
-      await sendHeartbeatFn(
-        identity.agentInstanceId,
-        secret,
-        resolveHostname(),
-      );
+      const heartbeat = await sendHeartbeatFn(identity.agentInstanceId, secret);
+
+      for (const command of heartbeat.commands ?? []) {
+        await executeCommand(command);
+      }
     } catch (error: unknown) {
       if (error instanceof AgentApiError && error.status === 401) {
         await invalidateSecret("Heartbeat rejected with HTTP 401.");
         return;
       }
+
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[Network] Heartbeat failed:`, message);
+      console.warn(`[Network] Heartbeat failed: ${message}`);
     }
   }
 
-  async function runTransmit(): Promise<void> {
-    if (!identity || secretInvalidated) return;
+  async function publishDiscoverySnapshot(
+    domains: readonly DiscoveredDomain[] = requireIdentity().domains,
+  ): Promise<void> {
+    if (secretInvalidated || stopped) return;
+
     try {
-      const payload = await buildIngestPayload();
-      enqueue(payload);
-      await flushQueue();
+      await enqueueAndFlush(buildDiscoveryPayload(domains));
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Engine] Transmit tick failed:`, message);
+      console.error(`[Discovery] Snapshot publish failed: ${message}`);
     }
   }
 
-  async function refreshDiscovery(): Promise<void> {
+  async function publishStackSnapshots(
+    snapshots: readonly SiteStackPayload[],
+  ): Promise<void> {
+    if (snapshots.length === 0 || secretInvalidated || stopped) return;
+    await enqueueAndFlush(buildStackPayloadFromSnapshots(snapshots));
+  }
+
+  async function runStackRefresh(
+    domains: readonly DiscoveredDomain[] = requireIdentity().domains,
+    reason: StackRefreshReason = "manual",
+  ): Promise<void> {
+    if (!identity || secretInvalidated || stopped || domains.length === 0) {
+      return;
+    }
+
     try {
-      const refreshed = await initializeIdentity(
-        identity?.agentInstanceId ?? hostIdentity.agentInstanceId,
+      await stackScheduler.syncDomains(
+        requireIdentity().domains.map((domain) => domain.domain),
       );
-      if (identity) {
-        identity.domains = refreshed.domains;
-      } else {
-        identity = refreshed;
+      const result = await stackScheduler.refreshNow(
+        domains.map((domain) => domain.domain),
+        reason,
+      );
+      await publishStackSnapshots(result.snapshots);
+
+      if (result.attemptedDomains.length > 0) {
+        console.log(
+          `[Stack] ${reason} refresh attempted ${result.attemptedDomains.length} site(s); failed=${result.failedDomains.length}: ${result.attemptedDomains.join(", ")}`,
+        );
       }
-      console.log(
-        `[Discovery] Rediscovery complete. Domains: ${refreshed.domains.length}`,
-      );
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Discovery] Rediscovery failed:`, message);
+      console.error(`[Stack] ${reason} refresh failed: ${message}`);
     }
   }
 
-  const cfg = getConfig();
+  async function runDueStackRefreshes(): Promise<void> {
+    if (!identity || secretInvalidated || stopped) return;
+
+    try {
+      const result = await stackScheduler.runDue(
+        identity.domains.map((domain) => domain.domain),
+      );
+      await publishStackSnapshots(result.snapshots);
+
+      if (result.attemptedDomains.length > 0) {
+        console.log(
+          `[Stack] Scheduled due refresh attempted ${result.attemptedDomains.length} site(s); failed=${result.failedDomains.length}.`,
+        );
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[Stack] Due scheduler failed: ${message}`);
+    }
+  }
+
+  async function runDiscovery(): Promise<void> {
+    if (!identity || secretInvalidated || stopped) return;
+
+    try {
+      const refreshed = await initializeIdentityFn(identity.agentInstanceId);
+      identity = refreshed;
+
+      const effectiveDomains = refreshed.domains.map((site) => site.domain);
+      await ensureTrafficTails(effectiveDomains);
+      await stackScheduler.syncDomains(effectiveDomains);
+      await enqueueAndFlush(buildDiscoveryPayload(refreshed.domains));
+
+      console.log(
+        `[Discovery] Scan complete. Effective domains: ${refreshed.domains.length}; added=${refreshed.discoveryChanges.added.length}; removed=${refreshed.discoveryChanges.removed.length}; retainedMissing=${refreshed.discoveryChanges.retainedMissing.length}.`,
+      );
+
+      if (refreshed.discoveryChanges.added.length > 0) {
+        await runStackRefresh(refreshed.discoveryChanges.added, "new-domain");
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[Discovery] Scheduled scan failed: ${message}`);
+    }
+  }
+
+  async function runActiveVisitors(): Promise<void> {
+    if (!identity || secretInvalidated || stopped) return;
+
+    try {
+      await enqueueAndFlush(await buildActiveVisitorsPayload());
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[Traffic] Active visitor sample failed: ${message}`);
+    }
+  }
+
+  async function runVisitors24h(): Promise<void> {
+    if (!identity || secretInvalidated || stopped) return;
+
+    try {
+      await enqueueAndFlush(await buildVisitors24hPayload());
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[Traffic] 24h visitor snapshot failed: ${message}`);
+    }
+  }
+
+  function registerScheduler(
+    name: string,
+    intervalMs: number,
+    task: () => Promise<void>,
+  ): void {
+    const scheduler = createPeriodicScheduler({
+      name,
+      intervalMs,
+      task,
+      onSkippedOverlap: (schedulerName) => {
+        console.warn(
+          `[Scheduler:${schedulerName}] Previous execution still running; skipping overlapping tick.`,
+        );
+      },
+    });
+
+    scheduler.start();
+    schedulers.push(scheduler);
+  }
+
   console.log(
-    `[Engine] Phase 1 loops — transmit ${cfg.transmitIntervalMs / 1000}s, heartbeat ${cfg.heartbeatIntervalMs / 1000}s, rediscovery ${cfg.rediscoveryIntervalMs / 1000}s.`,
+    `[Engine] Independent Phase 1 schedulers — heartbeat ${cfg.heartbeatIntervalMs / 1000}s, OLS discovery ${cfg.olsDiscoveryIntervalMs / 1000}s, active visitors ${cfg.activeVisitorSampleIntervalMs / 1000}s, visitors24h ${cfg.visitors24hSampleIntervalMs / 1000}s, stack ${cfg.stackProbeIntervalMs / 3_600_000}h/domain, concurrency ${cfg.stackProbeConcurrency}.`,
   );
 
   const autoStart = deps.autoStart !== false;
   if (autoStart) {
+    // initializeIdentity() already performed the startup OLS scan before the
+    // engine was created. Publish that effective inventory immediately rather
+    // than performing a duplicate OLS scan here.
+    void ensureTrafficTails(hostIdentity.domains.map((site) => site.domain));
     void runHeartbeat();
-    void runTransmit();
+    void publishDiscoverySnapshot(hostIdentity.domains);
+    void (async () => {
+      try {
+        await stackScheduler.initialize(
+          hostIdentity.domains.map((domain) => domain.domain),
+          { forceDue: true },
+        );
+        await runStackRefresh(hostIdentity.domains, "startup");
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error(`[Stack] Startup scheduler initialization failed: ${message}`);
+      }
+    })();
+    void runActiveVisitors();
+    void runVisitors24h();
 
-    timers.push(
-      setInterval(() => {
-        void runHeartbeat();
-      }, cfg.heartbeatIntervalMs),
+    registerScheduler(
+      "heartbeat",
+      cfg.heartbeatIntervalMs,
+      runHeartbeat,
     );
-    timers.push(
-      setInterval(() => {
-        void runTransmit();
-      }, cfg.transmitIntervalMs),
+    registerScheduler(
+      "ols-discovery",
+      cfg.olsDiscoveryIntervalMs,
+      runDiscovery,
     );
-    timers.push(
-      setInterval(() => {
-        void refreshDiscovery();
-      }, cfg.rediscoveryIntervalMs),
+    registerScheduler(
+      "active-visitors-3m",
+      cfg.activeVisitorSampleIntervalMs,
+      runActiveVisitors,
+    );
+    registerScheduler(
+      "visitors-24h",
+      cfg.visitors24hSampleIntervalMs,
+      runVisitors24h,
+    );
+    registerScheduler(
+      "site-stack-due",
+      STACK_SCHEDULER_TICK_MS,
+      runDueStackRefreshes,
     );
   }
 
@@ -236,23 +601,37 @@ export function createEngine(
     enqueue,
     flushQueue,
     runHeartbeat,
-    runTransmit,
-    buildIngestPayload,
-    getQueueLength: () => offlineQueue.length,
+    flushCommandResults,
+    executeCommand,
+    runDiscovery,
+    runStackRefresh,
+    runDueStackRefreshes,
+    runActiveVisitors,
+    runVisitors24h,
+    buildDiscoveryPayload,
+    buildStackPayload,
+    buildActiveVisitorsPayload,
+    buildVisitors24hPayload,
+    getQueueLength: () => offlineQueue.size(),
+    getPendingCommandResultCount: () => commandResultOutbox.size(now()),
     isSecretInvalidated: () => secretInvalidated,
     getActiveSecret: () => activeSecretKey,
+    getIdentity: () => identity,
+    getStackScheduleRecords: () => stackScheduler.getRecords(),
     stop: () => {
-      for (const timer of timers) {
-        clearInterval(timer);
-      }
-      timers.length = 0;
+      if (stopped) return;
+      stopped = true;
+      stopSchedulers();
+      stopTrafficTails();
+      offlineQueue.clear();
+      identity = null;
     },
   };
 }
 
 export function startEngine(
-  hostIdentity: HostIdentity,
+  identity: HostIdentity,
   secretKey: string,
 ): EngineHandle {
-  return createEngine(hostIdentity, secretKey);
+  return createEngine(identity, secretKey);
 }

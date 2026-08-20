@@ -4,12 +4,14 @@ import {
   ArrayUnique,
   Equals,
   IsArray,
+  IsDefined,
   IsIn,
   IsInt,
   IsISO8601,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   Min,
   MinLength,
@@ -69,22 +71,22 @@ export class FieldStatusDto {
   reason?: string;
 }
 
-@ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
-class ZeroVisitorsRequireStatusConstraint
+@ValidatorConstraint({ name: 'activeVisitorWindowConsistency', async: false })
+class ActiveVisitorWindowConsistencyConstraint
   implements ValidatorConstraintInterface
 {
-  validate(uniqueIpCount: unknown, args: ValidationArguments): boolean {
-    if (uniqueIpCount !== 0) {
-      return true;
-    }
+  validate(_measuredAt: unknown, args: ValidationArguments): boolean {
     const sample = args.object as ActiveVisitors3mDto;
-    return (
-      sample.status?.state === 'ok' || sample.status?.state === 'unsupported'
-    );
+    const measuredAt = Date.parse(sample.measuredAt);
+    const windowStartedAt = Date.parse(sample.windowStartedAt);
+    if (!Number.isFinite(measuredAt) || !Number.isFinite(windowStartedAt)) {
+      return false;
+    }
+    return measuredAt - windowStartedAt === 180_000;
   }
 
   defaultMessage(): string {
-    return 'activeVisitors3m uniqueIpCount 0 requires status.state ok or unsupported';
+    return 'activeVisitors3m windowStartedAt must be exactly 180 seconds before measuredAt';
   }
 }
 
@@ -248,23 +250,23 @@ export class ActiveVisitors3mDto {
 
   @IsInt()
   @Min(0)
-  @Validate(ZeroVisitorsRequireStatusConstraint)
-  uniqueIpCount!: number;
+  uniqueVisitorCount!: number;
 
   @IsInt()
-  @Min(1)
-  windowSeconds!: number;
+  @Equals(180)
+  windowSeconds!: 180;
 
   @IsISO8601()
   windowStartedAt!: string;
 
   @IsISO8601()
+  @Validate(ActiveVisitorWindowConsistencyConstraint)
   measuredAt!: string;
 
-  @IsOptional()
+  @IsDefined()
   @ValidateNested()
   @Type(() => FieldStatusDto)
-  status?: FieldStatusDto;
+  status!: FieldStatusDto;
 }
 
 export class Visitors24hDto {
@@ -293,9 +295,76 @@ export class Visitors24hDto {
   @Equals('hll')
   algorithm!: 'hll';
 
+  @IsDefined()
   @ValidateNested()
   @Type(() => FieldStatusDto)
   status!: FieldStatusDto;
+}
+
+@ValidatorConstraint({ name: 'agentCommandResultConsistency', async: false })
+class AgentCommandResultConsistencyConstraint
+  implements ValidatorConstraintInterface
+{
+  validate(_completedAt: unknown, args: ValidationArguments): boolean {
+    const result = args.object as AgentCommandResultDto;
+
+    if (result.stackSnapshot && result.stackSnapshot.domain !== result.domain) {
+      return false;
+    }
+
+    if (result.status === 'SUCCEEDED') {
+      return Boolean(result.stackSnapshot) && result.errorCode === undefined;
+    }
+
+    if (result.status === 'FAILED') {
+      return typeof result.errorCode === 'string' && result.errorCode.length > 0;
+    }
+
+    return false;
+  }
+
+  defaultMessage(): string {
+    return 'command result must match its domain; SUCCEEDED requires stackSnapshot and no errorCode, FAILED requires errorCode';
+  }
+}
+
+export class AgentCommandResultDto {
+  @IsString()
+  @Equals('phase1')
+  schemaVersion!: 'phase1';
+
+  @IsString()
+  @MinLength(1)
+  agentInstanceId!: string;
+
+  @IsUUID()
+  commandId!: string;
+
+  @IsString()
+  @Equals('REFRESH_SITE_STACK')
+  type!: 'REFRESH_SITE_STACK';
+
+  @IsString()
+  @IsNotEmpty()
+  domain!: string;
+
+  @IsString()
+  @IsIn(['SUCCEEDED', 'FAILED'])
+  status!: 'SUCCEEDED' | 'FAILED';
+
+  @IsISO8601()
+  @Validate(AgentCommandResultConsistencyConstraint)
+  completedAt!: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => StackSnapshotDto)
+  stackSnapshot?: StackSnapshotDto;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  errorCode?: string;
 }
 
 export class Phase1IngestDto {

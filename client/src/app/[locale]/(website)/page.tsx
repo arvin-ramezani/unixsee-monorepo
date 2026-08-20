@@ -69,7 +69,7 @@ export default async function Home({ params }: HomePageProps) {
         <ProcessSection id={sectionIds[3]} />
         {/* <PortfolioLogos id={sectionIds[6]} /> */}
         <ConsultationSection id={sectionIds[4]} />
-        <FaqSection id={sectionIds[5]} />
+        {/* <FaqSection id={sectionIds[5]} /> */}
         {/* <TestimonialsSection id={sectionIds[5]} /> */}
         {/* <BlogSection id={sectionIds[9]} /> */}
 

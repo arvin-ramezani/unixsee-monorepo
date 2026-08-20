@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AgentApiError, postJson, postSignedJson } from "./client.js";
+import {
+  AgentApiError,
+  postJson,
+  postSignedJson,
+  sendHeartbeat,
+} from "./client.js";
 import { loadTestConfig } from "../test-helpers.js";
 
 describe("api client retries", () => {
@@ -89,6 +94,38 @@ describe("api client retries", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("parses only allowlisted REFRESH_SITE_STACK commands from heartbeat", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          data: {
+            agent: { agentInstanceId: "agent-1", status: "ONLINE" },
+            commands: [
+              {
+                id: "6e00ef4d-afc5-4324-9da0-169f2dc987ac",
+                type: "REFRESH_SITE_STACK",
+                domain: "example.com",
+                expiresAt: "2026-08-19T12:10:00.000Z",
+              },
+              {
+                id: "bad",
+                type: "RUN_COMMAND",
+                domain: "example.com",
+                expiresAt: "2026-08-19T12:10:00.000Z",
+              },
+            ],
+          },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+
+    const heartbeat = await sendHeartbeat("agent-1", "secret-key");
+    expect(heartbeat.commands).toHaveLength(1);
+    expect(heartbeat.commands[0]?.type).toBe("REFRESH_SITE_STACK");
+  });
+
   it("sends HMAC signature headers", async () => {
     const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValueOnce(
@@ -100,7 +137,7 @@ describe("api client retries", () => {
 
     await postSignedJson(
       "https://api.test.local/ingest",
-      { machineId: "m1" },
+      { agentInstanceId: "agent-1" },
       "secret-key",
     );
 

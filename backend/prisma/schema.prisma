@@ -160,6 +160,18 @@ enum OperationalActionType {
   OTHER
 }
 
+enum AgentCommandStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  EXPIRED
+}
+
+enum AgentCommandType {
+  REFRESH_SITE_STACK
+}
+
 model User {
   id          String            @id @default(uuid()) @db.Uuid
   phoneNumber String?           @unique @map("phone_number")
@@ -194,6 +206,7 @@ model User {
   authoredUnixseeMessages    UnixseeMessage[]              @relation("UnixseeMessageAuthor")
   auditRecords               AuditRecord[]                 @relation("AuditActor")
   operationalActions         OperationalAction[]           @relation("OperationalActionRequester")
+  requestedAgentCommands     AgentCommand[]                 @relation("AgentCommandRequester")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -293,6 +306,7 @@ model Server {
   alerts           Alert[]
   enrollmentTokens ServerEnrollmentToken[]
   discoveries      WebsiteDiscovery[]
+  agentCommands    AgentCommand[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -347,6 +361,7 @@ model VpsNode {
 
   websites    Website[]
   discoveries WebsiteDiscovery[]
+  agentCommands AgentCommand[]
 
   // Time-series metrics. Keep append-only for easy TimescaleDB migration later.
   vpsMetrics              VpsMetric[]
@@ -466,6 +481,7 @@ model WebsiteDiscovery {
 
   activeVisitorSamples WebsiteActiveVisitorSample[]
   trafficSnapshot      WebsiteTrafficSnapshot?
+  agentCommands        AgentCommand[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -505,13 +521,13 @@ model WebsiteTrafficSnapshot {
   @@map("website_traffic_snapshots")
 }
 
-/// Phase 1 agent 3-minute unique-IP visitor samples (append-only).
+/// Phase 1 agent 3-minute unique-visitor samples (append-only).
 model WebsiteActiveVisitorSample {
   recordedAt DateTime @map("recorded_at") @db.Timestamptz(6)
   discoveryId String  @map("discovery_id") @db.Uuid
   websiteId   String? @map("website_id") @db.Uuid
   domain      String
-  uniqueIpCount Int   @map("unique_ip_count")
+  uniqueVisitorCount Int @map("unique_ip_count")
   windowSeconds Int   @map("window_seconds")
   windowStartedAt DateTime @map("window_started_at") @db.Timestamptz(6)
   measuredAt DateTime @map("measured_at") @db.Timestamptz(6)
@@ -1119,6 +1135,40 @@ model AuditRecord {
   @@index([entityType, entityId])
   @@index([actorId])
   @@map("audit_records")
+}
+
+model AgentCommand {
+  id            String             @id @default(uuid()) @db.Uuid
+  vpsNodeId     String             @map("vps_node_id") @db.Uuid
+  serverId      String             @map("server_id") @db.Uuid
+  discoveryId   String?            @map("discovery_id") @db.Uuid
+  requestedById String             @map("requested_by_id") @db.Uuid
+  domain        String
+  type          AgentCommandType   @default(REFRESH_SITE_STACK)
+  status        AgentCommandStatus @default(QUEUED)
+
+  requestedAt    DateTime  @default(now()) @map("requested_at") @db.Timestamptz(6)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(6)
+  leasedAt       DateTime? @map("leased_at") @db.Timestamptz(6)
+  leaseExpiresAt DateTime? @map("lease_expires_at") @db.Timestamptz(6)
+  attemptCount   Int       @default(0) @map("attempt_count")
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  errorCode      String?   @map("error_code")
+  resultMetadata Json?     @map("result_metadata")
+
+  vpsNode     VpsNode           @relation(fields: [vpsNodeId], references: [id], onDelete: Cascade)
+  server      Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  discovery   WebsiteDiscovery? @relation(fields: [discoveryId], references: [id], onDelete: SetNull)
+  requestedBy User              @relation("AgentCommandRequester", fields: [requestedById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([vpsNodeId, status, requestedAt])
+  @@index([serverId, domain, status])
+  @@index([discoveryId])
+  @@index([expiresAt])
+  @@map("agent_commands")
 }
 
 model OperationalAction {

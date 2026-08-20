@@ -1,5 +1,10 @@
 import { generatePayloadSignature } from "../security.js";
 import { getConfig } from "../config/config.js";
+import type {
+  AgentCommandResultPayload,
+  HeartbeatResult,
+  LeasedAgentCommand,
+} from "../commands/types.js";
 
 export class AgentApiError extends Error {
   readonly status: number;
@@ -126,13 +131,13 @@ export interface EnrollResult {
 }
 
 export async function enrollAgent(
-  machineId: string,
+  agentInstanceId: string,
   enrollmentToken: string,
 ): Promise<EnrollResult> {
   const cfg = getConfig();
   if (cfg.nodeEnv !== "production") {
     console.log(
-      `[Network-Dev] Mocking enrollment for machineId=${machineId}`,
+      `[Network-Dev] Mocking enrollment for agentInstanceId=${agentInstanceId}`,
     );
     return {
       vpsNodeId: "dev-vps-node-id",
@@ -143,7 +148,7 @@ export async function enrollAgent(
 
   const response = await postJson({
     url: cfg.endpoints.enroll,
-    body: { machineId, agentVersion: cfg.agentVersion },
+    body: { agentInstanceId, agentVersion: cfg.agentVersion },
     maxRetries: 2,
     headers: {
       "X-Enrollment-Token": enrollmentToken,
@@ -172,23 +177,99 @@ export async function enrollAgent(
   return { secretKey, vpsNodeId, serverId };
 }
 
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function parseLeasedCommand(value: unknown): LeasedAgentCommand | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.id !== "string" ||
+    !UUID_PATTERN.test(value.id) ||
+    value.type !== "REFRESH_SITE_STACK" ||
+    typeof value.domain !== "string" ||
+    typeof value.expiresAt !== "string" ||
+    !Number.isFinite(Date.parse(value.expiresAt))
+  ) {
+    return null;
+  }
+
+  return {
+    id: value.id,
+    type: "REFRESH_SITE_STACK",
+    domain: value.domain,
+    expiresAt: value.expiresAt,
+  };
+}
+
+function parseHeartbeatResult(
+  response: unknown,
+  agentInstanceId: string,
+): HeartbeatResult {
+  if (!isRecord(response) || !isRecord(response.data)) {
+    throw new Error("Heartbeat response missing data payload.");
+  }
+
+  const data = response.data;
+  const commands = Array.isArray(data.commands)
+    ? data.commands.flatMap((item) => {
+        const command = parseLeasedCommand(item);
+        return command ? [command] : [];
+      })
+    : [];
+
+  const agent = isRecord(data.agent) ? data.agent : {};
+  const responseAgentInstanceId =
+    typeof agent.agentInstanceId === "string"
+      ? agent.agentInstanceId
+      : agentInstanceId;
+
+  return {
+    agent: {
+      agentInstanceId: responseAgentInstanceId,
+      status: typeof agent.status === "string" ? agent.status : "ONLINE",
+      ...(typeof agent.agentVersion === "string"
+        ? { agentVersion: agent.agentVersion }
+        : {}),
+      ...(typeof agent.lastHeartbeatAt === "string"
+        ? { lastHeartbeatAt: agent.lastHeartbeatAt }
+        : {}),
+      ...(typeof agent.lastSeenAt === "string"
+        ? { lastSeenAt: agent.lastSeenAt }
+        : {}),
+    },
+    commands,
+  };
+}
+
 export async function sendHeartbeat(
-  machineId: string,
+  agentInstanceId: string,
   secretKey: string,
-  host?: string,
-): Promise<unknown> {
+): Promise<HeartbeatResult> {
   const cfg = getConfig();
-  return postSignedJson(
+
+  if (cfg.nodeEnv !== "production") {
+    return {
+      agent: {
+        agentInstanceId,
+        status: "ONLINE",
+        agentVersion: cfg.agentVersion,
+      },
+      commands: [],
+    };
+  }
+
+  const response = await postSignedJson(
     cfg.endpoints.heartbeat,
     {
       schemaVersion: "phase1",
-      machineId,
+      agentInstanceId,
       agentVersion: cfg.agentVersion,
-      serverBinding: host ? { hostname: host } : undefined,
       sentAt: new Date().toISOString(),
     },
     secretKey,
   );
+
+  return parseHeartbeatResult(response, agentInstanceId);
 }
 
 export async function sendPhase1Ingest(
@@ -196,4 +277,15 @@ export async function sendPhase1Ingest(
   secretKey: string,
 ): Promise<unknown> {
   return postSignedJson(getConfig().endpoints.ingest, payload, secretKey);
+}
+
+export async function sendCommandResult(
+  payload: AgentCommandResultPayload,
+  secretKey: string,
+): Promise<unknown> {
+  return postSignedJson(
+    getConfig().endpoints.commandResult,
+    payload,
+    secretKey,
+  );
 }

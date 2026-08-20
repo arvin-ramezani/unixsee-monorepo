@@ -22,10 +22,11 @@ if [[ ! -f "${AGENT_DIR}/dist/index.js" ]]; then
   exit 1
 fi
 
-mkdir -p "${STAGE}/unixsee-agent/systemd" "${OUT_DIR}"
+mkdir -p "${STAGE}/unixsee-agent/systemd" "${STAGE}/unixsee-agent/probe" "${OUT_DIR}"
 cp -R "${AGENT_DIR}/dist" "${STAGE}/unixsee-agent/"
 cp "${AGENT_DIR}/package.json" "${STAGE}/unixsee-agent/"
 cp "${AGENT_DIR}/systemd/unixsee-agent.service" "${STAGE}/unixsee-agent/systemd/"
+cp -R "${AGENT_DIR}/probe/." "${STAGE}/unixsee-agent/probe/"
 
 echo "[pack-for-panel] Writing ${OUT_DIR}/unixsee-agent.tar.gz"
 tar -czf "${OUT_DIR}/unixsee-agent.tar.gz" -C "${STAGE}" unixsee-agent

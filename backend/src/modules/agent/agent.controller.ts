@@ -11,6 +11,7 @@ import {
 
 import { AgentSignatureGuard } from './guards/agent-signature.guard.js';
 import {
+  AgentCommandResultDto,
   EnrollAgentDto,
   HeartbeatAgentDto,
   Phase1IngestDto,
@@ -66,6 +67,16 @@ export class AgentController {
   @HttpCode(HttpStatus.OK)
   async heartbeat(@Body() body: HeartbeatAgentDto) {
     const data = await this.agentService.heartbeat(body);
+    return ApiResponseBuilder.ok(data);
+  }
+
+
+  @Public()
+  @Post('command-results')
+  @UseGuards(AgentSignatureGuard)
+  @HttpCode(HttpStatus.OK)
+  async commandResult(@Body() payload: AgentCommandResultDto) {
+    const data = await this.agentService.completeCommand(payload);
     return ApiResponseBuilder.ok(data);
   }
 

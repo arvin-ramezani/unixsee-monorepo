@@ -15,6 +15,7 @@ import { AtGuard } from './modules/auth/guards/at-guard.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { EventModule } from './modules/event/event.module.js';
 import { AgentModule } from './modules/agent/agent.module.js';
+import { AgentCommandsModule } from './modules/agent-commands/agent-commands.module.js';
 import { WebsitesModule } from './modules/websites/websites.module.js';
 import { MetricsModule } from './modules/metrics/metrics.module.js';
 import { SslCertificatesModule } from './modules/ssl-certificates/ssl-certificates.module.js';
@@ -60,6 +61,7 @@ import { AuthorizationCasesModule } from './modules/authorization-cases/authoriz
     RealtimeModule,
     EventModule,
     AgentModule,
+    AgentCommandsModule,
     WebsitesModule,
     MetricsModule,
     SslCertificatesModule,

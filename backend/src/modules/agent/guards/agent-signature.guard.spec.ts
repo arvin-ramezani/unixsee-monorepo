@@ -43,7 +43,7 @@ describe('AgentSignatureGuard', () => {
   const secretKey = 'a'.repeat(64);
   const body = {
     schemaVersion: 'phase1',
-    machineId: 'machine-1',
+    agentInstanceId: 'machine-1',
     sentAt: '2026-08-09T12:00:00.000Z',
   };
   const rawBodyString = JSON.stringify(body);
@@ -62,7 +62,7 @@ describe('AgentSignatureGuard', () => {
     guard = module.get(AgentSignatureGuard);
   });
 
-  it('accepts a valid HMAC signature over rawBody and stamps vpsMachineId', async () => {
+  it('accepts a valid HMAC signature over rawBody and stamps agentInstanceId', async () => {
     const now = new Date('2026-08-09T12:00:00.000Z');
     vi.useFakeTimers();
     vi.setSystemTime(now);
@@ -86,10 +86,10 @@ describe('AgentSignatureGuard', () => {
     });
 
     await expect(guard.canActivate(createContext(request))).resolves.toBe(true);
-    expect(request).toMatchObject({ vpsMachineId: 'machine-1' });
+    expect(request).toMatchObject({ agentInstanceId: 'machine-1' });
   });
 
-  it('rejects missing machineId', async () => {
+  it('rejects missing agentInstanceId', async () => {
     const request = {
       body: {},
       rawBody: Buffer.from('{}', 'utf8'),
@@ -203,7 +203,7 @@ describe('AgentSignatureGuard', () => {
     });
   });
 
-  it('rejects unknown machineId with the same auth error as bad signatures', async () => {
+  it('rejects unknown agentInstanceId with the same auth error as bad signatures', async () => {
     const now = new Date('2026-08-09T12:00:00.000Z');
     vi.useFakeTimers();
     vi.setSystemTime(now);
@@ -264,7 +264,7 @@ describe('AgentSignatureGuard', () => {
 
     // On-wire JSON with different key order than Object insertion order after parse.
     const rawOnWire =
-      '{"machineId":"machine-1","schemaVersion":"phase1","sentAt":"2026-08-09T12:00:00.000Z"}';
+      '{"agentInstanceId":"machine-1","schemaVersion":"phase1","sentAt":"2026-08-09T12:00:00.000Z"}';
     const timestamp = now.toISOString();
     const signature = signRaw(secretKey, timestamp, rawOnWire);
     const request = {

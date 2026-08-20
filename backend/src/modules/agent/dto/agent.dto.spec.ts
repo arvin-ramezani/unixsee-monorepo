@@ -143,6 +143,96 @@ describe('Phase1IngestDto', () => {
     ).not.toHaveLength(0);
   });
 
+
+  it('accepts an exact rolling 180-second active visitor sample', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueVisitorCount: 7,
+            windowSeconds: 180,
+            windowStartedAt: '2026-08-19T11:57:00.000Z',
+            measuredAt: '2026-08-19T12:00:00.000Z',
+            status: { state: 'ok' },
+          },
+        ],
+      }),
+    ).toHaveLength(0);
+  });
+
+  it('rejects the legacy uniqueIpCount wire field', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueIpCount: 7,
+            windowSeconds: 180,
+            windowStartedAt: '2026-08-19T11:57:00.000Z',
+            measuredAt: '2026-08-19T12:00:00.000Z',
+            status: { state: 'ok' },
+          },
+        ],
+      }),
+    ).not.toHaveLength(0);
+  });
+
+  it('accepts zero visitors while warming up', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueVisitorCount: 0,
+            windowSeconds: 180,
+            windowStartedAt: '2026-08-19T11:57:00.000Z',
+            measuredAt: '2026-08-19T12:00:00.000Z',
+            status: { state: 'unknown', reason: 'warming_up' },
+          },
+        ],
+      }),
+    ).toHaveLength(0);
+  });
+
+  it('rejects active visitor windows that are not exactly 180 seconds', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueVisitorCount: 7,
+            windowSeconds: 120,
+            windowStartedAt: '2026-08-19T11:58:00.000Z',
+            measuredAt: '2026-08-19T12:00:00.000Z',
+            status: { state: 'ok' },
+          },
+        ],
+      }),
+    ).not.toHaveLength(0);
+  });
+
+  it('requires active visitor status instead of treating zero as a silent real value', () => {
+    expect(
+      errorsFor({
+        ...envelope,
+        activeVisitors3m: [
+          {
+            domain: 'example.com',
+            uniqueVisitorCount: 0,
+            windowSeconds: 180,
+            windowStartedAt: '2026-08-19T11:57:00.000Z',
+            measuredAt: '2026-08-19T12:00:00.000Z',
+          },
+        ],
+      }),
+    ).not.toHaveLength(0);
+  });
+
   it('accepts a partial 24h sample only with non-ok status', () => {
     expect(
       errorsFor({

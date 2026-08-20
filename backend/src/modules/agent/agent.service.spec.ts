@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ServersService } from '#/modules/servers/services/servers.service.js';
+import { AgentCommandsService } from '#/modules/agent-commands/services/agent-commands.service.js';
 import { DiscoveryStatus, VpsNodeStatus } from '#/generated/prisma/enums.js';
 
 import { AgentService } from './agent.service.js';
@@ -38,6 +39,11 @@ describe('AgentService', () => {
     enrollWithToken: vi.fn(),
   };
 
+  const agentCommandsService = {
+    leaseForHeartbeat: vi.fn().mockResolvedValue([]),
+    completeFromAgent: vi.fn(),
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
     prisma.$transaction.mockImplementation(async (callback) => callback(prisma));
@@ -47,6 +53,7 @@ describe('AgentService', () => {
         AgentService,
         { provide: PrismaService, useValue: prisma },
         { provide: ServersService, useValue: serversService },
+        { provide: AgentCommandsService, useValue: agentCommandsService },
       ],
     }).compile();
 
@@ -96,7 +103,16 @@ describe('AgentService', () => {
         agentVersion: '0.2.0',
       });
 
-      await service.heartbeat(body);
+      const result = await service.heartbeat(body);
+
+      expect(agentCommandsService.leaseForHeartbeat).toHaveBeenCalledWith(
+        'node-1',
+        expect.any(Date),
+      );
+      expect(result).toMatchObject({
+        agent: { id: 'node-1', agentInstanceId: 'agent-instance-1' },
+        commands: [],
+      });
 
       expect(prisma.vpsNode.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -322,7 +338,7 @@ describe('AgentService', () => {
         activeVisitors3m: [
           {
             domain: 'example.com',
-            uniqueIpCount: 7,
+            uniqueVisitorCount: 7,
             windowSeconds: 180,
             windowStartedAt: '2026-08-19T11:57:00.000Z',
             measuredAt: '2026-08-19T12:00:00.000Z',
@@ -337,7 +353,7 @@ describe('AgentService', () => {
       expect(prisma.websiteActiveVisitorSample.createMany).toHaveBeenCalledWith(
         expect.objectContaining({
           skipDuplicates: true,
-          data: [expect.objectContaining({ discoveryId: 'disc-1', uniqueIpCount: 7 })],
+          data: [expect.objectContaining({ discoveryId: 'disc-1', uniqueVisitorCount: 7 })],
         }),
       );
     });

@@ -1,6 +1,4 @@
-import { promises as fs } from "node:fs";
 import { platform } from "node:os";
-import { join } from "node:path";
 
 async function bootstrap() {
   const { loadConfig, getConfig } = await import("./config/config.js");
@@ -25,15 +23,15 @@ async function bootstrap() {
   const { AgentApiError, enrollAgent } = await import("./api/client.js");
   const { initializeIdentity } = await import("./discovery.js");
   const { startEngine } = await import("./engine.js");
-  const { resolveAgentInstanceIdCompat } = await import("./identity-compat.js");
+  const { loadOrCreateAgentInstallationIdentity } = await import("./identity.js");
   const { persistAgentSecret } = await import("./security.js");
-
-  const RUNTIME_STATE_FILE = ".env";
+  const { readAgentEnvironmentFile } = await import(
+    "./security/filesystem.js"
+  );
 
   async function loadPersistedSecretKey(): Promise<string | null> {
     try {
-      const filePath = join(process.cwd(), RUNTIME_STATE_FILE);
-      const rawContent = await fs.readFile(filePath, "utf-8");
+      const rawContent = await readAgentEnvironmentFile();
       const currentMatch = rawContent.match(/^AGENT_SECRET=(.+)$/m);
       const secretKey = currentMatch?.[1];
       return secretKey?.trim().replace(/^["']|["']$/g, "") || null;
@@ -42,21 +40,31 @@ async function bootstrap() {
     }
   }
 
-  async function resolveSecretKey(agentInstanceId: string): Promise<string> {
+  async function resolveSecretKey(
+    agentInstanceId: string,
+    identityWasCreated: boolean,
+  ): Promise<string> {
     const existingSecret =
       config.agentSecret || (await loadPersistedSecretKey());
-    if (existingSecret) {
+
+    if (!identityWasCreated && existingSecret) {
       return existingSecret;
+    }
+
+    if (identityWasCreated && existingSecret && !config.enrollmentToken) {
+      throw new Error(
+        "A new agentInstanceId was created, but an existing AGENT_SECRET is present. The secret may belong to the legacy machine identity. Re-enroll this installation once with a fresh enrollment token instead of reusing the old secret.",
+      );
     }
 
     if (!config.enrollmentToken) {
       throw new Error(
-        "No AGENT_SECRET found and ENROLLMENT_TOKEN is missing. Issue a new enrollment token from the admin panel and retry.",
+        "No usable AGENT_SECRET found and ENROLLMENT_TOKEN is missing. Issue a new enrollment token from the admin panel and retry.",
       );
     }
 
     console.log(
-      `[Security] No AGENT_SECRET found. Starting enrollment for agentInstanceId=${agentInstanceId}...`,
+      `[Security] Starting enrollment for agentInstanceId=${agentInstanceId}...`,
     );
 
     try {
@@ -79,9 +87,21 @@ async function bootstrap() {
     }
   }
 
-  const agentInstanceId = await resolveAgentInstanceIdCompat();
+  const installationIdentity =
+    await loadOrCreateAgentInstallationIdentity();
+  const { agentInstanceId } = installationIdentity;
+
+  console.log(
+    installationIdentity.created
+      ? `[Security] Created persistent agentInstanceId=${agentInstanceId}.`
+      : `[Security] Loaded persistent agentInstanceId=${agentInstanceId}.`,
+  );
+
   const hostIdentity = await initializeIdentity(agentInstanceId);
-  const secretKey = await resolveSecretKey(agentInstanceId);
+  const secretKey = await resolveSecretKey(
+    agentInstanceId,
+    installationIdentity.created,
+  );
   startEngine(hostIdentity, secretKey);
 }
 

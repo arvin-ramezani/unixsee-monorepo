@@ -8,10 +8,12 @@ import { Prisma } from '#/generated/prisma/client.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { ServersService } from '#/modules/servers/services/servers.service.js';
+import { AgentCommandsService } from '#/modules/agent-commands/services/agent-commands.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { DiscoveryStatus, VpsNodeStatus } from '#/generated/prisma/enums.js';
 import {
   ActiveVisitors3mDto,
+  AgentCommandResultDto,
   HeartbeatAgentDto,
   Phase1DiscoveryDto,
   Phase1IngestDto,
@@ -32,6 +34,7 @@ export class AgentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly serversService: ServersService,
+    private readonly agentCommandsService: AgentCommandsService,
   ) {}
 
   async enroll(
@@ -84,11 +87,25 @@ export class AgentService {
       },
     });
 
+    const commands = await this.agentCommandsService.leaseForHeartbeat(
+      updated.id,
+      now,
+    );
+
     this.logger.debug('agent.heartbeat.received', {
       agentInstanceId: body.agentInstanceId,
       vpsNodeId: updated.id,
+      leasedCommandCount: commands.length,
     });
-    return updated;
+
+    return {
+      agent: updated,
+      commands,
+    };
+  }
+
+  async completeCommand(payload: AgentCommandResultDto) {
+    return this.agentCommandsService.completeFromAgent(payload);
   }
 
   async processPhase1Ingest(payload: Phase1IngestDto) {
@@ -320,7 +337,7 @@ export class AgentService {
           discoveryId: discovery.id,
           websiteId: discovery.websiteId,
           domain: sample.domain,
-          uniqueIpCount: sample.uniqueIpCount,
+          uniqueVisitorCount: sample.uniqueVisitorCount,
           windowSeconds: sample.windowSeconds,
           windowStartedAt: new Date(sample.windowStartedAt),
           measuredAt,
@@ -338,7 +355,7 @@ export class AgentService {
   ): Promise<void> {
     const activeData = {
       domain: sample.domain,
-      activeVisitorCount: sample.uniqueIpCount,
+      activeVisitorCount: sample.uniqueVisitorCount,
       activeWindowSeconds: sample.windowSeconds,
       activeWindowStartedAt: new Date(sample.windowStartedAt),
       activeMeasuredAt: new Date(sample.measuredAt),

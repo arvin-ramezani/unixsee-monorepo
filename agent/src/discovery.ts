@@ -1,7 +1,12 @@
-import { readFile } from "node:fs/promises";
 import { isIP } from "node:net";
 
-import { getConfig } from "./config/config.js";
+import { readOpenLiteSpeedRoutingConfigs } from "./security/filesystem.js";
+
+import {
+  updateDiscoveryInventoryState,
+  type DiscoveryInventoryChanges,
+  type DiscoveryInventoryStateOptions,
+} from "./discovery-inventory-state.js";
 
 /**
  * Phase 1 discovery is intentionally only an OpenLiteSpeed routing inventory.
@@ -24,6 +29,7 @@ export interface DiscoveredDomain {
 export interface HostIdentity {
   agentInstanceId: string;
   domains: DiscoveredDomain[];
+  discoveryChanges: DiscoveryInventoryChanges;
 }
 
 export type OpenLiteSpeedDiscoveryFailureReason =
@@ -57,29 +63,6 @@ export interface OpenLiteSpeedConfigBundle {
 
 const STALE_VHOST_NAME_PATTERN =
   /(?:^|[._-])(?:bak|backup|disabled|old|orig|save|tmp|temp)(?:[._-]|$)/i;
-
-function openLiteSpeedServerRoot(): string {
-  return getConfig().openLiteSpeedServerRoot;
-}
-
-function defaultListenerPaths(): string[] {
-  const root = openLiteSpeedServerRoot();
-  return [`${root}/conf/listeners.conf`, `${root}/conf/httpd_config.conf`];
-}
-
-function defaultVhostDeclarationPaths(): string[] {
-  const root = openLiteSpeedServerRoot();
-  return [`${root}/conf/httpd-vhosts.conf`, `${root}/conf/httpd_config.conf`];
-}
-
-function splitConfiguredPaths(value: string | undefined): string[] {
-  if (!value) return [];
-
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
 
 function uniqueValues(values: readonly string[]): string[] {
   const seen = new Set<string>();
@@ -309,38 +292,6 @@ export function parseOpenLiteSpeedInventory(
   return discovered;
 }
 
-async function readConfigFiles(
-  paths: readonly string[],
-  reason: OpenLiteSpeedDiscoveryFailureReason,
-  label: string,
-): Promise<string[]> {
-  const configuredPaths = uniqueValues(paths.map((path) => path.trim()).filter(Boolean));
-  const contents: string[] = [];
-  const failures: string[] = [];
-
-  for (const path of configuredPaths) {
-    try {
-      // A readable empty file still counts as a successful configuration read.
-      contents.push(await readFile(path, "utf8"));
-    } catch (error: unknown) {
-      const code =
-        typeof error === "object" && error !== null && "code" in error
-          ? String((error as { code?: unknown }).code ?? "unknown")
-          : "unknown";
-      failures.push(`${path} (${code})`);
-    }
-  }
-
-  if (contents.length > 0) return contents;
-
-  throw new OpenLiteSpeedDiscoveryError(
-    reason,
-    `No readable OpenLiteSpeed ${label} configuration. Checked: ${
-      failures.join(", ") || configuredPaths.join(", ") || "none"
-    }`,
-  );
-}
-
 /**
  * Read only the explicitly configured/default OLS listener and vhost
  * declaration files. No DirectAdmin paths, document roots, /home, /var/www,
@@ -349,38 +300,36 @@ async function readConfigFiles(
 export async function discoverOpenLiteSpeedInventory(): Promise<
   DiscoveredDomain[]
 > {
-  const configuredListenerPaths = splitConfiguredPaths(
-    process.env.OPENLITESPEED_LISTENER_PATHS,
-  );
-  const configuredDeclarationPaths = splitConfiguredPaths(
-    process.env.OPENLITESPEED_VHOST_DECLARATION_PATHS,
-  );
-
-  const listenerPaths =
-    configuredListenerPaths.length > 0
-      ? configuredListenerPaths
-      : defaultListenerPaths();
-  const declarationPaths =
-    configuredDeclarationPaths.length > 0
-      ? configuredDeclarationPaths
-      : defaultVhostDeclarationPaths();
-
-  const [listenerConfigs, vhostDeclarationConfigs] = await Promise.all([
-    readConfigFiles(
-      listenerPaths,
-      "ols_listener_config_unreadable",
-      "listener",
-    ),
-    readConfigFiles(
-      declarationPaths,
-      "ols_vhost_declaration_config_unreadable",
-      "vhost declaration",
-    ),
+  const [listenerRead, declarationRead] = await Promise.all([
+    readOpenLiteSpeedRoutingConfigs("listener"),
+    readOpenLiteSpeedRoutingConfigs("vhost-declaration"),
   ]);
 
+  if (listenerRead.contents.length === 0) {
+    throw new OpenLiteSpeedDiscoveryError(
+      "ols_listener_config_unreadable",
+      `No readable OpenLiteSpeed listener configuration. Checked: ${
+        listenerRead.failures.join(", ") ||
+        listenerRead.checkedPaths.join(", ") ||
+        "none"
+      }`,
+    );
+  }
+
+  if (declarationRead.contents.length === 0) {
+    throw new OpenLiteSpeedDiscoveryError(
+      "ols_vhost_declaration_config_unreadable",
+      `No readable OpenLiteSpeed vhost declaration configuration. Checked: ${
+        declarationRead.failures.join(", ") ||
+        declarationRead.checkedPaths.join(", ") ||
+        "none"
+      }`,
+    );
+  }
+
   const domains = parseOpenLiteSpeedInventory({
-    listenerConfigs,
-    vhostDeclarationConfigs,
+    listenerConfigs: listenerRead.contents,
+    vhostDeclarationConfigs: declarationRead.contents,
   });
 
   console.log(
@@ -391,19 +340,72 @@ export async function discoverOpenLiteSpeedInventory(): Promise<
 }
 
 /**
+ * Run one successful OLS scan through the persisted effective-inventory state.
+ * Failed raw OLS scans throw before state reconciliation, so they never count
+ * as a missing scan.
+ */
+export async function discoverEffectiveOpenLiteSpeedInventory(
+  options: DiscoveryInventoryStateOptions = {},
+): Promise<{
+  domains: DiscoveredDomain[];
+  changes: DiscoveryInventoryChanges;
+}> {
+  const scannedDomains = await discoverOpenLiteSpeedInventory();
+  const result = await updateDiscoveryInventoryState(scannedDomains, options);
+
+  if (result.changes.added.length > 0) {
+    console.log(
+      `[Discovery] Added ${result.changes.added.length} site(s): ${result.changes.added
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+  if (result.changes.retainedMissing.length > 0) {
+    console.warn(
+      `[Discovery] Retaining ${result.changes.retainedMissing.length} site(s) after first missing scan: ${result.changes.retainedMissing
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+  if (result.changes.recovered.length > 0) {
+    console.log(
+      `[Discovery] Recovered ${result.changes.recovered.length} site(s) before removal confirmation: ${result.changes.recovered
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+  if (result.changes.removed.length > 0) {
+    console.log(
+      `[Discovery] Removal confirmed for ${result.changes.removed.length} site(s): ${result.changes.removed
+        .map((site) => site.domain)
+        .join(", ")}`,
+    );
+  }
+
+  return {
+    domains: result.effectiveDomains,
+    changes: result.changes,
+  };
+}
+
+/**
  * Compatibility wrapper for the current engine. Agent identity must already be
  * resolved by the caller; discovery itself owns only OLS inventory.
  */
 export async function initializeIdentity(
   agentInstanceId: string,
+  options: DiscoveryInventoryStateOptions = {},
 ): Promise<HostIdentity> {
   const normalizedAgentInstanceId = agentInstanceId.trim();
   if (!normalizedAgentInstanceId) {
     throw new Error("agentInstanceId is required before OLS discovery.");
   }
 
+  const inventory = await discoverEffectiveOpenLiteSpeedInventory(options);
+
   return {
     agentInstanceId: normalizedAgentInstanceId,
-    domains: await discoverOpenLiteSpeedInventory(),
+    domains: inventory.domains,
+    discoveryChanges: inventory.changes,
   };
 }

@@ -1,75 +1,46 @@
-import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { enrichSiteStack } from "./site-stack.js";
 import type { DiscoveredDomain } from "./discovery.js";
-import { loadTestConfig } from "./test-helpers.js";
+import { enrichSiteStack, type SiteStackPayload } from "./site-stack.js";
 
-vi.mock("node:child_process", async () => {
-  const actual = await vi.importActual<typeof import("node:child_process")>(
-    "node:child_process",
-  );
-  return {
-    ...actual,
-    execFile: (
-      _file: string,
-      args: string[],
-      _opts: unknown,
-      callback?: (error: Error | null, stdout: string, stderr: string) => void,
-    ) => {
-      const script = Array.isArray(args) ? args.join(" ") : "";
-      if (script.includes("PHP_VERSION")) {
-        callback?.(null, "8.2.28", "");
-        return;
-      }
-      callback?.(new Error("imagick missing"), "", "fail");
-    },
-  };
-});
+describe("site stack runtime-probe facade", () => {
+  it("probes each discovered domain through the runtime probe only", async () => {
+    const domains: DiscoveredDomain[] = [
+      {
+        domain: "example.com",
+        aliases: ["www.example.com"],
+        virtualHostName: "example-vhost",
+        source: "openlitespeed",
+      },
+      {
+        domain: "shop.example.com",
+        aliases: [],
+        virtualHostName: "shop-vhost",
+        source: "openlitespeed",
+      },
+    ];
 
-describe("site-stack enrichment", () => {
-  beforeEach(() => {
-    loadTestConfig({ DIRECTADMIN_BASE_URL: "https://panel.test:2222" });
-  });
+    const probe = vi.fn(async (domain: string): Promise<SiteStackPayload> => ({
+      domain,
+      wordpressVersion: "6.8.2",
+      phpVersion: "8.3.23",
+      imagickVersion: "3.8.0",
+      checkedAt: "2026-08-19T12:00:00.000Z",
+      fieldStatus: {
+        wordpressVersion: { state: "ok" },
+        phpVersion: { state: "ok" },
+        imagickVersion: { state: "ok" },
+      },
+    }));
 
-  it("reads WordPress version from version.php", async () => {
-    const root = await mkdtemp(join(tmpdir(), "unixsee-wp-"));
-    await mkdir(join(root, "wp-includes"), { recursive: true });
-    await writeFile(
-      join(root, "wp-includes", "version.php"),
-      "<?php $wp_version = '6.8.1';\n",
-    );
+    const result = await enrichSiteStack(domains, { probeSiteStack: probe });
 
-    const domain: DiscoveredDomain = {
-      domain: "wp.example",
-      documentRoot: root,
-      owner: "user",
-      appType: "wordpress",
-      source: "openlitespeed",
-      aliases: ["www.wp.example"],
-    };
-
-    const [row] = await enrichSiteStack([domain]);
-    expect(row?.wordpressVersion).toBe("6.8.1");
-    expect(row?.wordpressAdminUrl).toBe("https://wp.example/wp-admin/");
-    expect(row?.controlPanelUrl).toBe("https://panel.test:2222");
-    expect(row?.fieldStatus.wordpressVersion?.state).toBe("ok");
-  });
-
-  it("returns unsupported imagick when probe fails", async () => {
-    const domain: DiscoveredDomain = {
-      domain: "php.example",
-      documentRoot: "/tmp",
-      owner: "user",
-      appType: "php",
-      source: "filesystem",
-      aliases: [],
-    };
-
-    const [row] = await enrichSiteStack([domain]);
-    expect(row?.imagickVersion).toBeNull();
-    expect(row?.fieldStatus.imagickVersion?.state).toBe("unsupported");
+    expect(probe).toHaveBeenCalledTimes(2);
+    expect(probe).toHaveBeenNthCalledWith(1, "example.com");
+    expect(probe).toHaveBeenNthCalledWith(2, "shop.example.com");
+    expect(result.map((item) => item.domain)).toEqual([
+      "example.com",
+      "shop.example.com",
+    ]);
   });
 });

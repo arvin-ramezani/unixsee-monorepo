@@ -161,7 +161,8 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 |---|---|---|
 | POST | `/api/internal/agent/v1/enroll` | Agent (one-time `x-enrollment-token` → `secretKey`) |
 | POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; `schemaVersion: "phase1"` discoveries + `activeVisitors3m`) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + `agentVersion`) |
+| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + leased `REFRESH_SITE_STACK` commands) |
+| POST | `/api/internal/agent/v1/command-results` | Agent (HMAC; idempotent command result + optional stack snapshot) |
 
 Product install uses enrollment, then HMAC. **Source of truth:**
 [`../agent/prd.md`](../agent/prd.md) and
@@ -241,6 +242,16 @@ user/tenant and at most one active plan per website.
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens` | Admin (one-time reveal) |
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
 | POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |
+
+### Agent commands — add `agent-commands`
+
+| Method | Path | Audience |
+|---|---|---|
+| POST | `/api/v1/admin/agent-commands/refresh-site-stack` | Admin/Operator; body contains `discoveryId` only |
+| GET | `/api/v1/admin/agent-commands/:id` | Admin/Operator; command state/freshness |
+
+Phase 1 allows only `REFRESH_SITE_STACK`. Commands contain identifiers, never
+executable text, arbitrary URLs, or filesystem paths.
 
 ### Discoveries — add `discoveries`
 

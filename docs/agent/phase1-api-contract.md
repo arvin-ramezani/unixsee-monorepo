@@ -11,6 +11,10 @@ Audience: `/api/internal/agent/v1/*` (not browser-facing). Auth: one-time
 `{timestamp}.{rawJsonBody}` using the enrolled secret. Nest verifies the HMAC
 against the raw request body bytes.
 
+Phase 1 remote control is intentionally narrow: the only accepted agent command
+is `REFRESH_SITE_STACK`. There is no generic shell, URL, file-path, or PHP
+command facility.
+
 The installation identity is `agentInstanceId`. It is generated and persisted
 by the Unixsee agent and is not an OS/hardware fingerprint.
 
@@ -51,8 +55,32 @@ Response `data`:
 }
 ```
 
-`serverBinding.hostname` remains transitional until the later identity/security
-cleanup removes host metadata collection from the Phase 1 agent.
+`serverBinding.hostname` remains transitional on the Nest DTO for migration, but
+the rewritten Phase 1 agent no longer sends it.
+
+Heartbeat response `data` also carries leased commands:
+
+```json
+{
+  "agent": {
+    "agentInstanceId": "...",
+    "status": "ONLINE",
+    "lastHeartbeatAt": "2026-08-19T12:00:00.000Z"
+  },
+  "commands": [
+    {
+      "id": "uuid",
+      "type": "REFRESH_SITE_STACK",
+      "domain": "example.com",
+      "expiresAt": "2026-08-19T12:10:00.000Z"
+    }
+  ]
+}
+```
+
+Commands are leased. A crashed agent may receive the same command again after
+the lease expires. The command itself is idempotent and the agent persists an
+unsent command result before delivery.
 
 ## Ingest
 
@@ -136,7 +164,7 @@ preserves the last successful version and records the newer check status/time.
 ```json
 {
   "domain": "example.com",
-  "uniqueIpCount": 12,
+  "uniqueVisitorCount": 12,
   "windowSeconds": 180,
   "windowStartedAt": "2026-08-19T11:57:00.000Z",
   "measuredAt": "2026-08-19T12:00:00.000Z",
@@ -144,8 +172,10 @@ preserves the last successful version and records the newer check status/time.
 }
 ```
 
-`uniqueIpCount` is transitional terminology and will be renamed when the traffic
-implementation is rewritten around local visitor keys.
+`uniqueVisitorCount` is the exact number of distinct local visitor keys whose
+latest-seen timestamp falls inside the immediately preceding 180 seconds. The
+agent emits this section every 30 seconds. `status` is always required so a zero
+with `unknown`/`unsupported` is never mistaken for a trustworthy real zero.
 
 ### Latest 24h visitors section
 
@@ -189,3 +219,56 @@ Legacy `WebsiteDiscovery.controlPanelUrl` and
 `WebsiteDiscovery.wordpressAdminUrl` columns may remain nullable during the
 migration window, but they are not canonical and new agent ingest must never
 write them.
+## Manual stack refresh command
+
+Admin queues the only Phase 1 command with:
+
+`POST /api/v1/admin/agent-commands/refresh-site-stack`
+
+```json
+{
+  "discoveryId": "uuid"
+}
+```
+
+Nest resolves `domain`, `serverId`, and `vpsNodeId` from its stored discovery;
+the browser never supplies a URL, path, shell command, or executable text. Only
+one `QUEUED`/`RUNNING` refresh may exist for one agent+domain.
+
+The agent validates the leased domain against its exact current OLS primary
+domain inventory, then executes one local runtime probe through the existing
+per-domain stack scheduler with reason `manual`. A successful manual probe resets
+that domain's normal next due time to `checkedAt + 6h`.
+
+Command results are submitted with HMAC to:
+
+`POST /api/internal/agent/v1/command-results`
+
+```json
+{
+  "schemaVersion": "phase1",
+  "agentInstanceId": "...",
+  "commandId": "uuid",
+  "type": "REFRESH_SITE_STACK",
+  "domain": "example.com",
+  "status": "SUCCEEDED",
+  "completedAt": "2026-08-19T12:00:03.000Z",
+  "stackSnapshot": {
+    "domain": "example.com",
+    "wordpressVersion": "6.8.2",
+    "phpVersion": "8.3.23",
+    "imagickVersion": "3.8.0",
+    "checkedAt": "2026-08-19T12:00:03.000Z",
+    "fieldStatus": {
+      "wordpressVersion": { "state": "ok" },
+      "phpVersion": { "state": "ok" },
+      "imagickVersion": { "state": "ok" }
+    }
+  }
+}
+```
+
+A failed result uses `status: "FAILED"` plus `errorCode`; it may also carry a
+stack snapshot with field-level failure status. Nest preserves previous
+successful version values while storing the newer check status/time. Duplicate
+result submission is terminal/idempotent.
