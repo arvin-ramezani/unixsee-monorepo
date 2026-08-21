@@ -321,7 +321,7 @@ model VpsNode {
   userId   String? @map("user_id") @db.Uuid
 
   // Stable identity used by the agent. Usually extracted from /etc/machine-id.
-  agentInstanceId String @unique @map("agent_instance_id")
+  machineId String @unique @map("agent_instance_id")
 
   name      String
   secretKey String @map("secret_key")

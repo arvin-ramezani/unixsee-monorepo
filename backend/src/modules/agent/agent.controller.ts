@@ -76,7 +76,7 @@ export class AgentController {
   @HttpCode(HttpStatus.CREATED)
   async ingest(@Body() payload: Phase1IngestDto) {
     this.logger.debug('agent.ingest.received', {
-      agentInstanceId: payload.agentInstanceId,
+      machineId: payload.machineId,
       discoveryCount: payload.discoveries.length,
       visitorSampleCount: payload.activeVisitors3m?.length ?? 0,
     });
@@ -84,7 +84,7 @@ export class AgentController {
     const result = await this.agentService.processPhase1Ingest(payload);
 
     this.logger.log('agent.ingest.completed', {
-      agentInstanceId: payload.agentInstanceId,
+      machineId: payload.machineId,
       vpsNodeId: result.vpsNodeId,
       discoveryCount: result.discoveryCount,
     });

@@ -53,6 +53,9 @@ Thumbs.db
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Zip files
+*.zip
+
 # Temp
 .temp/
 .tmp/

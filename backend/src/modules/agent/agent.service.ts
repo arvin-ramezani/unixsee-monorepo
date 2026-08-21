@@ -27,7 +27,7 @@ export class AgentService {
 
   async enroll(
     plaintextToken: string,
-    agentInstanceId: string,
+    machineId: string,
     agentVersion?: string,
   ) {
     // Token consume + secret + optional agentVersion must be one transaction
@@ -35,7 +35,7 @@ export class AgentService {
     // without a secret returned to the agent.
     return this.serversService.enrollWithToken(
       plaintextToken,
-      agentInstanceId,
+      machineId,
       agentVersion,
     );
   }
@@ -43,7 +43,7 @@ export class AgentService {
   async heartbeat(body: HeartbeatAgentDto) {
     const now = new Date();
     const existing = await this.prisma.vpsNode.findUnique({
-      where: { agentInstanceId: body.agentInstanceId },
+      where: { machineId: body.machineId },
       select: {
         id: true,
         credentialsRevokedAt: true,
@@ -58,7 +58,7 @@ export class AgentService {
     }
 
     const updated = await this.prisma.vpsNode.update({
-      where: { agentInstanceId: body.agentInstanceId },
+      where: { machineId: body.machineId },
       data: {
         lastHeartbeatAt: now,
         lastSeenAt: now,
@@ -70,7 +70,7 @@ export class AgentService {
       },
       select: {
         id: true,
-        agentInstanceId: true,
+        machineId: true,
         lastHeartbeatAt: true,
         lastSeenAt: true,
         status: true,
@@ -79,7 +79,7 @@ export class AgentService {
     });
 
     this.logger.debug('agent.heartbeat.received', {
-      agentInstanceId: body.agentInstanceId,
+      machineId: body.machineId,
       vpsNodeId: updated.id,
     });
     return updated;
@@ -90,7 +90,7 @@ export class AgentService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       const vpsNode = await tx.vpsNode.findUnique({
-        where: { agentInstanceId: payload.agentInstanceId },
+        where: { machineId: payload.machineId },
         select: {
           id: true,
           serverId: true,
@@ -173,7 +173,7 @@ export class AgentService {
     });
 
     this.logger.log('agent.ingest.phase1.stored', {
-      agentInstanceId: payload.agentInstanceId,
+      machineId: payload.machineId,
       vpsNodeId: result.vpsNodeId,
       discoveryCount: result.discoveryCount,
       visitorSamplesInserted: result.visitorSamplesInserted,

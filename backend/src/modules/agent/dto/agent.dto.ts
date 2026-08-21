@@ -45,7 +45,7 @@ export class HeartbeatAgentDto {
 
   @IsString()
   @MinLength(1)
-  agentInstanceId!: string;
+  machineId!: string;
 
   @IsOptional()
   @IsString()
@@ -219,7 +219,7 @@ export class Phase1IngestDto {
 
   @IsString()
   @MinLength(1)
-  agentInstanceId!: string;
+  machineId!: string;
 
   @IsOptional()
   @IsString()

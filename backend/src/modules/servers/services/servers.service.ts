@@ -38,7 +38,7 @@ export class ServersService {
             take: 1,
             select: {
               id: true,
-              agentInstanceId: true,
+              machineId: true,
               agentVersion: true,
               lastHeartbeatAt: true,
               lastSeenAt: true,
@@ -84,7 +84,7 @@ export class ServersService {
           orderBy: { updatedAt: 'desc' },
           select: {
             id: true,
-            agentInstanceId: true,
+            machineId: true,
             agentVersion: true,
             lastHeartbeatAt: true,
             lastSeenAt: true,
@@ -288,10 +288,10 @@ export class ServersService {
 
   async enrollWithToken(
     plaintextToken: string,
-    agentInstanceId: string,
+    machineId: string,
     agentVersion?: string,
   ) {
-    if (!plaintextToken?.trim() || !agentInstanceId?.trim()) {
+    if (!plaintextToken?.trim() || !machineId?.trim()) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
 
@@ -315,7 +315,7 @@ export class ServersService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       const existing = await tx.vpsNode.findUnique({
-        where: { agentInstanceId },
+        where: { machineId },
         select: { id: true, serverId: true },
       });
 
@@ -351,7 +351,7 @@ export class ServersService {
 
       const vpsNode = existing
         ? await tx.vpsNode.update({
-            where: { agentInstanceId },
+            where: { machineId },
             data: {
               secretKey,
               lastSeenAt: now,
@@ -364,9 +364,9 @@ export class ServersService {
           })
         : await tx.vpsNode.create({
             data: {
-              agentInstanceId,
+              machineId,
               serverId: token.serverId,
-              name: `Node ${agentInstanceId.substring(0, 8)}`,
+              name: `Node ${machineId.substring(0, 8)}`,
               secretKey,
               lastSeenAt: now,
               lastHeartbeatAt: now,
@@ -381,7 +381,7 @@ export class ServersService {
     this.logger.log('server.enrollment.completed', {
       serverId: token.serverId,
       vpsNodeId: result.id,
-      agentInstanceId,
+      machineId,
       tokenId: token.id,
     });
 
@@ -416,7 +416,7 @@ export class ServersService {
     updatedAt: Date;
     vpsNodes: Array<{
       id: string;
-      agentInstanceId: string;
+      machineId: string;
       agentVersion: string | null;
       lastHeartbeatAt: Date | null;
       lastSeenAt: Date | null;
@@ -450,7 +450,7 @@ export class ServersService {
       discoveries: server.discoveries,
       vpsNodes: server.vpsNodes.map((node) => ({
         id: node.id,
-        agentInstanceId: node.agentInstanceId,
+        machineId: node.machineId,
         agentVersion: node.agentVersion,
         lastHeartbeatAt: node.lastHeartbeatAt,
         lastSeenAt: node.lastSeenAt,

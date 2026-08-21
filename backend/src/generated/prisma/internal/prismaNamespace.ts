@@ -3549,7 +3549,7 @@ export const VpsNodeScalarFieldEnum = {
   id: 'id',
   serverId: 'serverId',
   userId: 'userId',
-  agentInstanceId: 'agentInstanceId',
+  machineId: 'machineId',
   name: 'name',
   secretKey: 'secretKey',
   status: 'status',
