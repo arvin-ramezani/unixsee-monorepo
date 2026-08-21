@@ -19,7 +19,8 @@ export class DashboardService {
   ) {}
 
   async getOverview(userId: string) {
-    const overview = await this.dashboardOverviewSnapshotService.getOverviewSnapshot(userId);
+    const overview =
+      await this.dashboardOverviewSnapshotService.getOverviewSnapshot(userId);
 
     this.logger.debug('dashboard.overview.loaded', {
       userId,
@@ -226,7 +227,8 @@ export class DashboardService {
         responseTimeMs: latestProbeMetric?.responseTimeMs ?? null,
         ttfbMs: latestProbeMetric?.ttfbMs ?? null,
         errorMessage: latestProbeMetric?.errorMessage ?? null,
-        lastProbeAt: latestProbeMetric?.recordedAt ?? website.lastProbeAt ?? null,
+        lastProbeAt:
+          latestProbeMetric?.recordedAt ?? website.lastProbeAt ?? null,
       },
       traffic: {
         load: traffic.load,
@@ -336,7 +338,11 @@ export class DashboardService {
 
     const [websites, vpsNodes] = await Promise.all([
       this.prisma.website.findMany({
-        where: { tenantId: { in: await this.tenantAccess.getAccessibleTenantIds(userId) } },
+        where: {
+          tenantId: {
+            in: await this.tenantAccess.getAccessibleTenantIds(userId),
+          },
+        },
         orderBy: { domain: 'asc' },
         select: {
           id: true,
@@ -420,13 +426,19 @@ export class DashboardService {
       }),
       this.prisma.vpsNode.findMany({
         where: {
-          websites: { some: { tenantId: { in: await this.tenantAccess.getAccessibleTenantIds(userId) } } },
+          websites: {
+            some: {
+              tenantId: {
+                in: await this.tenantAccess.getAccessibleTenantIds(userId),
+              },
+            },
+          },
         },
         orderBy: { name: 'asc' },
         select: {
           id: true,
           name: true,
-          machineId: true,
+          agentInstanceId: true,
           status: true,
           hostname: true,
           publicIp: true,
@@ -640,7 +652,7 @@ export class DashboardService {
       return {
         id: node.id,
         name: node.name,
-        machineId: node.machineId,
+        agentInstanceId: node.agentInstanceId,
         status: node.status,
         hostname: node.hostname,
         publicIp: node.publicIp,
@@ -777,9 +789,7 @@ export class DashboardService {
     if (checkoutAlert) {
       return {
         status:
-          checkoutAlert.severity === 'CRITICAL'
-            ? 'issue_detected'
-            : 'degraded',
+          checkoutAlert.severity === 'CRITICAL' ? 'issue_detected' : 'degraded',
         message: checkoutAlert.message,
         lastCheckedAt: null,
       };
@@ -845,7 +855,10 @@ export class DashboardService {
       activity.push({
         id: `probe-${domain}-${latestProbeAt.toISOString()}`,
         type: 'probe',
-        title: isUp === false ? 'Availability issue detected' : 'Availability checked',
+        title:
+          isUp === false
+            ? 'Availability issue detected'
+            : 'Availability checked',
         description:
           isUp === false
             ? 'The latest backend public probe reported the website as down.'

@@ -1,7 +1,7 @@
 type NodeEnvironment = "production" | "development" | "test";
 
 const AGENT_API_PREFIX = "/api/internal/agent/v1";
-export const AGENT_VERSION = "0.1.0";
+export const AGENT_VERSION = "0.2.0";
 
 export type AppConfig = {
   nodeEnv: NodeEnvironment;
@@ -13,143 +13,148 @@ export type AppConfig = {
     enroll: string;
     ingest: string;
     heartbeat: string;
+    commandResult: (id: string) => string;
   };
-  transmitIntervalMs: number;
-  heartbeatIntervalMs: number;
-  rediscoveryIntervalMs: number;
-  trafficWindowSeconds: number;
-  openLiteSpeedServerRoot: string;
-  openLiteSpeedDiscoverOrphanVhosts: boolean;
-  webDiscoveryIncludeFallbacks: boolean;
+  stateDir: string;
+  routingFiles: string[];
   accessLogDir: string;
-  directAdminBaseUrl: string | null;
-  directAdminUsersRoot: string;
+  openLiteSpeedServerRoot: string;
+  probe: {
+    scheme: "http" | "https";
+    port: number;
+    path: string;
+    secret: string;
+    timeoutMs: number;
+    concurrency: number;
+  };
+  intervals: {
+    heartbeatMs: number;
+    trafficPollMs: number;
+    activeVisitorsMs: number;
+    visitors24hMs: number;
+    discoveryMs: number;
+    stackMs: number;
+  };
+  maxInitialLogBytes: number;
 };
 
 let cachedConfig: AppConfig | null = null;
-
-function readOptionalVariable(
-  env: NodeJS.ProcessEnv,
-  name: string,
-): string | undefined {
-  const value = env[name]?.trim();
-  return value || undefined;
-}
-
-function readRequiredVariable(env: NodeJS.ProcessEnv, name: string): string {
-  const value = readOptionalVariable(env, name);
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
+const optional = (env: NodeJS.ProcessEnv, name: string) =>
+  env[name]?.trim() || undefined;
+const required = (env: NodeJS.ProcessEnv, name: string) => {
+  const value = optional(env, name);
+  if (!value) throw new Error(`Missing required environment variable: ${name}`);
   return value;
-}
-
-function parseNodeEnvironment(value: string | undefined): NodeEnvironment {
-  if (value === "production" || value === "development" || value === "test") {
-    return value;
-  }
-  throw new Error(
-    `Invalid NODE_ENV. Expected production, development, or test. Received: ${value ?? "empty"}`,
-  );
-}
-
-function parseUrl(value: string, name: string): string {
-  try {
-    const parsed = new URL(value);
-    return parsed.toString().replace(/\/$/, "");
-  } catch {
-    throw new Error(`Invalid ${name} URL: ${value}`);
-  }
-}
-
-function parsePositiveInt(
+};
+const positive = (
   value: string | undefined,
   fallback: number,
   name: string,
-): number {
+) => {
   if (!value) return fallback;
   const parsed = Number.parseInt(value, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    throw new Error(`Invalid ${name}. Expected a positive integer.`);
-  }
+  if (!Number.isSafeInteger(parsed) || parsed <= 0)
+    throw new Error(`Invalid ${name}.`);
   return parsed;
-}
-
-function joinApiPath(baseUrl: string, path: string): string {
-  return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
-}
+};
+const url = (value: string) => {
+  const parsed = new URL(value);
+  return parsed.toString().replace(/\/$/, "");
+};
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
-  const nodeEnv = parseNodeEnvironment(env.NODE_ENV);
-  const agentSecret = readOptionalVariable(env, "AGENT_SECRET") ?? null;
-  const enrollmentToken = readOptionalVariable(env, "ENROLLMENT_TOKEN") ?? null;
-  const apiBaseUrl = parseUrl(
-    readRequiredVariable(env, "API_BASE_URL"),
-    "API_BASE_URL",
-  );
-
+  const nodeEnv = env.NODE_ENV;
+  if (
+    nodeEnv !== "production" &&
+    nodeEnv !== "development" &&
+    nodeEnv !== "test"
+  )
+    throw new Error("Invalid NODE_ENV.");
+  const apiBaseUrl = url(required(env, "API_BASE_URL"));
+  const prefix = `${apiBaseUrl}${AGENT_API_PREFIX}`;
+  const scheme = optional(env, "PROBE_SCHEME") ?? "https";
+  if (scheme !== "http" && scheme !== "https")
+    throw new Error("PROBE_SCHEME must be http or https.");
+  const root = optional(env, "OPENLITESPEED_SERVER_ROOT") ?? "/usr/local/lsws";
+  const routingFiles = (
+    optional(env, "OLS_ROUTING_FILES") ?? `${root}/conf/httpd_config.conf`
+  )
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
   cachedConfig = {
     nodeEnv,
-    agentSecret,
-    enrollmentToken,
+    agentSecret: optional(env, "AGENT_SECRET") ?? null,
+    enrollmentToken: optional(env, "ENROLLMENT_TOKEN") ?? null,
     agentVersion: AGENT_VERSION,
     apiBaseUrl,
     endpoints: {
-      enroll: joinApiPath(apiBaseUrl, `${AGENT_API_PREFIX}/enroll`),
-      ingest: joinApiPath(apiBaseUrl, `${AGENT_API_PREFIX}/ingest`),
-      heartbeat: joinApiPath(apiBaseUrl, `${AGENT_API_PREFIX}/heartbeat`),
+      enroll: `${prefix}/enroll`,
+      ingest: `${prefix}/ingest`,
+      heartbeat: `${prefix}/heartbeat`,
+      commandResult: (id) =>
+        `${prefix}/commands/${encodeURIComponent(id)}/result`,
     },
-    transmitIntervalMs: parsePositiveInt(
-      env.TRANSMIT_INTERVAL_MS,
-      60_000,
-      "TRANSMIT_INTERVAL_MS",
+    stateDir: optional(env, "AGENT_STATE_DIR") ?? "/opt/unixsee-agent/state",
+    routingFiles,
+    accessLogDir: optional(env, "ACCESS_LOG_DIR") ?? "/var/log/httpd/domains",
+    openLiteSpeedServerRoot: root,
+    probe: {
+      scheme,
+      port: positive(
+        env.PROBE_PORT,
+        scheme === "https" ? 443 : 80,
+        "PROBE_PORT",
+      ),
+      path: optional(env, "PROBE_PATH") ?? "/.unixsee/v1/site-stack.php",
+      secret: required(env, "PROBE_SECRET"),
+      timeoutMs: positive(env.PROBE_TIMEOUT_MS, 5_000, "PROBE_TIMEOUT_MS"),
+      concurrency: positive(env.PROBE_CONCURRENCY, 3, "PROBE_CONCURRENCY"),
+    },
+    intervals: {
+      heartbeatMs: positive(
+        env.HEARTBEAT_INTERVAL_MS,
+        30_000,
+        "HEARTBEAT_INTERVAL_MS",
+      ),
+      trafficPollMs: positive(
+        env.TRAFFIC_POLL_INTERVAL_MS,
+        1_000,
+        "TRAFFIC_POLL_INTERVAL_MS",
+      ),
+      activeVisitorsMs: positive(
+        env.ACTIVE_VISITORS_INTERVAL_MS,
+        30_000,
+        "ACTIVE_VISITORS_INTERVAL_MS",
+      ),
+      visitors24hMs: positive(
+        env.VISITORS_24H_INTERVAL_MS,
+        300_000,
+        "VISITORS_24H_INTERVAL_MS",
+      ),
+      discoveryMs: positive(
+        env.DISCOVERY_INTERVAL_MS,
+        600_000,
+        "DISCOVERY_INTERVAL_MS",
+      ),
+      stackMs: positive(env.STACK_INTERVAL_MS, 21_600_000, "STACK_INTERVAL_MS"),
+    },
+    maxInitialLogBytes: positive(
+      env.MAX_INITIAL_LOG_BYTES,
+      4 * 1024 * 1024,
+      "MAX_INITIAL_LOG_BYTES",
     ),
-    heartbeatIntervalMs: parsePositiveInt(
-      env.HEARTBEAT_INTERVAL_MS,
-      30_000,
-      "HEARTBEAT_INTERVAL_MS",
-    ),
-    rediscoveryIntervalMs: parsePositiveInt(
-      env.REDISCOVERY_INTERVAL_MS,
-      600_000,
-      "REDISCOVERY_INTERVAL_MS",
-    ),
-    trafficWindowSeconds: parsePositiveInt(
-      env.TRAFFIC_WINDOW_SECONDS,
-      180,
-      "TRAFFIC_WINDOW_SECONDS",
-    ),
-    openLiteSpeedServerRoot:
-      readOptionalVariable(env, "OPENLITESPEED_SERVER_ROOT") ??
-      "/usr/local/lsws",
-    openLiteSpeedDiscoverOrphanVhosts:
-      env.OPENLITESPEED_DISCOVER_ORPHAN_VHOSTS === "true",
-    webDiscoveryIncludeFallbacks: env.WEB_DISCOVERY_INCLUDE_FALLBACKS === "true",
-    accessLogDir:
-      readOptionalVariable(env, "ACCESS_LOG_DIR") ?? "/var/log/httpd/domains",
-    directAdminBaseUrl: readOptionalVariable(env, "DIRECTADMIN_BASE_URL") ?? null,
-    directAdminUsersRoot:
-      readOptionalVariable(env, "DIRECTADMIN_USERS_ROOT") ??
-      "/usr/local/directadmin/data/users",
   };
-
   return cachedConfig;
 }
 
 export function getConfig(): AppConfig {
-  if (!cachedConfig) {
-    throw new Error("Config not loaded. Call loadConfig() before use.");
-  }
+  if (!cachedConfig) throw new Error("Config not loaded.");
   return cachedConfig;
 }
-
-export function resetConfigForTests(): void {
+export function resetConfigForTests() {
   cachedConfig = null;
 }
-
-/** @deprecated Prefer getConfig() after loadConfig(). */
 export const config: AppConfig = new Proxy({} as AppConfig, {
-  get(_target, property, receiver) {
-    return Reflect.get(getConfig(), property, receiver);
-  },
+  get: (_target, property) => Reflect.get(getConfig(), property),
 });

@@ -1,321 +1,142 @@
-import { access, readFile } from "node:fs/promises";
-import { hostname } from "node:os";
-import { join } from "node:path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
+import http from "node:http";
+import https from "node:https";
+import type { AppConfig } from "./config/config.js";
+import type {
+  FieldStatus,
+  SiteStackSnapshot,
+} from "./contracts/phase1-ingest.js";
 
-import { getConfig } from "./config/config.js";
-import type { DiscoveredDomain } from "./discovery.js";
+const VERSION = /^[0-9A-Za-z][0-9A-Za-z.+_-]{0,63}$/;
+const status = (state: FieldStatus["state"], reason?: string): FieldStatus => ({
+  state,
+  ...(reason ? { reason } : {}),
+});
+const value = (input: unknown) =>
+  typeof input === "string" && VERSION.test(input) ? input : null;
 
-const execFileAsync = promisify(execFile);
-
-export type FieldState = "ok" | "unknown" | "unsupported";
-
-export interface FieldStatus {
-  state: FieldState;
-  reason?: string;
-}
-
-export interface SiteStackPayload {
-  domain: string;
-  aliases: string[];
-  documentRoot: string;
-  owner: string;
-  appType: string;
-  source: string;
-  backendAddress?: string | null;
-  controlPanelUrl: string | null;
-  wordpressAdminUrl: string | null;
-  wordpressVersion: string | null;
-  phpVersion: string | null;
-  phpVersionScope: "site" | "host" | "unknown";
-  imagickVersion: string | null;
-  wordpressUpdateStatus: string | null;
-  wordpressUpdateCheckedAt: string | null;
-  fieldStatus: Record<string, FieldStatus>;
-}
-
-async function pathExists(path: string): Promise<boolean> {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function readOptionalFile(path: string): Promise<string | null> {
-  try {
-    return await readFile(path, "utf-8");
-  } catch {
-    return null;
-  }
-}
-
-function fieldOk(): FieldStatus {
-  return { state: "ok" };
-}
-
-function fieldUnknown(reason: string): FieldStatus {
-  return { state: "unknown", reason };
-}
-
-function fieldUnsupported(reason: string): FieldStatus {
-  return { state: "unsupported", reason };
-}
-
-async function resolveDirectAdminBaseUrl(): Promise<{
-  url: string | null;
-  status: FieldStatus;
-}> {
-  if (getConfig().directAdminBaseUrl) {
-    return {
-      url: getConfig().directAdminBaseUrl!.replace(/\/$/, ""),
-      status: fieldOk(),
-    };
-  }
-
-  const confPath = "/usr/local/directadmin/conf/directadmin.conf";
-  const content = await readOptionalFile(confPath);
-  if (!content) {
-    const fallback = `https://${hostname()}:2222`;
-    return {
-      url: fallback,
-      status: fieldUnknown("directadmin_conf_missing_used_hostname"),
-    };
-  }
-
-  const portMatch = content.match(/^port=(\d+)/m);
-  const sslMatch = content.match(/^ssl=(\w+)/m);
-  const serverNameMatch =
-    content.match(/^servername=(.+)$/m) ?? content.match(/^hostname=(.+)$/m);
-  const port = portMatch?.[1] ?? "2222";
-  const useSsl = (sslMatch?.[1] ?? "1") !== "0";
-  const host = (serverNameMatch?.[1] ?? hostname()).trim();
-  const scheme = useSsl ? "https" : "http";
-  return { url: `${scheme}://${host}:${port}`, status: fieldOk() };
-}
-
-async function readWordPressVersion(
-  documentRoot: string,
-): Promise<{ version: string | null; status: FieldStatus }> {
-  const versionPath = join(documentRoot, "wp-includes", "version.php");
-  const content = await readOptionalFile(versionPath);
-  if (!content) {
-    return {
-      version: null,
-      status: fieldUnknown("wp_includes_version_php_unreadable"),
-    };
-  }
-
-  const match = content.match(/\$wp_version\s*=\s*'([^']+)'/);
-  if (!match?.[1]) {
-    return {
-      version: null,
-      status: fieldUnknown("wp_version_not_found"),
-    };
-  }
-
-  return { version: match[1], status: fieldOk() };
-}
-
-async function readWordPressUpdateStatus(documentRoot: string): Promise<{
-  status: string | null;
-  checkedAt: string | null;
-  fieldStatus: FieldStatus;
-}> {
-  const updatePath = join(
-    documentRoot,
-    "wp-content",
-    "upgrade",
-    "update_core",
-  );
-  const optionCandidates = [
-    join(documentRoot, "wp-content", "uploads", ".unixsee-wp-update-check"),
-  ];
-
-  for (const candidate of optionCandidates) {
-    const content = await readOptionalFile(candidate);
-    if (!content) continue;
-    try {
-      const parsed = JSON.parse(content) as {
-        status?: string;
-        checkedAt?: string;
-      };
-      if (parsed.status && parsed.checkedAt) {
-        return {
-          status: parsed.status,
-          checkedAt: parsed.checkedAt,
-          fieldStatus: fieldOk(),
-        };
-      }
-    } catch {
-      // continue
-    }
-  }
-
-  if (await pathExists(updatePath)) {
-    return {
-      status: "updates_available",
-      checkedAt: new Date().toISOString(),
-      fieldStatus: fieldUnknown("inferred_from_upgrade_path"),
-    };
-  }
-
+export function validateProbeResponse(
+  domain: string,
+  input: unknown,
+): SiteStackSnapshot {
+  if (!input || typeof input !== "object" || Array.isArray(input))
+    throw new Error("probe_invalid_json");
+  const body = input as Record<string, unknown>;
+  if (
+    typeof body.checkedAt !== "string" ||
+    !Number.isFinite(Date.parse(body.checkedAt))
+  )
+    throw new Error("probe_invalid_checked_at");
+  const wordpressVersion = value(body.wordpressVersion);
+  const phpVersion = value(body.phpVersion);
+  const imagickVersion = value(body.imagickVersion);
   return {
-    status: "unknown",
-    checkedAt: null,
-    fieldStatus: fieldUnknown("no_local_update_marker"),
+    domain,
+    wordpressVersion,
+    phpVersion,
+    imagickVersion,
+    checkedAt: new Date(body.checkedAt).toISOString(),
+    fieldStatus: {
+      wordpressVersion: wordpressVersion
+        ? status("ok")
+        : status("unknown", "not_reported"),
+      phpVersion: phpVersion ? status("ok") : status("unknown", "not_reported"),
+      imagickVersion: imagickVersion
+        ? status("ok")
+        : status("unsupported", "extension_not_loaded"),
+    },
   };
 }
 
-async function resolvePhpVersion(): Promise<{
-  version: string | null;
-  scope: "site" | "host" | "unknown";
-  status: FieldStatus;
-}> {
-  try {
-    const { stdout } = await execFileAsync("php", ["-r", "echo PHP_VERSION;"], {
-      timeout: 5_000,
-    });
-    const version = stdout.trim();
-    if (!version) {
-      return {
-        version: null,
-        scope: "unknown",
-        status: fieldUnknown("php_empty_output"),
-      };
-    }
-    return { version, scope: "host", status: fieldOk() };
-  } catch {
-    return {
-      version: null,
-      scope: "unknown",
-      status: fieldUnsupported("php_cli_unavailable"),
-    };
-  }
-}
-
-async function resolveImagickVersion(): Promise<{
-  version: string | null;
-  status: FieldStatus;
-}> {
-  try {
-    const { stdout } = await execFileAsync(
-      "php",
-      [
-        "-r",
-        "echo extension_loaded('imagick') ? (new Imagick())->getVersion()['versionString'] : '';",
-      ],
-      { timeout: 5_000 },
+export async function probeSiteStack(
+  domain: string,
+  config: AppConfig,
+): Promise<SiteStackSnapshot> {
+  const transport = config.probe.scheme === "https" ? https : http;
+  return new Promise((resolve) => {
+    const request = transport.request(
+      {
+        host: "127.0.0.1",
+        port: config.probe.port,
+        path: config.probe.path,
+        method: "GET",
+        headers: {
+          Host: domain,
+          "X-Unixsee-Probe-Secret": config.probe.secret,
+          Accept: "application/json",
+        },
+        servername: domain,
+        rejectUnauthorized: false,
+        timeout: config.probe.timeoutMs,
+      },
+      (response) => {
+        const chunks: Buffer[] = [];
+        let size = 0;
+        response.on("data", (chunk: Buffer) => {
+          size += chunk.length;
+          if (size > 8192)
+            request.destroy(new Error("probe_response_too_large"));
+          else chunks.push(chunk);
+        });
+        response.on("end", () => {
+          try {
+            if (response.statusCode !== 200)
+              throw new Error(`probe_http_${response.statusCode ?? 0}`);
+            resolve(
+              validateProbeResponse(
+                domain,
+                JSON.parse(Buffer.concat(chunks).toString("utf8")),
+              ),
+            );
+          } catch (error) {
+            const reason =
+              error instanceof Error ? error.message : "probe_failed";
+            resolve(failedSnapshot(domain, reason));
+          }
+        });
+      },
     );
-    const version = stdout.trim();
-    if (!version) {
-      return {
-        version: null,
-        status: fieldUnsupported("imagick_missing"),
-      };
-    }
-    const match = version.match(/ImageMagick\s+([^\s]+)/i);
-    return {
-      version: match?.[1] ?? version,
-      status: fieldOk(),
-    };
-  } catch {
-    return {
-      version: null,
-      status: fieldUnsupported("imagick_probe_failed"),
-    };
-  }
+    request.on("timeout", () => request.destroy(new Error("probe_timeout")));
+    request.on("error", (error) =>
+      resolve(failedSnapshot(domain, error.message)),
+    );
+    request.end();
+  });
 }
 
-export async function enrichSiteStack(
-  domains: DiscoveredDomain[],
-): Promise<SiteStackPayload[]> {
-  const controlPanel = await resolveDirectAdminBaseUrl();
-  const php = await resolvePhpVersion();
-  const imagick = await resolveImagickVersion();
+export function failedSnapshot(
+  domain: string,
+  reason: string,
+): SiteStackSnapshot {
+  return {
+    domain,
+    wordpressVersion: null,
+    phpVersion: null,
+    imagickVersion: null,
+    checkedAt: new Date().toISOString(),
+    fieldStatus: {
+      wordpressVersion: status("unknown", reason),
+      phpVersion: status("unknown", reason),
+      imagickVersion: status("unknown", reason),
+    },
+  };
+}
 
-  return Promise.all(
-    domains.map(async (domain) => {
-      try {
-        const isWordPress =
-          domain.appType === "wordpress" || domain.appType === "woocommerce";
-
-        let wordpressAdminUrl: string | null = null;
-        let wordpressVersion: string | null = null;
-        let wordpressUpdateStatus: string | null = null;
-        let wordpressUpdateCheckedAt: string | null = null;
-        const fieldStatus: Record<string, FieldStatus> = {
-          controlPanelUrl: controlPanel.status,
-          phpVersion: php.status,
-          imagickVersion: imagick.status,
-        };
-
-        if (isWordPress) {
-          wordpressAdminUrl = `https://${domain.domain}/wp-admin/`;
-          fieldStatus.wordpressAdminUrl = fieldOk();
-
-          const wpVersion = await readWordPressVersion(domain.documentRoot);
-          wordpressVersion = wpVersion.version;
-          fieldStatus.wordpressVersion = wpVersion.status;
-
-          const update = await readWordPressUpdateStatus(domain.documentRoot);
-          wordpressUpdateStatus = update.status;
-          wordpressUpdateCheckedAt = update.checkedAt;
-          fieldStatus.wordpressUpdateStatus = update.fieldStatus;
-        } else {
-          fieldStatus.wordpressAdminUrl = fieldUnsupported("not_wordpress");
-          fieldStatus.wordpressVersion = fieldUnsupported("not_wordpress");
-          fieldStatus.wordpressUpdateStatus = fieldUnsupported("not_wordpress");
+export async function probeSiteStacks(
+  domains: string[],
+  config: AppConfig,
+): Promise<SiteStackSnapshot[]> {
+  const output: SiteStackSnapshot[] = [];
+  let next = 0;
+  await Promise.all(
+    Array.from(
+      { length: Math.min(config.probe.concurrency, domains.length) },
+      async () => {
+        while (next < domains.length) {
+          const index = next++;
+          output[index] = await probeSiteStack(domains[index], config);
         }
-
-        return {
-          domain: domain.domain,
-          aliases: domain.aliases,
-          documentRoot: domain.documentRoot,
-          owner: domain.owner,
-          appType: domain.appType,
-          source: domain.source,
-          backendAddress: domain.backendAddress ?? null,
-          controlPanelUrl: controlPanel.url,
-          wordpressAdminUrl,
-          wordpressVersion,
-          phpVersion: php.version,
-          phpVersionScope: php.scope,
-          imagickVersion: imagick.version,
-          wordpressUpdateStatus,
-          wordpressUpdateCheckedAt,
-          fieldStatus,
-        };
-      } catch {
-        return {
-          domain: domain.domain,
-          aliases: domain.aliases ?? [],
-          documentRoot: domain.documentRoot,
-          owner: domain.owner ?? "",
-          appType: domain.appType,
-          source: domain.source,
-          backendAddress: domain.backendAddress ?? null,
-          controlPanelUrl: null,
-          wordpressAdminUrl: null,
-          wordpressVersion: null,
-          phpVersion: null,
-          phpVersionScope: "unknown" as const,
-          imagickVersion: null,
-          wordpressUpdateStatus: null,
-          wordpressUpdateCheckedAt: null,
-          fieldStatus: {
-            enrichment: fieldUnknown("enrichment_failed"),
-            controlPanelUrl: fieldUnknown("enrichment_failed"),
-            phpVersion: fieldUnknown("enrichment_failed"),
-            imagickVersion: fieldUnknown("enrichment_failed"),
-            wordpressAdminUrl: fieldUnknown("enrichment_failed"),
-            wordpressVersion: fieldUnknown("enrichment_failed"),
-            wordpressUpdateStatus: fieldUnknown("enrichment_failed"),
-          },
-        };
-      }
-    }),
+      },
+    ),
   );
+  return output;
 }

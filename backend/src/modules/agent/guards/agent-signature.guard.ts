@@ -12,7 +12,6 @@ import { createAppLogger } from '#/common/logging/app-logger.js';
 import type { AgentRequest } from '#/common/interfaces/agent-request.interface.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
-/** Same length as enrollment secrets (`randomBytes(32).toString('hex')`). */
 const DUMMY_HMAC_SECRET = '0'.repeat(64);
 
 @Injectable()
@@ -23,90 +22,83 @@ export class AgentSignatureGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AgentRequest>();
-    const timestamp = request.headers['x-agent-timestamp'];
-    const incomingSignature = request.headers['x-agent-signature'];
+    const timestamp = this.firstHeaderValue(
+      request.headers['x-agent-timestamp'],
+    );
+    const incomingSignature = this.firstHeaderValue(
+      request.headers['x-agent-signature'],
+    );
+    const requestBody = request.body as
+      | { agentInstanceId?: string }
+      | undefined;
+    const agentInstanceId = requestBody?.agentInstanceId;
 
-    const requestBody = request.body as { machineId?: string } | undefined;
-    const machineId = requestBody?.machineId;
-
-    if (!machineId) {
+    if (!agentInstanceId) {
       this.logger.warn('agent.auth.payload_invalid', {
         ip: request.ip,
         path: request.originalUrl,
       });
       throw new BadRequestException(
-        'Invalid payload topology or missing machineId.',
+        'Invalid payload topology or missing agentInstanceId.',
       );
     }
 
     if (!timestamp || !incomingSignature) {
       this.logger.warn('agent.auth.headers_missing', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
-        hasTimestamp: Boolean(timestamp),
-        hasSignature: Boolean(incomingSignature),
       });
       throw this.authenticationFailed();
     }
 
-    const normalizedTimestamp = this.firstHeaderValue(timestamp);
-    const normalizedSignature = this.firstHeaderValue(incomingSignature);
-    const requestTime = new Date(normalizedTimestamp).getTime();
+    const requestTime = new Date(timestamp).getTime();
     const driftMs = Math.abs(Date.now() - requestTime);
-
-    if (isNaN(requestTime) || driftMs > 5 * 60 * 1000) {
+    if (Number.isNaN(requestTime) || driftMs > 5 * 60 * 1000) {
       this.logger.warn('agent.auth.timestamp_drift', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
         driftMs,
       });
       throw this.authenticationFailed();
     }
 
-    if (!request.rawBody || request.rawBody.length === 0) {
+    if (!request.rawBody?.length) {
       this.logger.warn('agent.auth.raw_body_missing', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
       });
       throw this.authenticationFailed();
     }
 
     const vpsNode = await this.prisma.vpsNode.findUnique({
-      where: { machineId },
+      where: { agentInstanceId },
       select: { secretKey: true, credentialsRevokedAt: true },
     });
-
     const credentialsUsable = Boolean(
       vpsNode?.secretKey && !vpsNode.credentialsRevokedAt,
     );
     const secretKey = credentialsUsable
       ? vpsNode!.secretKey
       : DUMMY_HMAC_SECRET;
-
-    const rawPayloadString = request.rawBody.toString('utf8');
-    const dataToSign = `${normalizedTimestamp}.${rawPayloadString}`;
     const computedSignature = createHmac('sha256', secretKey)
-      .update(dataToSign)
+      .update(`${timestamp}.${request.rawBody.toString('utf8')}`)
       .digest('hex');
-    const signatureValid = this.safeCompareHex(
-      normalizedSignature,
-      computedSignature,
-    );
 
-    if (!credentialsUsable || !signatureValid) {
+    if (
+      !credentialsUsable ||
+      !this.safeCompareHex(incomingSignature, computedSignature)
+    ) {
       this.logger.warn('agent.auth.rejected', {
-        machineId,
+        agentInstanceId,
         ip: request.ip,
         credentialsUsable,
-        signatureValid,
       });
       throw this.authenticationFailed();
     }
 
-    request.machineId = machineId;
-
+    request.vpsAgentInstanceId = agentInstanceId;
     this.logger.debug('agent.auth.signature_verified', {
-      machineId,
+      agentInstanceId,
       ip: request.ip,
     });
     return true;
@@ -116,7 +108,9 @@ export class AgentSignatureGuard implements CanActivate {
     return new UnauthorizedException(ERROR_MESSAGES.fa.unauthenticated);
   }
 
-  private firstHeaderValue(value: string | string[]): string {
+  private firstHeaderValue(
+    value: string | string[] | undefined,
+  ): string | undefined {
     return Array.isArray(value) ? value[0] : value;
   }
 
@@ -124,7 +118,6 @@ export class AgentSignatureGuard implements CanActivate {
     if (!/^[a-f0-9]+$/i.test(incoming) || incoming.length !== expected.length) {
       return false;
     }
-
     return timingSafeEqual(
       Buffer.from(incoming, 'hex'),
       Buffer.from(expected, 'hex'),

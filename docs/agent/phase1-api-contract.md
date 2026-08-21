@@ -1,115 +1,101 @@
-# Phase 1 agent API contract
+# Phase 1 agent API contract — web-server-only v0.2
 
-> **Status:** Accepted  
-> **ADR:** [`../architecture/decisions/0008-phase1-agent-typescript-node.md`](../architecture/decisions/0008-phase1-agent-typescript-node.md)  
-> **PRD:** [`./prd.md`](./prd.md)  
-> **Last verified:** 2026-08-09
+> **Status:** Accepted
+> **Canonical product requirements:** [`prd.md`](./prd.md)
+> **Cutover:** hard cutover; `machineId` is not accepted
 
-Audience: `/api/internal/agent/v1/*` (not browser-facing). Auth: one-time
-`x-enrollment-token` for enroll; HMAC headers `x-agent-timestamp` +
-`x-agent-signature` for heartbeat/ingest. Signature = HMAC-SHA256 hex over
-`{timestamp}.{rawJsonBody}` using the enrolled secret. Nest verifies that
-HMAC against the **raw request body bytes** (not a re-serialized parsed
-object). Enrollment tokens are single-consume (atomic ACTIVE→USED) and
-Enrollment tokens are single-consume (atomic ACTIVE→USED) and may
-re-provision only when `machineId` already belongs to the **same** server;
-cross-server rebind is rejected with the same generic validation error as an
-invalid token (no distinct 409 oracle). Ingest caps `discoveries` and
-`activeVisitors3m` at 200 entries each; optional `controlPanelUrl` /
-`wordpressAdminUrl` must be HTTPS when present.
+All routes are under `/api/internal/agent/v1`. Enrollment uses a one-time
+`X-Enrollment-Token`; heartbeat, ingest, and command results use
+`X-Agent-Timestamp` and `X-Agent-Signature`. The signature is lowercase
+HMAC-SHA256 over `<timestamp>.<exact JSON body>`.
 
-Legacy monitor batch ingest (`batch[].metrics` host telemetry) is **not** the
-Phase 1 contract. See ADR 0008.
+## Identity and enrollment
 
-## Enroll
-
-`POST /api/internal/agent/v1/enroll`
-
-Headers: `x-enrollment-token: <one-time>`
+`POST /enroll`
 
 ```json
-{ "machineId": "<from /etc/machine-id>", "agentVersion": "0.1.0" }
+{ "agentInstanceId": "installation UUID", "agentVersion": "0.2.0" }
 ```
 
-Response `data`: `{ "vpsNodeId", "serverId", "secretKey" }` — `secretKey` once.
+A successful enrollment binds the generated installation UUID and a newly
+issued secret to the server's existing VPS node, preserving its relationships.
+The response contains `vpsNodeId`, `serverId`, and the one-time `secretKey`.
 
-## Heartbeat
+## Heartbeat and commands
 
-`POST /api/internal/agent/v1/heartbeat` (HMAC)
+`POST /heartbeat`
 
 ```json
 {
   "schemaVersion": "phase1",
-  "machineId": "...",
-  "agentVersion": "0.1.0",
-  "serverBinding": { "hostname": "optional" },
-  "sentAt": "2026-08-09T12:00:00.000Z"
+  "agentInstanceId": "installation UUID",
+  "agentVersion": "0.2.0",
+  "sentAt": "2026-08-21T08:00:00.000Z"
 }
 ```
 
-## Ingest
-
-`POST /api/internal/agent/v1/ingest` (HMAC)
+No hostname or host telemetry is collected. The response is:
 
 ```json
 {
-  "schemaVersion": "phase1",
-  "machineId": "...",
-  "agentVersion": "0.1.0",
-  "sentAt": "2026-08-09T12:00:00.000Z",
-  "discoveries": [
-    {
-      "domain": "farcoland.com",
-      "aliases": ["www.farcoland.com"],
-      "documentRoot": "/home/user/domains/farcoland.com/public_html",
-      "owner": "user",
-      "appType": "woocommerce",
-      "source": "openlitespeed",
-      "backendAddress": null,
-      "controlPanelUrl": "https://host:2222",
-      "wordpressAdminUrl": "https://farcoland.com/wp-admin/",
-      "wordpressVersion": "6.8.1",
-      "phpVersion": "8.2.28",
-      "phpVersionScope": "host",
-      "imagickVersion": "3.7.0",
-      "wordpressUpdateStatus": "up_to_date",
-      "wordpressUpdateCheckedAt": "2026-08-09T11:55:00.000Z",
-      "fieldStatus": {
-        "imagickVersion": { "state": "ok" }
-      }
-    }
-  ],
-  "activeVisitors3m": [
-    {
-      "domain": "farcoland.com",
-      "uniqueIpCount": 12,
-      "windowSeconds": 180,
-      "windowStartedAt": "2026-08-09T11:57:00.000Z",
-      "measuredAt": "2026-08-09T12:00:00.000Z",
-      "status": { "state": "ok" }
-    }
-  ]
+  "agent": { "agentInstanceId": "...", "status": "ONLINE", "lastHeartbeatAt": "..." },
+  "commands": [{ "id": "...", "type": "REFRESH_SITE_STACK", "domain": "example.com", "expiresAt": "...", "leaseExpiresAt": "..." }]
 }
 ```
 
-### Field status
+Commands expire after 10 minutes, leases last 2 minutes, and at most three
+attempts are permitted.
 
-Missing values use `unknown` / `unsupported` with a reason code inside
-`fieldStatus` — never fabricated zeros.
+## Independently optional ingest
 
-When an access log is missing or unreadable, `activeVisitors3m[].uniqueIpCount`
-may be `0` but **must** include `status: { "state": "unsupported", "reason": "..." }`
-(for example `log_missing` / `log_unreadable`) so Nest/UI do not treat it as
-fabricated traffic. A readable empty window uses `uniqueIpCount: 0` with
-`status: { "state": "ok" }`. Bare zeros without `status` are rejected.
+`POST /ingest`
 
-### Access logs
+The envelope always contains `schemaVersion`, `agentInstanceId`, `agentVersion`,
+and `sentAt`. Each section below is independently optional and queued/sent on
+its own schedule.
 
-Agent tails `/var/log/httpd/domains/{domain}.log` for unique client IPs over a
-rolling 180-second window.
+- `discoveries`: complete, post-debounce OLS inventory. Presence of the key,
+  including an empty array, triggers reconciliation. Each row owns only
+  `domain`, `aliases`, `virtualHostName`, `source: "openlitespeed"`, and
+  `discoveredAt`.
+- `siteStacks`: per-domain `wordpressVersion`, `phpVersion`, `imagickVersion`,
+  `checkedAt`, and explicit `fieldStatus` values (`ok`, `unknown`, or
+  `unsupported`). Failed fields do not erase last-good values.
+- `activeVisitors3m`: `uniqueVisitorCount`, `windowSeconds: 180`, window start,
+  measurement time, and status.
+- `visitors24h`: local HLL result with `windowSeconds: 86400`, coverage seconds,
+  `algorithm: "hll"`, measurement time, and status.
 
-## Admin sync (read models)
+Agent ingest never owns `Server.controlPanelUrl` or
+`Website.wordpressAdminUrl`, and it never appends to the legacy active-visitor
+history table.
 
-Staff JWT only. Browser never sees `secretKey`. Enrollment plaintext returned
-once from `POST /api/v1/admin/servers/:id/enrollment-tokens`. Agent credential
-revoke: `POST /api/v1/admin/servers/:id/agent/revoke` with reason.
+## Command results
+
+`POST /commands/:id/result`
+
+```json
+{
+  "agentInstanceId": "installation UUID",
+  "status": "SUCCEEDED",
+  "finishedAt": "2026-08-21T08:01:00.000Z",
+  "stackSnapshot": { "domain": "example.com", "checkedAt": "...", "wordpressVersion": "6.8.2", "phpVersion": "8.3.12", "imagickVersion": "3.7.0", "fieldStatus": {} }
+}
+```
+
+Only `SUCCEEDED` and `FAILED` are accepted. Nest validates installation,
+domain, command, and lease binding. Duplicate terminal results are idempotent;
+a successful result stores the stack snapshot atomically.
+
+## Admin routes
+
+- `GET/PATCH /api/v1/admin/servers/:id` — includes admin-owned
+  `controlPanelUrl` (HTTPS or null).
+- `GET/PATCH /api/v1/admin/websites/:id` — includes admin-owned
+  `wordpressAdminUrl` plus latest discovery, stack, traffic, server, and agent
+  context.
+- `POST /api/v1/admin/discoveries/:id/stack-refresh`
+- `POST /api/v1/admin/websites/:id/stack-refresh`
+- `GET /api/v1/admin/agent-commands/:id`
+
+Duplicate refresh requests return the active command.

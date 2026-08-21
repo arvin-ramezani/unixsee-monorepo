@@ -33,8 +33,8 @@ Before making changes, read in this order as relevant to the task:
      [`docs/frontend/admin-domain-data-fetching.md`](./docs/frontend/admin-domain-data-fetching.md)
      (Layer 2), plus ADR [`0012`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md)
    - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
-  [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
-  and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
+     [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
+     and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
    - Agent: [`docs/agent/README.md`](./docs/agent/README.md)
 4. Product: [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md)
 5. Matching UX flow under [`docs/product/ux-flows/`](./docs/product/ux-flows/) when doing admin UI
@@ -69,6 +69,16 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
   indexes and cross-links.
 - Keep `.cursor/rules` thin; put lasting detail in `docs/`.
 
+## Code formatting
+
+- Every agent that creates or changes code must format every Prettier-supported
+  file it touched before handoff. Run Prettier with `--write` against the
+  explicit changed-file list and use the nearest project configuration.
+- Before claiming completion, run Prettier again with `--check` against the same
+  changed-file list and report any file that cannot be formatted.
+- Do not run repository-wide formatting when the task only changes a subset of
+  files, and do not format unrelated or user-owned changes.
+
 ## Deploy remotes (server repos)
 
 Development happens in this monorepo. **Deployment / staging / real-server
@@ -77,20 +87,20 @@ testing** uses separate single-app repositories per surface.
 When asked to **update the main repos** or **sync deploy repos**, follow
 [`docs/quality/deployment-remotes.md`](./docs/quality/deployment-remotes.md):
 
-| Monorepo path | Remote repo | Branch |
-|---|---|---|
-| `backend/` | `unixseemaster-pixel/unixsee-api` | `develop` |
-| `client/` | `unixseemaster-pixel/unixsee-web` | `staging` |
-| `admin-panel/` | `unixseemaster-pixel/unixsee-admin` | `dev` |
+| Monorepo path  | Remote repo                         | Branch    |
+| -------------- | ----------------------------------- | --------- |
+| `backend/`     | `unixseemaster-pixel/unixsee-api`   | `develop` |
+| `client/`      | `unixseemaster-pixel/unixsee-web`   | `staging` |
+| `admin-panel/` | `unixseemaster-pixel/unixsee-admin` | `dev`     |
 
 ## Cursor rules
 
-| Rule | When it applies |
-|---|---|
-| [`.cursor/rules/monorepo.mdc`](./.cursor/rules/monorepo.mdc) | Always |
-| [`.cursor/rules/frontend-next.mdc`](./.cursor/rules/frontend-next.mdc) | `admin-panel/**`, `client/**` |
-| [`.cursor/rules/backend-nestjs.mdc`](./.cursor/rules/backend-nestjs.mdc) | `backend/**` |
-| [`.cursor/rules/docs-product.mdc`](./.cursor/rules/docs-product.mdc) | `docs/product/**` |
+| Rule                                                                     | When it applies               |
+| ------------------------------------------------------------------------ | ----------------------------- |
+| [`.cursor/rules/monorepo.mdc`](./.cursor/rules/monorepo.mdc)             | Always                        |
+| [`.cursor/rules/frontend-next.mdc`](./.cursor/rules/frontend-next.mdc)   | `admin-panel/**`, `client/**` |
+| [`.cursor/rules/backend-nestjs.mdc`](./.cursor/rules/backend-nestjs.mdc) | `backend/**`                  |
+| [`.cursor/rules/docs-product.mdc`](./.cursor/rules/docs-product.mdc)     | `docs/product/**`             |
 
 ## Documentation standards
 

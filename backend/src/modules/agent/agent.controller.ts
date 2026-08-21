@@ -4,6 +4,7 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UnauthorizedException,
   UseGuards,
@@ -11,6 +12,7 @@ import {
 
 import { AgentSignatureGuard } from './guards/agent-signature.guard.js';
 import {
+  AgentCommandResultDto,
   EnrollAgentDto,
   HeartbeatAgentDto,
   Phase1IngestDto,
@@ -54,11 +56,7 @@ export class AgentController {
       serverId: result.serverId,
     });
 
-    return ApiResponseBuilder.created({
-      vpsNodeId: result.vpsNodeId,
-      serverId: result.serverId,
-      secretKey: result.secretKey,
-    });
+    return ApiResponseBuilder.created(result);
   }
 
   @Public()
@@ -66,8 +64,7 @@ export class AgentController {
   @UseGuards(AgentSignatureGuard)
   @HttpCode(HttpStatus.OK)
   async heartbeat(@Body() body: HeartbeatAgentDto) {
-    const data = await this.agentService.heartbeat(body);
-    return ApiResponseBuilder.ok(data);
+    return ApiResponseBuilder.ok(await this.agentService.heartbeat(body));
   }
 
   @Public()
@@ -76,19 +73,27 @@ export class AgentController {
   @HttpCode(HttpStatus.CREATED)
   async ingest(@Body() payload: Phase1IngestDto) {
     this.logger.debug('agent.ingest.received', {
-      machineId: payload.machineId,
-      discoveryCount: payload.discoveries.length,
-      visitorSampleCount: payload.activeVisitors3m?.length ?? 0,
+      agentInstanceId: payload.agentInstanceId,
+      discoveryCount: payload.discoveries?.length ?? 0,
+      stackCount: payload.siteStacks?.length ?? 0,
+      activeVisitorCount: payload.activeVisitors3m?.length ?? 0,
+      visitors24hCount: payload.visitors24h?.length ?? 0,
     });
+    return ApiResponseBuilder.created(
+      await this.agentService.processPhase1Ingest(payload),
+    );
+  }
 
-    const result = await this.agentService.processPhase1Ingest(payload);
-
-    this.logger.log('agent.ingest.completed', {
-      machineId: payload.machineId,
-      vpsNodeId: result.vpsNodeId,
-      discoveryCount: result.discoveryCount,
-    });
-
-    return ApiResponseBuilder.created(result);
+  @Public()
+  @Post('commands/:id/result')
+  @UseGuards(AgentSignatureGuard)
+  @HttpCode(HttpStatus.OK)
+  async commandResult(
+    @Param('id') id: string,
+    @Body() body: AgentCommandResultDto,
+  ) {
+    return ApiResponseBuilder.ok(
+      await this.agentService.submitCommandResult(id, body),
+    );
   }
 }

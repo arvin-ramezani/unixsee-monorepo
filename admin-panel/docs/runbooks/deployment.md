@@ -105,3 +105,11 @@ public URLs.
 - Agent operator setup: [`../../../docs/agent/setup.md`](../../../docs/agent/setup.md)
 - Admin Nest session: [`../../../docs/frontend/admin-data-fetching.md`](../../../docs/frontend/admin-data-fetching.md)
 - Servers / enrollment UX: [`../../../docs/product/ux-flows/admin-servers-websites-agents.md`](../../../docs/product/ux-flows/admin-servers-websites-agents.md)
+
+### Agent 0.2 maintenance-window order
+
+Deploy the backend migration first, then admin assets and the regenerated 0.2
+bundle. Reissue one token and rerun the installer on every VPS. Version 0.1
+agents are expected to disconnect immediately and their tokens must not be
+reused. The generated `unixsee-agent.tar.gz` remains an uploaded, gitignored
+artifact.

@@ -6,9 +6,7 @@ import {
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
-import {
-  WebsiteLifecycleStatus,
-} from '#/generated/prisma/enums.js';
+import { WebsiteLifecycleStatus } from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -80,7 +78,12 @@ export class WebsitesService {
       ...(params?.search
         ? {
             OR: [
-              { domain: { contains: params.search, mode: 'insensitive' as const } },
+              {
+                domain: {
+                  contains: params.search,
+                  mode: 'insensitive' as const,
+                },
+              },
               {
                 displayName: {
                   contains: params.search,
@@ -98,6 +101,22 @@ export class WebsitesService {
         include: {
           tenant: { select: { id: true, name: true } },
           plan: { select: { id: true, code: true, nameEn: true } },
+          vpsNode: {
+            select: {
+              id: true,
+              status: true,
+              agentVersion: true,
+              lastHeartbeatAt: true,
+              server: {
+                select: { id: true, name: true, controlPanelUrl: true },
+              },
+            },
+          },
+          discoveries: {
+            orderBy: { lastIngestedAt: 'desc' },
+            take: 1,
+            include: { trafficSnapshot: true },
+          },
         },
         orderBy: { createdAt: 'desc' },
         skip: params?.skip ?? 0,
@@ -109,6 +128,56 @@ export class WebsitesService {
     return { items, total };
   }
 
+  async getAdmin(websiteId: string) {
+    const website = await this.prisma.website.findUnique({
+      where: { id: websiteId },
+      include: {
+        tenant: { select: { id: true, name: true } },
+        plan: { select: { id: true, code: true, nameEn: true } },
+        vpsNode: {
+          select: {
+            id: true,
+            status: true,
+            agentVersion: true,
+            lastHeartbeatAt: true,
+            server: {
+              select: { id: true, name: true, controlPanelUrl: true },
+            },
+          },
+        },
+        discoveries: {
+          orderBy: { lastIngestedAt: 'desc' },
+          take: 1,
+          include: { trafficSnapshot: true },
+        },
+      },
+    });
+    if (!website) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    return website;
+  }
+
+  async updateAdmin(
+    websiteId: string,
+    input: { wordpressAdminUrl?: string | null },
+  ) {
+    const exists = await this.prisma.website.findUnique({
+      where: { id: websiteId },
+      select: { id: true },
+    });
+    if (!exists) {
+      throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+    }
+    return this.prisma.website.update({
+      where: { id: websiteId },
+      data: {
+        ...(input.wordpressAdminUrl !== undefined
+          ? { wordpressAdminUrl: input.wordpressAdminUrl || null }
+          : {}),
+      },
+    });
+  }
   async createAdmin(input: {
     tenantId: string;
     vpsNodeId: string;
@@ -139,7 +208,10 @@ export class WebsitesService {
     return website;
   }
 
-  async assign(websiteId: string, input: { tenantId: string; planId?: string }) {
+  async assign(
+    websiteId: string,
+    input: { tenantId: string; planId?: string },
+  ) {
     const website = await this.prisma.website.findUnique({
       where: { id: websiteId },
     });

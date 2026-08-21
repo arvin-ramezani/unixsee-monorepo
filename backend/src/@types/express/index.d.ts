@@ -14,7 +14,7 @@ declare global {
     interface Request {
       user?: User;
       requestId?: string;
-      machineId?: string;
+      agentInstanceId?: string;
       rawBody?: Buffer;
     }
   }

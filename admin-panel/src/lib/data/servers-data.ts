@@ -48,6 +48,16 @@ export type WebsiteDiscoveryType = {
   application: typeof SERVER_STACK.APPLICATION;
   assignmentStatus: DiscoveryAssignmentStatusType;
   assignedWebsiteId?: string;
+  virtualHostName?: string;
+  isPresent?: boolean;
+  removedAt?: string;
+  stackCheckedAt?: string;
+  stackLastSucceededAt?: string;
+  fieldStatus?: Record<string, { state: string; reason?: string }>;
+  activeVisitorCount?: number | null;
+  activeMeasuredAt?: string;
+  uniqueVisitors24h?: number | null;
+  visitors24hCoverageSeconds?: number;
   discoveredAt: string;
   /** Phase 1 agent-sourced fields (optional on fixtures until Nest wiring). */
   controlPanelUrl?: string;
@@ -92,6 +102,7 @@ export type ServerType = {
   label: string;
   /** Host IP address (Nest `ipAddress`). */
   ip: string;
+  controlPanelUrl?: string;
   capacitySummary: string;
   notes: string;
   createdAt: string;
@@ -420,10 +431,10 @@ export function getServersSummary(servers: ServerType[]) {
         count +
         server.discoveries.filter(
           (discovery) =>
-            discovery.assignmentStatus === DISCOVERY_ASSIGNMENT_STATUS.UNASSIGNED,
+            discovery.assignmentStatus ===
+            DISCOVERY_ASSIGNMENT_STATUS.UNASSIGNED,
         ).length,
       0,
     ),
   };
 }
-

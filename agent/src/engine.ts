@@ -1,239 +1,271 @@
-import { hostname } from "node:os";
-
+import { join } from "node:path";
 import {
   AgentApiError,
-  sendHeartbeat as defaultSendHeartbeat,
-  sendPhase1Ingest as defaultSendPhase1Ingest,
+  sendCommandResult,
+  sendHeartbeat,
+  sendPhase1Ingest,
 } from "./api/client.js";
-import { getConfig } from "./config/config.js";
-import { initializeIdentity, type HostIdentity } from "./discovery.js";
+import type { AppConfig } from "./config/config.js";
+import type {
+  AgentCommand,
+  CommandResult,
+  Phase1Ingest,
+} from "./contracts/phase1-ingest.js";
+import { OlsDiscoveryTracker, scanOlsInventory } from "./discovery.js";
+import type { FilesystemPolicy } from "./filesystem-policy.js";
 import { clearPersistedAgentSecret } from "./security.js";
-import { enrichSiteStack } from "./site-stack.js";
-import {
-  collectActiveVisitors3m,
-  ensureTrafficTails,
-} from "./traffic.js";
+import { probeSiteStack, probeSiteStacks } from "./site-stack.js";
+import { readJson, writeJson } from "./state.js";
+import { TrafficCollector } from "./traffic.js";
 
-const MAX_QUEUE_SIZE = 30;
-
-export type EngineDependencies = {
-  sendIngest?: (payload: unknown, secretKey: string) => Promise<unknown>;
-  sendHeartbeat?: (
-    machineId: string,
-    secretKey: string,
-    hostname?: string,
-  ) => Promise<unknown>;
-  clearSecret?: () => Promise<void>;
-  resolveHostname?: () => string;
-  now?: () => Date;
-  /** When false, skip intervals and initial ticks (tests). Default true. */
-  autoStart?: boolean;
-};
+const MAX_QUEUE = 30;
+const MAX_BACKOFF_MS = 5 * 60 * 1000;
+export function retryDelayMs(attempt: number, random = Math.random): number {
+  const exponential = Math.min(
+    MAX_BACKOFF_MS,
+    1_000 * 2 ** Math.max(0, attempt - 1),
+  );
+  return Math.round(exponential * (0.8 + random() * 0.4));
+}
+type QueueItem =
+  | { kind: "ingest"; payload: Phase1Ingest }
+  | { kind: "command"; commandId: string; payload: CommandResult };
+type CachedResults = Record<string, CommandResult>;
 
 export type EngineHandle = {
-  enqueue: (payload: unknown) => void;
-  flushQueue: () => Promise<void>;
-  runHeartbeat: () => Promise<void>;
-  runTransmit: () => Promise<void>;
-  buildIngestPayload: () => Promise<unknown>;
-  getQueueLength: () => number;
-  isSecretInvalidated: () => boolean;
-  getActiveSecret: () => string | null;
-  stop: () => void;
+  runDiscovery(): Promise<void>;
+  runHeartbeat(): Promise<void>;
+  runTrafficPoll(): Promise<void>;
+  runActiveVisitors(): Promise<void>;
+  runVisitors24h(): Promise<void>;
+  runScheduledStack(): Promise<void>;
+  flushQueue(): Promise<void>;
+  getQueueLength(): number;
+  stop(): void;
 };
 
-export function createEngine(
-  hostIdentity: HostIdentity,
-  secretKey: string,
-  deps: EngineDependencies = {},
-): EngineHandle {
-  const sendIngest = deps.sendIngest ?? defaultSendPhase1Ingest;
-  const sendHeartbeatFn = deps.sendHeartbeat ?? defaultSendHeartbeat;
-  const clearSecret = deps.clearSecret ?? clearPersistedAgentSecret;
-  const resolveHostname = deps.resolveHostname ?? hostname;
-  const now = deps.now ?? (() => new Date());
+export async function createEngine(input: {
+  agentInstanceId: string;
+  secret: string;
+  config: AppConfig;
+  policy: FilesystemPolicy;
+  autoStart?: boolean;
+}): Promise<EngineHandle> {
+  const { agentInstanceId, config, policy } = input;
+  let secret: string | null = input.secret;
+  let flushing = false;
+  let retryAttempt = 0;
+  let retryAfter = 0;
+  let inventory: Awaited<ReturnType<typeof scanOlsInventory>> = [];
+  const tracker = new OlsDiscoveryTracker();
+  const queue: QueueItem[] = [];
+  const timers: Array<
+    ReturnType<typeof setInterval> | ReturnType<typeof setTimeout>
+  > = [];
+  const traffic = new TrafficCollector(config, policy);
+  const resultPath = policy.assertStatePath(
+    join(config.stateDir, "command-results.json"),
+  );
+  let results = (await readJson<CachedResults>(resultPath, policy)) ?? {};
+  await traffic.restore();
 
-  let offlineQueue: unknown[] = [];
-  let isTransmitting = false;
-  let activeSecretKey: string | null = secretKey;
-  let secretInvalidated = false;
-  let identity: HostIdentity | null = hostIdentity;
-  const timers: ReturnType<typeof setInterval>[] = [];
+  const envelope = (
+    section: Partial<
+      Pick<
+        Phase1Ingest,
+        "discoveries" | "siteStacks" | "activeVisitors3m" | "visitors24h"
+      >
+    >,
+  ): Phase1Ingest => ({
+    schemaVersion: "phase1",
+    agentInstanceId,
+    agentVersion: config.agentVersion,
+    sentAt: new Date().toISOString(),
+    ...section,
+  });
+  const enqueue = (item: QueueItem) => {
+    queue.push(item);
+    if (queue.length > MAX_QUEUE) queue.shift();
+  };
 
-  function assertSecretReady(): string {
-    if (!activeSecretKey || secretInvalidated) {
-      throw new Error(
-        "Agent secret is missing or invalidated. Re-enroll with a new ENROLLMENT_TOKEN.",
-      );
-    }
-    return activeSecretKey;
+  async function invalidateSecret(): Promise<void> {
+    secret = null;
+    await clearPersistedAgentSecret(config.stateDir, policy);
   }
-
-  async function invalidateSecret(reason: string): Promise<void> {
-    secretInvalidated = true;
-    activeSecretKey = null;
-    try {
-      await clearSecret();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Security] Failed to clear persisted secret: ${message}`);
-    }
-    console.error(
-      `[Security] ${reason} Re-issue an enrollment token from the admin panel and restart with ENROLLMENT_TOKEN.`,
-    );
-  }
-
-  async function buildIngestPayload(): Promise<unknown> {
-    if (!identity) {
-      throw new Error("Host identity not initialized.");
-    }
-
-    const discoveries = await enrichSiteStack(identity.domains);
-    const domains = identity.domains.map((domain) => domain.domain);
-    await ensureTrafficTails(domains);
-    const activeVisitors3m = collectActiveVisitors3m(domains);
-    const cfg = getConfig();
-
-    return {
-      schemaVersion: "phase1" as const,
-      machineId: identity.machineId,
-      agentVersion: cfg.agentVersion,
-      sentAt: now().toISOString(),
-      discoveries,
-      activeVisitors3m,
-    };
-  }
-
   async function flushQueue(): Promise<void> {
-    if (isTransmitting || offlineQueue.length === 0 || secretInvalidated) {
+    if (flushing || !secret || Date.now() < retryAfter) return;
+    flushing = true;
+    try {
+      while (queue.length && secret) {
+        const item = queue[0];
+        if (item.kind === "ingest")
+          await sendPhase1Ingest(item.payload, secret);
+        else await sendCommandResult(item.commandId, item.payload, secret);
+        queue.shift();
+        retryAttempt = 0;
+        retryAfter = 0;
+      }
+    } catch (error) {
+      if (error instanceof AgentApiError && error.status === 401) {
+        await invalidateSecret();
+      } else {
+        retryAttempt += 1;
+        retryAfter = Date.now() + retryDelayMs(retryAttempt);
+      }
+    } finally {
+      flushing = false;
+    }
+  }
+  async function transmit(section: Parameters<typeof envelope>[0]) {
+    enqueue({ kind: "ingest", payload: envelope(section) });
+    await flushQueue();
+  }
+
+  async function runDiscovery(): Promise<void> {
+    try {
+      const previous = new Set(inventory.map((item) => item.domain));
+      inventory = tracker.acceptSuccessfulScan(
+        await scanOlsInventory(config, policy),
+      );
+      await transmit({ discoveries: inventory });
+      const added = inventory
+        .filter((item) => !previous.has(item.domain))
+        .map((item) => item.domain);
+      if (added.length) await runStack(added);
+    } catch {
+      /* unsuccessful scans never advance removal debounce */
+    }
+  }
+  async function runStack(domains: string[]): Promise<void> {
+    if (!domains.length) return;
+    await transmit({ siteStacks: await probeSiteStacks(domains, config) });
+  }
+  async function runTrafficPoll(): Promise<void> {
+    await traffic.poll(inventory.map((item) => item.domain));
+  }
+  async function runActiveVisitors(): Promise<void> {
+    await transmit({
+      activeVisitors3m: traffic.activeSamples(
+        inventory.map((item) => item.domain),
+      ),
+    });
+  }
+  async function runVisitors24h(): Promise<void> {
+    await transmit({
+      visitors24h: traffic.visitors24hSamples(
+        inventory.map((item) => item.domain),
+      ),
+    });
+    await traffic.persist();
+  }
+  async function runScheduledStack(): Promise<void> {
+    await runStack(inventory.map((item) => item.domain));
+  }
+
+  async function persistResult(
+    commandId: string,
+    result: CommandResult,
+  ): Promise<void> {
+    results[commandId] = result;
+    const entries = Object.entries(results);
+    if (entries.length > 30) results = Object.fromEntries(entries.slice(-30));
+    await writeJson(resultPath, results, policy);
+  }
+  async function executeCommand(command: AgentCommand): Promise<void> {
+    const cached = results[command.id];
+    if (cached) {
+      enqueue({ kind: "command", commandId: command.id, payload: cached });
       return;
     }
-    isTransmitting = true;
-    let transmitted = 0;
-
-    try {
-      while (offlineQueue.length > 0 && !secretInvalidated) {
-        const secret = assertSecretReady();
-        const payload = offlineQueue[0];
-        await sendIngest(payload, secret);
-        offlineQueue.shift();
-        transmitted += 1;
-      }
-      if (transmitted > 0) {
-        console.log(`[Network] Transmitted ${transmitted} ingest payload(s).`);
-      }
-    } catch (error: unknown) {
-      if (error instanceof AgentApiError && error.status === 401) {
-        await invalidateSecret("Ingest rejected with HTTP 401.");
-        return;
-      }
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Network] Transmission failed:`, message);
-    } finally {
-      isTransmitting = false;
-    }
+    const now = Date.now();
+    if (
+      command.type !== "REFRESH_SITE_STACK" ||
+      Date.parse(command.expiresAt) <= now ||
+      Date.parse(command.leaseExpiresAt) <= now ||
+      !inventory.some((item) => item.domain === command.domain)
+    )
+      return;
+    const snapshot = await probeSiteStack(command.domain, config);
+    const succeeded = snapshot.fieldStatus.phpVersion.state === "ok";
+    const result: CommandResult = succeeded
+      ? {
+          agentInstanceId,
+          status: "SUCCEEDED",
+          finishedAt: new Date().toISOString(),
+          stackSnapshot: snapshot,
+        }
+      : {
+          agentInstanceId,
+          status: "FAILED",
+          finishedAt: new Date().toISOString(),
+          errorCode: snapshot.fieldStatus.phpVersion.reason ?? "probe_failed",
+        };
+    await persistResult(command.id, result);
+    enqueue({ kind: "command", commandId: command.id, payload: result });
   }
-
-  function enqueue(payload: unknown): void {
-    offlineQueue.push(payload);
-    if (offlineQueue.length > MAX_QUEUE_SIZE) {
-      offlineQueue.shift();
-      console.warn("[Network] Offline queue full; dropped oldest payload.");
-    }
-  }
-
   async function runHeartbeat(): Promise<void> {
-    if (!identity || secretInvalidated) return;
+    if (!secret) return;
     try {
-      const secret = assertSecretReady();
-      await sendHeartbeatFn(identity.machineId, secret, resolveHostname());
-    } catch (error: unknown) {
-      if (error instanceof AgentApiError && error.status === 401) {
-        await invalidateSecret("Heartbeat rejected with HTTP 401.");
-        return;
-      }
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[Network] Heartbeat failed:`, message);
-    }
-  }
-
-  async function runTransmit(): Promise<void> {
-    if (!identity || secretInvalidated) return;
-    try {
-      const payload = await buildIngestPayload();
-      enqueue(payload);
+      const response = await sendHeartbeat(agentInstanceId, secret);
+      for (const command of response.commands) await executeCommand(command);
       await flushQueue();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Engine] Transmit tick failed:`, message);
+    } catch (error) {
+      if (error instanceof AgentApiError && error.status === 401)
+        await invalidateSecret();
     }
   }
 
-  async function refreshDiscovery(): Promise<void> {
-    try {
-      const refreshed = await initializeIdentity();
-      if (identity) {
-        identity.domains = refreshed.domains;
-      } else {
-        identity = refreshed;
-      }
-      console.log(
-        `[Discovery] Rediscovery complete. Domains: ${refreshed.domains.length}`,
-      );
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`[Discovery] Rediscovery failed:`, message);
-    }
-  }
-
-  const cfg = getConfig();
-  console.log(
-    `[Engine] Phase 1 loops — transmit ${cfg.transmitIntervalMs / 1000}s, heartbeat ${cfg.heartbeatIntervalMs / 1000}s, rediscovery ${cfg.rediscoveryIntervalMs / 1000}s.`,
-  );
-
-  const autoStart = deps.autoStart !== false;
-  if (autoStart) {
-    void runHeartbeat();
-    void runTransmit();
-
+  function scheduleStackWithJitter(): void {
+    const jitter = 0.9 + Math.random() * 0.2;
     timers.push(
-      setInterval(() => {
-        void runHeartbeat();
-      }, cfg.heartbeatIntervalMs),
-    );
-    timers.push(
-      setInterval(() => {
-        void runTransmit();
-      }, cfg.transmitIntervalMs),
-    );
-    timers.push(
-      setInterval(() => {
-        void refreshDiscovery();
-      }, cfg.rediscoveryIntervalMs),
+      setTimeout(
+        async () => {
+          await runScheduledStack();
+          scheduleStackWithJitter();
+        },
+        Math.round(config.intervals.stackMs * jitter),
+      ),
     );
   }
-
-  return {
-    enqueue,
-    flushQueue,
+  const handle: EngineHandle = {
+    runDiscovery,
     runHeartbeat,
-    runTransmit,
-    buildIngestPayload,
-    getQueueLength: () => offlineQueue.length,
-    isSecretInvalidated: () => secretInvalidated,
-    getActiveSecret: () => activeSecretKey,
+    runTrafficPoll,
+    runActiveVisitors,
+    runVisitors24h,
+    runScheduledStack,
+    flushQueue,
+    getQueueLength: () => queue.length,
     stop: () => {
       for (const timer of timers) {
         clearInterval(timer);
+        clearTimeout(timer);
       }
-      timers.length = 0;
     },
   };
-}
-
-export function startEngine(
-  hostIdentity: HostIdentity,
-  secretKey: string,
-): EngineHandle {
-  return createEngine(hostIdentity, secretKey);
+  if (input.autoStart !== false) {
+    await runDiscovery();
+    await runTrafficPoll();
+    await runHeartbeat();
+    timers.push(
+      setInterval(() => void runHeartbeat(), config.intervals.heartbeatMs),
+    );
+    timers.push(
+      setInterval(() => void runTrafficPoll(), config.intervals.trafficPollMs),
+    );
+    timers.push(
+      setInterval(
+        () => void runActiveVisitors(),
+        config.intervals.activeVisitorsMs,
+      ),
+    );
+    timers.push(
+      setInterval(() => void runVisitors24h(), config.intervals.visitors24hMs),
+    );
+    timers.push(
+      setInterval(() => void runDiscovery(), config.intervals.discoveryMs),
+    );
+    scheduleStackWithJitter();
+  }
+  return handle;
 }

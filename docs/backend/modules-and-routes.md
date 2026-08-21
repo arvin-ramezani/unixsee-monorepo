@@ -159,9 +159,10 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 
 | Method | Path | Audience |
 |---|---|---|
-| POST | `/api/internal/agent/v1/enroll` | Agent (one-time `x-enrollment-token` → `secretKey`) |
-| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; `schemaVersion: "phase1"` discoveries + `activeVisitors3m`) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + `agentVersion`) |
+| POST | `/api/internal/agent/v1/enroll` | Agent (`agentInstanceId`; one-time token → secret) |
+| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; independently optional OLS/stack/3m/24h sections) |
+| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + command lease) |
+| POST | `/api/internal/agent/v1/commands/:id/result` | Agent (HMAC terminal command result) |
 
 Product install uses enrollment, then HMAC. **Source of truth:**
 [`../agent/prd.md`](../agent/prd.md) and
@@ -242,6 +243,7 @@ user/tenant and at most one active plan per website.
 | POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
 | POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |
 
+| GET/PATCH | `/api/v1/admin/websites/:id` | Admin (manual WP URL + latest agent context) |
 ### Discoveries — add `discoveries`
 
 | Method | Path | Audience |
@@ -249,6 +251,10 @@ user/tenant and at most one active plan per website.
 | GET | `/api/v1/admin/discoveries` | Admin |
 | GET | `/api/v1/admin/discoveries/:id` | Admin |
 | POST | `/api/v1/admin/discoveries/:id/assign` | Admin → managed website |
+
+| POST | `/api/v1/admin/discoveries/:id/stack-refresh` | Admin → queued Agent command |
+| POST | `/api/v1/admin/websites/:id/stack-refresh` | Admin → queued Agent command |
+| GET | `/api/v1/admin/agent-commands/:id` | Admin → command status |
 
 Discovery never enables a plan or customer visibility by itself. Assignment may
 default plan from a linked plan request.

@@ -17,7 +17,7 @@ and WooCommerce websites. Phase 1 product behavior is defined in
 | Public website + customer dashboard | `client/` | Customer-facing Next.js application |
 | Administrator panel | `admin-panel/` | Staff workflows for operating the platform |
 | API and control plane | `backend/` | NestJS: auth, persistence, orchestration, agent control |
-| Phase 1 VPS agent | `agent/` | Inventory, site stack, 3m visitors (PRD; build from scratch) |
+| Phase 1 VPS agent | `agent/` | OLS inventory, protected site-stack probe, private 3m/24h visitors, outbound commands (v0.2) |
 | Monitoring edge agent | `monitoring-agent/` | Host/LiteSpeed monitoring (existing; develop later) |
 
 Shared documentation lives in `docs/`. There is no shared application package
@@ -52,6 +52,7 @@ Persian and RTL-first; see [`docs/frontend/styling.md`](../frontend/styling.md).
   [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
 - `agent/` is the Phase 1 VPS agent scaffold owned by
   [`../agent/prd.md`](../agent/prd.md).
+  Accepted boundary: [`decisions/0014-web-server-only-agent.md`](./decisions/0014-web-server-only-agent.md).
 - `monitoring-agent/` holds the existing monitoring codebase for later
   development. See [`../../monitoring-agent/README.md`](../../monitoring-agent/README.md).
 - `client/` is an active public + customer Next.js app (Nest auth/JWT fetch

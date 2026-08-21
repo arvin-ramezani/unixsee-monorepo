@@ -1,76 +1,63 @@
-# Unixsee Phase 1 VPS Agent
+# Unixsee agent 0.2
 
-> **Status:** Implemented (Phase 1 slices)  
-> **PRD:** [`../docs/agent/prd.md`](../docs/agent/prd.md)  
-> **Contract:** [`../docs/agent/phase1-api-contract.md`](../docs/agent/phase1-api-contract.md)  
-> **ADR:** [`../docs/architecture/decisions/0008-phase1-agent-typescript-node.md`](../docs/architecture/decisions/0008-phase1-agent-typescript-node.md)  
-> **Not this package:** [`../monitoring-agent/`](../monitoring-agent/)
+The Phase 1 agent is a web-server-only, outbound-only service for managed
+Ubuntu VPS hosts running DirectAdmin and OpenLiteSpeed. The accepted contract is
+[`../docs/agent/prd.md`](../docs/agent/prd.md).
 
-Outbound-only edge agent for managed DirectAdmin + OpenLiteSpeed WordPress /
-WooCommerce hosts. Reports discovery, site stack/links, and 3-minute active
-visitors to NestJS.
+## Runtime boundary
 
-## Setup the agent on a VPS
+The Node service runs as `unixsee-agent` and may read only:
 
-**Start here:** [`../docs/agent/setup.md`](../docs/agent/setup.md)
+- `/opt/unixsee-agent` application/state files;
+- exact installer-selected OLS routing configuration;
+- approved OLS access logs.
 
-One-line install (Ubuntu, after admin issues a token):
+It does not read DirectAdmin data, site roots, machine identity, `/home`,
+`/etc/passwd`, or `/proc`, and it does not spawn child processes. The privileged
+installer separately provisions a loopback-only, secret-header PHP probe through
+DirectAdmin's global custom OLS template mechanism.
+
+## Collected data
+
+- deterministic active OLS vhost inventory with two-successful-scan removal;
+- WordPress/PHP/Imagick versions through the protected local request;
+- exact HMAC-pseudonymized unique visitors over 180 seconds;
+- 24-hour local p=12 HLL estimate with 288 five-minute buckets and coverage.
+
+Raw visitor IP addresses are never logged, transmitted, or persisted.
+
+## Schedules
+
+| Work | Interval |
+|---|---:|
+| Heartbeat and command leases | 30 seconds |
+| Access-log polling | 1 second default |
+| Active visitors | 30 seconds |
+| 24-hour HLL snapshot | 5 minutes |
+| OLS inventory | 10 minutes |
+| Stack probe | startup/new/manual and 6 hours with jitter |
+
+Typed payloads use a bounded 30-item offline queue. The only executable command
+is `REFRESH_SITE_STACK`; duplicate leases resend the persisted terminal result.
+
+## Development
 
 ```bash
-curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN
+npm install
+npm run typecheck
+npm test
+npm run build
 ```
 
-Publish install assets to the admin panel static host:
+Required production variables are documented in [`.env.example`](./.env.example).
+The installation UUID and secret live in the mode-0600 state directory.
+
+## Packaging
 
 ```bash
 bash agent/scripts/pack-for-panel.sh
 ```
 
-## Local development
-
-```bash
-cd agent
-npm install
-cp .env.example .env
-npm run build
-npm test
-```
-
-## Runtime env
-
-| Variable | Purpose |
-|---|---|
-| `API_BASE_URL` | NestJS base URL |
-| `ENROLLMENT_TOKEN` | One-time token from admin reveal |
-| `AGENT_SECRET` | Persisted after enroll (`0600` `.env`) |
-| `ACCESS_LOG_DIR` | Default `/var/log/httpd/domains` |
-| `OPENLITESPEED_SERVER_ROOT` | Default `/usr/local/lsws` |
-| `DIRECTADMIN_BASE_URL` | Optional override for control-panel URL |
-
-## Access logs
-
-Per-site logs: `/var/log/httpd/domains/{domain}.log`  
-Example: `tail -f /var/log/httpd/domains/farcoland.com.log`
-
-## Non-root ACL (Server — Ubuntu)
-
-Do not run as root. Typical pattern:
-
-```bash
-sudo useradd --system --home /opt/unixsee-agent --shell /usr/sbin/nologin unixsee-agent
-sudo usermod -aG diradmin unixsee-agent
-sudo setfacl -m g:unixsee-agent:rx /usr/local/directadmin/data/users
-sudo setfacl -R -m g:unixsee-agent:r-x /var/log/httpd/domains
-sudo setfacl -m g:unixsee-agent:rx /usr/local/lsws/conf
-```
-
-Install unit: [`systemd/unixsee-agent.service`](./systemd/unixsee-agent.service).
-
-## Security
-
-- Outbound HTTPS only (enroll / heartbeat / ingest).
-- HMAC-SHA256 over `{timestamp}.{body}`; never log tokens or secrets.
-- On admin revoke (or ingest/heartbeat HTTP 401), the agent clears in-memory and
-  persisted `AGENT_SECRET`. Set a new `ENROLLMENT_TOKEN` and restart to re-enroll.
-- Unreadable access logs report `activeVisitors3m.status.unsupported`, not a
-  silent zero count.
+This builds and copies `install.sh`, the service unit, and probe assets to the
+admin public assets. `unixsee-agent.tar.gz` is generated for deployment and must
+not be committed.

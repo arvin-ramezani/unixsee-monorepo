@@ -1,5 +1,11 @@
 # UX Flow Specification
 
+> **Accepted v0.2 update (2026-08-21):** The web-server-only PRD and ADR 0014
+> supersede older discovery research below. Live UX uses OLS inventory only;
+> DirectAdmin/WP admin URLs are manual fields; stack refresh is Admin → Nest →
+> heartbeat command → protected local probe; 3m/24h traffic shows freshness and
+> warming coverage while preserving last-good stack values on failures.
+
 ## Document control
 
 | Field | Value |

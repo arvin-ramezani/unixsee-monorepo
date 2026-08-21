@@ -1,245 +1,215 @@
-import { createReadStream, watch, type FSWatcher } from "node:fs";
-import { access, stat } from "node:fs/promises";
-import { createInterface } from "node:readline";
+import { createHmac, randomBytes } from "node:crypto";
+import { promises as fs } from "node:fs";
+import { isIP } from "node:net";
 import { join } from "node:path";
+import type { AppConfig } from "./config/config.js";
+import type {
+  ActiveVisitors3m,
+  Visitors24h,
+} from "./contracts/phase1-ingest.js";
+import type { FilesystemPolicy } from "./filesystem-policy.js";
+import { RollingHll24h } from "./hll.js";
+import { readJson, writeJson } from "./state.js";
 
-import { getConfig } from "./config/config.js";
+type Cursor = { inode: number; offset: number; partial: string };
+type Persisted = {
+  salt: string;
+  coverageStartedAt: string;
+  cursors: Record<string, Cursor>;
+  hll: Record<string, Record<string, string>>;
+};
 
-export type VisitorFieldState = "ok" | "unknown" | "unsupported";
-
-export interface VisitorStatus {
-  state: VisitorFieldState;
-  reason?: string;
+function normalizeIp(token: string): string | null {
+  let candidate = token.trim();
+  if (candidate.startsWith("[") && candidate.includes("]"))
+    candidate = candidate.slice(1, candidate.indexOf("]"));
+  if (isIP(candidate)) return candidate.toLowerCase();
+  const ipv4Port = candidate.match(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/);
+  return ipv4Port && isIP(ipv4Port[1]) ? ipv4Port[1] : null;
 }
 
-export interface ActiveVisitorsSample {
-  domain: string;
-  uniqueIpCount: number;
-  windowSeconds: number;
-  windowStartedAt: string;
-  measuredAt: string;
-  status?: VisitorStatus;
-}
-
-interface IpHit {
-  ip: string;
-  atMs: number;
-}
-
-interface DomainTailState {
-  domain: string;
-  logPath: string;
-  hits: IpHit[];
-  byteOffset: number;
-  inode: number | null;
-  watching: boolean;
-  watcher: FSWatcher | null;
-  readError: VisitorStatus | null;
-}
-
-const domainStates = new Map<string, DomainTailState>();
-
-const IP_PATTERN = /^(\S+)\s+\S+\s+\S+\s+\[([^\]]+)\]/;
-
-function parseLogLine(line: string): { ip: string; atMs: number } | null {
-  const match = line.match(IP_PATTERN);
-  if (!match) return null;
-
-  const ip = match[1];
-  if (!ip || ip === "-") return null;
-
-  const date = new Date(match[2].replace(":", " "));
-  const atMs = Number.isNaN(date.getTime()) ? Date.now() : date.getTime();
-  return { ip, atMs };
-}
-
-function pruneHits(hits: IpHit[], windowMs: number, nowMs: number): IpHit[] {
-  const cutoff = nowMs - windowMs;
-  return hits.filter((hit) => hit.atMs >= cutoff);
-}
-
-function uniqueIpCount(hits: IpHit[]): number {
-  return new Set(hits.map((hit) => hit.ip)).size;
-}
-
-function closeWatcher(state: DomainTailState): void {
-  if (state.watcher) {
-    state.watcher.close();
-    state.watcher = null;
-  }
-  state.watching = false;
-}
-
-async function ensureState(domain: string): Promise<DomainTailState> {
-  const existing = domainStates.get(domain);
-  if (existing) return existing;
-
-  const logPath = join(getConfig().accessLogDir, `${domain}.log`);
-  const state: DomainTailState = {
-    domain,
-    logPath,
-    hits: [],
-    byteOffset: 0,
-    inode: null,
-    watching: false,
-    watcher: null,
-    readError: null,
+function parseApacheTime(line: string, fallback: number): number {
+  const match = line.match(
+    /\[(\d{2})\/([A-Za-z]{3})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})\s+([+-]\d{4})\]/,
+  );
+  if (!match) return fallback;
+  const months: Record<string, number> = {
+    Jan: 0,
+    Feb: 1,
+    Mar: 2,
+    Apr: 3,
+    May: 4,
+    Jun: 5,
+    Jul: 6,
+    Aug: 7,
+    Sep: 8,
+    Oct: 9,
+    Nov: 10,
+    Dec: 11,
   };
-  domainStates.set(domain, state);
-  return state;
+  const month = months[match[2]];
+  if (month === undefined) return fallback;
+  const utc = Date.UTC(
+    +match[3],
+    month,
+    +match[1],
+    +match[4],
+    +match[5],
+    +match[6],
+  );
+  const sign = match[7][0] === "+" ? 1 : -1;
+  const minutes = +match[7].slice(1, 3) * 60 + +match[7].slice(3, 5);
+  return utc - sign * minutes * 60_000;
 }
 
-async function readNewLines(state: DomainTailState): Promise<void> {
-  try {
-    await access(state.logPath);
-  } catch (error: unknown) {
-    const code =
-      error && typeof error === "object" && "code" in error
-        ? String((error as { code?: unknown }).code)
-        : undefined;
-    state.readError = {
-      state: "unsupported",
-      reason: code === "ENOENT" ? "log_missing" : "log_unreadable",
-    };
-    return;
+export class TrafficCollector {
+  private salt = randomBytes(32);
+  private coverageStartedAt = Date.now();
+  private cursors = new Map<string, Cursor>();
+  private active = new Map<string, Map<string, number>>();
+  private hll = new Map<string, RollingHll24h>();
+  private readonly statePath: string;
+
+  constructor(
+    private readonly config: AppConfig,
+    private readonly policy: FilesystemPolicy,
+    private readonly now = () => Date.now(),
+  ) {
+    this.statePath = policy.assertStatePath(
+      join(config.stateDir, "traffic-state.json"),
+    );
   }
 
-  try {
-    const fileStats = await stat(state.logPath);
-    const inode = Number(fileStats.ino);
-    if (state.inode !== null && inode !== state.inode) {
-      state.byteOffset = 0;
+  async restore(): Promise<void> {
+    const state = await readJson<Persisted>(this.statePath, this.policy);
+    if (!state) return;
+    const salt = Buffer.from(state.salt, "base64");
+    if (salt.length === 32) this.salt = salt;
+    this.coverageStartedAt = Date.parse(state.coverageStartedAt) || this.now();
+    this.cursors = new Map(Object.entries(state.cursors));
+    for (const [domain, buckets] of Object.entries(state.hll)) {
+      const rolling = new RollingHll24h();
+      rolling.restore(buckets);
+      this.hll.set(domain, rolling);
     }
-    state.inode = inode;
-
-    if (fileStats.size < state.byteOffset) {
-      state.byteOffset = 0;
-    }
-    if (fileStats.size === state.byteOffset) {
-      state.readError = null;
-      return;
-    }
-
-    const stream = createReadStream(state.logPath, {
-      encoding: "utf-8",
-      start: state.byteOffset,
-    });
-    const reader = createInterface({ input: stream, crlfDelay: Infinity });
-
-    for await (const line of reader) {
-      const parsed = parseLogLine(line);
-      if (parsed) {
-        state.hits.push(parsed);
-      }
-    }
-
-    state.byteOffset = fileStats.size;
-    state.readError = null;
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    state.readError = {
-      state: "unsupported",
-      reason: `log_read_failed:${message.slice(0, 80)}`,
-    };
   }
-}
 
-function startWatch(state: DomainTailState): void {
-  if (state.watching) return;
-
-  try {
-    const watcher = watch(state.logPath, () => {
-      void readNewLines(state).catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : String(error);
-        console.warn(`[Traffic] Tail failed for ${state.domain}: ${message}`);
-        state.readError = {
-          state: "unsupported",
-          reason: "log_watch_read_failed",
-        };
-      });
-    });
-    state.watcher = watcher;
-    state.watching = true;
-  } catch {
-    state.watching = false;
-    state.watcher = null;
+  async poll(domains: string[]): Promise<void> {
+    const activeDomains = new Set(domains);
+    for (const domain of this.cursors.keys())
+      if (!activeDomains.has(domain)) this.cursors.delete(domain);
+    await Promise.all(domains.map((domain) => this.pollDomain(domain)));
+    this.pruneActive();
   }
-}
 
-export async function ensureTrafficTails(domains: string[]): Promise<void> {
-  const active = new Set(domains);
-  for (const domain of domains) {
+  private async pollDomain(domain: string): Promise<void> {
+    const path = this.policy.accessLogPath(domain);
+    let stat;
     try {
-      const state = await ensureState(domain);
-      await readNewLines(state);
-      startWatch(state);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[Traffic] ensure failed for ${domain}: ${message}`);
-      const state = await ensureState(domain);
-      state.readError = {
-        state: "unsupported",
-        reason: "log_ensure_failed",
+      stat = await fs.stat(path);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+      throw error;
+    }
+    let cursor = this.cursors.get(domain);
+    if (!cursor || cursor.inode !== stat.ino || stat.size < cursor.offset) {
+      cursor = {
+        inode: stat.ino,
+        offset: Math.max(0, stat.size - this.config.maxInitialLogBytes),
+        partial: "",
       };
+      this.cursors.set(domain, cursor);
+    }
+    if (stat.size === cursor.offset) return;
+    const length = Math.min(
+      stat.size - cursor.offset,
+      this.config.maxInitialLogBytes,
+    );
+    const handle = await fs.open(path, "r");
+    try {
+      const buffer = Buffer.alloc(length);
+      const { bytesRead } = await handle.read(buffer, 0, length, cursor.offset);
+      cursor.offset += bytesRead;
+      const text =
+        cursor.partial + buffer.subarray(0, bytesRead).toString("utf8");
+      const lines = text.split(/\r?\n/);
+      cursor.partial = lines.pop() ?? "";
+      for (const line of lines) this.consumeLine(domain, line);
+    } finally {
+      await handle.close();
     }
   }
 
-  for (const [domain, state] of domainStates) {
-    if (!active.has(domain)) {
-      closeWatcher(state);
-      domainStates.delete(domain);
-    }
+  private consumeLine(domain: string, line: string): void {
+    const rawIp = normalizeIp(line.split(/\s+/, 1)[0] ?? "");
+    if (!rawIp) return;
+    const visitorHash = createHmac("sha256", this.salt)
+      .update(rawIp)
+      .digest("hex");
+    const seenAt = parseApacheTime(line, this.now());
+    const exact = this.active.get(domain) ?? new Map<string, number>();
+    exact.set(visitorHash, Math.max(exact.get(visitorHash) ?? 0, seenAt));
+    this.active.set(domain, exact);
+    const rolling = this.hll.get(domain) ?? new RollingHll24h();
+    rolling.add(visitorHash, seenAt);
+    this.hll.set(domain, rolling);
   }
-}
 
-export function collectActiveVisitors3m(
-  domains: string[],
-): ActiveVisitorsSample[] {
-  const nowMs = Date.now();
-  const windowMs = getConfig().trafficWindowSeconds * 1000;
-  const measuredAt = new Date(nowMs).toISOString();
-  const windowStartedAt = new Date(nowMs - windowMs).toISOString();
-  const windowSeconds = getConfig().trafficWindowSeconds;
-
-  return domains.map((domain) => {
-    const state = domainStates.get(domain);
-    if (!state) {
-      return {
-        domain,
-        uniqueIpCount: 0,
-        windowSeconds,
-        windowStartedAt,
-        measuredAt,
-        status: { state: "unsupported", reason: "log_not_initialized" },
-      };
-    }
-
-    if (state.readError) {
-      return {
-        domain,
-        uniqueIpCount: 0,
-        windowSeconds,
-        windowStartedAt,
-        measuredAt,
-        status: state.readError,
-      };
-    }
-
-    state.hits = pruneHits(state.hits, windowMs, nowMs);
-    return {
+  activeSamples(domains: string[]): ActiveVisitors3m[] {
+    const measuredAt = this.now();
+    this.pruneActive();
+    return domains.map((domain) => ({
       domain,
-      uniqueIpCount: uniqueIpCount(state.hits),
-      windowSeconds,
-      windowStartedAt,
-      measuredAt,
+      uniqueVisitorCount: this.active.get(domain)?.size ?? 0,
+      windowSeconds: 180,
+      windowStartedAt: new Date(measuredAt - 180_000).toISOString(),
+      measuredAt: new Date(measuredAt).toISOString(),
       status: { state: "ok" },
-    };
-  });
-}
-
-export function resetTrafficStateForTests(): void {
-  for (const state of domainStates.values()) {
-    closeWatcher(state);
+    }));
   }
-  domainStates.clear();
+
+  visitors24hSamples(domains: string[]): Visitors24h[] {
+    const measuredAt = this.now();
+    const coverageSeconds = Math.min(
+      86_400,
+      Math.max(0, Math.floor((measuredAt - this.coverageStartedAt) / 1000)),
+    );
+    return domains.map((domain) => ({
+      domain,
+      uniqueVisitors24h: this.hll.get(domain)?.estimate(measuredAt) ?? 0,
+      windowSeconds: 86400,
+      coverageSeconds,
+      measuredAt: new Date(measuredAt).toISOString(),
+      algorithm: "hll",
+      status:
+        coverageSeconds < 86_400
+          ? { state: "unknown", reason: "warming_up" }
+          : { state: "ok" },
+    }));
+  }
+
+  async persist(): Promise<void> {
+    await writeJson(
+      this.statePath,
+      {
+        salt: this.salt.toString("base64"),
+        coverageStartedAt: new Date(this.coverageStartedAt).toISOString(),
+        cursors: Object.fromEntries(this.cursors),
+        hll: Object.fromEntries(
+          Array.from(this.hll, ([domain, rolling]) => [
+            domain,
+            rolling.serialize(),
+          ]),
+        ),
+      } satisfies Persisted,
+      this.policy,
+    );
+  }
+
+  private pruneActive(): void {
+    const cutoff = this.now() - 180_000;
+    for (const visitors of this.active.values())
+      for (const [hash, seenAt] of visitors)
+        if (seenAt < cutoff) visitors.delete(hash);
+  }
 }

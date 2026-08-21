@@ -23,6 +23,18 @@ export type AdminServerEnrollmentTokenDto = {
 export type AdminServerDiscoveryDto = {
   id: string;
   domain: string;
+  virtualHostName?: string | null;
+  isPresent?: boolean;
+  removedAt?: string | Date | null;
+  stackCheckedAt?: string | Date | null;
+  stackLastSucceededAt?: string | Date | null;
+  fieldStatus?: Record<string, { state: string; reason?: string }> | null;
+  trafficSnapshot?: {
+    activeVisitorCount?: number | null;
+    activeMeasuredAt?: string | Date | null;
+    uniqueVisitors24h?: number | null;
+    visitors24hCoverageSeconds?: number | null;
+  } | null;
   displayName?: string | null;
   websiteId?: string | null;
   status?: string;
@@ -49,6 +61,7 @@ export type AdminServerReadModelDto = {
   notes: string | null;
   createdAt: string | Date;
   updatedAt?: string | Date;
+  controlPanelUrl?: string | null;
   agent: {
     state: string;
     version?: string;
@@ -80,7 +93,9 @@ export type EnrollmentRevealDto = {
   installCommand: string;
 };
 
-function toIsoString(value: string | Date | null | undefined): string | undefined {
+function toIsoString(
+  value: string | Date | null | undefined,
+): string | undefined {
   if (value == null) return undefined;
   if (typeof value === "string") return value;
   return value.toISOString();
@@ -158,6 +173,17 @@ function mapDiscovery(dto: AdminServerDiscoveryDto): WebsiteDiscoveryType {
     id: dto.id,
     domain: dto.domain,
     title: dto.displayName?.trim() || dto.domain,
+    virtualHostName: dto.virtualHostName ?? undefined,
+    isPresent: dto.isPresent ?? true,
+    removedAt: toIsoString(dto.removedAt),
+    stackCheckedAt: toIsoString(dto.stackCheckedAt),
+    stackLastSucceededAt: toIsoString(dto.stackLastSucceededAt),
+    fieldStatus: dto.fieldStatus ?? undefined,
+    activeVisitorCount: dto.trafficSnapshot?.activeVisitorCount,
+    activeMeasuredAt: toIsoString(dto.trafficSnapshot?.activeMeasuredAt),
+    uniqueVisitors24h: dto.trafficSnapshot?.uniqueVisitors24h,
+    visitors24hCoverageSeconds:
+      dto.trafficSnapshot?.visitors24hCoverageSeconds ?? undefined,
     controlPanel: SERVER_STACK.CONTROL_PANEL,
     webServer: SERVER_STACK.WEB_SERVER,
     application: SERVER_STACK.APPLICATION,
@@ -208,6 +234,7 @@ export function mapAdminServerToUi(dto: AdminServerReadModelDto): ServerType {
     capacitySummary: "",
     notes: dto.notes?.trim() ?? "",
     createdAt: formatFaDate(createdAtIso),
+    controlPanelUrl: dto.controlPanelUrl ?? undefined,
     agent: {
       state: mapAgentState(dto.agent.state),
       version: dto.agent.version,

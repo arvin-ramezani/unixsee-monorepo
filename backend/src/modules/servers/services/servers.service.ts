@@ -38,7 +38,7 @@ export class ServersService {
             take: 1,
             select: {
               id: true,
-              machineId: true,
+              agentInstanceId: true,
               agentVersion: true,
               lastHeartbeatAt: true,
               lastSeenAt: true,
@@ -61,6 +61,7 @@ export class ServersService {
           discoveries: {
             orderBy: { updatedAt: 'desc' },
             take: 20,
+            include: { trafficSnapshot: true },
           },
         },
         orderBy: { createdAt: 'desc' },
@@ -84,7 +85,7 @@ export class ServersService {
           orderBy: { updatedAt: 'desc' },
           select: {
             id: true,
-            machineId: true,
+            agentInstanceId: true,
             agentVersion: true,
             lastHeartbeatAt: true,
             lastSeenAt: true,
@@ -106,6 +107,7 @@ export class ServersService {
         },
         discoveries: {
           orderBy: { updatedAt: 'desc' },
+          include: { trafficSnapshot: true },
         },
       },
     });
@@ -115,7 +117,12 @@ export class ServersService {
     return this.toAdminServerReadModel(server);
   }
 
-  async create(input: { name: string; ipAddress: string; notes?: string }) {
+  async create(input: {
+    name: string;
+    ipAddress: string;
+    notes?: string;
+    controlPanelUrl?: string;
+  }) {
     const server = await this.prisma.server.create({ data: input });
     this.logger.log('server.created', {
       serverId: server.id,
@@ -126,7 +133,12 @@ export class ServersService {
 
   async update(
     id: string,
-    data: { name?: string; ipAddress?: string; notes?: string | null },
+    data: {
+      name?: string;
+      ipAddress?: string;
+      notes?: string | null;
+      controlPanelUrl?: string | null;
+    },
   ) {
     await this.ensureServer(id);
     const server = await this.prisma.server.update({ where: { id }, data });
@@ -288,10 +300,10 @@ export class ServersService {
 
   async enrollWithToken(
     plaintextToken: string,
-    machineId: string,
+    agentInstanceId: string,
     agentVersion?: string,
   ) {
-    if (!plaintextToken?.trim() || !machineId?.trim()) {
+    if (!plaintextToken?.trim() || !agentInstanceId?.trim()) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
 
@@ -315,7 +327,7 @@ export class ServersService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       const existing = await tx.vpsNode.findUnique({
-        where: { machineId },
+        where: { agentInstanceId },
         select: { id: true, serverId: true },
       });
 
@@ -351,7 +363,7 @@ export class ServersService {
 
       const vpsNode = existing
         ? await tx.vpsNode.update({
-            where: { machineId },
+            where: { agentInstanceId },
             data: {
               secretKey,
               lastSeenAt: now,
@@ -364,9 +376,9 @@ export class ServersService {
           })
         : await tx.vpsNode.create({
             data: {
-              machineId,
+              agentInstanceId,
               serverId: token.serverId,
-              name: `Node ${machineId.substring(0, 8)}`,
+              name: `Node ${agentInstanceId.substring(0, 8)}`,
               secretKey,
               lastSeenAt: now,
               lastHeartbeatAt: now,
@@ -381,7 +393,7 @@ export class ServersService {
     this.logger.log('server.enrollment.completed', {
       serverId: token.serverId,
       vpsNodeId: result.id,
-      machineId,
+      agentInstanceId,
       tokenId: token.id,
     });
 
@@ -412,11 +424,12 @@ export class ServersService {
     name: string;
     ipAddress: string;
     notes: string | null;
+    controlPanelUrl: string | null;
     createdAt: Date;
     updatedAt: Date;
     vpsNodes: Array<{
       id: string;
-      machineId: string;
+      agentInstanceId: string;
       agentVersion: string | null;
       lastHeartbeatAt: Date | null;
       lastSeenAt: Date | null;
@@ -443,6 +456,7 @@ export class ServersService {
       label: server.name,
       ipAddress: server.ipAddress,
       notes: server.notes,
+      controlPanelUrl: server.controlPanelUrl,
       createdAt: server.createdAt,
       updatedAt: server.updatedAt,
       agent: this.deriveAgentState(latestNode, latestToken),
@@ -450,7 +464,7 @@ export class ServersService {
       discoveries: server.discoveries,
       vpsNodes: server.vpsNodes.map((node) => ({
         id: node.id,
-        machineId: node.machineId,
+        agentInstanceId: node.agentInstanceId,
         agentVersion: node.agentVersion,
         lastHeartbeatAt: node.lastHeartbeatAt,
         lastSeenAt: node.lastSeenAt,

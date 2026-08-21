@@ -1,6 +1,6 @@
 [Unit]
-Description=Unixsee Phase 1 VPS Agent
-After=network-online.target
+Description=Unixsee web-server-only VPS Agent 0.2
+After=network-online.target openlitespeed.service
 Wants=network-online.target
 
 [Service]
@@ -12,8 +12,23 @@ EnvironmentFile=/opt/unixsee-agent/.env
 ExecStart=/usr/bin/node --env-file=/opt/unixsee-agent/.env /opt/unixsee-agent/dist/index.js
 Restart=on-failure
 RestartSec=5
+UMask=0077
 NoNewPrivileges=true
 PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+ReadWritePaths=/opt/unixsee-agent/state
+ReadOnlyPaths=/opt/unixsee-agent /usr/local/lsws/conf/httpd_config.conf /var/log/httpd/domains
 
 [Install]
 WantedBy=multi-user.target

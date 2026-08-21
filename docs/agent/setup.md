@@ -1,157 +1,65 @@
-# Phase 1 agent setup (token + run)
+# Phase 1 agent 0.2 setup
 
-> **Status:** Active  
-> **Audience:** Operator installing the Phase 1 VPS agent on Ubuntu  
-> **Last verified:** 2026-08-12  
-> **Related:** [`prd.md`](./prd.md), [`phase1-api-contract.md`](./phase1-api-contract.md),
-> [`../product/notes/servers-agent-data-flow.md`](../product/notes/servers-agent-data-flow.md)
+> **Audience:** operators installing on Ubuntu + DirectAdmin + OpenLiteSpeed
+> **Contract:** [`phase1-api-contract.md`](./phase1-api-contract.md)
 
-This is the **single setup guide** for applying an admin-issued enrollment token
-and running the agent on a VPS.
+## Maintenance-window rollout
 
-**Trust rule:** the admin panel never talks to the VPS. Staff issue a one-time
-token in admin; you apply that token on the server and start the agent. The
-agent enrolls outbound to NestJS over HTTPS.
+1. Deploy the backend migration and v0.2 API first. This intentionally rejects
+   every 0.1 `machineId` request.
+2. Deploy the admin assets and upload a freshly generated 0.2 bundle.
+3. Reissue one enrollment token for each VPS.
+4. Rerun the installer on each VPS and verify the service and first ingest.
 
-## Recommended: one-line install
+## Publish the bundle
 
-1. In the Unixsee admin panel, create the **server** record for this VPS.
-2. Issue an enrollment token (**صدور توکن اتصال**) and copy the install command
-   (or the token) from the one-time reveal sheet.
-3. On the VPS (Ubuntu, root/sudo), run:
+From the monorepo root:
 
 ```bash
-curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- --token YOUR_ENROLLMENT_TOKEN --api-base-url https://core.unixsee.com
+bash agent/scripts/pack-for-panel.sh
 ```
 
-The script installs Node.js 20+ if needed, downloads the agent bundle from
-`https://panel.unixsee.com/agents/unixsee-agent.tar.gz`, writes a mode-600
-`.env`, verifies enrollment with Nest (persists `AGENT_SECRET`), then enables
-and starts `unixsee-agent`. If enrollment fails, systemd is **not** started.
+Upload the generated (gitignored) `admin-panel/public/agents/unixsee-agent.tar.gz`
+and deploy the updated public `install.sh`. Do not commit the archive.
 
-Optional flags:
+## Install or re-provision
 
-| Flag | Default |
-|---|---|
-| `--api-base-url` | `https://core.unixsee.com` |
-| `--bundle-url` | `https://panel.unixsee.com/agents/unixsee-agent.tar.gz` |
-
-Then confirm the server shows **connected** in admin after the first heartbeat.
-
-**Publish note (Unixsee deployers):** panel deploy must publish
-`unixsee-agent.tar.gz` under the live app’s `public/agents/` (file is gitignored).
-Canonical steps: [`../../admin-panel/docs/runbooks/deployment.md`](../../admin-panel/docs/runbooks/deployment.md)
-(`bash agent/scripts/pack-for-panel.sh`, upload, restart Next, `curl -I` both
-`/agents/install.sh` and `/agents/unixsee-agent.tar.gz`).
-
----
-
-## Manual setup (developers)
-
-Use this path only when debugging without the published bundle.
-
-### Before you start
-
-1. Admin server record + one-time enrollment token (same as above).
-2. Ubuntu shell access on the VPS.
-3. NestJS API base URL (default `https://api.unixsee.com`).
-4. For clone-based installs: GitHub access to the agent sources.
-
-### 1. Install Git and Node.js
+Use the one-time command revealed by the admin panel:
 
 ```bash
-sudo apt update
-sudo apt install -y git curl ca-certificates
-
-# Node.js 20+ (needed for --env-file)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-node -v   # expect v20.6+
+curl -fsSL https://panel.unixsee.com/agents/install.sh | sudo bash -s -- \
+  --token YOUR_ENROLLMENT_TOKEN \
+  --api-base-url https://core.unixsee.com
 ```
 
-### 2. Get the agent sources
+The installer:
 
-Prefer the packed bundle:
+- installs Node.js 20+, creates the restricted service user, and preserves the
+  agent state directory;
+- atomically creates `/opt/unixsee-agent/state/agent-instance-id` mode `0600`;
+- backs up and idempotently updates the DirectAdmin global OLS template fragment;
+- regenerates configs, checks OLS syntax, validates a representative local probe,
+  and rolls back the fragment on failure;
+- grants the Node service read access only to the selected routing file and
+  approved access logs;
+- enrolls with `agentInstanceId`, stores the secret mode `0600`, installs the
+  hardened systemd unit, and starts it.
 
-```bash
-curl -fsSL https://panel.unixsee.com/agents/unixsee-agent.tar.gz -o unixsee-agent.tar.gz
-sudo mkdir -p /opt/unixsee-agent
-sudo tar -xzf unixsee-agent.tar.gz -C /opt/unixsee-agent --strip-components=1
-```
-
-Or clone from git when developing (do **not** commit PAT / tokens).
-
-### 3. Apply the enrollment token (`.env`)
-
-```bash
-sudo install -d -o unixsee-agent -g unixsee-agent /opt/unixsee-agent
-sudo -u unixsee-agent tee /opt/unixsee-agent/.env >/dev/null <<EOF
-NODE_ENV=production
-API_BASE_URL=https://api.unixsee.com
-ENROLLMENT_TOKEN=YOUR_ENROLLMENT_TOKEN
-ACCESS_LOG_DIR=/var/log/httpd/domains
-OPENLITESPEED_SERVER_ROOT=/usr/local/lsws
-EOF
-sudo chmod 600 /opt/unixsee-agent/.env
-```
-
-| Variable | Required | Notes |
-|---|---|---|
-| `NODE_ENV` | Yes | Must be `production` for real enroll/heartbeat/ingest |
-| `API_BASE_URL` | Yes | NestJS origin, no trailing slash required |
-| `ENROLLMENT_TOKEN` | Yes (first start) | One-time token from admin; used only to enroll |
-| `AGENT_SECRET` | No at first start | Written automatically after successful enroll |
-| `ACCESS_LOG_DIR` | Recommended | Default `/var/log/httpd/domains` |
-| `OPENLITESPEED_SERVER_ROOT` | Recommended | Default `/usr/local/lsws` |
-| `DIRECTADMIN_BASE_URL` | Optional | Override control-panel link if discovery is wrong |
-
-### 4. Run with systemd
+## Verify
 
 ```bash
-sudo useradd --system --home /opt/unixsee-agent --shell /usr/sbin/nologin unixsee-agent || true
-sudo chown -R unixsee-agent:unixsee-agent /opt/unixsee-agent
-sudo cp /opt/unixsee-agent/systemd/unixsee-agent.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now unixsee-agent
 sudo systemctl status unixsee-agent
+sudo journalctl -u unixsee-agent -n 100 --no-pager
+sudo stat -c '%a %U:%G %n' /opt/unixsee-agent/state/agent-instance-id
 ```
 
-Foreground check (dev): `cd /opt/unixsee-agent && sudo -u unixsee-agent node --env-file=.env dist/index.js`
+In admin, confirm agent version `0.2.0`, OLS inventory, an immediate stack
+snapshot, active traffic after 30 seconds, and the warming 24-hour coverage after
+five minutes. Test a manual refresh and confirm it progresses queued → running →
+succeeded (or failed without erasing last-good values).
 
-### 5. After first enroll
+## Re-enrollment
 
-1. Confirm admin shows the agent as connected.
-2. `ENROLLMENT_TOKEN` can be removed from `.env` after `AGENT_SECRET` is present.
-3. Restart if needed: `sudo systemctl restart unixsee-agent`.
-
-The agent exchanges the enrollment token once for a long-lived HMAC secret
-(`POST /api/internal/agent/v1/enroll`). Later traffic uses that secret only.
-
-## Revoke / re-enroll
-
-If admin revokes the agent:
-
-1. Issue a **new** enrollment token in admin (one-time reveal again).
-2. Re-run the one-line installer with the new token, **or** clear `AGENT_SECRET`,
-   set `ENROLLMENT_TOKEN`, and `sudo systemctl restart unixsee-agent`.
-
-## Permissions (non-root)
-
-Do **not** run the agent as root. It needs **read-only** access to discovery
-paths (DirectAdmin user data, OpenLiteSpeed conf, access logs), not root.
-
-Easiest path: the one-line installer creates system user `unixsee-agent`, installs
-under `/opt/unixsee-agent`, and applies best-effort ACLs (`setfacl`) plus
-`diradmin` group membership when present.
-
-If discovery or traffic looks empty after install, apply the ACL block in
-[`../../agent/README.md`](../../agent/README.md) (Non-root ACL) and restart
-`unixsee-agent`.
-
-## Related
-
-- Package README: [`../../agent/README.md`](../../agent/README.md)
-- Installer source: [`../../agent/install.sh`](../../agent/install.sh)
-- Pack for panel: [`../../agent/scripts/pack-for-panel.sh`](../../agent/scripts/pack-for-panel.sh)
-- API contract: [`phase1-api-contract.md`](./phase1-api-contract.md)
-- Admin UX (token reveal): [`../product/ux-flows/admin-servers-websites-agents.md`](../product/ux-flows/admin-servers-websites-agents.md)
+Revocation removes the usable secret. Issue a fresh token and rerun the same
+installer. The installation UUID remains stable across normal upgrades; a new
+UUID is created only when its state file is intentionally removed.

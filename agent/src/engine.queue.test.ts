@@ -1,98 +1,26 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { retryDelayMs } from "./engine.js";
+import { PackedHll, RollingHll24h } from "./hll.js";
 
-import { AgentApiError } from "./api/client.js";
-import { createEngine } from "./engine.js";
-import type { HostIdentity } from "./discovery.js";
-import { loadTestConfig } from "./test-helpers.js";
-
-const identity: HostIdentity = {
-  machineId: "machine-1",
-  domains: [
-    {
-      domain: "example.com",
-      documentRoot: "/home/u/domains/example.com/public_html",
-      owner: "u",
-      appType: "wordpress",
-      source: "openlitespeed",
-      aliases: [],
-    },
-  ],
-};
-
-describe("engine queue ack", () => {
-  beforeEach(() => {
-    loadTestConfig();
+describe("bounded 24-hour HLL", () => {
+  it("estimates unique visitors within the p=12 error envelope", () => {
+    const hll = new PackedHll();
+    for (let i = 0; i < 20_000; i++) hll.add(`visitor-${i}`);
+    expect(Math.abs(hll.estimate() - 20_000) / 20_000).toBeLessThan(0.06);
+    expect(Buffer.from(hll.serialize(), "base64")).toHaveLength(2048);
   });
-
-  it("acks only successfully sent payloads on partial failure", async () => {
-    const sendIngest = vi
-      .fn()
-      .mockResolvedValueOnce({ ok: true })
-      .mockRejectedValue(new Error("network down"));
-
-    const clearSecret = vi.fn().mockResolvedValue(undefined);
-    const engine = createEngine(identity, "secret", {
-      autoStart: false,
-      sendIngest,
-      clearSecret,
-      sendHeartbeat: vi.fn().mockResolvedValue({}),
-    });
-
-    engine.enqueue({ id: 1 });
-    engine.enqueue({ id: 2 });
-    await engine.flushQueue();
-
-    expect(sendIngest).toHaveBeenCalledTimes(2);
-    expect(engine.getQueueLength()).toBe(1);
-
-    await engine.flushQueue();
-    expect(engine.getQueueLength()).toBe(1);
-    expect(sendIngest).toHaveBeenCalledTimes(3);
-    engine.stop();
+  it("merges buckets and drops values older than 24 hours", () => {
+    const rolling = new RollingHll24h();
+    rolling.add("old", 0);
+    rolling.add("new", 86_400_000);
+    expect(rolling.estimate(86_400_000)).toBe(1);
   });
+});
 
-  it("clears secret and stops on 401 without removing remaining items", async () => {
-    const sendIngest = vi
-      .fn()
-      .mockResolvedValueOnce({ ok: true })
-      .mockRejectedValueOnce(new AgentApiError("unauthorized", 401, ""));
-
-    const clearSecret = vi.fn().mockResolvedValue(undefined);
-    const engine = createEngine(identity, "secret", {
-      autoStart: false,
-      sendIngest,
-      clearSecret,
-      sendHeartbeat: vi.fn().mockResolvedValue({}),
-    });
-
-    engine.enqueue({ id: 1 });
-    engine.enqueue({ id: 2 });
-    await engine.flushQueue();
-
-    expect(clearSecret).toHaveBeenCalledTimes(1);
-    expect(engine.isSecretInvalidated()).toBe(true);
-    expect(engine.getActiveSecret()).toBeNull();
-    expect(engine.getQueueLength()).toBe(1);
-
-    await engine.flushQueue();
-    expect(sendIngest).toHaveBeenCalledTimes(2);
-    engine.stop();
-  });
-
-  it("invalidates secret on heartbeat 401", async () => {
-    const clearSecret = vi.fn().mockResolvedValue(undefined);
-    const engine = createEngine(identity, "secret", {
-      autoStart: false,
-      clearSecret,
-      sendIngest: vi.fn(),
-      sendHeartbeat: vi
-        .fn()
-        .mockRejectedValue(new AgentApiError("unauthorized", 401, "")),
-    });
-
-    await engine.runHeartbeat();
-    expect(clearSecret).toHaveBeenCalled();
-    expect(engine.isSecretInvalidated()).toBe(true);
-    engine.stop();
+describe("offline retry backoff", () => {
+  it("grows exponentially with bounded jitter and a five-minute cap", () => {
+    expect(retryDelayMs(1, () => 0)).toBe(800);
+    expect(retryDelayMs(2, () => 0.5)).toBe(2_000);
+    expect(retryDelayMs(20, () => 0.5)).toBe(300_000);
   });
 });

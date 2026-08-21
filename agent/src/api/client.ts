@@ -1,199 +1,156 @@
 import { generatePayloadSignature } from "../security.js";
 import { getConfig } from "../config/config.js";
+import type {
+  CommandResult,
+  HeartbeatData,
+} from "../contracts/phase1-ingest.js";
 
 export class AgentApiError extends Error {
-  readonly status: number;
-  readonly bodyText: string;
-
-  constructor(message: string, status: number, bodyText: string) {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly bodyText: string,
+  ) {
     super(message);
     this.name = "AgentApiError";
-    this.status = status;
-    this.bodyText = bodyText;
   }
 }
+const record = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-interface PostJsonOptions {
-  url: string;
-  body: unknown;
-  headers?: Record<string, string>;
-  maxRetries?: number;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-async function sleep(ms: number): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function parseJsonResponse(response: Response): Promise<unknown> {
-  const contentType = response.headers.get("content-type") ?? "";
-  if (!contentType.includes("application/json")) {
-    return null;
-  }
-  return response.json();
-}
-
-export async function postJson({
-  url,
-  body,
-  headers = {},
+async function postJson(
+  url: string,
+  body: unknown,
+  headers: Record<string, string>,
   maxRetries = 3,
-}: PostJsonOptions): Promise<unknown> {
-  const payloadString = JSON.stringify(body);
-  let attempt = 0;
-
-  while (attempt < maxRetries) {
+): Promise<unknown> {
+  if (getConfig().nodeEnv !== "production")
+    return { data: { mocked: true, commands: [] } };
+  const payload = JSON.stringify(body);
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      if (getConfig().nodeEnv !== "production") {
-        console.log(`[Network-Dev] Mocking POST ${url}`);
-        await sleep(50);
-        return { data: { mocked: true } };
-      }
-
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...headers,
-        },
-        body: payloadString,
+        headers: { "Content-Type": "application/json", ...headers },
+        body: payload,
       });
-
-      if (!response.ok) {
-        const bodyText = await response.text().catch(() => "");
+      if (!response.ok)
         throw new AgentApiError(
-          `HTTP Status ${response.status}`,
+          `HTTP ${response.status}`,
           response.status,
-          bodyText,
+          await response.text().catch(() => ""),
         );
-      }
-
-      return await parseJsonResponse(response);
+      return response.headers.get("content-type")?.includes("application/json")
+        ? response.json()
+        : null;
     } catch (error) {
-      attempt += 1;
       if (
-        attempt >= maxRetries ||
+        attempt + 1 >= maxRetries ||
         (error instanceof AgentApiError &&
           error.status < 500 &&
           error.status !== 429)
-      ) {
+      )
         throw error;
-      }
-
-      const jitteredDelay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
-      console.warn(
-        `[Network] Request failed. Retrying in ${Math.round(jitteredDelay)}ms... (${attempt}/${maxRetries})`,
+      await sleep(
+        Math.min(30_000, 2 ** (attempt + 1) * 1_000 + Math.random() * 750),
       );
-      await sleep(jitteredDelay);
     }
   }
-
-  throw new Error(`Failed to POST ${url}`);
+  throw new Error("request_failed");
 }
 
 export async function postSignedJson(
   url: string,
   body: unknown,
-  secretKey: string,
-  maxRetries = 3,
+  secret: string,
 ): Promise<unknown> {
-  const payloadString = JSON.stringify(body);
   const timestamp = new Date().toISOString();
-  const signature = generatePayloadSignature(
-    payloadString,
-    secretKey,
-    timestamp,
-  );
-
-  return postJson({
-    url,
-    body,
-    maxRetries,
-    headers: {
-      "X-Agent-Timestamp": timestamp,
-      "X-Agent-Signature": signature,
-    },
+  return postJson(url, body, {
+    "X-Agent-Timestamp": timestamp,
+    "X-Agent-Signature": generatePayloadSignature(
+      JSON.stringify(body),
+      secret,
+      timestamp,
+    ),
   });
-}
-
-export interface EnrollResult {
-  vpsNodeId: string;
-  serverId: string;
-  secretKey: string;
 }
 
 export async function enrollAgent(
-  machineId: string,
-  enrollmentToken: string,
-): Promise<EnrollResult> {
-  const cfg = getConfig();
-  if (cfg.nodeEnv !== "production") {
-    console.log(
-      `[Network-Dev] Mocking enrollment for machineId=${machineId}`,
-    );
+  agentInstanceId: string,
+  token: string,
+): Promise<{ vpsNodeId: string; serverId: string; secretKey: string }> {
+  const config = getConfig();
+  if (config.nodeEnv !== "production")
     return {
-      vpsNodeId: "dev-vps-node-id",
-      serverId: "dev-server-id",
-      secretKey: "mock_development_enrolled_secret_key",
+      vpsNodeId: "dev-vps",
+      serverId: "dev-server",
+      secretKey: "development-secret",
     };
-  }
-
-  const response = await postJson({
-    url: cfg.endpoints.enroll,
-    body: { machineId, agentVersion: cfg.agentVersion },
-    maxRetries: 2,
-    headers: {
-      "X-Enrollment-Token": enrollmentToken,
-    },
-  });
-
-  if (!isRecord(response) || !isRecord(response.data)) {
-    throw new Error("Enrollment response missing data payload.");
-  }
-
-  const secretKey = response.data.secretKey;
-  const vpsNodeId = response.data.vpsNodeId;
-  const serverId = response.data.serverId;
-
+  const response = await postJson(
+    config.endpoints.enroll,
+    { agentInstanceId, agentVersion: config.agentVersion },
+    { "X-Enrollment-Token": token },
+    2,
+  );
+  if (!record(response) || !record(response.data))
+    throw new Error("Enrollment response missing data.");
+  const { vpsNodeId, serverId, secretKey } = response.data;
   if (
-    typeof secretKey !== "string" ||
-    !secretKey ||
     typeof vpsNodeId !== "string" ||
-    typeof serverId !== "string"
-  ) {
-    throw new Error(
-      "Enrollment response missing secretKey, vpsNodeId, or serverId.",
-    );
-  }
-
-  return { secretKey, vpsNodeId, serverId };
+    typeof serverId !== "string" ||
+    typeof secretKey !== "string"
+  )
+    throw new Error("Enrollment response is invalid.");
+  return { vpsNodeId, serverId, secretKey };
 }
 
 export async function sendHeartbeat(
-  machineId: string,
-  secretKey: string,
-  host?: string,
-): Promise<unknown> {
-  const cfg = getConfig();
-  return postSignedJson(
-    cfg.endpoints.heartbeat,
+  agentInstanceId: string,
+  secret: string,
+): Promise<HeartbeatData> {
+  const config = getConfig();
+  const response = await postSignedJson(
+    config.endpoints.heartbeat,
     {
       schemaVersion: "phase1",
-      machineId,
-      agentVersion: cfg.agentVersion,
-      serverBinding: host ? { hostname: host } : undefined,
+      agentInstanceId,
+      agentVersion: config.agentVersion,
       sentAt: new Date().toISOString(),
     },
-    secretKey,
+    secret,
   );
+  if (config.nodeEnv !== "production")
+    return {
+      agent: {
+        agentInstanceId,
+        status: "ONLINE",
+        lastHeartbeatAt: new Date().toISOString(),
+      },
+      commands: [],
+    };
+  if (
+    !record(response) ||
+    !record(response.data) ||
+    !Array.isArray(response.data.commands)
+  )
+    throw new Error("Heartbeat response is invalid.");
+  return response.data as unknown as HeartbeatData;
 }
-
 export async function sendPhase1Ingest(
   payload: unknown,
-  secretKey: string,
+  secret: string,
 ): Promise<unknown> {
-  return postSignedJson(getConfig().endpoints.ingest, payload, secretKey);
+  return postSignedJson(getConfig().endpoints.ingest, payload, secret);
+}
+export async function sendCommandResult(
+  id: string,
+  payload: CommandResult,
+  secret: string,
+): Promise<unknown> {
+  return postSignedJson(
+    getConfig().endpoints.commandResult(id),
+    payload,
+    secret,
+  );
 }

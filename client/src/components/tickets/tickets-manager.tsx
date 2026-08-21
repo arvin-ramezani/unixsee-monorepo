@@ -333,7 +333,7 @@ export function TicketsManager({
       </div>
 
       <div className="border-border border-b p-4 sm:p-5">
-        <div className="grid gap-3 lg:grid-cols-[minmax(220px,1fr)_repeat(4,minmax(130px,170px))]">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(220px,500px)_repeat(4,minmax(130px,170px))]">
           <Label className="relative block">
             <span className="sr-only">{t("filters.searchLabel")}</span>
             <Search

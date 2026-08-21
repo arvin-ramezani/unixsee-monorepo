@@ -6,10 +6,17 @@ import {
   HttpStatus,
   Param,
   Post,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+  MaxLength,
+} from 'class-validator';
 
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
 import { Role } from '#/generated/prisma/enums.js';
@@ -61,6 +68,17 @@ class TransferWebsiteDto {
   reason?: string;
 }
 
+class UpdateWebsiteDto {
+  @IsOptional()
+  @IsUrl({
+    protocols: ['https'],
+    require_protocol: true,
+    require_valid_protocol: true,
+  })
+  @MaxLength(2048)
+  wordpressAdminUrl?: string | null;
+}
+
 @Controller('v1/admin/websites')
 @UseGuards(RolesGuard)
 @Roles(Role.ADMIN, Role.OPERATOR)
@@ -90,6 +108,18 @@ export class AdminWebsitesController {
   async create(@Body() body: AdminCreateWebsiteDto) {
     const data = await this.websitesService.createAdmin(body);
     return ApiResponseBuilder.created(data);
+  }
+
+  @Get(':id')
+  async get(@Param('id') id: string) {
+    const data = await this.websitesService.getAdmin(id);
+    return ApiResponseBuilder.ok(data);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body: UpdateWebsiteDto) {
+    const data = await this.websitesService.updateAdmin(id, body);
+    return ApiResponseBuilder.ok(data);
   }
 
   @Post(':id/assign')

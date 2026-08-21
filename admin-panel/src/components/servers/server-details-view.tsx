@@ -46,6 +46,8 @@ import { DeleteServerDialog } from "./delete-server-dialog";
 import { EnrollmentRevealDialog } from "./enrollment-reveal-dialog";
 import { RevokeAgentDialog } from "./revoke-agent-dialog";
 import { ServerStatusBadge } from "./server-status-badge";
+import { ServerControlPanelEditor } from "./server-control-panel-editor";
+import { DiscoveryTechnicalDialog } from "./discovery-technical-dialog";
 
 const surfaceClassName = "rounded-2xl border border-border bg-card/90";
 const mutedSurfaceClassName = "rounded-2xl border border-border bg-muted/30";
@@ -70,9 +72,8 @@ const SERVER_IDENTITY_FIELDS = [
   },
   {
     key: "stack",
-    label: "پشته کشف‌شده",
-    getValue: () =>
-      `${SERVER_STACK.APPLICATION} · ${SERVER_STACK.CONTROL_PANEL} · ${SERVER_STACK.WEB_SERVER}`,
+    label: "موجودی وب‌سرور",
+    getValue: () => `${SERVER_STACK.WEB_SERVER} · WordPress/PHP probe`,
   },
 ] as const;
 
@@ -124,12 +125,7 @@ export function ServerDetailsView({
     setResumeTenantId(initialTenantId);
     setAssignOpen(true);
     router.replace(`/servers/${initialServer.id}`, { scroll: false });
-  }, [
-    initialAssignDiscoveryId,
-    initialServer,
-    initialTenantId,
-    router,
-  ]);
+  }, [initialAssignDiscoveryId, initialServer, initialTenantId, router]);
 
   const unassignedDiscoveries = server.discoveries.filter(
     (discovery) =>
@@ -322,6 +318,10 @@ export function ServerDetailsView({
           ))}
         </div>
       </header>
+      <ServerControlPanelEditor
+        serverId={server.id}
+        initialUrl={server.controlPanelUrl}
+      />
 
       {statusMessage && (
         <div
@@ -453,8 +453,8 @@ export function ServerDetailsView({
           <h2 className="font-semibold">وب‌سایت‌های کشف‌شده</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          Agent وب‌سایت‌های WooCommerce روی DirectAdmin و OpenLiteSpeed را گزارش
-          می‌کند. تخصیص مستأجر جدا از کشف است.
+          Agent موجودی vhostهای فعال OpenLiteSpeed را گزارش می‌کند. لینک‌های
+          مدیریتی جداگانه و فقط توسط ادمین نگهداری می‌شوند.
         </p>
 
         {server.discoveries.length === 0 ? (
@@ -489,8 +489,14 @@ export function ServerDetailsView({
                         </p>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-                        {discovery.application} · {discovery.controlPanel} ·{" "}
-                        {discovery.webServer}
+                        {discovery.webServer} · WP{" "}
+                        {discovery.wordpressVersion ?? "—"} · PHP{" "}
+                        {discovery.phpVersion ?? "—"}
+                        <span className="mt-1 block">
+                          {discovery.isPresent === false
+                            ? "حذف‌شده از موجودی"
+                            : `بازدید فعال: ${discovery.activeVisitorCount ?? "—"}`}
+                        </span>
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         {isAssigned ? (
@@ -504,23 +510,26 @@ export function ServerDetailsView({
                         )}
                       </TableCell>
                       <TableCell className="px-4 py-3">
-                        {isAssigned && discovery.assignedWebsiteId ? (
-                          <span className="text-sm text-muted-foreground">
-                            تخصیص ثبت شده
-                          </span>
-                        ) : (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => {
-                              setResumeTenantId(null);
-                              setSelectedDiscovery(discovery);
-                              setAssignOpen(true);
-                            }}
-                          >
-                            تخصیص
-                          </Button>
-                        )}
+                        <div className="flex flex-wrap gap-2">
+                          <DiscoveryTechnicalDialog discovery={discovery} />
+                          {isAssigned && discovery.assignedWebsiteId ? (
+                            <span className="text-sm text-muted-foreground">
+                              تخصیص ثبت شده
+                            </span>
+                          ) : (
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => {
+                                setResumeTenantId(null);
+                                setSelectedDiscovery(discovery);
+                                setAssignOpen(true);
+                              }}
+                            >
+                              تخصیص
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

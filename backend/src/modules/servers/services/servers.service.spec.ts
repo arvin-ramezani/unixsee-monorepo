@@ -3,7 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { EnrollmentTokenStatus, VpsNodeStatus } from '#/generated/prisma/enums.js';
+import {
+  EnrollmentTokenStatus,
+  VpsNodeStatus,
+} from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -73,7 +76,7 @@ describe('ServersService.enrollWithToken', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
-  it('rejects cross-server machineId with generic validation error before consume', async () => {
+  it('rejects cross-server agentInstanceId with generic validation error before consume', async () => {
     prisma.serverEnrollmentToken.findUnique.mockResolvedValue({
       id: 'token-1',
       serverId: 'server-a',
@@ -147,7 +150,7 @@ describe('ServersService.enrollWithToken', () => {
     expect(result.secretKey).toHaveLength(64);
     expect(update).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { machineId: 'machine-1' },
+        where: { agentInstanceId: 'machine-1' },
         data: expect.objectContaining({
           status: VpsNodeStatus.ONLINE,
           credentialsRevokedAt: null,
@@ -191,7 +194,7 @@ describe('ServersService.enrollWithToken', () => {
       expect.objectContaining({
         data: expect.objectContaining({
           agentVersion: '0.1.0',
-          machineId: 'machine-1',
+          agentInstanceId: 'machine-1',
         }),
       }),
     );

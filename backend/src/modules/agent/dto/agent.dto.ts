@@ -1,4 +1,4 @@
-import { plainToInstance, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   Equals,
@@ -10,16 +10,9 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  IsUrl,
   Min,
   MinLength,
-  Validate,
-  ValidateIf,
   ValidateNested,
-  validateSync,
-  type ValidationArguments,
-  ValidatorConstraint,
-  type ValidatorConstraintInterface,
 } from 'class-validator';
 
 export class EnrollAgentDto {
@@ -32,34 +25,6 @@ export class EnrollAgentDto {
   agentVersion?: string;
 }
 
-export class HeartbeatServerBindingDto {
-  @IsOptional()
-  @IsString()
-  hostname?: string;
-}
-
-export class HeartbeatAgentDto {
-  @IsString()
-  @Equals('phase1')
-  schemaVersion!: 'phase1';
-
-  @IsString()
-  @MinLength(1)
-  machineId!: string;
-
-  @IsOptional()
-  @IsString()
-  agentVersion?: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => HeartbeatServerBindingDto)
-  serverBinding?: HeartbeatServerBindingDto;
-
-  @IsISO8601()
-  sentAt!: string;
-}
-
 export class FieldStatusDto {
   @IsString()
   @IsIn(['ok', 'unknown', 'unsupported'])
@@ -70,50 +35,21 @@ export class FieldStatusDto {
   reason?: string;
 }
 
-@ValidatorConstraint({ name: 'fieldStatusMap', async: false })
-class FieldStatusMapConstraint implements ValidatorConstraintInterface {
-  validate(value: unknown): boolean {
-    if (value === undefined || value === null) {
-      return true;
-    }
-    if (typeof value !== 'object' || Array.isArray(value)) {
-      return false;
-    }
+export class HeartbeatAgentDto {
+  @IsString()
+  @Equals('phase1')
+  schemaVersion!: 'phase1';
 
-    for (const entry of Object.values(value as Record<string, unknown>)) {
-      if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-        return false;
-      }
-      const dto = plainToInstance(FieldStatusDto, entry);
-      if (validateSync(dto).length > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
+  @IsString()
+  @MinLength(1)
+  agentInstanceId!: string;
 
-  defaultMessage(): string {
-    return 'fieldStatus values must include state ok|unknown|unsupported';
-  }
-}
+  @IsOptional()
+  @IsString()
+  agentVersion?: string;
 
-@ValidatorConstraint({ name: 'zeroVisitorsRequireStatus', async: false })
-class ZeroVisitorsRequireStatusConstraint implements ValidatorConstraintInterface {
-  validate(uniqueIpCount: unknown, args: ValidationArguments): boolean {
-    if (uniqueIpCount !== 0) {
-      return true;
-    }
-    const sample = args.object as ActiveVisitors3mDto;
-    // Real empty window: status.ok. Missing/unreadable log: status.unsupported.
-    // Bare zeros without status are rejected (never treat as real traffic).
-    return (
-      sample.status?.state === 'ok' || sample.status?.state === 'unsupported'
-    );
-  }
-
-  defaultMessage(): string {
-    return 'activeVisitors3m uniqueIpCount 0 requires status.state ok or unsupported';
-  }
+  @IsISO8601()
+  sentAt!: string;
 }
 
 export class Phase1DiscoveryDto {
@@ -121,40 +57,27 @@ export class Phase1DiscoveryDto {
   @IsNotEmpty()
   domain!: string;
 
-  @IsOptional()
   @IsArray()
+  @ArrayMaxSize(100)
   @IsString({ each: true })
-  aliases?: string[];
+  aliases!: string[];
 
   @IsString()
   @IsNotEmpty()
-  documentRoot!: string;
+  virtualHostName!: string;
 
-  @IsOptional()
   @IsString()
-  owner?: string;
+  @Equals('openlitespeed')
+  source!: 'openlitespeed';
 
+  @IsISO8601()
+  discoveredAt!: string;
+}
+
+export class SiteStackSnapshotDto {
   @IsString()
   @IsNotEmpty()
-  appType!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  source!: string;
-
-  @IsOptional()
-  @IsString()
-  backendAddress?: string | null;
-
-  @IsOptional()
-  @ValidateIf((_, value) => value !== null && value !== undefined)
-  @IsUrl({ protocols: ['https'], require_protocol: true })
-  controlPanelUrl?: string | null;
-
-  @IsOptional()
-  @ValidateIf((_, value) => value !== null && value !== undefined)
-  @IsUrl({ protocols: ['https'], require_protocol: true })
-  wordpressAdminUrl?: string | null;
+  domain!: string;
 
   @IsOptional()
   @IsString()
@@ -165,25 +88,14 @@ export class Phase1DiscoveryDto {
   phpVersion?: string | null;
 
   @IsOptional()
-  @IsIn(['site', 'host', 'unknown'])
-  phpVersionScope?: 'site' | 'host' | 'unknown';
-
-  @IsOptional()
   @IsString()
   imagickVersion?: string | null;
 
-  @IsOptional()
-  @IsString()
-  wordpressUpdateStatus?: string | null;
-
-  @IsOptional()
   @IsISO8601()
-  wordpressUpdateCheckedAt?: string | null;
+  checkedAt!: string;
 
-  @IsOptional()
   @IsObject()
-  @Validate(FieldStatusMapConstraint)
-  fieldStatus?: Record<string, FieldStatusDto>;
+  fieldStatus!: Record<string, FieldStatusDto>;
 }
 
 export class ActiveVisitors3mDto {
@@ -191,10 +103,10 @@ export class ActiveVisitors3mDto {
   @IsNotEmpty()
   domain!: string;
 
+  @IsOptional()
   @IsInt()
   @Min(0)
-  @Validate(ZeroVisitorsRequireStatusConstraint)
-  uniqueIpCount!: number;
+  uniqueVisitorCount?: number | null;
 
   @IsInt()
   @Min(1)
@@ -206,10 +118,39 @@ export class ActiveVisitors3mDto {
   @IsISO8601()
   measuredAt!: string;
 
-  @IsOptional()
   @ValidateNested()
   @Type(() => FieldStatusDto)
-  status?: FieldStatusDto;
+  status!: FieldStatusDto;
+}
+
+export class Visitors24hDto {
+  @IsString()
+  @IsNotEmpty()
+  domain!: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  uniqueVisitors24h?: number | null;
+
+  @IsInt()
+  @Min(1)
+  windowSeconds!: number;
+
+  @IsInt()
+  @Min(0)
+  coverageSeconds!: number;
+
+  @IsISO8601()
+  measuredAt!: string;
+
+  @IsString()
+  @Equals('hll')
+  algorithm!: 'hll';
+
+  @ValidateNested()
+  @Type(() => FieldStatusDto)
+  status!: FieldStatusDto;
 }
 
 export class Phase1IngestDto {
@@ -219,7 +160,7 @@ export class Phase1IngestDto {
 
   @IsString()
   @MinLength(1)
-  machineId!: string;
+  agentInstanceId!: string;
 
   @IsOptional()
   @IsString()
@@ -228,11 +169,19 @@ export class Phase1IngestDto {
   @IsISO8601()
   sentAt!: string;
 
+  @IsOptional()
   @IsArray()
   @ArrayMaxSize(200)
   @ValidateNested({ each: true })
   @Type(() => Phase1DiscoveryDto)
-  discoveries!: Phase1DiscoveryDto[];
+  discoveries?: Phase1DiscoveryDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(200)
+  @ValidateNested({ each: true })
+  @Type(() => SiteStackSnapshotDto)
+  siteStacks?: SiteStackSnapshotDto[];
 
   @IsOptional()
   @IsArray()
@@ -240,4 +189,33 @@ export class Phase1IngestDto {
   @ValidateNested({ each: true })
   @Type(() => ActiveVisitors3mDto)
   activeVisitors3m?: ActiveVisitors3mDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(200)
+  @ValidateNested({ each: true })
+  @Type(() => Visitors24hDto)
+  visitors24h?: Visitors24hDto[];
+}
+
+export class AgentCommandResultDto {
+  @IsString()
+  @MinLength(1)
+  agentInstanceId!: string;
+
+  @IsString()
+  @IsIn(['SUCCEEDED', 'FAILED'])
+  status!: 'SUCCEEDED' | 'FAILED';
+
+  @IsISO8601()
+  finishedAt!: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SiteStackSnapshotDto)
+  stackSnapshot?: SiteStackSnapshotDto;
+
+  @IsOptional()
+  @IsString()
+  errorCode?: string;
 }

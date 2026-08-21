@@ -35,11 +35,11 @@ describe('AgentController', () => {
   describe('enroll', () => {
     it('rejects missing enrollment token', async () => {
       await expect(
-        controller.enroll(undefined, { machineId: 'machine-1' }),
+        controller.enroll(undefined, { agentInstanceId: 'machine-1' }),
       ).rejects.toBeInstanceOf(UnauthorizedException);
 
       await expect(
-        controller.enroll(undefined, { machineId: 'machine-1' }),
+        controller.enroll(undefined, { agentInstanceId: 'machine-1' }),
       ).rejects.toMatchObject({
         message: ERROR_MESSAGES.fa.unauthenticated,
       });
@@ -54,7 +54,7 @@ describe('AgentController', () => {
       });
 
       const response = await controller.enroll(['token-a', 'token-b'], {
-        machineId: 'machine-1',
+        agentInstanceId: 'machine-1',
         agentVersion: '0.1.0',
       });
 
@@ -82,7 +82,7 @@ describe('AgentController', () => {
       });
 
       const response = await controller.enroll('plain-token', {
-        machineId: 'machine-1',
+        agentInstanceId: 'machine-1',
       });
 
       expect(agentService.enroll).toHaveBeenCalledWith(
@@ -102,12 +102,12 @@ describe('AgentController', () => {
     it('returns ok envelope from service result', async () => {
       const body: HeartbeatAgentDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'machine-1',
         sentAt: '2026-08-09T12:00:00.000Z',
       };
       const updated = {
         id: 'node-1',
-        machineId: 'machine-1',
+        agentInstanceId: 'machine-1',
         status: 'ONLINE',
       };
       agentService.heartbeat.mockResolvedValue(updated);
@@ -127,7 +127,7 @@ describe('AgentController', () => {
     it('returns created envelope from phase1 ingest result', async () => {
       const payload: Phase1IngestDto = {
         schemaVersion: 'phase1',
-        machineId: 'machine-1',
+        agentInstanceId: 'machine-1',
         sentAt: '2026-08-09T12:00:00.000Z',
         discoveries: [],
       };

@@ -1,47 +1,37 @@
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { FilesystemPolicy } from "./filesystem-policy.js";
+import { loadOrCreateAgentInstanceId } from "./state.js";
 
-import {
-  AGENT_SECRET_ENV_KEY,
-  clearPersistedAgentSecret,
-  persistAgentSecret,
-} from "./security.js";
-
-describe("security secret persistence", () => {
-  let cwd: string;
-  let previousCwd: string;
-
-  beforeEach(async () => {
-    previousCwd = process.cwd();
-    cwd = await mkdtemp(join(tmpdir(), "unixsee-agent-sec-"));
-    process.chdir(cwd);
+describe("installation identity and filesystem policy", () => {
+  it("creates and reuses a mode-0600 installation UUID", async () => {
+    const stateDir = await mkdtemp(join(tmpdir(), "unixsee-state-"));
+    const policy = new FilesystemPolicy({
+      stateDir,
+      accessLogDir: join(stateDir, "logs"),
+      routingFiles: [join(stateDir, "ols.conf")],
+    });
+    const first = await loadOrCreateAgentInstanceId(stateDir, policy);
+    const second = await loadOrCreateAgentInstanceId(stateDir, policy);
+    expect(second).toBe(first);
+    expect(
+      (await readFile(join(stateDir, "agent-instance-id"), "utf8")).trim(),
+    ).toBe(first);
   });
-
-  afterEach(() => {
-    process.chdir(previousCwd);
-  });
-
-  it("persists and clears AGENT_SECRET in .env", async () => {
-    await persistAgentSecret("abc123secret", cwd);
-    const written = await readFile(join(cwd, ".env"), "utf-8");
-    expect(written).toContain(`${AGENT_SECRET_ENV_KEY}=abc123secret`);
-
-    await clearPersistedAgentSecret(cwd);
-    const cleared = await readFile(join(cwd, ".env"), "utf-8");
-    expect(cleared).not.toContain("AGENT_SECRET=");
-  });
-
-  it("preserves other env keys when clearing secret", async () => {
-    await writeFile(
-      join(cwd, ".env"),
-      "API_BASE_URL=https://api.example.com\nAGENT_SECRET=old\n",
-      { mode: 0o600 },
+  it("rejects forbidden and traversal paths", () => {
+    const policy = new FilesystemPolicy({
+      stateDir: "/opt/unixsee-agent/state",
+      accessLogDir: "/var/log/httpd/domains",
+      routingFiles: ["/usr/local/lsws/conf/httpd_config.conf"],
+    });
+    expect(() => policy.assertRoutingFile("/etc/machine-id")).toThrow(
+      /forbidden/,
     );
-    await clearPersistedAgentSecret(cwd);
-    const content = await readFile(join(cwd, ".env"), "utf-8");
-    expect(content).toContain("API_BASE_URL=https://api.example.com");
-    expect(content).not.toContain("AGENT_SECRET=");
+    expect(() =>
+      policy.assertStatePath("/opt/unixsee-agent/state/../../etc/passwd"),
+    ).toThrow();
+    expect(() => policy.accessLogPath("../../etc/passwd")).toThrow();
   });
 });

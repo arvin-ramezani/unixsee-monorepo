@@ -160,6 +160,18 @@ enum OperationalActionType {
   OTHER
 }
 
+enum AgentCommandType {
+  REFRESH_SITE_STACK
+}
+
+enum AgentCommandStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  EXPIRED
+}
+
 model User {
   id              String            @id @default(uuid()) @db.Uuid
   phoneNumber     String?           @unique @map("phone_number")
@@ -192,6 +204,7 @@ model User {
   authoredNotifications   Notification[]                @relation("NotificationAuthor")
   unixseeMessageReads     UnixseeMessageRead[]
   authoredUnixseeMessages UnixseeMessage[]              @relation("UnixseeMessageAuthor")
+  requestedAgentCommands  AgentCommand[]                 @relation("AgentCommandRequester")
   auditRecords            AuditRecord[]                 @relation("AuditActor")
   operationalActions      OperationalAction[]           @relation("OperationalActionRequester")
 
@@ -285,11 +298,13 @@ model Server {
   name      String  @unique
   ipAddress String  @map("ip_address")
   notes     String?
+  controlPanelUrl String? @map("control_panel_url")
 
   vpsNodes         VpsNode[]
   alerts           Alert[]
   enrollmentTokens ServerEnrollmentToken[]
   discoveries      WebsiteDiscovery[]
+  agentCommands    AgentCommand[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -320,8 +335,8 @@ model VpsNode {
   serverId String  @map("server_id") @db.Uuid
   userId   String? @map("user_id") @db.Uuid
 
-  // Stable identity used by the agent. Usually extracted from /etc/machine-id.
-  machineId String @unique @map("agent_instance_id")
+  // Installation-scoped UUID generated and persisted by the Phase 1 agent.
+  agentInstanceId String @unique @map("agent_instance_id")
 
   name      String
   secretKey String @map("secret_key")
@@ -345,6 +360,7 @@ model VpsNode {
   websites    Website[]
   discoveries WebsiteDiscovery[]
 
+  agentCommands AgentCommand[]
   // Time-series metrics. Keep append-only for easy TimescaleDB migration later.
   vpsMetrics              VpsMetric[]
   webMetrics              WebMetric[]
@@ -379,6 +395,7 @@ model Website {
   homeDirectory   String? @map("home_directory")
   documentRoot    String? @map("document_root")
 
+  wordpressAdminUrl String? @map("wordpress_admin_url")
   isActive Boolean                @default(true) @map("is_active")
   status   WebsiteLifecycleStatus @default(ACTIVE)
 
@@ -407,6 +424,7 @@ model Website {
   unixseeMessages       UnixseeMessage[]
   operationalActions    OperationalAction[]
 
+  trafficSnapshots      WebsiteTrafficSnapshot[]
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
@@ -427,6 +445,10 @@ model WebsiteDiscovery {
   websiteId                String?         @map("website_id") @db.Uuid
   domain                   String
   displayName              String?         @map("display_name")
+  virtualHostName          String?         @map("virtual_host_name")
+  discoveredAt             DateTime?       @map("discovered_at") @db.Timestamptz(6)
+  isPresent                Boolean         @default(true) @map("is_present")
+  removedAt                DateTime?       @map("removed_at") @db.Timestamptz(6)
   directAdminUser          String?         @map("direct_admin_user")
   homeDirectory            String?         @map("home_directory")
   documentRoot             String?         @map("document_root")
@@ -444,6 +466,8 @@ model WebsiteDiscovery {
   wordpressUpdateCheckedAt DateTime?       @map("wordpress_update_checked_at") @db.Timestamptz(6)
   fieldStatus              Json?           @map("field_status")
   status                   DiscoveryStatus @default(NEW)
+  stackCheckedAt           DateTime?       @map("stack_checked_at") @db.Timestamptz(6)
+  stackLastSucceededAt     DateTime?       @map("stack_last_succeeded_at") @db.Timestamptz(6)
   rawPayload               Json?           @map("raw_payload")
   assignedAt               DateTime?       @map("assigned_at") @db.Timestamptz(6)
   lastIngestedAt           DateTime?       @map("last_ingested_at") @db.Timestamptz(6)
@@ -455,6 +479,8 @@ model WebsiteDiscovery {
   activeVisitorSamples WebsiteActiveVisitorSample[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  trafficSnapshot      WebsiteTrafficSnapshot?
+  agentCommands        AgentCommand[]
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@unique([serverId, domain])
@@ -464,6 +490,69 @@ model WebsiteDiscovery {
 }
 
 /// Phase 1 agent 3-minute unique-IP visitor samples (append-only).
+/// Latest traffic snapshot only. Historical Phase 1 rows remain in
+/// WebsiteActiveVisitorSample but the v0.2 agent does not append to it.
+model WebsiteTrafficSnapshot {
+  discoveryId String  @id @map("discovery_id") @db.Uuid
+  websiteId   String? @map("website_id") @db.Uuid
+  domain      String
+
+  activeVisitorCount    Int?      @map("active_visitor_count")
+  activeWindowSeconds   Int?      @map("active_window_seconds")
+  activeWindowStartedAt DateTime? @map("active_window_started_at") @db.Timestamptz(6)
+  activeMeasuredAt      DateTime? @map("active_measured_at") @db.Timestamptz(6)
+  activeStatus          Json?     @map("active_status")
+
+  uniqueVisitors24h          Int?      @map("unique_visitors_24h")
+  visitors24hWindowSeconds   Int?      @map("visitors_24h_window_seconds")
+  visitors24hCoverageSeconds Int?      @map("visitors_24h_coverage_seconds")
+  visitors24hMeasuredAt      DateTime? @map("visitors_24h_measured_at") @db.Timestamptz(6)
+  visitors24hAlgorithm       String?   @map("visitors_24h_algorithm")
+  visitors24hStatus          Json?     @map("visitors_24h_status")
+
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  website   Website?          @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([websiteId])
+  @@index([domain])
+  @@map("website_traffic_snapshots")
+}
+
+model AgentCommand {
+  id          String             @id @default(uuid()) @db.Uuid
+  serverId    String             @map("server_id") @db.Uuid
+  vpsNodeId   String             @map("vps_node_id") @db.Uuid
+  discoveryId String             @map("discovery_id") @db.Uuid
+  requestedBy String             @map("requested_by") @db.Uuid
+  domain      String
+  type        AgentCommandType
+  status      AgentCommandStatus @default(QUEUED)
+  dedupeKey   String?            @unique @map("dedupe_key")
+
+  requestedAt    DateTime  @default(now()) @map("requested_at") @db.Timestamptz(6)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(6)
+  leasedAt       DateTime? @map("leased_at") @db.Timestamptz(6)
+  leaseExpiresAt DateTime? @map("lease_expires_at") @db.Timestamptz(6)
+  attemptCount   Int       @default(0) @map("attempt_count")
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  errorCode      String?   @map("error_code")
+  resultMetadata Json?     @map("result_metadata")
+
+  server    Server           @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  vpsNode   VpsNode          @relation(fields: [vpsNodeId], references: [id], onDelete: Cascade)
+  discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
+  requester User             @relation("AgentCommandRequester", fields: [requestedBy], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([vpsNodeId, status, requestedAt])
+  @@index([discoveryId, requestedAt(sort: Desc)])
+  @@map("agent_commands")
+}
 model WebsiteActiveVisitorSample {
   recordedAt      DateTime @map("recorded_at") @db.Timestamptz(6)
   discoveryId     String   @map("discovery_id") @db.Uuid

@@ -188,6 +188,7 @@ a new enrollment token.
   label: string;       // same as name (UI convenience)
   ipAddress: string;
   notes: string | null;
+  controlPanelUrl: string | null; // admin-owned HTTPS URL
   createdAt: string;   // ISO
   updatedAt: string;
   agent: {
@@ -211,14 +212,14 @@ a new enrollment token.
   }>;
   vpsNodes: Array<{
     id: string;
-    machineId: string;
+    agentInstanceId: string;
     agentVersion: string | null;
     lastHeartbeatAt: string | null;
     lastSeenAt: string | null;
     status: string;
     credentialsRevokedAt: string | null;
   }>;
-  discoveries: WebsiteDiscovery[]; // Prisma discovery rows; assign via discoveries API
+  discoveries: WebsiteDiscovery[]; // OLS inventory + latest stack/traffic snapshot; assign via discoveries API
 }
 ```
 

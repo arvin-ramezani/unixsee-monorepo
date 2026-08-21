@@ -17,8 +17,7 @@ import {
 import type { ApiResponse } from "@/types/auth.types";
 
 export type ServerMutationResult =
-  | { ok: true; server: ServerType }
-  | { ok: false; message: string };
+  { ok: true; server: ServerType } | { ok: false; message: string };
 
 export type EnrollmentRevealPayload = {
   tokenId: string;
@@ -34,8 +33,7 @@ export type IssueEnrollmentTokenResult =
   | { ok: false; message: string };
 
 export type RevokeMutationResult =
-  | { ok: true; server: ServerType }
-  | { ok: false; message: string };
+  { ok: true; server: ServerType } | { ok: false; message: string };
 
 type CreatedServerRow = {
   id: string;
@@ -72,6 +70,35 @@ async function fetchAdminServer(
   return { ok: true, server: mapAdminServerToUi(response.data) };
 }
 
+export async function updateServerControlPanelUrlAction(input: {
+  serverId: string;
+  controlPanelUrl: string;
+}): Promise<ServerMutationResult> {
+  const controlPanelUrl = input.controlPanelUrl.trim();
+  if (controlPanelUrl && !controlPanelUrl.startsWith("https://")) {
+    return {
+      ok: false,
+      message: "نشانی DirectAdmin باید با https:// آغاز شود.",
+    };
+  }
+  try {
+    const response = await serverActionFetch<unknown>(
+      `/admin/servers/${input.serverId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ controlPanelUrl: controlPanelUrl || null }),
+      },
+    );
+    if (!response.success) {
+      return { ok: false, message: staffErrorMessage(response) };
+    }
+    const detail = await fetchAdminServer(input.serverId);
+    if (detail.ok) revalidateServers(input.serverId);
+    return detail;
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
 export async function createServerAction(input: {
   name: string;
   ipAddress: string;

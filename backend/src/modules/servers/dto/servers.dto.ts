@@ -1,6 +1,7 @@
 import {
   IsOptional,
   IsString,
+  IsUrl,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -20,6 +21,11 @@ export class CreateServerDto {
   @IsString()
   @MaxLength(2000)
   notes?: string;
+
+  @IsOptional()
+  @IsUrl({ protocols: ['https'], require_protocol: true })
+  @MaxLength(2048)
+  controlPanelUrl?: string;
 }
 
 export class UpdateServerDto {
@@ -37,6 +43,11 @@ export class UpdateServerDto {
   @IsString()
   @MaxLength(2000)
   notes?: string | null;
+
+  @IsOptional()
+  @IsUrl({ protocols: ['https'], require_protocol: true })
+  @MaxLength(2048)
+  controlPanelUrl?: string | null;
 }
 
 export class CreateEnrollmentTokenDto {
