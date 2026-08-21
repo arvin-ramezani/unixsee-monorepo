@@ -1,7 +1,6 @@
 import Logo from "@/components/common/logo";
 import { LocaleSwitcher } from "@/components/dashboard/locale-switcher";
 import { ModeToggle } from "@/components/ui/theme-toggle";
-import { AuthPanel } from "@/components/auth/auth-panel";
 
 export default function AuthLayout({
   children,
@@ -30,7 +29,7 @@ export default function AuthLayout({
       </header>
 
       <main className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-6">
-        <AuthPanel>{children}</AuthPanel>
+        {children}
       </main>
     </div>
   );
