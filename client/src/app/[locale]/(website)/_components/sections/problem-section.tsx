@@ -50,14 +50,9 @@ export default function ProblemSection({ id }: ProblemSectionProps) {
               scaleFrom={0.6}
               scaleTo={1}
               className="lg:max-w-155 lg:leading-16 xl:max-w-2xl"
-              dangerouslySetInnerHTML={{
-                __html:
-                  "<h1>ووکامرس شما به هاست نیاز ندارد؛ به زیرساخت فروشگاهی نیاز دارد.</h1>",
-              }}
-            />
-
-            {/* {t("title")} */}
-            {/* </ScaleTitle> */}
+            >
+              {t("title")}
+            </ScaleTitle>
             <ScaleTitle
               as={"p"}
               scaleFrom={0.6}
