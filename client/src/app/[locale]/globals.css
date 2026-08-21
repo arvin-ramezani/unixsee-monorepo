@@ -1020,8 +1020,9 @@
 
 .os-theme-app {
   display: hidden;
+  --app-scrollbar-edge-gap: 6px;
   --os-size: 8px;
-  margin-right: 6px;
+  margin-right: var(--app-scrollbar-edge-gap);
 
   --os-track-bg: transparent;
   --os-track-bg-hover: transparent;
@@ -1059,6 +1060,15 @@
 
 .os-scrollbar-handle {
   cursor: grab;
+}
+
+.os-scrollbar-vertical.os-theme-app:not(.os-scrollbar-rtl)
+  .os-scrollbar-handle::after {
+  position: absolute;
+  inset-block: 0;
+  left: 100%;
+  width: var(--app-scrollbar-edge-gap);
+  content: "";
 }
 
 html[data-scrollbar-ready="true"] .os-scrollbar-vertical.os-theme-app {
