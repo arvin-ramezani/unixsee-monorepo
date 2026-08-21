@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 
+*.zip
+
 # Builds / caches
 dist/
 build/
