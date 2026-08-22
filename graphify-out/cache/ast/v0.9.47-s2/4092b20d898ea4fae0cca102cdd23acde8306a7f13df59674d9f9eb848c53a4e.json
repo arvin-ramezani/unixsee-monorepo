@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_agent_probe_site_stack_php", "label": "site-stack.php", "file_type": "code", "source_file": "agent/probe/site-stack.php", "source_location": "L1"}], "edges": [], "raw_calls": []}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "graphify": {
+      "command": "graphify-mcp",
+      "args": ["D:\\_workplace\\unixsee-monorepo\\graphify-out\\graph.json"]
+    }
+  }
+}

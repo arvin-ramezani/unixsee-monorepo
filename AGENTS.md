@@ -69,6 +69,105 @@ Flat deployables at repo root (no `apps/` / `packages/` yet):
   indexes and cross-links.
 - Keep `.cursor/rules` thin; put lasting detail in `docs/`.
 
+## Graphify knowledge graph
+
+This repository uses Graphify as a local code knowledge graph.
+
+Graphify data location:
+
+- `graphify-out/graph.json`
+
+The graph is generated from the repository source code and should be used as the first source for repository relationship questions.
+
+### Before codebase analysis
+
+For questions involving:
+
+- architecture understanding
+- dependency discovery
+- impact analysis
+- finding related modules
+- tracing imports or relationships
+
+use Graphify first when `graphify-out/graph.json` exists.
+
+Preferred commands:
+
+```bash
+graphify query "<question>"
+```
+
+Use:
+
+```bash
+graphify path "<source>" "<target>"
+```
+
+for relationship tracing between files/components.
+
+Use:
+
+```bash
+graphify explain "<concept>"
+```
+
+for focused concept exploration.
+
+Avoid starting with broad grep/search when Graphify can provide a scoped relationship view.
+
+### Graph navigation priority
+
+Use this order:
+
+1. Graphify queries for relationship discovery
+2. Repository documentation under `docs/`
+3. Source code inspection
+4. Broad text search only when required
+
+If available:
+
+```text
+graphify-out/wiki/index.md
+```
+
+may be used for broad navigation before inspecting source files.
+
+Use:
+
+```text
+graphify-out/GRAPH_REPORT.md
+```
+
+only for broad architecture reviews or when Graphify queries do not provide enough context.
+
+### After code changes
+
+When modifying code:
+
+- keep the Graphify graph synchronized
+- update the graph after structural changes
+
+Run:
+
+```bash
+graphify update .
+```
+
+The graph update should be AST-only and should not require an external LLM/API key.
+
+### Graphify does not replace repository rules
+
+Graphify provides relationship knowledge.
+
+It does not override:
+
+- `docs/` as the canonical architecture/product source
+- `AGENTS.md` rules
+- ADR decisions
+- backend/frontend ownership boundaries
+
+When Graphify results conflict with repository documentation, follow the canonical documentation.
+
 ## Code formatting
 
 - Every agent that creates or changes code must format every Prettier-supported
