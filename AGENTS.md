@@ -192,6 +192,11 @@ When asked to **update the main repos** or **sync deploy repos**, follow
 | `client/`      | `unixseemaster-pixel/unixsee-web`   | `staging` |
 | `admin-panel/` | `unixseemaster-pixel/unixsee-admin` | `dev`     |
 
+**Critical:** the root repo's `origin` must always stay
+`https://github.com/arvin-ramezani/unixsee-monorepo.git`. Deploy repos are
+separate clones — never repoint the root origin to an app repo, and always
+restore the root repo to the branch it was on before syncing.
+
 ## Cursor rules
 
 | Rule                                                                     | When it applies               |

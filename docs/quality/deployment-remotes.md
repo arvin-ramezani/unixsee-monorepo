@@ -9,6 +9,7 @@
 > **Audience:** Humans and AI agents syncing deployable apps to real servers
 
 The **Unixsee monorepo** (`unixsee-monorepo`) is the development source of truth.
+Its `origin` is always `https://github.com/arvin-ramezani/unixsee-monorepo.git`.
 Each production-facing app also has a **single-app Git repository** used for
 deployment, staging, and testing on real hosts.
 
@@ -50,6 +51,13 @@ When the user asks to **update / sync / push the main (deploy) repos**:
    deploy procedure).
 5. **Do not invent** extra remotes, branches, or CI jobs not listed here or in
    surface runbooks.
+6. **Never repoint the monorepo `origin`** — the root repo's `origin` must stay
+   `https://github.com/arvin-ramezani/unixsee-monorepo.git` at all times. Deploy
+   repos are **separate clones**, never the root repo's origin.
+7. **Record and restore the starting branch** — before syncing, note the root
+   repo's current branch (`git branch --show-current`); do all deploy-repo work
+   in isolated clones under `/tmp`; afterwards verify the root repo is back on
+   that branch with the monorepo origin intact.
 
 ## Operator workflow (typical)
 
