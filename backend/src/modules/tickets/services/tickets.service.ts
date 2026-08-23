@@ -48,6 +48,7 @@ const messageAuthorSelect = {
   id: true,
   fullName: true,
   role: true,
+  avatarUrl: true,
 } as const;
 
 @Injectable()
@@ -407,6 +408,7 @@ export class TicketsService {
               fullName: true,
               phoneNumber: true,
               email: true,
+              avatarUrl: true,
             },
           },
         },
@@ -430,13 +432,14 @@ export class TicketsService {
         website: { select: websiteSelect },
         assignee: { select: { id: true, fullName: true } },
         createdBy: {
-          select: {
-            id: true,
-            fullName: true,
-            phoneNumber: true,
-            email: true,
+            select: {
+              id: true,
+              fullName: true,
+              phoneNumber: true,
+              email: true,
+              avatarUrl: true,
+            },
           },
-        },
         messages: {
           orderBy: { createdAt: 'asc' },
           include: { author: { select: messageAuthorSelect } },

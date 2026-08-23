@@ -30,6 +30,7 @@ import {
   saveAuthorizationDraftAction,
   submitAuthorizationAction,
 } from "@/actions/authorization/authorization-case";
+import { uploadAuthorizationDocumentAction } from "@/actions/authorization/upload-document";
 import { mapNestAuthorizationCase } from "@/lib/authorization/map-nest-case";
 import {
   AUTHORIZATION_STEP_ORDER,
@@ -94,6 +95,7 @@ export function AuthorizationWizard({
   const [busy, setBusy] = useState<"idle" | "saving" | "submitting">("idle");
   const [flash, setFlash] = useState<string | null>(null);
   const [documentError, setDocumentError] = useState<string | null>(null);
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
 
@@ -789,8 +791,9 @@ export function AuthorizationWizard({
             fileName={pkg.nationalIdCardFileName}
             previewUrl={pkg.nationalIdCardPreviewUrl}
             error={documentError ?? undefined}
-            onChange={({ fileName, previewUrl }) => {
+            onChange={({ fileName, previewUrl, file }) => {
               setDocumentError(null);
+              setDocumentFile(file ?? null);
               persist({
                 ...pkg,
                 nationalIdCardFileName: fileName,

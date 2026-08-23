@@ -18,6 +18,7 @@ type PlanRequestFileUploadProps = {
   disabled?: boolean;
   error?: string;
   onChange: (files: PlanRequestAttachmentMeta[]) => void;
+  onFilesChange?: (files: File[]) => void;
 };
 
 const enterEase = [0.22, 1, 0.36, 1] as const;
@@ -40,6 +41,7 @@ export function PlanRequestFileUpload({
   disabled,
   error,
   onChange,
+  onFilesChange,
 }: PlanRequestFileUploadProps) {
   const t = useTranslations("GuestPlanRequestPage.form.upload");
   const prefersReducedMotion = useReducedMotion();
@@ -47,6 +49,7 @@ export function PlanRequestFileUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [fileStore, setFileStore] = useState<File[]>([]);
   const statusId = `${inputId}-status`;
 
   function mergeFiles(incoming: FileList | File[]) {
@@ -80,11 +83,23 @@ export function PlanRequestFileUpload({
       setLocalError(null);
     }
 
+    // Also track actual File objects
+    const newFileObjects = list.filter(f =>
+      !fileStore.some(e => e.name === f.name && e.size === f.size)
+    );
+    const updatedFileStore = [...fileStore, ...newFileObjects];
+    setFileStore(updatedFileStore);
+    onFilesChange?.(updatedFileStore);
+
     onChange(next);
     if (inputRef.current) inputRef.current.value = "";
   }
 
   function removeAt(index: number) {
+    const removed = files[index];
+    const updatedFileStore = fileStore.filter(f => !(f.name === removed.name && f.size === removed.size));
+    setFileStore(updatedFileStore);
+    onFilesChange?.(updatedFileStore);
     onChange(files.filter((_, i) => i !== index));
     setLocalError(null);
   }

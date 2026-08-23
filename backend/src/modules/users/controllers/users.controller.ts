@@ -6,7 +6,11 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import {
   IsEmail,
   IsOptional,
@@ -132,6 +136,22 @@ export class UsersController {
     @Body() body: VerifyEmailOtpDto,
   ) {
     const updated = await this.usersService.verifyEmailOtp(user.id, body);
+    return ApiResponseBuilder.ok(updated);
+  }
+
+  @Post('me/avatar')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 2 * 1024 * 1024 },
+    }),
+  )
+  async uploadAvatar(
+    @CurrentUser() user: CurrentUserType,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const updated = await this.usersService.uploadAvatar(user.id, file);
     return ApiResponseBuilder.ok(updated);
   }
 }

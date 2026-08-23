@@ -44,6 +44,13 @@ const appConfig = registerAs('app', () => {
       url: env.SUPABASE_URL.replace(/\/$/, ''),
       secretKey: env.SUPABASE_SECRET_KEY,
       bucket: env.SUPABASE_STORAGE_BUCKET,
+      provider: env.STORAGE_PROVIDER,
+      localStoragePath: env.LOCAL_STORAGE_PATH,
+      publicBaseUrl:
+        env.STORAGE_PUBLIC_BASE_URL?.replace(/\/$/, '') ??
+        (env.APP_ENV === 'development' || env.APP_ENV === 'test'
+          ? `http://localhost:${env.PORT}`
+          : env.AGENT_API_BASE_URL.replace(/\/$/, '')),
     },
     corsAllowedOrigins: env.CORS_ALLOWED_ORIGINS,
     otpExpiredTime: env.OTP_EXPIRED_TIME_KEY,

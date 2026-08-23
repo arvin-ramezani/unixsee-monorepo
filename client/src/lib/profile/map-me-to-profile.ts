@@ -9,6 +9,7 @@ export type MeProfileResponse = SafeAuthUser & {
   locale?: string | null;
   phoneVerifiedAt?: string | null;
   emailVerifiedAt?: string | null;
+  avatarUrl?: string | null;
 };
 
 function statusFromVerifiedAt(
@@ -34,13 +35,13 @@ export function mapMeToUserProfile(
   },
 ): UserProfile {
   return {
-    fullName: me.fullName?.trim() || me.username || me.phoneNumber || "",
+    fullName: me.fullName?.trim() || "",
     email: me.email?.trim() || "",
     emailStatus: statusFromVerifiedAt(me.emailVerifiedAt),
     mobile: me.phoneNumber?.trim() || "",
     mobileStatus: statusFromVerifiedAt(me.phoneVerifiedAt),
     preferredLanguage: mapLocale(me.locale),
-    avatarUrl: undefined,
+    avatarUrl: me.avatarUrl ?? undefined,
     passwordState: overlays.passwordState,
     twoFactorState: overlays.twoFactorState,
   };

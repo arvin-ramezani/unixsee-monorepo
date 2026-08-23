@@ -37,6 +37,7 @@ import { AuditModule } from './modules/audit/audit.module.js';
 import { AdminOverviewModule } from './modules/admin-overview/admin-overview.module.js';
 import { OperationalActionsModule } from './modules/operational-actions/operational-actions.module.js';
 import { AuthorizationCasesModule } from './modules/authorization-cases/authorization-cases.module.js';
+import { UploadsModule } from './modules/uploads/uploads.module.js';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { AuthorizationCasesModule } from './modules/authorization-cases/authoriz
     AdminOverviewModule,
     OperationalActionsModule,
     AuthorizationCasesModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [

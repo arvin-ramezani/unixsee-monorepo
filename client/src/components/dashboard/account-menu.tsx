@@ -19,12 +19,14 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useLightHeaderStore } from "@/providers/light-header-provider";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 
 type AccountMenuProps = {
   userName: string;
+  avatarUrl?: string | null;
 };
 
-export function AccountMenu({ userName }: AccountMenuProps) {
+export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
   const t = useTranslations("Header.accountMenu");
   const router = useRouter();
   const clearClientSession = useAuthStore((state) => state.logout);
@@ -61,8 +63,17 @@ export function AccountMenu({ userName }: AccountMenuProps) {
           "disabled:pointer-events-none disabled:opacity-60",
         )}
       >
-        <span className="bg-primary text-primary-foreground grid size-10 place-items-center rounded-full text-xs font-semibold xl:size-12">
-          {initial}
+        <span className="bg-primary text-primary-foreground grid size-10 place-items-center overflow-hidden rounded-full text-xs font-semibold xl:size-12">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <Image
+              src={avatarUrl}
+              alt={userName}
+              className="size-full object-cover"
+            />
+          ) : (
+            <UserRound className="size-5 xl:size-7" />
+          )}
         </span>
         <span className="hidden text-sm font-medium sm:inline">{userName}</span>
         <motion.span

@@ -10,7 +10,7 @@ export type PlansSectionProps = {
 export default function PlansSection({ id }: PlansSectionProps) {
   const t = useTranslations("ManagedServerPage.PlansSection");
   return (
-    <Section id={id} className="bg-muted" containerClassName="flex-col!">
+    <Section id={id} className="bg-muted" containerClassName="flex-col! pb-0!">
       <Title as="h2" className="mx-auto mb-4 max-w-lg text-center lg:max-w-3xl">
         {t("heading")}
       </Title>

@@ -25,7 +25,7 @@ export function ProfileAvatarField({
 }: {
   name: string;
   initialUrl?: string;
-  onChange: (url?: string) => void;
+  onChange: (url?: string, file?: File) => void;
 }) {
   const t = useTranslations("Profile.avatar");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,7 +54,7 @@ export function ProfileAvatarField({
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = nextUrl;
     window.setTimeout(() => {
-      onChange(nextUrl);
+      onChange(nextUrl, file);
       setUploading(false);
     }, 450);
   }
@@ -62,7 +62,7 @@ export function ProfileAvatarField({
   function remove() {
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = undefined;
-    onChange(undefined);
+    onChange(undefined, undefined);
     setConfirmingRemove(false);
     if (inputRef.current) inputRef.current.value = "";
   }

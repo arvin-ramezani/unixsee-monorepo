@@ -27,6 +27,7 @@ export default async function AppShellLayout({
         user={{
           name: displayName,
           email: displayEmail,
+          avatarUrl: user.avatarUrl ?? null,
         }}
       />
 

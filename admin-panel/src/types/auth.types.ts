@@ -25,6 +25,7 @@ export type SafeAuthUser = {
   email: string | null;
   username: string | null;
   fullName: string | null;
+  avatarUrl: string | null;
   role: string;
 };
 

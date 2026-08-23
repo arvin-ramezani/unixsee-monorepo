@@ -41,7 +41,7 @@ function resolveWelcomeName(user: SafeAuthUser | null, fallback: string) {
   if (fullName) {
     return fullName.split(/\s+/)[0] || fullName;
   }
-  return user?.username?.trim() || fallback;
+  return fallback;
 }
 
 export default async function DashboardPage({
@@ -52,13 +52,13 @@ export default async function DashboardPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Dashboard");
-  const common = await getTranslations("Common");
+  const nav = await getTranslations("Navigation");
   const [user, authorizationStatus] = await Promise.all([
     getCurrentUser(),
     loadAuthorizationStatus(),
   ]);
   const recentActivities = getRecentActivities();
-  const welcomeName = resolveWelcomeName(user, common("userName"));
+  const welcomeName = resolveWelcomeName(user, nav("accountFallback"));
 
   return (
     <DashboardShell activeItem="Dashboard" userName={welcomeName}>

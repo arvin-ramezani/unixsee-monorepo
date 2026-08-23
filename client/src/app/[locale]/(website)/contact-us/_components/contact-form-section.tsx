@@ -28,9 +28,10 @@ import {
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { getServerCoreApiBaseUrl } from "@/lib/auth/auth-utils";
 import Title from "@/components/common/title";
 import { UploadCloudIcon } from "lucide-react";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 const SERVICE_KEYS = [
   "managedServer",
@@ -68,11 +69,35 @@ export default function ContactFormSection({}: ContactFormSectionProps) {
     return tFormErrors(message as FormErrorKey);
   };
 
-  function onSubmit(data: ContactUsSchemaType) {
+  async function onSubmit(data: ContactUsSchemaType) {
+    const uploadUrls: { fileName: string; downloadUrl: string }[] = [];
+
+    for (const file of selectedFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch(`${getServerCoreApiBaseUrl()}/uploads/public`, {
+          method: "POST",
+          body: formData,
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.data) {
+            uploadUrls.push({
+              fileName: result.data.fileName,
+              downloadUrl: result.data.downloadUrl,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("File upload failed:", err);
+      }
+    }
+
     toast("You submitted the following values:", {
       description: (
         <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
+          <code>{JSON.stringify({ ...data, attachments: uploadUrls }, null, 2)}</code>
         </pre>
       ),
       position: "bottom-right",
@@ -85,8 +110,10 @@ export default function ContactFormSection({}: ContactFormSectionProps) {
     });
   }
 
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
   const filesChangeHandler = (files: File[]) => {
-    console.log(files);
+    setSelectedFiles(files);
   };
 
   return (

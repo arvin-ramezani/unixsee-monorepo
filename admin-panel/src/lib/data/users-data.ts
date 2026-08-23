@@ -184,6 +184,7 @@ export const AUDIT_RESULT_LABELS: Record<AuditResultType, string> = {
 };
 
 export type CustomerUserType = {
+  avatarUrl?: string | null;
   id: string;
   displayName: string;
   email: string | null;

@@ -31,6 +31,7 @@ interface HeaderProps {
   notifications: readonly NotificationItem[];
   showViewToggle?: boolean;
   userName?: string;
+  avatarUrl?: string | null;
   hasUnreadUnixseeMessages?: boolean;
 }
 
@@ -50,6 +51,7 @@ export function Header({
   notifications,
   showViewToggle: showViewToggleOverride,
   userName = "Jane",
+  avatarUrl,
   hasUnreadUnixseeMessages = false,
 }: HeaderProps) {
   const views = useTranslations("Common.views");
@@ -92,7 +94,7 @@ export function Header({
           <NotificationCenter notifications={notifications} />
           <ModeToggle triggerClassName="size-9" />
           <LocaleSwitcher />
-          <AccountMenu userName={userName} />
+          <AccountMenu userName={userName} avatarUrl={avatarUrl} />
         </div>
       </div>
     </header>

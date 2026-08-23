@@ -48,6 +48,7 @@ export type AdminUserDto = {
   email: string | null;
   username: string | null;
   fullName: string | null;
+  avatarUrl?: string | null;
   role: NestUserRole;
   status: NestUserAccountStatus;
   locale: string;
@@ -198,6 +199,7 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
       dto.fullName?.trim() ||
       dto.username?.trim() ||
       dto.phoneNumber,
+    avatarUrl: dto.avatarUrl ?? null,
     email: dto.email,
     emailVerification: dto.email
       ? dto.emailVerifiedAt

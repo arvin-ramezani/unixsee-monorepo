@@ -8,6 +8,8 @@ import HeroSection from "../_components/sections/hero-section";
 import ManageSection from "../_components/sections/manage-section";
 import PerformanceSection from "../_components/sections/performance-section";
 import PlansSection from "../_components/sections/plans-section";
+import CommonFeaturesSection from "../_components/sections/common-features-section";
+import TechnicalFeaturesSection from "../_components/sections/technical-features-section";
 import ProtectionSection from "../_components/sections/protection-section";
 import VideoSection from "../_components/sections/video-section";
 
@@ -24,6 +26,8 @@ export default function Page({}: PageProps) {
     <main className="pb-20">
       <HeroSection />
       <PlansSection id={sectionIds[0]} />
+      <CommonFeaturesSection />
+      {/* <TechnicalFeaturesSection /> */}
       <VideoSection id={sectionIds[1]} />
       <ManageSection id={sectionIds[2]} />
       <ConnectSection id={sectionIds[3]} />

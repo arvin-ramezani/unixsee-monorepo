@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import SearchInput from "@/components/common/search-input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,

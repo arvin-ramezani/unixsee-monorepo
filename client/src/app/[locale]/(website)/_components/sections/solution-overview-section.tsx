@@ -41,22 +41,20 @@ export default function SolutionOverviewSection({
   return (
     <Section id={id} className="z-0">
       <ScaleTitle
-        className="max-w-2/3 sm:w-1/2 lg:max-w-155 lg:leading-16 xl:max-w-lg"
+        className="lg:leading-16 xl:max-w-lg"
         as={"h2"}
         scaleFrom={0.6}
         scaleTo={1}
-      >
-        {t("title")}
-      </ScaleTitle>
+        dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+      />
 
       <ScaleTitle
         as={"p"}
         scaleFrom={0.6}
         scaleTo={1}
-        className="mt-4 max-w-4/5 sm:max-w-2/3 lg:mt-6 lg:max-w-155 xl:max-w-2xl"
-      >
-        {t("description")}
-      </ScaleTitle>
+        className="mt-4 lg:mt-6"
+        dangerouslySetInnerHTML={{ __html: t.raw("description") }}
+      />
 
       <StickyCards items={items} />
     </Section>

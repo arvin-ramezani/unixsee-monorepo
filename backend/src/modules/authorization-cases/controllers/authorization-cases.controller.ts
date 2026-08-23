@@ -1,4 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Put, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Put, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
@@ -49,5 +51,21 @@ export class AuthorizationCasesController {
       toPackageInput(body),
     );
     return ApiResponseBuilder.ok(toCustomerAuthorizationCaseDto(data));
+  }
+
+  @Post('me/document')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 5 * 1024 * 1024 },
+    }),
+  )
+  async uploadDocument(
+    @CurrentUser() user: CurrentUserType,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const data = await this.authorizationCasesService.uploadDocument(user.id, file);
+    return ApiResponseBuilder.ok(data);
   }
 }

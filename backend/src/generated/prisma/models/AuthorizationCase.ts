@@ -40,6 +40,7 @@ export type AuthorizationCaseMinAggregateOutputType = {
   address: string | null
   postalCode: string | null
   nationalIdCardFileName: string | null
+  nationalIdCardStorageKey: string | null
   attestedTruthful: boolean | null
   staffReason: string | null
   submittedAt: Date | null
@@ -66,6 +67,7 @@ export type AuthorizationCaseMaxAggregateOutputType = {
   address: string | null
   postalCode: string | null
   nationalIdCardFileName: string | null
+  nationalIdCardStorageKey: string | null
   attestedTruthful: boolean | null
   staffReason: string | null
   submittedAt: Date | null
@@ -92,6 +94,7 @@ export type AuthorizationCaseCountAggregateOutputType = {
   address: number
   postalCode: number
   nationalIdCardFileName: number
+  nationalIdCardStorageKey: number
   attestedTruthful: number
   staffReason: number
   staffFieldsToFix: number
@@ -121,6 +124,7 @@ export type AuthorizationCaseMinAggregateInputType = {
   address?: true
   postalCode?: true
   nationalIdCardFileName?: true
+  nationalIdCardStorageKey?: true
   attestedTruthful?: true
   staffReason?: true
   submittedAt?: true
@@ -147,6 +151,7 @@ export type AuthorizationCaseMaxAggregateInputType = {
   address?: true
   postalCode?: true
   nationalIdCardFileName?: true
+  nationalIdCardStorageKey?: true
   attestedTruthful?: true
   staffReason?: true
   submittedAt?: true
@@ -173,6 +178,7 @@ export type AuthorizationCaseCountAggregateInputType = {
   address?: true
   postalCode?: true
   nationalIdCardFileName?: true
+  nationalIdCardStorageKey?: true
   attestedTruthful?: true
   staffReason?: true
   staffFieldsToFix?: true
@@ -273,6 +279,7 @@ export type AuthorizationCaseGroupByOutputType = {
   address: string
   postalCode: string
   nationalIdCardFileName: string | null
+  nationalIdCardStorageKey: string | null
   attestedTruthful: boolean
   staffReason: string | null
   staffFieldsToFix: string[]
@@ -321,6 +328,7 @@ export type AuthorizationCaseWhereInput = {
   address?: Prisma.StringFilter<"AuthorizationCase"> | string
   postalCode?: Prisma.StringFilter<"AuthorizationCase"> | string
   nationalIdCardFileName?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
+  nationalIdCardStorageKey?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   attestedTruthful?: Prisma.BoolFilter<"AuthorizationCase"> | boolean
   staffReason?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   staffFieldsToFix?: Prisma.StringNullableListFilter<"AuthorizationCase">
@@ -351,6 +359,7 @@ export type AuthorizationCaseOrderByWithRelationInput = {
   address?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
   nationalIdCardFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  nationalIdCardStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   attestedTruthful?: Prisma.SortOrder
   staffReason?: Prisma.SortOrderInput | Prisma.SortOrder
   staffFieldsToFix?: Prisma.SortOrder
@@ -384,6 +393,7 @@ export type AuthorizationCaseWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringFilter<"AuthorizationCase"> | string
   postalCode?: Prisma.StringFilter<"AuthorizationCase"> | string
   nationalIdCardFileName?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
+  nationalIdCardStorageKey?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   attestedTruthful?: Prisma.BoolFilter<"AuthorizationCase"> | boolean
   staffReason?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   staffFieldsToFix?: Prisma.StringNullableListFilter<"AuthorizationCase">
@@ -414,6 +424,7 @@ export type AuthorizationCaseOrderByWithAggregationInput = {
   address?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
   nationalIdCardFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  nationalIdCardStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   attestedTruthful?: Prisma.SortOrder
   staffReason?: Prisma.SortOrderInput | Prisma.SortOrder
   staffFieldsToFix?: Prisma.SortOrder
@@ -447,6 +458,7 @@ export type AuthorizationCaseScalarWhereWithAggregatesInput = {
   address?: Prisma.StringWithAggregatesFilter<"AuthorizationCase"> | string
   postalCode?: Prisma.StringWithAggregatesFilter<"AuthorizationCase"> | string
   nationalIdCardFileName?: Prisma.StringNullableWithAggregatesFilter<"AuthorizationCase"> | string | null
+  nationalIdCardStorageKey?: Prisma.StringNullableWithAggregatesFilter<"AuthorizationCase"> | string | null
   attestedTruthful?: Prisma.BoolWithAggregatesFilter<"AuthorizationCase"> | boolean
   staffReason?: Prisma.StringNullableWithAggregatesFilter<"AuthorizationCase"> | string | null
   staffFieldsToFix?: Prisma.StringNullableListFilter<"AuthorizationCase">
@@ -473,6 +485,7 @@ export type AuthorizationCaseCreateInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -501,6 +514,7 @@ export type AuthorizationCaseUncheckedCreateInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -527,6 +541,7 @@ export type AuthorizationCaseUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -555,6 +570,7 @@ export type AuthorizationCaseUncheckedUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -582,6 +598,7 @@ export type AuthorizationCaseCreateManyInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -608,6 +625,7 @@ export type AuthorizationCaseUpdateManyMutationInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -633,6 +651,7 @@ export type AuthorizationCaseUncheckedUpdateManyInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -678,6 +697,7 @@ export type AuthorizationCaseCountOrderByAggregateInput = {
   address?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
   nationalIdCardFileName?: Prisma.SortOrder
+  nationalIdCardStorageKey?: Prisma.SortOrder
   attestedTruthful?: Prisma.SortOrder
   staffReason?: Prisma.SortOrder
   staffFieldsToFix?: Prisma.SortOrder
@@ -705,6 +725,7 @@ export type AuthorizationCaseMaxOrderByAggregateInput = {
   address?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
   nationalIdCardFileName?: Prisma.SortOrder
+  nationalIdCardStorageKey?: Prisma.SortOrder
   attestedTruthful?: Prisma.SortOrder
   staffReason?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -731,6 +752,7 @@ export type AuthorizationCaseMinOrderByAggregateInput = {
   address?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
   nationalIdCardFileName?: Prisma.SortOrder
+  nationalIdCardStorageKey?: Prisma.SortOrder
   attestedTruthful?: Prisma.SortOrder
   staffReason?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
@@ -903,6 +925,7 @@ export type AuthorizationCaseCreateWithoutUserInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -929,6 +952,7 @@ export type AuthorizationCaseUncheckedCreateWithoutUserInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -965,6 +989,7 @@ export type AuthorizationCaseCreateWithoutDecidedByInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -992,6 +1017,7 @@ export type AuthorizationCaseUncheckedCreateWithoutDecidedByInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1047,6 +1073,7 @@ export type AuthorizationCaseScalarWhereInput = {
   address?: Prisma.StringFilter<"AuthorizationCase"> | string
   postalCode?: Prisma.StringFilter<"AuthorizationCase"> | string
   nationalIdCardFileName?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
+  nationalIdCardStorageKey?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   attestedTruthful?: Prisma.BoolFilter<"AuthorizationCase"> | boolean
   staffReason?: Prisma.StringNullableFilter<"AuthorizationCase"> | string | null
   staffFieldsToFix?: Prisma.StringNullableListFilter<"AuthorizationCase">
@@ -1089,6 +1116,7 @@ export type AuthorizationCaseCreateWithoutTenantInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1116,6 +1144,7 @@ export type AuthorizationCaseUncheckedCreateWithoutTenantInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1167,6 +1196,7 @@ export type AuthorizationCaseCreateManyUserInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1194,6 +1224,7 @@ export type AuthorizationCaseCreateManyDecidedByInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1219,6 +1250,7 @@ export type AuthorizationCaseUpdateWithoutUserInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1245,6 +1277,7 @@ export type AuthorizationCaseUncheckedUpdateWithoutUserInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1271,6 +1304,7 @@ export type AuthorizationCaseUncheckedUpdateManyWithoutUserInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1297,6 +1331,7 @@ export type AuthorizationCaseUpdateWithoutDecidedByInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1324,6 +1359,7 @@ export type AuthorizationCaseUncheckedUpdateWithoutDecidedByInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1350,6 +1386,7 @@ export type AuthorizationCaseUncheckedUpdateManyWithoutDecidedByInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1376,6 +1413,7 @@ export type AuthorizationCaseCreateManyTenantInput = {
   address?: string
   postalCode?: string
   nationalIdCardFileName?: string | null
+  nationalIdCardStorageKey?: string | null
   attestedTruthful?: boolean
   staffReason?: string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseCreatestaffFieldsToFixInput | string[]
@@ -1401,6 +1439,7 @@ export type AuthorizationCaseUpdateWithoutTenantInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1428,6 +1467,7 @@ export type AuthorizationCaseUncheckedUpdateWithoutTenantInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1454,6 +1494,7 @@ export type AuthorizationCaseUncheckedUpdateManyWithoutTenantInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   postalCode?: Prisma.StringFieldUpdateOperationsInput | string
   nationalIdCardFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nationalIdCardStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attestedTruthful?: Prisma.BoolFieldUpdateOperationsInput | boolean
   staffReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   staffFieldsToFix?: Prisma.AuthorizationCaseUpdatestaffFieldsToFixInput | string[]
@@ -1482,6 +1523,7 @@ export type AuthorizationCaseSelect<ExtArgs extends runtime.Types.Extensions.Int
   address?: boolean
   postalCode?: boolean
   nationalIdCardFileName?: boolean
+  nationalIdCardStorageKey?: boolean
   attestedTruthful?: boolean
   staffReason?: boolean
   staffFieldsToFix?: boolean
@@ -1512,6 +1554,7 @@ export type AuthorizationCaseSelectCreateManyAndReturn<ExtArgs extends runtime.T
   address?: boolean
   postalCode?: boolean
   nationalIdCardFileName?: boolean
+  nationalIdCardStorageKey?: boolean
   attestedTruthful?: boolean
   staffReason?: boolean
   staffFieldsToFix?: boolean
@@ -1542,6 +1585,7 @@ export type AuthorizationCaseSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   address?: boolean
   postalCode?: boolean
   nationalIdCardFileName?: boolean
+  nationalIdCardStorageKey?: boolean
   attestedTruthful?: boolean
   staffReason?: boolean
   staffFieldsToFix?: boolean
@@ -1572,6 +1616,7 @@ export type AuthorizationCaseSelectScalar = {
   address?: boolean
   postalCode?: boolean
   nationalIdCardFileName?: boolean
+  nationalIdCardStorageKey?: boolean
   attestedTruthful?: boolean
   staffReason?: boolean
   staffFieldsToFix?: boolean
@@ -1583,7 +1628,7 @@ export type AuthorizationCaseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AuthorizationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "status" | "nationalId" | "birthDate" | "mobile" | "mobileChallenge" | "mobileBelongsToNationalId" | "email" | "emailChallenge" | "province" | "city" | "address" | "postalCode" | "nationalIdCardFileName" | "attestedTruthful" | "staffReason" | "staffFieldsToFix" | "submittedAt" | "decidedAt" | "decidedByUserId" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["authorizationCase"]>
+export type AuthorizationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "status" | "nationalId" | "birthDate" | "mobile" | "mobileChallenge" | "mobileBelongsToNationalId" | "email" | "emailChallenge" | "province" | "city" | "address" | "postalCode" | "nationalIdCardFileName" | "nationalIdCardStorageKey" | "attestedTruthful" | "staffReason" | "staffFieldsToFix" | "submittedAt" | "decidedAt" | "decidedByUserId" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["authorizationCase"]>
 export type AuthorizationCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   decidedBy?: boolean | Prisma.AuthorizationCase$decidedByArgs<ExtArgs>
@@ -1623,6 +1668,7 @@ export type $AuthorizationCasePayload<ExtArgs extends runtime.Types.Extensions.I
     address: string
     postalCode: string
     nationalIdCardFileName: string | null
+    nationalIdCardStorageKey: string | null
     attestedTruthful: boolean
     staffReason: string | null
     staffFieldsToFix: string[]
@@ -2073,6 +2119,7 @@ export interface AuthorizationCaseFieldRefs {
   readonly address: Prisma.FieldRef<"AuthorizationCase", 'String'>
   readonly postalCode: Prisma.FieldRef<"AuthorizationCase", 'String'>
   readonly nationalIdCardFileName: Prisma.FieldRef<"AuthorizationCase", 'String'>
+  readonly nationalIdCardStorageKey: Prisma.FieldRef<"AuthorizationCase", 'String'>
   readonly attestedTruthful: Prisma.FieldRef<"AuthorizationCase", 'Boolean'>
   readonly staffReason: Prisma.FieldRef<"AuthorizationCase", 'String'>
   readonly staffFieldsToFix: Prisma.FieldRef<"AuthorizationCase", 'String[]'>

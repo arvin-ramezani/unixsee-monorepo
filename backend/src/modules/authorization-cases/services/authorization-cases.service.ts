@@ -12,6 +12,7 @@ import {
 } from '#/generated/prisma/enums.js';
 import type { Prisma } from '#/generated/prisma/client.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
+import { StorageService } from '#/modules/storage/storage.service.js';
 import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -64,7 +65,9 @@ export class AuthorizationCasesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantsService: TenantsService,
+    private readonly storageService: StorageService,
   ) {}
+
 
   async getMine(userId: string) {
     return this.prisma.authorizationCase.findFirst({
@@ -372,5 +375,53 @@ export class AuthorizationCasesService {
         message: ERROR_MESSAGES.en.validation,
       });
     }
+  }
+
+  async uploadDocument(userId: string, file: Express.Multer.File) {
+    if (!file.mimetype.startsWith('image/') && file.mimetype !== 'application/pdf') {
+      throw new BadRequestException({ code: 'INVALID_FILE_TYPE', message: 'Only image files and PDF are allowed' });
+    }
+
+    const existing = await this.getMine(userId);
+    if (existing && TERMINAL_OR_LOCKED.includes(existing.status)) {
+      throw new ConflictException({
+        code: 'AUTHORIZATION_LOCKED',
+        message: ERROR_MESSAGES.en.conflict,
+      });
+    }
+
+    const ext = file.originalname.split('.').pop() || 'jpg';
+    const storageKey = 'authorization/' + userId + '/' + crypto.randomUUID() + '.' + ext;
+
+    await this.storageService.upload(storageKey, file.buffer, { contentType: file.mimetype });
+
+    const { signedUrl } = await this.storageService.createSignedUrl(storageKey, 30 * 24 * 60 * 60);
+
+    // Update or create the authorization case with the document
+    if (existing) {
+      await this.prisma.authorizationCase.update({
+        where: { id: existing.id },
+        data: {
+          nationalIdCardFileName: file.originalname,
+          nationalIdCardStorageKey: storageKey,
+        },
+      });
+    } else {
+      await this.prisma.authorizationCase.create({
+        data: {
+          userId,
+          status: AuthorizationCaseStatus.DRAFT,
+          nationalId: '',
+          birthDate: '',
+          mobile: '',
+          email: '',
+          nationalIdCardFileName: file.originalname,
+          nationalIdCardStorageKey: storageKey,
+        },
+      });
+    }
+
+    this.logger.log('authorization_case.document_uploaded', { userId });
+    return { fileName: file.originalname, storageKey, downloadUrl: signedUrl };
   }
 }

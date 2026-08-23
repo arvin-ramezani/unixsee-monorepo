@@ -31,6 +31,7 @@ interface DashboardShellProps {
   searchPlaceholder?: string;
   previewTheme?: "dark" | "light";
   userName?: string;
+  avatarUrl?: string | null;
   showViewToggle?: boolean;
 }
 
@@ -42,9 +43,9 @@ export function DashboardShell({
   children,
   previewTheme,
   showViewToggle,
-  userName = "Jane",
+  userName,
+  avatarUrl,
 }: DashboardShellProps) {
-  const common = useTranslations("Common");
   const navigation = useTranslations("Navigation");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
     () => sidebarCollapsedPreference,
@@ -83,7 +84,8 @@ export function DashboardShell({
             activeItem={activeItem}
             notifications={notifications}
             showViewToggle={showViewToggle}
-            userName={userName === "Jane" ? common("userName") : userName}
+            userName={userName || navigation("accountFallback")}
+            avatarUrl={avatarUrl}
             hasUnreadUnixseeMessages={hasUnreadUnixseeMessages}
           />
           <main className="px-4 pb-8 sm:px-6 xl:ps-5.75 xl:pe-6.5">

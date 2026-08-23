@@ -23,6 +23,7 @@ export type AuthUser = {
   email: string | null;
   username: string | null;
   fullName: string | null;
+  avatarUrl?: string | null;
   role?: string;
   locale?: string | null;
   phoneVerifiedAt?: string | null;

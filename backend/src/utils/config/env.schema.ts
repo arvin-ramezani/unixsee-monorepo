@@ -42,6 +42,16 @@ export const envSchema = z.object({
     .trim()
     .min(1, 'SUPABASE_STORAGE_BUCKET is required'),
 
+  STORAGE_PROVIDER: z
+    .enum(['filesystem', 's3'])
+    .default('filesystem'),
+  LOCAL_STORAGE_PATH: z
+    .string()
+    .trim()
+    .default('./storage/uploads'),
+
+  /** Public origin for browser-facing storage download URLs. */
+  STORAGE_PUBLIC_BASE_URL: z.url().optional(),
   JWT_ACCESS_SECRET: z
     .string({ error: 'JWT_ACCESS_SECRET is required' })
     .min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),

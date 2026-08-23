@@ -43,6 +43,7 @@ export default async function ProfilePage({
   const preview = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("Profile");
+  const nav = await getTranslations("Navigation");
   const value = (input?: string | string[]) =>
     Array.isArray(input) ? input[0] : input;
   const passwordState: PasswordState =
@@ -69,6 +70,8 @@ export default async function ProfilePage({
       activeItem="Profile"
       breadcrumbs={[{ label: t("title") }]}
       searchPlaceholder={t("searchHeader")}
+      userName={profile.fullName || nav("accountFallback")}
+      avatarUrl={profile.avatarUrl}
     >
       <>
         <ProfilePageHeader />

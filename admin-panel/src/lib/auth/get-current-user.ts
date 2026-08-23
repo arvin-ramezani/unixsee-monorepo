@@ -29,6 +29,7 @@ export const getCurrentUser = cache(async (): Promise<SafeAuthUser | null> => {
       email: response.data.email ?? null,
       username: response.data.username ?? null,
       fullName: response.data.fullName ?? null,
+      avatarUrl: response.data.avatarUrl ?? null,
       role: response.data.role,
     };
   } catch {

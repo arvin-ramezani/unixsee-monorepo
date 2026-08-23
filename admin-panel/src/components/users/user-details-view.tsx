@@ -17,7 +17,7 @@ import {
 
 import { applyNestUserSecurityAction } from "@/actions/users/user-security-actions";
 import { AdminBackLink } from "@/components/common/admin-back-link";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   ACCOUNT_ORIGIN_LABELS,
@@ -390,6 +390,7 @@ export function UserDetailsView({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex items-start gap-3">
             <Avatar size="lg">
+              <AvatarImage src={user.avatarUrl || undefined} alt={user.displayName} />
               <AvatarFallback>
                 {getCustomerInitials(user.displayName)}
               </AvatarFallback>

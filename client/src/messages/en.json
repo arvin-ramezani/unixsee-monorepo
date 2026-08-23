@@ -431,6 +431,65 @@
       "heading": "WooCommerce Server Plans",
       "subHeading": "Managed servers tailored to your storeU+0060s traffic, order volume, and technical requirements.",
       "popularLabel": "Most Popular",
+      "commonFeatures": {
+        "title": "Common Base Features Across All Unixee Services",
+        "items": [
+          {
+            "icon": "lock",
+            "label": "Valid SSL Certificate",
+            "value": "Google Trust"
+          },
+          {
+            "icon": "activity",
+            "label": "Monitoring & Surveillance",
+            "value": "7 days a week / 24 hours"
+          },
+          {
+            "icon": "rotate-ccw",
+            "label": "Regular Backups",
+            "value": "Daily and weekly cycles"
+          },
+          {
+            "icon": "settings",
+            "label": "Service Management",
+            "value": "Configuration by our team"
+          }
+        ]
+      },
+      "technicalFeatures": {
+        "title": "Technical, Security & Professional Management Infrastructure",
+        "subtitle": "We have pre-configured all the necessary tools for your store's peak performance.",
+        "items": [
+          {
+            "icon": "zap",
+            "title": "Redis Object Cache",
+            "description": "Significant reduction in database response time and increased page load speed through optimized query caching. A smooth, lag-free experience for your customers during search and checkout."
+          },
+          {
+            "icon": "rocket",
+            "title": "LiteSpeed Web Server",
+            "description": "Faster request processing and optimized traffic management with an event-driven architecture. Ensuring site stability even during traffic peaks and heavy sales campaigns."
+          },
+          {
+            "icon": "shield-check",
+            "title": "Security Firewalls (WAF & Anti-DDoS)",
+            "description": "Advanced, real-time protection for your store against malicious attacks, bots, and DDoS attacks. Creating a secure shield to maintain data integrity and sensitive user information."
+          },
+          {
+            "icon": "users",
+            "title": "Expert Infrastructure Management",
+            "description": "The Unixsee engineering team is available 24/7. From dedicated server configuration to real-time monitoring and resolving processing bottlenecks, everything is managed by our senior specialists."
+          }
+        ]
+      },
+      "additionalNotes": {
+        "title": "Additional Service Notes",
+        "items": [
+          "Final configuration and exact service costs based on location and available capacity will be communicated before activation.",
+          "In campaign plans, activating add-ons like Campaign Gateway is not included in the base server resources and will be provided after reviewing conditions.",
+          "For Enterprise services, detailed specifications, backup structure, monitoring, and architecture will be determined after a technical review meeting."
+        ]
+      },
       "items": {
         "semiDedicated": {
           "title": "Managed Semi-Dedicated Servers",
@@ -4296,7 +4355,8 @@
         "emailVerified": "Email verified.",
         "invalidCode": "Enter the 6-digit code.",
         "profileSaved": "Profile updated.",
-        "avatarLocalOnly": "Photo preview is local only until cloud storage is connected."
+        "avatarLocalOnly": "Photo preview is local only until cloud storage is connected.",
+        "avatarFailed": "Failed to upload photo."
       }
     },
     "unsaved": {

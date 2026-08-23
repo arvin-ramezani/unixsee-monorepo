@@ -41,6 +41,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "@/i18n/navigation";
 import { toastMappedApiError } from "@/lib/api/toast-api-error";
+import { getServerCoreApiBaseUrl } from "@/lib/auth/auth-utils";
 import {
   isCompleteIranNationalMobile,
   toE164IranFromNational,
@@ -87,6 +88,7 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
   const [verifiedChannel, setVerifiedChannel] = useState<OtpChannel | null>(
     null,
   );
+  const [fileObjects, setFileObjects] = useState<File[]>([]);
 
   const form = useForm<GuestPlanRequestSchemaType>({
     resolver: zodResolver(guestPlanRequestSchema),
@@ -274,6 +276,29 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
     toast.success(t("otpVerified"));
   }
 
+  async function uploadPublicFiles(files: File[]): Promise<{ fileName: string; downloadUrl: string }[]> {
+    const results: { fileName: string; downloadUrl: string }[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch(`${getServerCoreApiBaseUrl()}/uploads/public`, {
+          method: "POST",
+          body: formData,
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.data) {
+            results.push({ fileName: result.data.fileName, downloadUrl: result.data.downloadUrl });
+          }
+        }
+      } catch (err) {
+        console.error("File upload failed:", err);
+      }
+    }
+    return results;
+  }
+
   async function onSubmit(data: GuestPlanRequestSchemaType) {
     if (!verifiedChannel) {
       toast.error(t("verifyContactFirst"));
@@ -285,10 +310,17 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
       return;
     }
 
+    // Upload attached files to public storage
+    let uploadedAttachments: { fileName: string; downloadUrl: string }[] = [];
+    if (fileObjects.length > 0) {
+      uploadedAttachments = await uploadPublicFiles(fileObjects);
+    }
+
     const payload = guestPlanRequestToApiPayload(data);
     const result = await createPlanRequestAction({
       planId: plan.id,
       ...payload,
+      ...(uploadedAttachments.length > 0 ? { attachmentUrls: uploadedAttachments } : {}),
     });
 
     if (!result.ok) {
@@ -856,6 +888,7 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
                 disabled={pending}
                 error={translateError(fieldState.error?.message)}
                 onChange={field.onChange}
+                onFilesChange={setFileObjects}
               />
             )}
           />

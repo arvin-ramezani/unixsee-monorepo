@@ -5,7 +5,7 @@ import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import { logoutAction } from "@/actions/auth/logout";
 import { useAuthStore } from "@/components/providers/auth-store-provider";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +26,7 @@ export function NavUser({
   user: {
     name: string;
     email: string;
+    avatarUrl?: string | null;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -53,6 +54,7 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-full items-center gap-2 rounded-lg p-2 text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
             <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage src={user.avatarUrl || undefined} alt={user.name} />
               <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-sm leading-tight text-start">
@@ -70,7 +72,8 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg">
+              <AvatarImage src={user.avatarUrl || undefined} alt={user.name} />
+              <AvatarFallback className="rounded-lg">
                     {initials}
                   </AvatarFallback>
                 </Avatar>

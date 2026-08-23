@@ -7,12 +7,15 @@ import {
   useState,
   useTransition,
 } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle2, LoaderCircle, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { updateProfileAction } from "@/actions/profile/update-profile";
+import { uploadAvatarAction } from "@/actions/profile/upload-avatar";
 import { Panel } from "@/components/dashboard/panel";
+import { useAuthStore } from "@/components/providers/auth-store-provider";
 import {
   ContactVerifyDialog,
   type ContactVerifyChannel,
@@ -62,6 +65,7 @@ export function PersonalInformationCard({
   const [saved, setSaved] = useState(profile);
   const [draft, setDraft] = useState(profile);
   const [avatarChanged, setAvatarChanged] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | undefined>(undefined);
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveState, setSaveState] = useState<
     "idle" | "saving" | "saved" | "failed"
@@ -71,6 +75,9 @@ export function PersonalInformationCard({
     useState<ContactVerifyChannel | null>(null);
   const [pending, startTransition] = useTransition();
   const toastRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const storeUser = useAuthStore((state) => state.user);
+  const setStoreUser = useAuthStore((state) => state.setUser);
 
   const profileFieldsDirty =
     draft.fullName !== saved.fullName ||
@@ -125,6 +132,13 @@ export function PersonalInformationCard({
     return Object.keys(next).length === 0;
   }
 
+  function refreshAvatar(avatarUrl?: string | null) {
+    if (avatarUrl && storeUser) {
+      setStoreUser({ ...storeUser, avatarUrl });
+    }
+    router.refresh();
+  }
+
   function save(event: FormEvent) {
     event.preventDefault();
 
@@ -133,8 +147,32 @@ export function PersonalInformationCard({
 
       const hadAvatarChange = avatarChanged;
       if (!profileFieldsDirty && hadAvatarChange) {
-        setAvatarChanged(false);
-        toast.info(t("toast.avatarLocalOnly"));
+        // Avatar-only save: upload the file directly
+        if (avatarFile) {
+          setSaveState("saving");
+          startTransition(async () => {
+            const formData = new FormData();
+            formData.append("file", avatarFile);
+            const avatarResult = await uploadAvatarAction(formData);
+            if (avatarResult.ok) {
+              const updated = { ...draft, avatarUrl: avatarResult.data.avatarUrl };
+              setSaved(updated);
+              setDraft(updated);
+              setAvatarChanged(false);
+              setAvatarFile(undefined);
+              setSaveState("saved");
+              refreshAvatar(avatarResult.data.avatarUrl);
+              toast.success(t("toast.profileSaved"));
+              window.setTimeout(() => setSaveState("idle"), 2500);
+            } else {
+              setSaveState("failed");
+              toast.error(t("toast.avatarFailed"));
+            }
+          });
+        } else {
+          setAvatarChanged(false);
+          toast.info(t("toast.avatarLocalOnly"));
+        }
         return;
       }
       if (!profileFieldsDirty) return;
@@ -152,22 +190,32 @@ export function PersonalInformationCard({
           return;
         }
 
+        let avatarUrl = draft.avatarUrl;
+        if (hadAvatarChange && avatarFile) {
+          const formData = new FormData();
+          formData.append("file", avatarFile);
+          const avatarResult = await uploadAvatarAction(formData);
+          if (avatarResult.ok) {
+            avatarUrl = avatarResult.data.avatarUrl;
+          }
+        }
         const mapped = mapMeToUserProfile(result.data, {
           passwordState: saved.passwordState,
           twoFactorState: saved.twoFactorState,
         });
         const next: UserProfile = {
           ...mapped,
-          avatarUrl: draft.avatarUrl,
+          avatarUrl,
         };
         setSaved(next);
         setDraft(next);
         setAvatarChanged(false);
+        setAvatarFile(undefined);
         setSaveState("saved");
-        toast.success(t("toast.profileSaved"));
         if (hadAvatarChange) {
-          toast.info(t("toast.avatarLocalOnly"));
+          refreshAvatar(avatarUrl);
         }
+        toast.success(t("toast.profileSaved"));
         window.setTimeout(() => setSaveState("idle"), 2500);
       });
       return;
@@ -203,6 +251,7 @@ export function PersonalInformationCard({
   function reset() {
     setDraft(saved);
     setAvatarChanged(false);
+    setAvatarFile(undefined);
     setErrors({});
     setSaveState("idle");
     setShowReset(false);
@@ -267,9 +316,10 @@ export function PersonalInformationCard({
           <ProfileAvatarField
             name={draft.fullName}
             initialUrl={draft.avatarUrl}
-            onChange={(avatarUrl) => {
+            onChange={(avatarUrl, file) => {
               setDraft((value) => ({ ...value, avatarUrl }));
               setAvatarChanged(true);
+              setAvatarFile(file);
             }}
           />
         </div>

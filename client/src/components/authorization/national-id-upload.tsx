@@ -17,6 +17,7 @@ type NationalIdUploadProps = {
   onChange: (next: {
     fileName: string | null;
     previewUrl: string | null;
+    file?: File | null;
   }) => void;
 };
 
@@ -47,6 +48,7 @@ export function NationalIdUpload({
     onChange({
       fileName: file.name,
       previewUrl: URL.createObjectURL(file),
+      file,
     });
   }
 
@@ -55,7 +57,7 @@ export function NationalIdUpload({
       URL.revokeObjectURL(previewUrl);
     }
     setLocalError(null);
-    onChange({ fileName: null, previewUrl: null });
+    onChange({ fileName: null, previewUrl: null, file: null });
     if (inputRef.current) inputRef.current.value = "";
   }
 

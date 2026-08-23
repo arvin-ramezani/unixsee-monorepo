@@ -160,6 +160,7 @@ export function RequestAssessmentMultiStepForm({
     onSubmit,
   } = useRequestAssessmentFormController({ onSubmitted });
 
+
   const stepTitle = t(`steps.titles.${step}` as "steps.titles.1");
 
   const formBody = (

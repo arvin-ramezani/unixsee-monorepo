@@ -40,6 +40,7 @@ function toSafeUser(user: MeResponse): SafeAuthUser {
     email: user.email ?? null,
     username: user.username ?? null,
     fullName: user.fullName ?? null,
+    avatarUrl: user.avatarUrl ?? null,
     role: user.role,
   };
 }

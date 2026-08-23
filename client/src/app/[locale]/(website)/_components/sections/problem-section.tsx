@@ -50,9 +50,10 @@ export default function ProblemSection({ id }: ProblemSectionProps) {
               scaleFrom={0.6}
               scaleTo={1}
               className="lg:max-w-155 lg:leading-16 xl:max-w-2xl"
-            >
-              {t("title")}
-            </ScaleTitle>
+              dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+            />
+            {/* {t("title")} */}
+
             <ScaleTitle
               as={"p"}
               scaleFrom={0.6}

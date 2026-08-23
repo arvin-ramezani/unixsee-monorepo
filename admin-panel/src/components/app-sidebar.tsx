@@ -127,6 +127,7 @@ export function AppSidebar({
   user: {
     name: string;
     email: string;
+    avatarUrl?: string | null;
   };
 }) {
   const { open, setOpenMobile } = useSidebar();

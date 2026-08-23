@@ -20,6 +20,7 @@ import {
   getVerifiedChannel,
   mergeAccountContactIntoValues,
 } from "@/lib/request-assessment/account-contact";
+import { getServerCoreApiBaseUrl } from "@/lib/auth/auth-utils";
 import {
   clearRequestAssessmentFormDraft,
   loadRequestAssessmentFormDraft,
@@ -67,6 +68,7 @@ export function useRequestAssessmentFormController({
   const [otpVerifiedEmail, setOtpVerifiedEmail] = React.useState<string | null>(
     null,
   );
+  const [fileObjects, setFileObjects] = React.useState<File[]>([]);
 
   const form = useForm<RequestAssessmentSchemaType>({
     resolver: zodResolver(requestAssessmentSchema),
@@ -333,7 +335,30 @@ export function useRequestAssessmentFormController({
     goToStep((step - 1) as RequestAssessmentStep, -1);
   }
 
-  function onSubmit(data: RequestAssessmentSchemaType) {
+  async function uploadPublicFiles(files: File[]): Promise<{ fileName: string; downloadUrl: string }[]> {
+    const results: { fileName: string; downloadUrl: string }[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch(`${getServerCoreApiBaseUrl()}/uploads/public`, {
+          method: "POST",
+          body: formData,
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.data) {
+            results.push({ fileName: result.data.fileName, downloadUrl: result.data.downloadUrl });
+          }
+        }
+      } catch (err) {
+        console.error("File upload failed:", err);
+      }
+    }
+    return results;
+  }
+
+  async function onSubmit(data: RequestAssessmentSchemaType) {
     if (step !== 3) {
       return;
     }
@@ -353,8 +378,14 @@ export function useRequestAssessmentFormController({
       return;
     }
 
+    // Upload attached files to public storage
+    let uploadedAttachments: { fileName: string; downloadUrl: string }[] = [];
+    if (fileObjects.length > 0) {
+      uploadedAttachments = await uploadPublicFiles(fileObjects);
+    }
+
     React.startTransition(() => {
-      submitRequestAssessment({ ...data, locale });
+      submitRequestAssessment({ ...data, locale, uploadedAttachments });
     });
   }
 

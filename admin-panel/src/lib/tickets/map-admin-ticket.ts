@@ -32,6 +32,7 @@ export type AdminTicketListItemDto = {
     fullName: string | null;
     phoneNumber?: string | null;
     email?: string | null;
+    avatarUrl?: string | null;
   };
   resolvedAt: string | null;
   autoCloseAt: string | null;
@@ -104,7 +105,7 @@ function mapListItemToTicket(item: AdminTicketListItemDto): TicketType {
         }
       : undefined,
     userImage: {
-      url: "",
+      url: item.createdBy.avatarUrl ?? "",
       alt: fullName,
     },
     messages: [],

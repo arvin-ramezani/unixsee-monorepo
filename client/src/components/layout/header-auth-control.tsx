@@ -26,8 +26,8 @@ function resolveDisplayName(
 ) {
   const fullName = user?.fullName?.trim();
   if (fullName) return fullName;
-  if (user?.email) return user.email;
   return fallback;
+  // if (user?.email) return user.email;
   // if (user?.phoneNumber) return user.phoneNumber;
 }
 
@@ -61,7 +61,10 @@ export function HeaderAuthControl({
 
   if (accessToken) {
     return (
-      <AccountMenu userName={resolveDisplayName(user, t("accountFallback"))} />
+      <AccountMenu
+        userName={resolveDisplayName(user, t("accountFallback"))}
+        avatarUrl={user?.avatarUrl ?? null}
+      />
     );
   }
 

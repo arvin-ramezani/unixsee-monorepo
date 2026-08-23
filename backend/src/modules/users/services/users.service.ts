@@ -17,6 +17,7 @@ import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { OtpService } from '#/modules/auth/services/otp-service.js';
 import { MailService } from '#/modules/mail/mail.service.js';
 import { RequestContext } from '#/common/logging/request-context.js';
+import { StorageService } from '#/modules/storage/storage.service.js';
 
 const userPublicOmit = {
   hashedRt: true,
@@ -31,7 +32,9 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly otpService: OtpService,
     private readonly mailService: MailService,
+    private readonly storageService: StorageService,
   ) {}
+
 
   /** Never expose hashedRt/password; surface session presence only. */
   private toAdminUserView<T extends { hashedRt: string | null }>(user: T) {
@@ -656,4 +659,32 @@ export class UsersService {
       user: this.toAdminUserView(user),
     };
   }
+
+  async uploadAvatar(userId: string, file: Express.Multer.File) {
+    if (!file.mimetype.startsWith('image/')) {
+      throw new BadRequestException({ code: 'INVALID_FILE_TYPE', message: 'Only image files are allowed' });
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(ERROR_MESSAGES.en.notFound);
+    }
+
+    const ext = file.originalname.split('.').pop() || 'jpg';
+    const storageKey = 'avatars/' + userId + '/' + crypto.randomUUID() + '.' + ext;
+
+    await this.storageService.upload(storageKey, file.buffer, { contentType: file.mimetype });
+
+    const { signedUrl } = await this.storageService.createSignedUrl(storageKey, 30 * 24 * 60 * 60);
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: signedUrl },
+      omit: { hashedRt: true, password: true },
+    });
+
+    this.logger.log('user.avatar_uploaded', { userId });
+    return updated;
+  }
+
 }

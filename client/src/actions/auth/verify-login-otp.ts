@@ -28,6 +28,7 @@ function toSafeUser(payload: AuthSessionPayload): SafeAuthUser {
     email: payload.email ?? null,
     username: payload.username ?? null,
     fullName: payload.fullName ?? null,
+    avatarUrl: payload.avatarUrl ?? null,
     role: payload.role,
   };
 }

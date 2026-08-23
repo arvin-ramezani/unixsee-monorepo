@@ -29,7 +29,7 @@ type AdminTicketListRecord = Ticket & {
   website: TicketWebsite | null;
   tenant: Pick<Tenant, 'id' | 'name' | 'displayName' | 'status'>;
   assignee: Pick<User, 'id' | 'fullName'> | null;
-  createdBy: Pick<User, 'id' | 'fullName' | 'phoneNumber' | 'email'>;
+  createdBy: Pick<User, 'id' | 'fullName' | 'phoneNumber' | 'email' | 'avatarUrl'>;
 };
 
 type AdminTicketDetailRecord = AdminTicketListRecord & {
