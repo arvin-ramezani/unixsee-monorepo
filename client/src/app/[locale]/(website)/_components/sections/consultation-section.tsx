@@ -33,15 +33,15 @@ export default function ConsultationSection({ id }: ConsultationSectionType) {
           containerClassName="flex flex-col items-center"
         >
           <ScaleTitle
-            className={cn("max-w-155 text-center text-3xl!")}
+            className={cn("text-center")}
             as={"h2"}
             scaleFrom={0.6}
             scaleTo={1}
             transformOrigin="center center"
-          >
-            {t("ConsultationSection.title")}
-          </ScaleTitle>
-
+            dangerouslySetInnerHTML={{
+              __html: t.raw("ConsultationSection.title"),
+            }}
+          />
           <ScaleTitle
             as={"p"}
             scaleFrom={0.6}
@@ -78,7 +78,7 @@ export default function ConsultationSection({ id }: ConsultationSectionType) {
           <div className="w-full items-center justify-between gap-16 2xl:flex">
             <Accordion
               type="multiple"
-              className="mx-auto mt-8 max-w-2xl lg:mt-12 2xl:mx-0"
+              className="mx-auto mt-8 max-w-2xl lg:mt-24 2xl:mx-0"
             >
               {faqItemKeys.map((item) => (
                 <AccordionItem

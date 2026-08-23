@@ -74,8 +74,8 @@ export function ProfileAvatarField({
     .slice(0, 2)
     .toUpperCase();
   return (
-    <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <div className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-xl font-semibold text-primary-foreground sm:size-24 lg:size-28">
+    <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-start">
+      <div className="bg-primary text-primary-foreground relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-full text-xl font-semibold sm:size-24 lg:size-28">
         {preview ? (
           <Image
             src={preview}
@@ -88,53 +88,53 @@ export function ProfileAvatarField({
         ) : (
           initials
         )}
-        {uploading ? (
-          <span className="absolute inset-0 grid place-items-center bg-foreground/50">
+        {uploading && (
+          <span className="bg-foreground/50 absolute inset-0 grid place-items-center">
             <LoaderCircle
               aria-hidden="true"
-              className="size-6 animate-spin text-background"
+              className="text-background size-6 animate-spin"
             />
           </span>
-        ) : null}
+        )}
       </div>
       <div className="text-center sm:text-start">
         <h3 className="font-semibold">{t("title")}</h3>
-        <p className="mt-1 text-xs text-muted-foreground">{t("hint")}</p>
-        <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
+        <p className="text-muted-foreground mt-1 text-xs">{t("hint")}</p>
+        <div className="mt-3 flex h-20 flex-col items-center justify-center gap-2 sm:h-auto sm:flex-row sm:justify-start lg:h-20 lg:flex-col">
           <Button
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
             variant="outline"
-            className="min-h-11 text-nowrap px-3"
+            size="lg"
+            className="px-3 text-nowrap"
           >
             <Camera aria-hidden="true" className="size-4 shrink-0" />
             {preview ? t("replace") : t("upload")}
           </Button>
-          {preview ? (
+          {!!preview && (
             <Button
               type="button"
               onClick={() => setConfirmingRemove(true)}
               variant="outline"
-              className="min-h-11 text-nowrap px-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              size="lg"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive px-3 text-nowrap"
             >
               <Trash2 aria-hidden="true" className="size-4 shrink-0" />
               {t("remove")}
             </Button>
-          ) : null}
+          )}
           <Input
             ref={inputRef}
             type="file"
             accept="image/*"
-            className="absolute !size-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]"
+            className="absolute size-px! overflow-hidden border-0 p-0 whitespace-nowrap [clip:rect(0,0,0,0)]"
             onChange={(event) => selectFile(event.target.files?.[0])}
             aria-label={t("upload")}
           />
         </div>
         <div aria-live="polite">
-          {error ? (
-            <p className="mt-2 text-xs text-destructive">{error}</p>
-          ) : null}
+          {!!error && <p className="text-destructive mt-2 text-xs">{error}</p>}
         </div>
         <AlertDialog open={confirmingRemove} onOpenChange={setConfirmingRemove}>
           <AlertDialogContent>

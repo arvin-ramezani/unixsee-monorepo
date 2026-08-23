@@ -155,7 +155,10 @@ export function PersonalInformationCard({
             formData.append("file", avatarFile);
             const avatarResult = await uploadAvatarAction(formData);
             if (avatarResult.ok) {
-              const updated = { ...draft, avatarUrl: avatarResult.data.avatarUrl };
+              const updated = {
+                ...draft,
+                avatarUrl: avatarResult.data.avatarUrl,
+              };
               setSaved(updated);
               setDraft(updated);
               setAvatarChanged(false);
@@ -345,11 +348,6 @@ export function PersonalInformationCard({
         onSubmit={save}
         className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center"
       >
-        {nestBacked && contactDirty && (
-          <p className="text-muted-foreground me-auto text-xs">
-            {t("contactSaveHint")}
-          </p>
-        )}
         {dirty && (
           <DashboardButton
             revealClassName="bg-muted dark:bg-accent"

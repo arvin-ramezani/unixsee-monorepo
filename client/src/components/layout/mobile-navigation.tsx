@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 import { NavigationMenuLink } from "../ui/navigation-menu";
+import { Badge } from "@/components/ui/badge";
 import { NAVIGATION_ITEMS } from "@/lib/translation-keys";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,7 @@ type NavigationItem = {
   items?: readonly {
     key: string;
     href: string;
+    comingSoon?: boolean;
   }[];
 };
 
@@ -109,7 +111,17 @@ export default function MobileNavigation({
                           setOpen(false);
                         }}
                       >
-                        {getSubLabel(item.key, subItem.key)}
+                        <span className="flex items-center gap-2">
+                          {getSubLabel(item.key, subItem.key)}
+                          {"comingSoon" in subItem && subItem.comingSoon && (
+                            <Badge
+                              variant="secondary"
+                              className="min-h-4 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-semibold leading-none"
+                            >
+                              {tNavigation("comingSoon" as never)}
+                            </Badge>
+                          )}
+                        </span>
                       </Link>
                     );
                   })}
@@ -119,13 +131,6 @@ export default function MobileNavigation({
           );
         })}
       </Accordion>
-
-      <div className="flex flex-col gap-3">
-        <HeaderAuthControl
-          layout="stacked"
-          onNavigate={() => setOpen(false)}
-        />
-      </div>
     </MobileMenu>
   );
 }

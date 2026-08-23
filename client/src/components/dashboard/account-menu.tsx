@@ -96,9 +96,12 @@ export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
         className={isHeaderDark ? "dark" : ""}
       >
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className={dropdownItemClass}>
+          <DropdownMenuItem
+            asChild
+            className={cn(dropdownItemClass, "text-xs lg:text-sm")}
+          >
             <Link href="/dashboard/profile">
-              <UserRound />
+              <UserRound className="shrink-0" />
               {t("profile")}
             </Link>
           </DropdownMenuItem>

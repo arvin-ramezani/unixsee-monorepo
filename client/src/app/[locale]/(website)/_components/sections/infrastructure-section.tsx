@@ -35,18 +35,14 @@ export default function InfrastructureSection({
       className="unixsee-glow-blue-surface-reverse bg-blue-light"
     >
       <ScaleTitle
-        className={cn(
-          "max-w-2/3 sm:w-1/2 lg:max-w-155 lg:leading-16 xl:max-w-lg",
-          {
-            "md:leading-16": isRtl,
-          },
-        )}
+        className={cn("lg:leading-16 xl:max-w-lg", {
+          "md:leading-16": isRtl,
+        })}
         as={"h2"}
         scaleFrom={0.6}
         scaleTo={1}
-      >
-        {t("title")}
-      </ScaleTitle>
+        dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+      />
 
       <ul className="mt-16 grid grid-cols-1 gap-14 md:grid-cols-2">
         {ITEM_KEYS.map((key, index) => (

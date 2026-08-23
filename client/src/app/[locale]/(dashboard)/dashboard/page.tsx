@@ -38,6 +38,7 @@ async function loadAuthorizationStatus(): Promise<AuthorizationStatus> {
 
 function resolveWelcomeName(user: SafeAuthUser | null, fallback: string) {
   const fullName = user?.fullName?.trim();
+
   if (fullName) {
     return fullName.split(/\s+/)[0] || fullName;
   }

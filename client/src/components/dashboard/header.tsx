@@ -50,7 +50,7 @@ export function Header({
   activeItem = "Dashboard",
   notifications,
   showViewToggle: showViewToggleOverride,
-  userName = "Jane",
+  userName,
   avatarUrl,
   hasUnreadUnixseeMessages = false,
 }: HeaderProps) {
@@ -59,6 +59,7 @@ export function Header({
   const scrolled = useScroll(8);
   const showViewToggle =
     showViewToggleOverride ?? VIEW_TOGGLE_ITEMS.has(activeItem);
+
   return (
     <header
       className={cn(
@@ -94,7 +95,7 @@ export function Header({
           <NotificationCenter notifications={notifications} />
           <ModeToggle triggerClassName="size-9" />
           <LocaleSwitcher />
-          <AccountMenu userName={userName} avatarUrl={avatarUrl} />
+          {/* <AccountMenu userName={userName} avatarUrl={avatarUrl} /> */}
         </div>
       </div>
     </header>

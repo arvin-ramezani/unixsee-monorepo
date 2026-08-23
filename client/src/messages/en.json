@@ -190,7 +190,7 @@
       },
       "services": {
         "label": "Services",
-        "title": "Service areas",
+        "title": "Unixsee Services",
         "items": {
           "migrationOptimization": "Managed Server",
           "performanceTuning": "WooCommerce SEO",
@@ -215,11 +215,23 @@
         }
       },
       "aboutUs": {
-        "label": "About Us",
-        "title": "About Unixsee",
+        "label": "Unixsee",
+        "title": "Unixsee",
         "items": {
           "about": "About Unixsee",
-          "contact": "Contact"
+          "contact": "Contact Unixsee"
+        }
+      },
+      "helpCenter": {
+        "label": "Help Center",
+
+        "items": {
+          "startWorking": "Getting Started",
+          "managedWoocommerce": "WooCommerce",
+          "performanceCaching": "Performance",
+          "wooOperations": "Operations",
+          "securityBackups": "Security & Backups",
+          "domainsDnsSsl": "Domains, DNS & SSL"
         }
       },
       "requestConsultation": "Request Consultation",
@@ -233,6 +245,7 @@
         "fa": "FA",
         "en": "EN"
       },
+      "comingSoon": "Coming soon",
       "primaryCta": {
         "label": "Request Store Assessment",
         "href": "/"
@@ -428,140 +441,160 @@
       "primaryCTA": "Request a Store Assessment"
     },
     "PlansSection": {
-      "heading": "WooCommerce Server Plans",
-      "subHeading": "Managed servers tailored to your storeU+0060s traffic, order volume, and technical requirements.",
+      "heading": "Choose the Right Infrastructure for Your Store",
+      "subHeading": "Customized hosting solutions built for your store's growth and stability.",
       "popularLabel": "Most Popular",
+      "items": {
+        "core": {
+          "title": "UNIX CORE",
+          "description": "For WooCommerce stores that have outgrown traditional hosting and need more stable resources.",
+          "badge": "Lite",
+          "features": {
+            "location": { "label": "Location", "value": "Iran / Europe" },
+            "ip": { "label": "Dedicated IP", "value": "Shared" },
+            "cpu": { "label": "Processor", "value": "AMD / Intel" },
+            "memory": { "label": "Memory", "value": "16 GB" },
+            "suitability": {
+              "label": "Best For",
+              "value": "Databases under 4 GB"
+            }
+          },
+          "cta": {
+            "label": "Get Consultation",
+            "href": "#"
+          }
+        },
+        "scale": {
+          "title": "UNIX SCALE",
+          "description": "For high-traffic stores; dedicated resources and continuous infrastructure management provide greater capacity for stability.",
+          "badge": "Managed Dedicated Server",
+          "features": {
+            "location": { "label": "Location", "value": "Iran / Europe" },
+            "ip": { "label": "Dedicated IP", "value": "Included" },
+            "cpu": { "label": "Processor", "value": "AMD / Intel" },
+            "memory": { "label": "Memory", "value": "32 GB" },
+            "suitability": {
+              "label": "Best For",
+              "value": "4–8 GB databases"
+            }
+          },
+          "idealFor": "Best for high-traffic stores with 4–8 GB databases that require dedicated resources, greater stability, and continuous infrastructure management.",
+          "cta": {
+            "label": "Get Consultation",
+            "href": "#"
+          }
+        },
+        "peak": {
+          "title": "UNIX PEAK",
+          "description": "For running high-traffic sales campaigns, with powerful computing resources and real-time monitoring to keep the shopping experience stable.",
+          "badge": "Managed Campaign Server",
+          "features": {
+            "location": { "label": "Location", "value": "Iran / Europe" },
+            "ip": { "label": "Dedicated IP", "value": "Included" },
+            "cpu": { "label": "Processor", "value": "Intel" },
+            "memory": { "label": "Memory", "value": "128 GB DDR4" },
+            "suitability": {
+              "label": "Best For",
+              "value": "High-traffic stores"
+            }
+          },
+          "idealFor": "Best for large stores with custom infrastructure.",
+          "cta": {
+            "label": "Get Consultation",
+            "href": "#"
+          }
+        },
+        "enterprise": {
+          "title": "UNIX ENTERPRISE",
+          "description": "For large, high-transaction stores that require a tailored architecture and higher levels of control and stability.",
+          "badge": "Custom Dedicated Server",
+          "features": {
+            "serviceType": {
+              "label": "Service Type",
+              "value": "Custom Architecture"
+            },
+            "location": {
+              "label": "Location",
+              "value": "Based on Requirements"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "Technical Configuration"
+            },
+            "memoryAndStorage": {
+              "label": "Memory",
+              "value": "Based on Data Volume"
+            },
+            "security": {
+              "label": "Best For",
+              "value": "Large stores with custom infrastructure"
+            }
+          },
+          "idealFor": "Best for large, high-transaction stores that require custom architecture, resources aligned with data volume, and higher levels of control, stability, monitoring, and recovery.",
+          "cta": {
+            "label": "Get Consultation",
+            "href": "#"
+          }
+        }
+      },
       "commonFeatures": {
-        "title": "Common Base Features Across All Unixee Services",
-        "items": [
-          {
+        "title": "Core Features Included with Every Unixsee Service",
+        "description": "All our plans include these core capabilities to maintain a high level of stability.",
+        "items": {
+          "ssl": {
             "icon": "lock",
-            "label": "Valid SSL Certificate",
+            "label": "Trusted SSL Certificate",
             "value": "Google Trust"
           },
-          {
+          "monitoring": {
             "icon": "activity",
-            "label": "Monitoring & Surveillance",
-            "value": "7 days a week / 24 hours"
+            "label": "Monitoring & Observability",
+            "value": "24/7"
           },
-          {
+          "backup": {
             "icon": "rotate-ccw",
             "label": "Regular Backups",
-            "value": "Daily and weekly cycles"
+            "value": "Daily & Weekly"
           },
-          {
+          "serviceManagement": {
             "icon": "settings",
             "label": "Service Management",
-            "value": "Configuration by our team"
+            "value": "Configured by Our Team"
           }
-        ]
+        }
       },
       "technicalFeatures": {
-        "title": "Technical, Security & Professional Management Infrastructure",
-        "subtitle": "We have pre-configured all the necessary tools for your store's peak performance.",
-        "items": [
-          {
+        "title": "Technical Infrastructure, Security & Professional Management",
+        "subtitle": "We provide the essential tools your store needs to operate at peak performance.",
+        "items": {
+          "redisObjectCache": {
             "icon": "zap",
             "title": "Redis Object Cache",
-            "description": "Significant reduction in database response time and increased page load speed through optimized query caching. A smooth, lag-free experience for your customers during search and checkout."
+            "description": "Significantly reduces database response times and improves page load performance through optimized query caching, delivering a smoother and more responsive experience during product searches and checkout."
           },
-          {
+          "liteSpeed": {
             "icon": "rocket",
             "title": "LiteSpeed Web Server",
-            "description": "Faster request processing and optimized traffic management with an event-driven architecture. Ensuring site stability even during traffic peaks and heavy sales campaigns."
+            "description": "Faster request processing and efficient concurrent traffic management through an event-driven architecture, helping maintain store stability during traffic spikes and high-volume sales campaigns."
           },
-          {
+          "wafAntiDdos": {
             "icon": "shield-check",
             "title": "Security Firewalls (WAF & Anti-DDoS)",
-            "description": "Advanced, real-time protection for your store against malicious attacks, bots, and DDoS attacks. Creating a secure shield to maintain data integrity and sensitive user information."
+            "description": "Advanced real-time protection for your store against malicious attacks, bots, and DDoS threats, helping protect data integrity and sensitive customer information."
           },
-          {
+          "infrastructureManagement": {
             "icon": "users",
-            "title": "Expert Infrastructure Management",
-            "description": "The Unixsee engineering team is available 24/7. From dedicated server configuration to real-time monitoring and resolving processing bottlenecks, everything is managed by our senior specialists."
+            "title": "Infrastructure Managed by Specialists",
+            "description": "The Unixsee engineering team supports your infrastructure around the clock. From custom server configuration to real-time monitoring and performance bottleneck resolution, everything is managed by our senior specialists."
           }
-        ]
+        }
       },
       "additionalNotes": {
         "title": "Additional Service Notes",
-        "items": [
-          "Final configuration and exact service costs based on location and available capacity will be communicated before activation.",
-          "In campaign plans, activating add-ons like Campaign Gateway is not included in the base server resources and will be provided after reviewing conditions.",
-          "For Enterprise services, detailed specifications, backup structure, monitoring, and architecture will be determined after a technical review meeting."
-        ]
-      },
-      "items": {
-        "semiDedicated": {
-          "title": "Managed Semi-Dedicated Servers",
-          "description": "A balanced, managed infrastructure for growing WooCommerce stores that need greater stability, predictable performance, and genuine operational oversight.",
-          "badge": "Ideal for Growing Stores",
-          "features": {
-            "ram": "16 GB RAM",
-            "cpu": "6 vCPU Cores",
-            "storage": "250 GB NVMe SSD",
-            "bandwidth": "Fair-use traffic allowance for active stores",
-            "serverType": "Managed semi-dedicated environment",
-            "controlPanel": "Managed hosting control panel",
-            "backup": "Daily backups",
-            "monitoring": "24/7 server and store health monitoring",
-            "optimization": "WooCommerce performance optimization",
-            "security": "Baseline security hardening",
-            "migration": "Managed migration included with the plan",
-            "support": "WooCommerce-aware technical support"
-          },
-          "idealFor": "Ideal for growing WooCommerce stores with consistent daily traffic, regular orders, and no in-house infrastructure team.",
-          "cta": {
-            "label": "Talk to Our Specialists",
-            "href": "/contact"
-          }
-        },
-        "dedicated": {
-          "title": "Managed Dedicated Servers",
-          "description": "Dedicated resources and deeper operational control for high-traffic WooCommerce stores that require stronger isolation, consistent performance, and campaign readiness.",
-          "badge": "Ideal for High-Traffic Stores",
-          "features": {
-            "ram": "32 GB RAM",
-            "cpu": "12 Dedicated CPU Cores",
-            "storage": "500 GB NVMe SSD",
-            "bandwidth": "Bandwidth provisioned for high traffic",
-            "serverType": "Fully managed dedicated server",
-            "controlPanel": "Managed hosting control panel",
-            "backup": "Daily backups with recovery support",
-            "monitoring": "24/7 infrastructure, uptime, and store-status monitoring",
-            "optimization": "Advanced WooCommerce, database, cache, and checkout optimization",
-            "security": "Advanced server security hardening",
-            "migration": "Migration planning with no downtime",
-            "support": "Priority, WooCommerce-aware technical support"
-          },
-          "idealFor": "Ideal for stores with higher order volumes, larger product databases, traffic spikes, sales campaigns, or critical operational requirements.",
-          "cta": {
-            "label": "Talk to Our Specialists",
-            "href": "/contact"
-          }
-        },
-        "woocommerceSupport": {
-          "title": "Specialized WooCommerce Support",
-          "description": "Technical support built around the realities of WooCommerce stores, not generic hosting tickets. Ideal for stores that need specialized help with performance, stability, plugins, payments, and operational issues.",
-          "badge": "Ideal for Operational Support",
-          "features": {
-            "ram": "Based on your current infrastructure",
-            "cpu": "Based on your current infrastructure",
-            "storage": "Based on your current infrastructure",
-            "serverType": "Available on Unixsee managed infrastructure or your existing infrastructure",
-            "monitoring": "Operational visibility into store health, uptime, and performance",
-            "woocommerceReview": "Review of plugins, theme, checkout flow, and database",
-            "performanceSupport": "Troubleshooting for speed, caching, databases, and resource usage",
-            "security": "WordPress and WooCommerce security review",
-            "incidentSupport": "Support during critical store incidents",
-            "consulting": "Technical recommendations for scalability and stability",
-            "migration": "Migration guidance when an infrastructure upgrade is required",
-            "support": "Specialized WooCommerce technical support"
-          },
-          "idealFor": "Ideal for WooCommerce stores that need a technical partner who understands both hosting infrastructure and real-world store issues.",
-          "cta": {
-            "label": "Talk to Our Specialists",
-            "href": "/contact"
-          }
+        "items": {
+          "serviceConfiguration": "Final configuration and exact service pricing are provided before activation based on location and available capacity.",
+          "campaignAddOns": "For campaign plans, add-ons such as Campaign Gateway are not included in the server's base resources and are provided after reviewing the specific requirements.",
+          "enterpriseAssessment": "For Enterprise services, exact specifications, backup structure, monitoring setup, and architecture are defined after a technical assessment session."
         }
       }
     },

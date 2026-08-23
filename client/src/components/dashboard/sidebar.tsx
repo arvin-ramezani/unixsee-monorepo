@@ -13,6 +13,8 @@ import {
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { navigation } from "@/lib/dashboard-data";
+import { useAuthStore } from "../providers/auth-store-provider";
+import Image from "next/image";
 
 interface SidebarContentProps {
   activeItem?:
@@ -40,6 +42,8 @@ export function SidebarContent({
   hasUnreadUnixseeMessages = false,
 }: SidebarContentProps) {
   const t = useTranslations("Navigation");
+
+  const userAvatarUrl = useAuthStore((state) => state.user?.avatarUrl);
 
   return (
     <div className="bg-background flex h-full min-h-0 flex-col">
@@ -125,15 +129,24 @@ export function SidebarContent({
                       }
                     >
                       <span className="relative shrink-0">
-                        <item.icon
-                          aria-hidden="true"
-                          className="size-[1.3rem] shrink-0"
-                          strokeWidth={1.7}
-                        />
+                        {item.key === "profile" && userAvatarUrl ? (
+                          <Image
+                            src={userAvatarUrl ?? ""}
+                            alt="User Avatar"
+                            className="absolute shrink-0 rounded-full"
+                            fill
+                          />
+                        ) : (
+                          <item.icon
+                            aria-hidden="true"
+                            className="size-[1.3rem] shrink-0"
+                            strokeWidth={1.7}
+                          />
+                        )}
                         {hasUnreadUnixseeMessages &&
                           item.key === "unixseeMessages" && (
                             <span
-                              className="bg-destructive absolute -top-0.5 -inset-e-0.5 size-2 rounded-full"
+                              className="bg-destructive absolute -inset-e-0.5 -top-0.5 size-2 rounded-full"
                               aria-hidden="true"
                             />
                           )}
@@ -145,8 +158,7 @@ export function SidebarContent({
                 <TooltipContent sideOffset={10}>
                   {disabled
                     ? `${t(item.key)} — ${t("comingSoon")}`
-                    : hasUnreadUnixseeMessages &&
-                        item.key === "unixseeMessages"
+                    : hasUnreadUnixseeMessages && item.key === "unixseeMessages"
                       ? `${t(item.key)} — ${t("unreadMessages")}`
                       : t(item.key)}
                 </TooltipContent>

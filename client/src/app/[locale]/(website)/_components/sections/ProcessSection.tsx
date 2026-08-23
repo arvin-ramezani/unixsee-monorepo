@@ -15,11 +15,9 @@ export default function ProcessSection({ id }: ProcessSectionType) {
         as={"h2"}
         scaleFrom={0.6}
         scaleTo={1}
-        className="mb-4 max-w-2/3 sm:w-1/2 lg:mb-12 lg:max-w-155 lg:leading-16 xl:max-w-lg"
-      >
-        {t("title")}
-      </ScaleTitle>
-
+        className="mb-4 lg:mb-12 lg:leading-16"
+        dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+      />
       <ProcessSectionCarousel className="mt-12 lg:mt-12" />
     </Section>
   );

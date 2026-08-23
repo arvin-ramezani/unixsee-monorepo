@@ -11,12 +11,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Badge } from "@/components/ui/badge";
 import { RadialRevealLink } from "../common/radial-reveal/radial-reveal-link";
+import { cn } from "@/lib/utils";
 
 type NavItem = {
   key: string;
   href: string;
   items?: readonly NavItem[];
+  comingSoon?: boolean;
 };
 
 type HeaderNavigationProps = {
@@ -84,7 +87,11 @@ function NavigationMenuNode({
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="bg-transparent px-1 py-2 text-xs focus:bg-transparent xl:px-2 xl:text-sm dark:text-white">
-        {translate(`${item.key}.label`)}
+        {!!item.href ? (
+          <Link href={item.href}>{translate(`${item.key}.label`)}</Link>
+        ) : (
+          translate(`${item.key}.label`)
+        )}
       </NavigationMenuTrigger>
 
       <NavigationMenuContent className="p-2" title={contentTitle}>
@@ -119,7 +126,7 @@ function NavigationSubItem({
 
   return (
     <li>
-      <NavigationMenuLink className="hover:bg-transparent" asChild>
+      <NavigationMenuLink className="relative hover:bg-transparent" asChild>
         {/* <Link
           href={item.href}
           className="flex flex-col rounded-md border p-3 font-light transition-colors dark:border-[#163d50] dark:hover:bg-[#163d50]"
@@ -132,7 +139,17 @@ function NavigationSubItem({
           revealClassName="bg-accent text-accent-foreground dark:bg-[#163d50]"
           className="hover:text-accent-foreground text-foreground border-border data-[radial-active=true]:text-accent-foreground flex h-11.5 flex-col rounded-md border p-3 font-light transition-colors dark:border-[#163d50]"
         >
-          <span className="font-light">{translate(translationKey)}</span>
+          {/* <span className="flex items-center gap-2 font-light"> */}
+          {/* <span className="font-light">{translate(translationKey)}</span> */}
+          {translate(translationKey)}
+          {item.comingSoon && (
+            <ComingSoonBadge
+              comingSoon
+              translate={translate}
+              className="absolute inset-e-0 top-0"
+            />
+          )}
+          {/* </span> */}
         </RadialRevealLink>
       </NavigationMenuLink>
 
@@ -149,5 +166,31 @@ function NavigationSubItem({
         </ul>
       )}
     </li>
+  );
+}
+
+type NavigationBadgeProps = {
+  comingSoon: boolean;
+  translate: TranslateNavigation;
+  className?: string;
+};
+
+function ComingSoonBadge({
+  comingSoon,
+  translate,
+  className,
+}: NavigationBadgeProps) {
+  if (!comingSoon) return null;
+
+  return (
+    <Badge
+      variant="secondary"
+      className={cn(
+        "min-h-4 shrink-0 rounded-full px-1.5 py-0 text-[10px] leading-none font-semibold",
+        className,
+      )}
+    >
+      {translate("comingSoon")}
+    </Badge>
   );
 }

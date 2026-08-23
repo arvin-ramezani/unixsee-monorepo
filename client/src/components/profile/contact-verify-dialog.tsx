@@ -25,6 +25,14 @@ import { toastMappedApiError } from "@/lib/api/toast-api-error";
 import type { UserProfile } from "@/lib/data/profile/profile-data";
 import { mapMeToUserProfile } from "@/lib/profile/map-me-to-profile";
 import { OTP_LENGTH } from "@/lib/zod-schemas/auth-schemas";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export type ContactVerifyChannel = "phone" | "email";
 
@@ -131,21 +139,21 @@ export function ContactVerifyDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="sm:max-w-md">
+        <AlertDialogHeader>
+          <AlertDialogTitle>
             {channel === "phone"
               ? t("verifyDialog.phoneTitle")
               : t("verifyDialog.emailTitle")}
-          </DialogTitle>
-          <DialogDescription>
+          </AlertDialogTitle>
+          <AlertDialogDescription>
             {t("verifyDialog.mockDeliveryHint")}
             <span className="mt-2 block font-medium" dir="ltr">
               {value}
             </span>
-          </DialogDescription>
-        </DialogHeader>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
         {sent ? (
           <div className="space-y-4 py-2">
@@ -173,7 +181,7 @@ export function ContactVerifyDialog({
           </div>
         )}
 
-        <DialogFooter>
+        <AlertDialogFooter>
           <Button
             type="button"
             variant="outline"
@@ -188,13 +196,13 @@ export function ContactVerifyDialog({
             onClick={submit}
             className="gap-2"
           >
-            {pending ? (
+            {pending && (
               <LoaderCircle className="size-4 animate-spin" aria-hidden />
-            ) : null}
+            )}
             {t("verifyDialog.confirm")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
