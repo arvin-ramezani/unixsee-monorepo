@@ -28,7 +28,7 @@ export default function Page({}: PageProps) {
       <PlansSection id={sectionIds[0]} />
       <CommonFeaturesSection />
       {/* <TechnicalFeaturesSection /> */}
-      <VideoSection id={sectionIds[1]} />
+      {/* <VideoSection id={sectionIds[1]} /> */}
       <ManageSection id={sectionIds[2]} />
       <ConnectSection id={sectionIds[3]} />
       <PerformanceSection id={sectionIds[4]} />
