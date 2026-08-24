@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 type FooterNavItem = {
   key: string;
-  href: string;
+  href?: string;
   items?: readonly {
     key: string;
     href: string;

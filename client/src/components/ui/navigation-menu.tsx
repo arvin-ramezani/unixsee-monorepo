@@ -209,7 +209,7 @@ function NavigationMenuContent({
         <Title
           data-slot="navigation-menu-content-title"
           className={cn(
-            "text-foreground px-2 pt-1 pb-2 text-end text-sm leading-none font-medium",
+            "text-foreground dark:text-secondary px-2 pt-1 pb-2 text-sm leading-none font-bold",
             titleClassName,
           )}
         >

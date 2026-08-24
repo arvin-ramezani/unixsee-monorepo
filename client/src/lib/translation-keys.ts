@@ -12,7 +12,7 @@ export const NAVIGATION_ITEMS = [
 
   {
     key: "services",
-    href: "/services",
+
     items: [
       {
         key: "migrationOptimization",
@@ -56,7 +56,7 @@ export const NAVIGATION_ITEMS = [
 
   {
     key: "aboutUs",
-    href: "/about",
+    // href: "/about",
     items: [
       { key: "about", href: "/about-us" },
       { key: "contact", href: "/contact-us" },

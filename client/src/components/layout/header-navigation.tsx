@@ -1,7 +1,8 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
 
 import {
   NavigationMenu,
@@ -17,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 type NavItem = {
   key: string;
-  href: string;
+  href?: string;
   items?: readonly NavItem[];
   comingSoon?: boolean;
 };
@@ -73,12 +74,18 @@ function NavigationMenuNode({
     return (
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
-          <Link
-            href={item.href}
-            className="block rounded-md px-2 py-2 font-normal transition-colors focus:bg-transparent xl:px-3 dark:text-white"
-          >
-            {translate(item.key)}
-          </Link>
+          {!!item.href ? (
+            <Link
+              href={item.href}
+              className="block rounded-md px-2 py-2 transition-colors focus:bg-transparent xl:px-3 dark:text-white"
+            >
+              {translate(item.key)}
+            </Link>
+          ) : (
+            <span className="block rounded-md px-2 py-2 transition-colors focus:bg-transparent xl:px-3 dark:text-white">
+              {translate(item.key)}
+            </span>
+          )}
         </NavigationMenuLink>
       </NavigationMenuItem>
     );
@@ -127,30 +134,26 @@ function NavigationSubItem({
   return (
     <li>
       <NavigationMenuLink className="relative hover:bg-transparent" asChild>
-        {/* <Link
-          href={item.href}
-          className="flex flex-col rounded-md border p-3 font-light transition-colors dark:border-[#163d50] dark:hover:bg-[#163d50]"
-        >
+        {!!item.href ? (
+          <RadialRevealLink
+            href={item.href}
+            disabled={item.comingSoon}
+            variant={"outline"}
+            revealClassName="bg-accent text-accent-foreground dark:bg-[#163d50]"
+            className="hover:text-accent-foreground text-foreground border-border data-[radial-active=true]:text-accent-foreground flex h-11.5 flex-col rounded-md border-0 p-3 font-light transition-colors dark:border-[#163d50]"
+          >
+            {translate(translationKey)}
+            {item.comingSoon && (
+              <ComingSoonBadge
+                comingSoon
+                translate={translate}
+                className="absolute inset-s-3/5 bottom-2/3 rtl:inset-s-full"
+              />
+            )}
+          </RadialRevealLink>
+        ) : (
           <span className="font-light">{translate(translationKey)}</span>
-        </Link> */}
-        <RadialRevealLink
-          href={item.href}
-          variant={"outline"}
-          revealClassName="bg-accent text-accent-foreground dark:bg-[#163d50]"
-          className="hover:text-accent-foreground text-foreground border-border data-[radial-active=true]:text-accent-foreground flex h-11.5 flex-col rounded-md border p-3 font-light transition-colors dark:border-[#163d50]"
-        >
-          {/* <span className="flex items-center gap-2 font-light"> */}
-          {/* <span className="font-light">{translate(translationKey)}</span> */}
-          {translate(translationKey)}
-          {item.comingSoon && (
-            <ComingSoonBadge
-              comingSoon
-              translate={translate}
-              className="absolute inset-e-0 top-0"
-            />
-          )}
-          {/* </span> */}
-        </RadialRevealLink>
+        )}
       </NavigationMenuLink>
 
       {hasChildren && (

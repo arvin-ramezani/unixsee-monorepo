@@ -209,7 +209,7 @@ function FooterDescription() {
 
 type FooterNavItem = {
   key: string;
-  href: string;
+  href?: string;
   items?: readonly {
     key: string;
     href: string;
@@ -280,13 +280,19 @@ function FooterNavigationItem({ item, translate }: FooterNavigationItemProps) {
       <ul className="flex flex-col gap-1">
         {item.items?.map((child) => (
           <li key={child.key}>
-            <Link
-              href={item.href}
-              className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 lg:text-start"
-            >
-              {translate(`${item.key}.items.${child.key}`)}
-              <span className="absolute inset-s-0 -bottom-0.5 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
-            </Link>
+            {!!item.href ? (
+              <Link
+                href={item.href}
+                className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 lg:text-start"
+              >
+                {translate(`${item.key}.items.${child.key}`)}
+                <span className="absolute inset-s-0 -bottom-0.5 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
+              </Link>
+            ) : (
+              <span className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 lg:text-start">
+                {translate(`${item.key}.items.${child.key}`)}
+              </span>
+            )}
           </li>
         ))}
       </ul>
