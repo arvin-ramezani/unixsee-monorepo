@@ -1,133 +1,87 @@
-# AGENTS.md
+# Unixsee admin-panel agent guide
 
-## Purpose
+This folder is the standalone staff Next.js deployable. Start with the local
+documentation index; use monorepo docs only when changing a shared product,
+auth, or API contract.
 
-Unixsee Admin Panel built with Next.js App Router. Staff Nest auth (ADR 0012)
-and wired admin domains use hybrid JWT fetch; remaining panes stay on fixtures.
+## Read first
 
-The repository, specifications, architecture documents, and existing implementation are the source of truth. Do not invent requirements or architecture.
+| Task                                                              | Canonical local doc                                                |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Any admin implementation                                          | [`docs/README.md`](docs/README.md)                                 |
+| Select, DropdownMenu, Dialog, AlertDialog, Sheet, or UI primitive | [`docs/development/components.md`](docs/development/components.md) |
+| File placement and app boundaries                                 | [`docs/architecture/project.md`](docs/architecture/project.md)     |
+| Next.js/App Router                                                | [`docs/frontend/nextjs.md`](docs/frontend/nextjs.md)               |
+| Styling, Tailwind v4, RTL                                         | [`docs/frontend/styling.md`](docs/frontend/styling.md)             |
+| Fixture vs wired Nest data                                        | [`docs/development/data.md`](docs/development/data.md)             |
+| Validation                                                        | [`docs/quality/validation.md`](docs/quality/validation.md)         |
+| Deployment and agent archive                                      | [`docs/runbooks/deployment.md`](docs/runbooks/deployment.md)       |
 
-## Stack
+Framework workflows are available under [`.agents/skills/`](.agents/skills/).
+Installed Next.js docs and repository contracts override skill defaults.
 
-- Next.js 16.3 App Router
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- shadcn/ui (Base UI)
-- Zustand
-- Zod
-- React Hook Form
-- npm
-- Persian / RTL
+## High-frequency component rules
 
-Source code is under `src/`.
+Before admin forms, menus, or overlays, load
+[`components.md`](docs/development/components.md). This app uses shadcn on
+Base UI, not generic Radix examples:
 
-## Current Scope
+- Select: render the visible label inside `SelectValue` and set
+  `SelectContent alignItemWithTrigger={false}`.
+- DropdownMenu: nest every `DropdownMenuLabel` inside `DropdownMenuGroup`.
+- Overlay choice: Dialog for short create/pick, AlertDialog for irreversible
+  confirmation, Sheet for inspectors/filters/mobile navigation.
 
-Nest staff auth and admin JWT fetching are allowed under monorepo ADR 0012.
-Implement against
-[`../docs/frontend/admin-data-fetching.md`](../docs/frontend/admin-data-fetching.md)
-and
-[`../docs/frontend/admin-domain-data-fetching.md`](../docs/frontend/admin-domain-data-fetching.md).
+The detailed doc is canonical for examples and edge cases.
 
-Until a surface is wired, keep static fixtures under `src/lib/data/`. Do not
-talk to agents or VPS hosts. Do not invent Nest routes/DTOs.
+## App boundaries
 
-## Project Rules
+- Next.js 16.3 App Router, React 19, strict TypeScript, Tailwind CSS v4,
+  shadcn/Base UI, Zustand, Zod, React Hook Form, npm, Persian RTL-first.
+- Nest staff auth and wired admin domains use hybrid JWT fetch. Unwired panes
+  stay on fixtures under `src/lib/data/`.
+- NestJS owns persistence, authorization, business rules, orchestration, and
+  agent access. Do not add database access or call agents/VPS hosts here.
+- The API base URL already ends in `/api/v1`; pass `/admin/tickets`, never
+  `/v1/admin/tickets`, to fetch helpers.
+- Keep technical docs, code, comments, and file names in English.
+- Preserve positive-only JSX: `{condition && <Component />}`; coerce
+  strings/numbers first. Use a ternary only when both branches render UI.
 
-The following documents are part of the repository's development rules. Read the relevant documents before implementation:
+## Monorepo contracts
 
-- [Project Architecture](docs/architecture/project.md)
-- [Next.js](docs/frontend/nextjs.md)
-- [Components](docs/development/components.md)
-- [Data](docs/development/data.md) (fixtures for unwired panes; Nest via monorepo admin fetch docs)
-- [Styling](docs/frontend/styling.md)
-- [State](docs/frontend/state.md)
-- Monorepo admin Nest fetch: [`../docs/frontend/admin-data-fetching.md`](../docs/frontend/admin-data-fetching.md)
-- Monorepo admin Nest domain fetch: [`../docs/frontend/admin-domain-data-fetching.md`](../docs/frontend/admin-domain-data-fetching.md)
-- ADR 0012: [`../docs/architecture/decisions/0012-admin-nest-auth-integration.md`](../docs/architecture/decisions/0012-admin-nest-auth-integration.md)
-- [Workflow](docs/development/workflow.md)
-- [Validation](docs/quality/validation.md)
-- [Deployment / agent assets](docs/runbooks/deployment.md) — production panel host;
-  **`unixsee-agent.tar.gz` must be packed and uploaded** (not in Git)
+When this checkout is inside the monorepo and a task changes shared behavior,
+also read:
 
-## Agent skills
+- Admin auth/data: [`../docs/frontend/admin-data-fetching.md`](../docs/frontend/admin-data-fetching.md)
+  and [`admin-domain-data-fetching.md`](../docs/frontend/admin-domain-data-fetching.md)
+- Auth decision: ADR [`0012`](../docs/architecture/decisions/0012-admin-nest-auth-integration.md)
+- API route map/contracts: [`../docs/backend/`](../docs/backend/)
+- Product behavior and admin UX: [`../docs/product/`](../docs/product/)
 
-Framework skills live under [`.agents/skills/`](.agents/skills/) (shared with `client/` for Next/React):
+Do not invent routes or DTOs when those shared contracts are unavailable; make
+cross-app contract changes in the monorepo.
 
-| Skill | Use for |
-| --- | --- |
-| [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
-| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 / Compiler, components, Hooks, and JSX conditionals |
-| [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
-| [`clean-code`](.agents/skills/clean-code/SKILL.md) | Readability and maintainability without drive-by refactors |
-| [`ux-flow-designer`](.agents/skills/ux-flow-designer/SKILL.md) | End-to-end UX flow design and review |
+## Next.js version-matched docs
 
-Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain authoritative over skill defaults.
+Before changing fetch/cache behavior, Server Components, Server Actions,
+Route Handlers, Cache Components, Suspense, streaming, or proxy behavior:
 
-## Before Coding
+1. Inspect this app's installed Next.js version and configuration.
+2. Read the relevant guide under `node_modules/next/dist/docs/` from this folder.
 
-1. Read relevant instructions and documentation.
-2. Inspect existing implementation and dependencies.
-3. Reuse existing components and patterns.
-4. Make the smallest appropriate change.
+Use `proxy.ts` where Next.js 16 requires interception; do not add new
+`middleware.ts` behavior.
 
-### Before admin UI (Select / menus / overlays)
+## Working rules
 
-When adding or changing forms, menus, or overlays in this app, read
-[Components](docs/development/components.md) **before** writing JSX — especially
-**Select**, **DropdownMenu**, and **Overlays**. Base UI behavior differs from
-common Radix examples (visible `SelectValue` children,
-`alignItemWithTrigger={false}`, `DropdownMenuLabel` inside `DropdownMenuGroup`).
-
-## Core Rules
-
-- **API endpoint convention:** The base URL (`UNIXSEE_CORE_API_BASE_URL`) is always `.../api/v1`. When calling `serverFetch`, `clientFetch`, or `publicFetch`, pass the path **after** `/api/v1` — e.g. `/admin/tickets`, `/admin/users`. **Never** prefix endpoints with `/v1/` — this creates a double `/api/v1/v1/...` URL that 404s.
-  - ✅ `serverFetch('/admin/tickets')`
-  - ❌ `serverFetch('/v1/admin/tickets')`
-- Prefer reuse over duplication.
-- Do not over-engineer.
-- Keep components focused and composable.
-- Follow Single Responsibility Principle.
-- Do not make unrelated changes.
-- Do not use outdated framework patterns.
-- Do not add unnecessary dependencies.
-- Positive-only JSX: write `{condition && <Component />}`; never
-  `{condition ? <Component /> : null}`. Coerce strings/numbers first
-  (`!!label`, `count > 0`). Keep ternaries only when both branches
-  render UI. Shared rule:
-  [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md#positive-only-jsx-branches);
-  detail: [`.agents/skills/react-19`](.agents/skills/react-19/SKILL.md).
-
-## Next.js version-matched documentation
-
-For Next.js-specific implementation, do not rely on model memory.
-
-Before implementing or modifying version-sensitive behavior such as data
-fetching, caching, revalidation, Server Components, Server Actions / Server
-Functions, Route Handlers, Cache Components, or Suspense / streaming:
-
-1. Inspect the installed Next.js version and cache configuration in this app.
-2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from
-   this directory; the package may not be visible from the monorepo root).
-
-The installed Next.js documentation is authoritative over model knowledge.
-App conventions: [Next.js](docs/frontend/nextjs.md). Shared monorepo rules:
-[`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md).
-
-## Completion
-
-A task is complete when requirements are implemented, existing patterns are preserved, relevant validation passes, and the final diff contains no unrelated changes.
-
-## Final Report
-
-Report:
-
-- Changes made
-- Important decisions
-- Validation performed
-- Manual actions required
-- Remaining limitations
+- Inspect existing implementation and reuse current components/patterns.
+- Keep feature components focused; primitives belong in `src/components/ui`.
+- Avoid unrelated refactors, premature abstractions, and unnecessary
+  dependencies.
+- Run only scripts present in this package and report validation honestly.
+- Final reports state changes, decisions, validation, manual actions, and
+  remaining limitations.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

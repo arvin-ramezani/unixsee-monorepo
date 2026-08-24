@@ -1,43 +1,31 @@
 ---
-description: NestJS backend ownership and agent control plane
+description: NestJS backend boundaries and documentation routing
 globs: backend/**
 alwaysApply: false
 ---
 
-# Backend (NestJS)
+# Backend routing
 
-`backend/` owns the NestJS API and control plane.
+Start with `backend/AGENTS.md` and `backend/docs/README.md`.
 
-## Responsibilities
+## Backend-only conventions
 
-- Auth, sessions, authorization (keep current JWT/OTP; do not redesign)
-- PostgreSQL persistence
-- Business rules and orchestration
-- Agent enrollment validation and ingestion
-- APIs for `admin-panel/` and `client/`
+For logging, request context, typed config, scheduling, or uptime probes, read
+`backend/docs/development/conventions.md` before implementation. In particular:
 
-## Audience namespaces
+- use `createAppLogger`, not raw Nest `Logger` instances;
+- use typed config, not feature-level `process.env` parsing;
+- use Nest scheduling primitives, not raw interval loops;
+- keep public website probes owned by the backend uptime module.
 
-- `/api/v1/public/...` — unauthenticated intake
-- `/api/v1/...` — customer JWT
-- `/api/v1/admin/...` — staff JWT + role/capability
-- `/api/internal/agent/v1/...` — agent only
+## Shared contracts
 
-Domain modules with separate public/customer/admin controllers. No mega `AdminModule`.
+When a task changes a route, DTO, auth boundary, product rule, or agent
+protocol, load the monorepo owners:
 
-## Trust boundaries
-
-- Agents connect outbound HTTPS to NestJS only.
-- UIs never talk to agents or VPS hosts.
-- Follow the module/route map; do not invent conflicting URL shapes.
-
-## Canonical docs
-
-- `docs/backend/README.md`
 - `docs/backend/modules-and-routes.md`
-- `docs/architecture/decisions/0004-api-audience-namespaces.md`
-- `docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md`
-- `docs/architecture/overview.md`
+- `docs/backend/contracts/`
+- ADRs 0004 and 0005
 - `docs/agent/README.md`
-- `docs/product/notes/servers-agent-data-flow.md`
-- Phase 1: `docs/product/phase-1-application-features.md`
+
+Accepted shared contracts override historical notes under `backend/docs/`.

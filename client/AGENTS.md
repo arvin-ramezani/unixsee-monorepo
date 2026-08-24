@@ -1,121 +1,82 @@
-# Unixsee client agent instructions
+# Unixsee client agent guide
 
-This folder is the **client** deployable in the Unixsee monorepo: bilingual
-Next.js public website and customer dashboard. Persian is the primary RTL
-experience; English is the secondary LTR experience.
+This folder is the standalone public/customer Next.js deployable. Persian RTL
+is primary and English LTR is secondary. Start with local docs; use monorepo
+docs only for shared product, auth, or API contract changes.
 
-## Before editing
+## Read first
 
-1. Read monorepo orientation: [`../AGENTS.md`](../AGENTS.md) and
-   [`../docs/architecture/overview.md`](../docs/architecture/overview.md).
-2. Read the narrowest app docs listed below.
-3. Inspect the existing implementation and use the smallest safe change.
-4. Clarify conflicts with monorepo architecture before implementing.
+| Task                                  | Canonical local doc                                                                     |
+| ------------------------------------- | --------------------------------------------------------------------------------------- |
+| Any client implementation             | [`docs/README.md`](docs/README.md)                                                      |
+| File placement                        | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md)  |
+| App Router, data, forms, localization | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md)                              |
+| UI, RTL/LTR, accessibility, motion    | [`docs/engineering/ui.md`](docs/engineering/ui.md)                                      |
+| Dashboard page/loading layout         | [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons) |
+| Quality and review                    | [`docs/engineering/quality-and-review.md`](docs/engineering/quality-and-review.md)      |
+| Local/deploy operations               | [`docs/runbooks/`](docs/runbooks/)                                                      |
 
-## Current stack
+Framework workflows are available under [`.agents/skills/`](.agents/skills/).
+Installed Next.js docs and repository contracts override skill defaults.
 
-- Package manager: npm
-- Framework: Next.js App Router with React 19
-- Language: strict TypeScript
-- Styling: Tailwind CSS v4
-- UI: shadcn-style components on Radix primitives
-- Motion: Framer Motion
-- Forms: React Hook Form and Zod
-- UI state: Zustand
-- Internationalization: next-intl (Persian RTL / English LTR)
-- Application data: NestJS APIs only (no Prisma / no direct database access)
+## High-frequency UI rule
 
-Use the existing stack unless the user explicitly approves a change.
+Every async customer-dashboard route under
+`src/app/[locale]/(dashboard)/dashboard/` needs a co-located `loading.tsx` and
+a structure-matched skeleton. When the page's grid, rails, max-width, or major
+blocks change, update its skeleton in the same change. Detailed rules:
+[`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons).
 
-## Architecture boundaries
+## App boundaries
 
-- This app is presentation-only for managed-service data: NestJS owns auth,
-  persistence, orchestration, and agent control.
-- Do not add Prisma, PostgreSQL clients, or other database access in this app.
-- Do not talk to VPS agents or infrastructure hosts from the browser.
-- Follow Nest integration rules for this app:
-  [`../docs/architecture/decisions/0011-client-nest-auth-integration.md`](../docs/architecture/decisions/0011-client-nest-auth-integration.md)
-  (supersedes UI-only ADR 0003 for `client/`).
-- WordPress and WooCommerce are customer workloads, not Unixsee CMS/control-plane dependencies.
-- Do not implement Nest modules, edge agents, or staff admin shell here.
-  Staff UI belongs in `admin-panel/`.
-
-## Required context
-
-| Task | Read first |
-| --- | --- |
-| Product behavior | [`../docs/product/phase-1-application-features.md`](../docs/product/phase-1-application-features.md) |
-| Monorepo ownership | [`../docs/architecture/monorepo.md`](../docs/architecture/monorepo.md) |
-| Shared frontend conventions | [`../docs/frontend/README.md`](../docs/frontend/README.md) |
-| Auth session / Nest data fetching | [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md) + [`../docs/frontend/client-domain-data-fetching.md`](../docs/frontend/client-domain-data-fetching.md) + ADRs [`0010`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0011`](../docs/architecture/decisions/0011-client-nest-auth-integration.md) |
-| File placement in this app | [`docs/engineering/repository-structure.md`](docs/engineering/repository-structure.md) |
-| App Router / data / i18n | [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md) |
-| UI / RTL / a11y | [`docs/engineering/ui.md`](docs/engineering/ui.md) |
-| Dashboard page loading skeletons | [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons) — create `loading.tsx` + matching skeleton; update skeleton when layout changes |
-| Review / validation | [`docs/engineering/quality-and-review.md`](docs/engineering/quality-and-review.md) |
-| Local ops | [`docs/runbooks/`](docs/runbooks/) |
-
-## Agent skills
-
-Framework skills live under [`.agents/skills/`](.agents/skills/) (parity with `admin-panel/`):
-
-| Skill | Use for |
-| --- | --- |
-| [`nextjs-app-router`](.agents/skills/nextjs-app-router/SKILL.md) | App Router, RSC/client boundaries, Route Handlers, Proxy, Cache Components awareness |
-| [`react-19`](.agents/skills/react-19/SKILL.md) | React 19 / Compiler, components, Hooks, and JSX conditionals |
-| [`ui-ux-pro-max`](.agents/skills/ui-ux-pro-max/SKILL.md) | UI/UX research against the local design database |
-
-Repo docs, NestJS ownership, and installed `node_modules/next/dist/docs/` remain authoritative over skill defaults.
-
-## Engineering rules
-
-- **API endpoint convention:** The base URL (`UNIXSEE_CORE_API_BASE_URL`) is always `.../api/v1`. When calling `serverFetch`, `clientFetch`, or `publicFetch`, pass the path **after** `/api/v1` — e.g. `/auth/otp/request`, `/plan-requests`, `/users/me`. **Never** prefix endpoints with `/v1/` — this creates a double `/api/v1/v1/...` URL that 404s.
-  - ✅ `serverFetch('/auth/otp/request')`
-  - ❌ `serverFetch('/v1/auth/otp/request')`
-- Default to Server Components. Add `"use client"` only when required.
-- Preserve strict TypeScript; avoid `any` and silent error handling.
-- Keep user-facing content translatable; preserve RTL and LTR.
-- Preserve Radix semantics, keyboard behavior, focus, and ARIA.
-- Keep business mapping out of low-level UI primitives.
-- Avoid unrelated refactors and premature abstractions.
+- Next.js App Router, React 19, strict TypeScript, Tailwind CSS v4, Radix-based
+  shadcn components, Framer Motion, Zustand, React Hook Form/Zod, next-intl.
+- This app is presentation-only for managed-service data. NestJS owns auth,
+  persistence, authorization, orchestration, and agent control.
+- Do not add Prisma/database access, Nest modules, staff admin UI, or direct
+  agent/VPS communication.
+- The API base URL already ends in `/api/v1`; pass `/auth/otp/request`, never
+  `/v1/auth/otp/request`, to fetch helpers.
+- Preserve translations, Persian RTL, English LTR, keyboard behavior, focus,
+  and ARIA semantics.
+- Preserve positive-only JSX: `{condition && <Component />}`; coerce
+  strings/numbers first. Use a ternary only when both branches render UI.
 - Keep code, comments, file names, and technical docs in English.
-- Customer dashboard pages: add co-located `loading.tsx` with a skeleton that
-  mirrors the live layout; when the page structure changes, update the
-  skeleton in the same change —
-  [`docs/engineering/ui.md`](docs/engineering/ui.md#customer-dashboard-loading-skeletons).
-- Positive-only JSX: write `{condition && <Component />}`; never
-  `{condition ? <Component /> : null}`. Coerce strings/numbers first
-  (`!!label`, `count > 0`). Keep ternaries only when both branches
-  render UI. Shared rule:
-  [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md#positive-only-jsx-branches);
-  detail: [`.agents/skills/react-19`](.agents/skills/react-19/SKILL.md).
 
-## Next.js version-matched documentation
+## Monorepo contracts
 
-For Next.js-specific implementation, do not rely on model memory.
+When this checkout is inside the monorepo and a task changes shared behavior,
+also read:
 
-Before implementing or modifying version-sensitive behavior such as data
-fetching, caching, revalidation, Server Components, Server Actions / Server
-Functions, Route Handlers, Cache Components, or Suspense / streaming:
+- Client auth/data: [`../docs/frontend/client-data-fetching.md`](../docs/frontend/client-data-fetching.md)
+  and [`client-domain-data-fetching.md`](../docs/frontend/client-domain-data-fetching.md)
+- Decisions: ADR [`0010`](../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+  and ADR [`0011`](../docs/architecture/decisions/0011-client-nest-auth-integration.md)
+- API route map/contracts: [`../docs/backend/`](../docs/backend/)
+- Shared product behavior: [`../docs/product/`](../docs/product/)
 
-1. Inspect the installed Next.js version and cache configuration in this app.
-2. Read the relevant guides in `node_modules/next/dist/docs/` (resolved from
-   this directory; the package may not be visible from the monorepo root).
+Do not invent routes or DTOs when those shared contracts are unavailable; make
+cross-app contract changes in the monorepo.
 
-The installed Next.js documentation is authoritative over model knowledge.
-App conventions: [`docs/engineering/nextjs.md`](docs/engineering/nextjs.md).
-Shared monorepo rules: [`../docs/frontend/nextjs.md`](../docs/frontend/nextjs.md).
+## Next.js version-matched docs
 
-## Security
+Before changing fetch/cache behavior, Server Components, Server Actions,
+Route Handlers, Cache Components, Suspense, streaming, or proxy behavior:
 
-- Never hardcode or commit credentials, tokens, or real passwords.
-- Keep server-only environment variables out of client bundles.
-- Treat external payloads as untrusted.
-- Avoid `dangerouslySetInnerHTML` unless explicitly approved and sanitized.
+1. Inspect this app's installed Next.js version and configuration.
+2. Read the relevant guide under `node_modules/next/dist/docs/` from this folder.
 
-## Validation
+Default to Server Components and keep client boundaries small. Use `proxy.ts`
+for new request interception; do not add new `middleware.ts` behavior.
 
-Use scripts that exist in this package:
+## Security and validation
+
+- Never commit credentials or expose server-only environment variables.
+- Treat external payloads as untrusted; avoid unsanitized
+  `dangerouslySetInnerHTML`.
+- Avoid unrelated refactors, premature abstractions, and unnecessary
+  dependencies.
+- Use scripts that exist in this package:
 
 ```bash
 npm run docs:check
@@ -124,7 +85,7 @@ npm run lint
 npm run build:static
 ```
 
-Do not invent unavailable root monorepo scripts.
+Report only checks that actually ran.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

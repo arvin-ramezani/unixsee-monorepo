@@ -1,41 +1,33 @@
 ---
-description: Unixsee monorepo layout, trust boundaries, and doc map
+description: Unixsee monorepo boundaries and documentation routing
 alwaysApply: true
 ---
 
 # Unixsee monorepo
 
-Flat deployables at repo root: `admin-panel/`, `client/`, `backend/`, `agent/`, `monitoring-agent/`, `docs/`.
+Flat deployables: `admin-panel/`, `client/`, `backend/`, `agent/`, and
+`monitoring-agent/`. Do not invent `apps/` or `packages/` without an ADR.
 
-## Ownership
+## Boundaries
 
-- `admin-panel/` — staff Next.js UI
-- `client/` — customer / public Next.js UI
-- `backend/` — NestJS control plane
-- `agent/` — Phase 1 VPS agent (PRD; build from scratch)
-- `monitoring-agent/` — monitoring edge agent (existing; develop later)
-- `docs/` — canonical documentation
+- NestJS owns auth, persistence, business rules, orchestration, and agent
+  validation.
+- Admin/client never access databases, agents, or VPS hosts directly.
+- The API base already includes `/api/v1`; fetch helpers receive the path after
+  it. Never add a second `/v1/`.
+- Do not invent routes, DTOs, scripts, or shipped status.
 
-Do not invent `apps/` or `packages/` without an ADR.
+## Documentation route
 
-## Trust boundaries
+- Start at `AGENTS.md`, then the target app's `AGENTS.md` and local
+  `docs/README.md`.
+- Root `docs/` owns shared product, architecture, ADRs, API/agent contracts,
+  and monorepo operations.
+- `<app>/docs/` owns that deployable's implementation conventions and runbooks.
+- Cross-app contract changes use root docs; ordinary app work starts local.
+- Details: `docs/quality/documentation.md`.
 
-- NestJS owns auth, persistence, orchestration, and agent validation.
-- Admin and client never talk to agents or VPS hosts.
-- Read `docs/architecture/overview.md` and `docs/architecture/monorepo.md`.
+## Analysis
 
-## Phase
-
-- `backend/` is an active NestJS control plane; follow
-  `docs/backend/modules-and-routes.md` and ADRs 0004–0005.
-- Next.js Nest integration:
-  `docs/architecture/decisions/0011-client-nest-auth-integration.md` (`client/`),
-  `docs/architecture/decisions/0012-admin-nest-auth-integration.md`
-  (`admin-panel/`). Shared hybrid transport: ADR 0010.
-
-## Docs over invention
-
-- Start from `docs/README.md` and `AGENTS.md`.
-- Put lasting detail in `docs/`; keep rules thin.
-- Do not invent APIs that conflict with `docs/backend/modules-and-routes.md`,
-  or unavailable root scripts.
+Use `graphify-out/graph.json` first for dependency/impact questions. Accepted
+repository docs override Graphify when they conflict.
