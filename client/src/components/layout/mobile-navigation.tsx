@@ -84,11 +84,11 @@ export default function MobileNavigation({
               <AccordionTrigger
                 indicator={hasChildren ? "chevron" : "none"}
                 className="py-3 text-base font-medium"
-                onClick={() => {
-                  if (!hasChildren) {
-                    window.location.href = item.href;
-                  }
-                }}
+                // onClick={() => {
+                //   if (!hasChildren) {
+                //     window.location.href = item.href;
+                //   }
+                // }}
               >
                 {getLabel(item)}
               </AccordionTrigger>
@@ -116,7 +116,7 @@ export default function MobileNavigation({
                           {"comingSoon" in subItem && subItem.comingSoon && (
                             <Badge
                               variant="secondary"
-                              className="min-h-4 shrink-0 rounded-full px-1.5 py-0 text-[10px] font-semibold leading-none"
+                              className="min-h-4 shrink-0 rounded-full px-1.5 py-0 text-[10px] leading-none font-semibold"
                             >
                               {tNavigation("comingSoon" as never)}
                             </Badge>

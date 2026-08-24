@@ -106,6 +106,8 @@ const ACTIONABLE_REQUEST_STATUSES = new Set<ServiceRequestStatusType>([
 
 type ComplementaryServicesViewProps = {
   initialStatus?: RequestStatusFilterType;
+  initialRequests?: ComplementaryServiceRequestType[];
+  initialAssignments?: ComplementaryServiceAssignmentType[];
 };
 
 function SummaryCard({
@@ -275,11 +277,21 @@ function AssignmentCard({
 
 export function ComplementaryServicesView({
   initialStatus = REQUEST_STATUS_FILTER.ALL,
+  initialRequests,
+  initialAssignments,
 }: ComplementaryServicesViewProps) {
   const [listVersion, setListVersion] = useState(0);
-  const requests = listRuntimeComplementaryRequests();
-  const assignments = listRuntimeComplementaryAssignments();
+  const mockRequests = listRuntimeComplementaryRequests();
+  const mockAssignments = listRuntimeComplementaryAssignments();
   void listVersion;
+
+  // Merge: real backend data takes precedence, mock data fills gaps
+  const requests = initialRequests && initialRequests.length > 0
+    ? initialRequests
+    : mockRequests;
+  const assignments = initialAssignments && initialAssignments.length > 0
+    ? initialAssignments
+    : mockAssignments;
   const [viewMode, setViewMode] = useState<ViewModeType>(VIEW_MODE.REQUESTS);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] =

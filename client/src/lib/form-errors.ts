@@ -19,6 +19,7 @@ export const FORM_ERROR_KEYS = [
   "dailyVisitorsRequired",
   "monthlyVisitorsRequired",
   "woocommerceRequired",
+  "contentSizeRequired",
   "attachmentsInvalid",
   "attachmentsTooMany",
   "attachmentTooLarge",

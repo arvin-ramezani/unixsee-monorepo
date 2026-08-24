@@ -44,6 +44,7 @@ import { hasCapability, maskEmail, maskMobile } from "@/lib/users-utils";
 import { toastApiErrorMessage } from "@/lib/api/toast-api-error";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { PlanIntakeNotes } from "./plan-intake-notes";
 import { PlanRequestStatusBadge } from "./plan-request-status-badge";
 
 type PlanRequestDetailsViewProps = {
@@ -175,8 +176,7 @@ function PlanRequestSummary({ request }: { request: PlanRequestType }) {
           ) : null}
           {request.notes ? (
             <div className="sm:col-span-2">
-              <dt className="text-xs text-muted-foreground">یادداشت مشتری</dt>
-              <dd className="mt-1 whitespace-pre-wrap">{request.notes}</dd>
+              <PlanIntakeNotes notes={request.notes} />
             </div>
           ) : null}
         </dl>

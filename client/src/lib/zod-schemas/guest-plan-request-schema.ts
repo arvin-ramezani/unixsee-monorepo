@@ -21,7 +21,7 @@ export const DAILY_VISITOR_BANDS = [
   "over_2k",
 ] as const;
 
-export const WOOCOMMERCE_OPTIONS = ["yes", "no", "not_sure"] as const;
+export const WOOCOMMERCE_OPTIONS = ["yes", "no"] as const;
 
 export const PLAN_REQUEST_UPLOAD = {
   accept: ".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx",
@@ -177,7 +177,9 @@ export const guestPlanRequestSchema = z
     }
 
     if (
-      !(DATABASE_SIZE_BANDS as readonly string[]).includes(data.databaseSizeBand)
+      !(DATABASE_SIZE_BANDS as readonly string[]).includes(
+        data.databaseSizeBand,
+      )
     ) {
       ctx.addIssue({
         code: "custom",
@@ -187,7 +189,9 @@ export const guestPlanRequestSchema = z
     }
 
     if (
-      !(DAILY_VISITOR_BANDS as readonly string[]).includes(data.dailyVisitorsBand)
+      !(DAILY_VISITOR_BANDS as readonly string[]).includes(
+        data.dailyVisitorsBand,
+      )
     ) {
       ctx.addIssue({
         code: "custom",
@@ -262,3 +266,126 @@ export { normalizeWebsite, isValidWebsite };
 
 /** @deprecated Use DAILY_VISITOR_BANDS */
 export const MONTHLY_VISITOR_BANDS = DAILY_VISITOR_BANDS;
+
+/** Site content size ranges for authenticated plan intake. */
+export const CONTENT_SIZE_BANDS = [
+  "under_100mb",
+  "100mb_to_1gb",
+  "1gb_to_10gb",
+  "over_10gb",
+] as const;
+
+/** Zod schema for authenticated plan request intake fields. */
+
+export const authPlanRequestSchema = z
+  .object({
+    contactName: z
+      .string()
+      .trim()
+      .min(1, errorKey("fullNameRequired"))
+      .regex(fullNameRegex, errorKey("fullNameInvalid")),
+    website: z.string().trim(),
+    databaseSizeBand: z.string(),
+    dailyVisitorsBand: z.string(),
+    contentSizeBand: z.string(),
+    isWooCommerce: z.string(),
+    description: z.string().trim().max(2000).optional(),
+    attachments: z
+      .array(
+        z.object({
+          name: z.string().min(1).max(255),
+          size: z.number().int().positive().max(PLAN_REQUEST_UPLOAD.maxBytes),
+          type: z.string().max(120),
+        }),
+      )
+      .max(PLAN_REQUEST_UPLOAD.maxFiles),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.website) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("websiteRequired"),
+        path: ["website"],
+      });
+    } else if (!isValidWebsite(data.website)) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("websiteInvalid"),
+        path: ["website"],
+      });
+    }
+
+    if (
+      !(DATABASE_SIZE_BANDS as readonly string[]).includes(
+        data.databaseSizeBand,
+      )
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("databaseSizeRequired"),
+        path: ["databaseSizeBand"],
+      });
+    }
+
+    if (
+      !(DAILY_VISITOR_BANDS as readonly string[]).includes(
+        data.dailyVisitorsBand,
+      )
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("dailyVisitorsRequired"),
+        path: ["dailyVisitorsBand"],
+      });
+    }
+
+    if (
+      !(CONTENT_SIZE_BANDS as readonly string[]).includes(data.contentSizeBand)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("contentSizeRequired"),
+        path: ["contentSizeBand"],
+      });
+    }
+
+    if (
+      !(WOOCOMMERCE_OPTIONS as readonly string[]).includes(data.isWooCommerce)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: errorKey("woocommerceRequired"),
+        path: ["isWooCommerce"],
+      });
+    }
+  });
+
+export type AuthPlanRequestSchemaType = z.infer<typeof authPlanRequestSchema>;
+
+export function buildAuthPlanIntakeNotes(
+  data: AuthPlanRequestSchemaType,
+): string {
+  const lines = [
+    "[Plan intake — authenticated user]",
+    `Website: ${normalizeWebsite(data.website)}`,
+    `Database size: ${data.databaseSizeBand}`,
+    `Daily visitors: ${data.dailyVisitorsBand}`,
+    `Content size: ${data.contentSizeBand}`,
+    `WooCommerce today: ${data.isWooCommerce}`,
+  ];
+
+  if (data.attachments.length > 0) {
+    lines.push(
+      `Attachments (names only; binary upload deferred): ${data.attachments
+        .map((file) => file.name)
+        .join(", ")}`,
+    );
+  }
+
+  const freeText = data.description?.trim();
+  if (freeText) {
+    lines.push("", freeText);
+  }
+
+  return lines.join("\n");
+}

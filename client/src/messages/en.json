@@ -22,6 +22,7 @@
     "dailyVisitorsRequired": "Select an approximate daily visitor range",
     "monthlyVisitorsRequired": "Select an approximate daily visitor range",
     "woocommerceRequired": "Tell us whether you use WooCommerce today",
+    "contentSizeRequired": "Select an approximate site content size",
     "attachmentsInvalid": "One or more files are not allowed",
     "attachmentsTooMany": "Too many files selected",
     "attachmentTooLarge": "A selected file is too large",
@@ -224,7 +225,7 @@
       },
       "helpCenter": {
         "label": "Help Center",
-
+        "title": "Help Center",
         "items": {
           "startWorking": "Getting Started",
           "managedWoocommerce": "WooCommerce",
@@ -2804,8 +2805,7 @@
       "woocommercePlaceholder": "Select an option",
       "woocommerceOptions": {
         "yes": "Yes",
-        "no": "No",
-        "not_sure": "Not sure"
+        "no": "No"
       },
       "descriptionLabel": "Description (optional)",
       "descriptionPlaceholder": "Tell us about your store or project…",
@@ -2878,6 +2878,53 @@
       "accountExists": "You already have an account. Sign in to continue."
     }
   },
+  "AuthCheckout": {
+    "form": {
+      "nameLabel": "Full name",
+      "namePlaceholder": "Your name",
+      "websiteLabel": "Website URL",
+      "websitePlaceholder": "https://example.com",
+      "intakeSectionTitle": "About your store",
+      "intakeSectionHint": "The information below helps our team prepare the best configuration for you.",
+      "databaseSizeLabel": "Approximate database size",
+      "databaseSizePlaceholder": "Select a range",
+      "databaseSizeOptions": {
+        "under_1gb": "Under 1 GB",
+        "1_to_5gb": "1 – 5 GB",
+        "5_to_20gb": "5 – 20 GB",
+        "over_20gb": "Over 20 GB"
+      },
+      "dailyVisitorsLabel": "Approximate daily visitors",
+      "dailyVisitorsPlaceholder": "Select a range",
+      "dailyVisitorsOptions": {
+        "under_100": "Under 100",
+        "100_to_500": "100 – 500",
+        "500_to_2k": "500 – 2,000",
+        "over_2k": "Over 2,000"
+      },
+      "contentSizeLabel": "Site content size",
+      "contentSizePlaceholder": "Select a range",
+      "contentSizeOptions": {
+        "under_100mb": "Under 100 MB",
+        "100mb_to_1gb": "100 MB – 1 GB",
+        "1gb_to_10gb": "1 – 10 GB",
+        "over_10gb": "Over 10 GB"
+      },
+      "woocommerceLabel": "Is your store currently on WooCommerce?",
+      "woocommercePlaceholder": "Select an option",
+      "woocommerceOptions": {
+        "yes": "Yes",
+        "no": "No",
+        "not_sure": "Not sure"
+      },
+      "descriptionLabel": "Description (optional)",
+      "descriptionPlaceholder": "Tell us about your store or project...",
+      "submit": "Submit request",
+      "processing": "Submitting...",
+      "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup."
+    }
+  },
+
   "PlansSuccess": {
     "title": "Your request was submitted",
     "description": "Thank you. Our team will review your plan request and contact you to continue setup.",

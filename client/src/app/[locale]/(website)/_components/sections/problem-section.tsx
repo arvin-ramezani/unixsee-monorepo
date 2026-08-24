@@ -52,7 +52,6 @@ export default function ProblemSection({ id }: ProblemSectionProps) {
               className="lg:max-w-155 lg:leading-16 xl:max-w-2xl"
               dangerouslySetInnerHTML={{ __html: t.raw("title") }}
             />
-            {/* {t("title")} */}
 
             <ScaleTitle
               as={"p"}

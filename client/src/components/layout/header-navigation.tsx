@@ -39,7 +39,7 @@ export function HeaderNavigation({ items }: HeaderNavigationProps) {
 
   return (
     <NavigationMenu className="relative hidden text-nowrap lg:flex">
-      <NavigationMenuList className="border-none! text-xs font-medium xl:text-sm">
+      <NavigationMenuList className="border-none! text-xs xl:text-sm">
         {items.map((item) => (
           <NavigationMenuNode
             key={item.key}
@@ -93,7 +93,7 @@ function NavigationMenuNode({
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="bg-transparent px-1 py-2 text-xs focus:bg-transparent xl:px-2 xl:text-sm dark:text-white">
+      <NavigationMenuTrigger className="bg-transparent px-1 py-2 text-xs font-light focus:bg-transparent xl:px-2 xl:text-sm dark:text-white">
         {!!item.href ? (
           <Link href={item.href}>{translate(`${item.key}.label`)}</Link>
         ) : (

@@ -10,13 +10,17 @@ import {
 } from "@/components/ui/accordion";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import ComingSoonBadge from "./coming-soon-badge";
+import CommingSoonBadge from "./coming-soon-badge";
 
 type FooterNavItem = {
   key: string;
+
   href?: string;
   items?: readonly {
     key: string;
     href: string;
+    comingSoon?: boolean;
   }[];
 };
 
@@ -75,16 +79,26 @@ function FooterAccordionItem({ content, itemKey }: FooterAccordionItemProps) {
             <AccordionTrigger>
               {tNavigation(`${itemKey}.label` as never)}
             </AccordionTrigger>
-            <AccordionContent className="text-text-secondary flex flex-col gap-1">
-              {content.map((link) => (
-                <Link
-                  className="block no-underline!"
-                  key={link.key}
-                  href={link.href}
-                >
-                  {tNavigation(`${itemKey}.items.${link.key}` as never)}
-                </Link>
-              ))}
+            <AccordionContent className="text-text-secondary flex flex-col gap-2">
+              {content.map((link) =>
+                link?.comingSoon ? (
+                  <span
+                    className="relative block no-underline! opacity-50"
+                    key={link.key}
+                  >
+                    {tNavigation(`${itemKey}.items.${link.key}` as never)}
+                    <ComingSoonBadge />
+                  </span>
+                ) : (
+                  <Link
+                    className="block no-underline!"
+                    key={link.key}
+                    href={link.href}
+                  >
+                    {tNavigation(`${itemKey}.items.${link.key}` as never)}
+                  </Link>
+                ),
+              )}
             </AccordionContent>
           </AccordionItem>
         }

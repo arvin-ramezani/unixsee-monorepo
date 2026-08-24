@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Panel } from "@/components/dashboard/panel";
-import { CheckoutForm } from "@/components/plans/checkout-form";
+import { AuthCheckoutForm } from "@/components/plans/auth-checkout-form";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getCurrentUser } from "@/lib/auth/get-current-user";
@@ -72,10 +72,11 @@ export default async function CheckoutPage({
           <p className="text-muted-foreground mt-1 mb-5 text-sm">
             {t("contactDescription")}
           </p>
-          <CheckoutForm
+          <AuthCheckoutForm
             plan={plan}
-            initialName={user?.fullName ?? ""}
-            initialPhone={user?.phoneNumber ?? ""}
+            contactName={user?.fullName ?? ""}
+            contactPhone={user?.phoneNumber ?? null}
+            contactEmail={user?.email ?? null}
           />
         </Panel>
 

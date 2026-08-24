@@ -13,7 +13,7 @@ import { MobileProblemSectionCard } from "./mobile-problem-section-card";
 const itemKeys = [
   { key: "genericSupport" },
   { key: "infrastructureMismatch" },
-  { key: "noMonitoring" },
+  // { key: "noMonitoring" },
 ] as const;
 
 export type ProblemSectionCarouselType = object;
@@ -23,7 +23,7 @@ export default function ProblemSectionCarousel({}: ProblemSectionCarouselType) {
 
   return (
     <Carousel
-      className="mt-8 lg:mt-16"
+      className="mt-8 overflow-visible lg:mt-16"
       opts={{
         duration: 50,
         watchDrag: (_emblaApi, event) => {

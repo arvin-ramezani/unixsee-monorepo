@@ -22,6 +22,7 @@
     "dailyVisitorsRequired": "تقریباً بازه بازدید روزانه را انتخاب کنید",
     "monthlyVisitorsRequired": "تقریباً بازه بازدید روزانه را انتخاب کنید",
     "woocommerceRequired": "وضعیت فعلی ووکامرس را مشخص کنید",
+    "contentSizeRequired": "تقریباً حجم محتوای سایت را انتخاب کنید",
     "attachmentsInvalid": "یک یا چند فایل مجاز نیست",
     "attachmentsTooMany": "تعداد فایل‌ها بیش از حد مجاز است",
     "attachmentTooLarge": "حجم یکی از فایل‌ها زیاد است",
@@ -224,7 +225,7 @@
       },
       "helpCenter": {
         "label": "مرکز راهنما",
-
+        "title": "مرکز راهنما",
         "items": {
           "startWorking": "شروع کار با یونیکسی",
           "managedWoocommerce": "زیرساخت ووکامرس",
@@ -2869,6 +2870,52 @@
       "accountExists": "شما قبلاً حساب دارید. برای ادامه وارد شوید."
     }
   },
+  "AuthCheckout": {
+    "form": {
+      "nameLabel": "نام و نام خانوادگی",
+      "namePlaceholder": "نام شما",
+      "websiteLabel": "آدرس وب‌سایت",
+      "websitePlaceholder": "https://example.com",
+      "intakeSectionTitle": "درباره فروشگاه شما",
+      "intakeSectionHint": "اطلاعات زیر به تیم ما کمک می‌کند تا بهترین پیکربندی را برای شما آماده کند.",
+      "databaseSizeLabel": "تقریباً حجم دیتابیس",
+      "databaseSizePlaceholder": "یک بازه انتخاب کنید",
+      "databaseSizeOptions": {
+        "under_1gb": "کمتر از ۱ گیگابایت",
+        "1_to_5gb": "۱ تا ۵ گیگابایت",
+        "5_to_20gb": "۵ تا ۲۰ گیگابایت",
+        "over_20gb": "بیش از ۲۰ گیگابایت"
+      },
+      "dailyVisitorsLabel": "تقریباً بازدید روزانه",
+      "dailyVisitorsPlaceholder": "یک بازه انتخاب کنید",
+      "dailyVisitorsOptions": {
+        "under_100": "کمتر از ۱۰۰",
+        "100_to_500": "۱۰۰ تا ۵۰۰",
+        "500_to_2k": "۵۰۰ تا ۲٠۰۰",
+        "over_2k": "بیش از ۲٠۰۰"
+      },
+      "contentSizeLabel": "حجم محتوای سایت",
+      "contentSizePlaceholder": "یک بازه انتخاب کنید",
+      "contentSizeOptions": {
+        "under_100mb": "کمتر از ۱۰۰ مگابایت",
+        "100mb_to_1gb": "۱۰۰ مگابایت تا ۱ گیگابایت",
+        "1gb_to_10gb": "۱ تا ۱۰ گیگابایت",
+        "over_10gb": "بیش از ۱۰ گیگابایت"
+      },
+      "woocommerceLabel": "فروشگاه الان روی ووکامرس است؟",
+      "woocommercePlaceholder": "یک گزینه انتخاب کنید",
+      "woocommerceOptions": {
+        "yes": "بله",
+        "no": "خیر"
+      },
+      "descriptionLabel": "توضیحات (اختیاری)",
+      "descriptionPlaceholder": "درباره فروشگاه یا پروژه خود بنویسد…",
+      "submit": "ارسال درخواست",
+      "processing": "در حال ارسال…",
+      "reassurance": "ارسال درخواست هزینه‌ای برای شما ندارد. تیم ما برای تکمیل راه‌اندازی با شما تماس می‌گیرد."
+    }
+  },
+
   "PlansSuccess": {
     "title": "درخواست شما ثبت شد",
     "description": "از شما سپاسگزاریم. تیم ما درخواست طرح را بررسی می‌کند و برای ادامهٔ راه‌اندازی با شما تماس می‌گیرد.",

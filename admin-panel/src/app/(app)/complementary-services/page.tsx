@@ -1,4 +1,6 @@
 import { ComplementaryServicesView } from "@/components/complementary-services/complementary-services-view";
+import { serverFetch } from "@/lib/api/server-fetch";
+import { mapAdminComplementaryList, type AdminComplementaryRequestApiItem } from "@/lib/complementary-services/map-admin-complementary";
 import { readEnumParam } from "@/lib/url-search-params";
 
 const COMPLEMENTARY_STATUS_FILTER_VALUES = [
@@ -12,12 +14,30 @@ export type ComplementaryServicesPageProps = {
   searchParams: Promise<{ status?: string | string[] }>;
 };
 
+async function fetchBackendComplementaryData() {
+  try {
+    const response = await serverFetch<{ items: AdminComplementaryRequestApiItem[]; total: number }>(
+      "/v1/admin/complementary-service-requests",
+      { method: "GET" },
+    );
+    if (response.success && response.data) {
+      return mapAdminComplementaryList(response.data.items);
+    }
+  } catch {
+    // Fall through to mock data when API is unavailable
+  }
+  return null;
+}
+
 export default async function ComplementaryServicesPage({
   searchParams,
 }: ComplementaryServicesPageProps) {
   const params = await searchParams;
   const initialStatus =
     readEnumParam(params.status, COMPLEMENTARY_STATUS_FILTER_VALUES) ?? "ALL";
+
+  const backendData = await fetchBackendComplementaryData();
+  const hasRealData = backendData !== null && (backendData.requests.length > 0 || backendData.assignments.length > 0);
 
   return (
     <div className="flex flex-1 flex-col gap-6 pt-4">
@@ -30,12 +50,23 @@ export default async function ComplementaryServicesPage({
             بررسی درخواست‌های مشتریان و مدیریت سرویس‌های هر وب‌سایت
           </p>
         </div>
-        <p className="w-fit rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground">
-          داده‌های نمایشی
-        </p>
+        {!hasRealData && (
+          <p className="w-fit rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground">
+            داده‌های نمایشی
+          </p>
+        )}
+        {hasRealData && (
+          <p className="w-fit rounded-full border border-success/30 bg-success/10 px-3 py-1.5 text-xs text-success">
+            داده واقعی
+          </p>
+        )}
       </div>
 
-      <ComplementaryServicesView initialStatus={initialStatus} />
+      <ComplementaryServicesView
+        initialStatus={initialStatus}
+        initialRequests={backendData?.requests}
+        initialAssignments={backendData?.assignments}
+      />
     </div>
   );
 }

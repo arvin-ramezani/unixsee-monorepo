@@ -540,7 +540,7 @@ export function GlobalSearch() {
   useEffect(() => {
     function handleShortcut(event: globalThis.KeyboardEvent) {
       if (
-        event.key.toLocaleLowerCase() === "k" &&
+        event.key?.toLocaleLowerCase() === "k" &&
         (event.metaKey || event.ctrlKey) &&
         !event.altKey
       ) {

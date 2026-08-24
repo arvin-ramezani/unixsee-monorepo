@@ -21,6 +21,8 @@ import FooterAccordion from "./footer-accordion";
 import Logo from "@/components/common/logo";
 import { RadialRevealLink } from "@/components/common/radial-reveal/radial-reveal-link";
 import NewsletterForm from "./newsletter-form";
+import { Badge } from "@/components/ui/badge";
+import ComingSoonBadge from "./coming-soon-badge";
 
 const MotionChevronDownIcon = motion.create(ChevronDownIcon);
 
@@ -213,6 +215,7 @@ type FooterNavItem = {
   items?: readonly {
     key: string;
     href: string;
+    comingSoon?: boolean;
   }[];
 };
 
@@ -261,6 +264,7 @@ type FooterNavigationItemProps = {
 };
 
 function FooterNavigationItem({ item, translate }: FooterNavigationItemProps) {
+  const tNavigation = useTranslations("Layout.Navigation");
   const hasChildren = Boolean(item.items?.length);
 
   if (!hasChildren) {
@@ -270,7 +274,7 @@ function FooterNavigationItem({ item, translate }: FooterNavigationItemProps) {
       </li>
     );
   }
-
+  console.log(item);
   return (
     <li className="flex flex-col gap-3">
       <p className="text-text-primary group relative inline-flex w-fit items-center justify-center text-sm leading-[1.1rem] font-semibold lg:justify-start">
@@ -279,20 +283,21 @@ function FooterNavigationItem({ item, translate }: FooterNavigationItemProps) {
 
       <ul className="flex flex-col gap-1">
         {item.items?.map((child) => (
-          <li key={child.key}>
-            {!!item.href ? (
+          <li key={child.key} className="relative">
+            {!!child.href && !child.comingSoon ? (
               <Link
-                href={item.href}
-                className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 lg:text-start"
+                href={child.href}
+                className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 aria-disabled:opacity-50 lg:text-start"
               >
                 {translate(`${item.key}.items.${child.key}`)}
-                <span className="absolute inset-s-0 -bottom-0.5 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
               </Link>
             ) : (
-              <span className="text-text-secondary hover:text-text-primary group relative inline-flex items-center text-xs duration-100 lg:text-start">
+              <span className="text-text-secondary group relative inline-flex items-center text-xs duration-100 lg:text-start">
                 {translate(`${item.key}.items.${child.key}`)}
               </span>
             )}
+
+            {child?.comingSoon && <ComingSoonBadge />}
           </li>
         ))}
       </ul>
