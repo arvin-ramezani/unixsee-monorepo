@@ -2,28 +2,28 @@
 
 ## Document control
 
-| Field | Value |
-|---|---|
-| Project | Unixsee Admin Panel |
-| Flow or service | Staff create complementary-service assignment and attach to website |
-| Version | 0.1 |
-| Status | Draft |
-| Date | 2026-08-15 |
-| Prepared from | Client `request-service-form.tsx`; Phase 1 §16; `admin-complementary-services.md`; admin `create-service-dialog.tsx` |
-| Primary owner | Product and operations |
-| Reviewers required | Product, commercial operations, service-delivery, engineering, QA, accessibility |
-| Parent flow | [`admin-complementary-services.md`](./admin-complementary-services.md) |
+| Field              | Value                                                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Project            | Unixsee Admin Panel                                                                                                  |
+| Flow or service    | Staff create complementary-service assignment and attach to website                                                  |
+| Version            | 0.2                                                                                                                  |
+| Status             | Draft                                                                                                                |
+| Date               | 2026-08-24                                                                                                           |
+| Prepared from      | Client `request-service-form.tsx`; Phase 1 §16; `admin-complementary-services.md`; admin `create-service-dialog.tsx` |
+| Primary owner      | Product and operations                                                                                               |
+| Reviewers required | Product, commercial operations, service-delivery, engineering, QA, accessibility                                     |
+| Parent flow        | [`admin-complementary-services.md`](./admin-complementary-services.md)                                               |
 
 ## Confidence summary
 
-| Area | Confidence | Reason |
-|---|---|---|
-| User needs | Medium | Derived from Phase 1 staff outcomes and client intake fields; no staff research |
-| Current journey | High | Admin can open create Dialog only from an accepted request; website is locked to that request |
-| Field model | High | Client form and Phase 1 §16.4 define intake; admin Dialog defines commercial activation fields |
-| Staff-initiated path | Medium | Requested capability; Phase 1 emphasizes request→accept→activate; bypass rules are labelled assumptions |
-| Accessibility | Medium | Based on client form patterns and WCAG-oriented review, not staff testing |
-| Measurement plan | Low | Events proposed; ownership unknown |
+| Area                 | Confidence | Reason                                                                                                  |
+| -------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
+| User needs           | Medium     | Derived from Phase 1 staff outcomes and client intake fields; no staff research                         |
+| Current journey      | High       | Admin can open create Dialog only from an accepted request; website is locked to that request           |
+| Field model          | High       | Client form and Phase 1 §16.4 define intake; admin Dialog defines commercial activation fields          |
+| Staff-initiated path | Medium     | Requested capability; Phase 1 emphasizes request→accept→activate; bypass rules are labelled assumptions |
+| Accessibility        | Medium     | Based on client form patterns and WCAG-oriented review, not staff testing                               |
+| Measurement plan     | Low        | Events proposed; ownership unknown                                                                      |
 
 ## Executive flow summary
 
@@ -66,6 +66,9 @@ Unixsee can attach deliverable work to websites consistently whether intake star
 - Entry mode B — **Staff-initiated create:** from complementary-services list (and optionally website detail), selecting tenant → website → service family.
 - Shared form sections derived from client `RequestServiceForm` + admin commercial block.
 - Duplicate active/pending warning for same website + service family (warn; server enforces).
+- Managed and external tenant websites are selectable; show explicit coverage
+  and do not require an active server plan. Canonical behavior:
+  [`website-management-coverage.md`](./website-management-coverage.md).
 - Tenant prerequisite for attachment (authorization/tenant rule).
 - Confirm before create; success → assignment detail; cancel/back without mutation.
 - Loading, validation, permission, conflict, and recovery for create.
@@ -89,14 +92,14 @@ Unixsee can attach deliverable work to websites consistently whether intake star
 
 ## Available evidence
 
-| ID | Type | Source | User/role | Finding | Strength | Date |
-|---|---|---|---|---|---|---|
-| E-001 | Product requirement | `phase-1-application-features.md` §16 | Staff/customer | Four families; request fields; assignment contents; single activation from accepted request | Medium | 2026-08-15 |
-| E-002 | Client implementation | `client/.../request-service-form.tsx` | Customer | Required: service, website, engagement, title; description ≥20 chars; conditional scope; attachments ≤5 / 5MB / typed; duplicate alert; success panel | Strong | 2026-08-15 |
-| E-003 | Admin implementation | `create-service-dialog.tsx`, request detail | Staff | Create Dialog from accepted request; fields: owner, commercial model, start date, agreed amount, scope, exclusions; website read-only from request; duplicate warning | Strong | 2026-08-15 |
-| E-004 | Parent UX flow | `admin-complementary-services.md` | Staff | Request vs assignment distinct; BR-007 single activation; tenant required for commercial activation | Strong | 2026-08-15 |
-| E-005 | Tenant constraint | `notes/customer-authorization-and-tenant.md` | Staff | Commercial activation / assignment requires tenant | Strong | 2026-08-15 |
-| E-006 | Route map | `docs/backend/modules-and-routes.md` | Engineering | Admin complementary-service-request routes exist; staff-initiated assignment create is not explicitly listed as a separate public/customer route | Medium | 2026-08-15 |
+| ID    | Type                  | Source                                       | User/role      | Finding                                                                                                                                                               | Strength | Date       |
+| ----- | --------------------- | -------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- |
+| E-001 | Product requirement   | `phase-1-application-features.md` §16        | Staff/customer | Four families; request fields; assignment contents; single activation from accepted request                                                                           | Medium   | 2026-08-15 |
+| E-002 | Client implementation | `client/.../request-service-form.tsx`        | Customer       | Required: service, website, engagement, title; description ≥20 chars; conditional scope; attachments ≤5 / 5MB / typed; duplicate alert; success panel                 | Strong   | 2026-08-15 |
+| E-003 | Admin implementation  | `create-service-dialog.tsx`, request detail  | Staff          | Create Dialog from accepted request; fields: owner, commercial model, start date, agreed amount, scope, exclusions; website read-only from request; duplicate warning | Strong   | 2026-08-15 |
+| E-004 | Parent UX flow        | `admin-complementary-services.md`            | Staff          | Request vs assignment distinct; BR-007 single activation; tenant required for commercial activation                                                                   | Strong   | 2026-08-15 |
+| E-005 | Tenant constraint     | `notes/customer-authorization-and-tenant.md` | Staff          | Commercial activation / assignment requires tenant                                                                                                                    | Strong   | 2026-08-15 |
+| E-006 | Route map             | `docs/backend/modules-and-routes.md`         | Engineering    | Admin complementary-service-request routes exist; staff-initiated assignment create is not explicitly listed as a separate public/customer route                      | Medium   | 2026-08-15 |
 
 No staff interviews or support tickets were provided for the staff-initiated bypass.
 
@@ -104,45 +107,45 @@ No staff interviews or support tickets were provided for the staff-initiated byp
 
 ### Assumptions
 
-| ID | Assumption | Origin | Risk | Affected decision | Validation | Status |
-|---|---|---|---|---|---|---|
-| A-001 | Staff-initiated create may skip customer quotation/acceptance when commercial staff record offline agreement with reason | Inference from ops need; not explicit in §16.10 | High | Preconditions for Mode B | Product/legal decision | Unvalidated |
-| A-002 | Mode B still creates an **assignment**, optionally linking a synthetic or staff-origin request record for history | Inference to preserve request/assignment distinction | Medium | Data model | Engineering + product | Unvalidated |
-| A-003 | `not-sure` engagement is allowed on staff create only if staff then choose a concrete commercial model before submit | Client allows not-sure; assignment needs concrete model | Medium | Validation rules | Product | Unvalidated |
-| A-004 | Website picker lists only websites of the selected tenant that staff are scoped to see | Tenancy model | Medium | Selector behaviour | Confirm with access model | Unvalidated |
-| A-005 | Attachments on staff create are optional evidence (brief, SOW); same type/size caps as client unless security tightens | Client caps | Medium | Attachment policy | Security | Unvalidated |
+| ID    | Assumption                                                                                                               | Origin                                                  | Risk   | Affected decision        | Validation                | Status      |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ------ | ------------------------ | ------------------------- | ----------- |
+| A-001 | Staff-initiated create may skip customer quotation/acceptance when commercial staff record offline agreement with reason | Inference from ops need; not explicit in §16.10         | High   | Preconditions for Mode B | Product/legal decision    | Unvalidated |
+| A-002 | Mode B still creates an **assignment**, optionally linking a synthetic or staff-origin request record for history        | Inference to preserve request/assignment distinction    | Medium | Data model               | Engineering + product     | Unvalidated |
+| A-003 | `not-sure` engagement is allowed on staff create only if staff then choose a concrete commercial model before submit     | Client allows not-sure; assignment needs concrete model | Medium | Validation rules         | Product                   | Unvalidated |
+| A-004 | Website picker lists only websites of the selected tenant that staff are scoped to see                                   | Tenancy model                                           | Medium | Selector behaviour       | Confirm with access model | Unvalidated |
+| A-005 | Attachments on staff create are optional evidence (brief, SOW); same type/size caps as client unless security tightens   | Client caps                                             | Medium | Attachment policy        | Security                  | Unvalidated |
 
 ### Unknowns
 
-| ID | Unknown | Impact | Decision blocked | Resolution | Priority |
-|---|---|---|---|---|---|
-| U-001 | Whether Mode B requires a capability distinct from request activation | Wrong staff can bind revenue | Permission matrix | Security/product | Critical |
-| U-002 | Whether duplicate same-family active assignment is hard-blocked or overridable with reason | Double delivery / billing risk | Submit rules | Commercial policy | Critical |
-| U-003 | Customer visibility of staff-created assignments before any customer acknowledgement | Trust / surprise activation | Post-create notification | Product | High |
-| U-004 | Nest endpoint for staff-initiated assignment create vs activating from request only | Implementation contract | API design | Backend ADR / routes update | Critical |
-| U-005 | Required commercial fields by model (quota units, renewal, milestones) on first create | Incomplete assignments | Conditional validation | Commercial policy | High |
+| ID    | Unknown                                                                                    | Impact                         | Decision blocked         | Resolution                  | Priority |
+| ----- | ------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------ | --------------------------- | -------- |
+| U-001 | Whether Mode B requires a capability distinct from request activation                      | Wrong staff can bind revenue   | Permission matrix        | Security/product            | Critical |
+| U-002 | Whether duplicate same-family active assignment is hard-blocked or overridable with reason | Double delivery / billing risk | Submit rules             | Commercial policy           | Critical |
+| U-003 | Customer visibility of staff-created assignments before any customer acknowledgement       | Trust / surprise activation    | Post-create notification | Product                     | High     |
+| U-004 | Nest endpoint for staff-initiated assignment create vs activating from request only        | Implementation contract        | API design               | Backend ADR / routes update | Critical |
+| U-005 | Required commercial fields by model (quota units, renewal, milestones) on first create     | Incomplete assignments         | Conditional validation   | Commercial policy           | High     |
 
 ## Users, roles and permissions
 
 ### Users
 
-| Role | Goal | Responsibility | Constraints | Needs |
-|---|---|---|---|---|
-| Commercial / operations staff | Attach agreed work to a website | Complete create form, confirm, own initial assignment | Capability + tenant scope; Mode B policy | Correct website, clear commercial terms |
-| Delivery specialist | Receive workable assignment | Not primary creator unless permitted | Cannot invent commercial terms without capability | Complete scope on day one |
-| Customer | See truthful service on their website | Outside admin create UI | Sees only customer-visible fields | No surprise unpaid obligation (U-003) |
-| Auditor | Trace origin | Read create reason, actor, source request if any | Read-only | Immutable create audit |
+| Role                          | Goal                                  | Responsibility                                        | Constraints                                       | Needs                                   |
+| ----------------------------- | ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------- | --------------------------------------- |
+| Commercial / operations staff | Attach agreed work to a website       | Complete create form, confirm, own initial assignment | Capability + tenant scope; Mode B policy          | Correct website, clear commercial terms |
+| Delivery specialist           | Receive workable assignment           | Not primary creator unless permitted                  | Cannot invent commercial terms without capability | Complete scope on day one               |
+| Customer                      | See truthful service on their website | Outside admin create UI                               | Sees only customer-visible fields                 | No surprise unpaid obligation (U-003)   |
+| Auditor                       | Trace origin                          | Read create reason, actor, source request if any      | Read-only                                         | Immutable create audit                  |
 
 ### Permissions
 
-| Action | Request-bound (Mode A) | Staff-initiated (Mode B) | Conditions |
-|---|---|---|---|
-| Open create surface | Activation capability + request `accepted` | Staff-create capability (U-001) | Server-enforced |
-| Select tenant/website | Locked from request | Required; scoped list | Tenant must exist (E-005) |
-| Change service family | Locked from request | Required | One of four Phase 1 families |
-| Set commercial terms | Yes | Yes | Model-specific required fields |
-| Submit create | Yes if no linked assignment | Yes if policy allows | Idempotent; duplicate rule (U-002) |
-| View assignment after | Yes | Yes | Scope |
+| Action                | Request-bound (Mode A)                     | Staff-initiated (Mode B)        | Conditions                         |
+| --------------------- | ------------------------------------------ | ------------------------------- | ---------------------------------- |
+| Open create surface   | Activation capability + request `accepted` | Staff-create capability (U-001) | Server-enforced                    |
+| Select tenant/website | Locked from request                        | Required; scoped list           | Tenant must exist (E-005)          |
+| Change service family | Locked from request                        | Required                        | One of four Phase 1 families       |
+| Set commercial terms  | Yes                                        | Yes                             | Model-specific required fields     |
+| Submit create         | Yes if no linked assignment                | Yes if policy allows            | Idempotent; duplicate rule (U-002) |
+| View assignment after | Yes                                        | Yes                             | Scope                              |
 
 ## User needs
 
@@ -188,24 +191,24 @@ No staff interviews or support tickets were provided for the staff-initiated byp
 
 ## Current journey
 
-| Stage | Goal | Action | Response | Actors | Pain | Evidence |
-|---|---|---|---|---|---|---|
-| Customer intake | Request service | Fill client form | Local success mock / request record | Customer | Admin may never see if offline | E-002 |
-| Admin queue | Find accepted request | Filter “آماده ایجاد سرویس” | List of accepted requests | Staff | No path without request | E-003 |
-| Activate | Create assignment | Dialog with commercial fields; website locked | Fixture assignment | Staff | Cannot choose another website; cannot start without request | E-003 |
-| Dead end | Offline agreement | Spreadsheet / memory | No durable assignment | Staff | JP-001 | Inference |
+| Stage           | Goal                  | Action                                        | Response                            | Actors   | Pain                                                        | Evidence  |
+| --------------- | --------------------- | --------------------------------------------- | ----------------------------------- | -------- | ----------------------------------------------------------- | --------- |
+| Customer intake | Request service       | Fill client form                              | Local success mock / request record | Customer | Admin may never see if offline                              | E-002     |
+| Admin queue     | Find accepted request | Filter “آماده ایجاد سرویس”                    | List of accepted requests           | Staff    | No path without request                                     | E-003     |
+| Activate        | Create assignment     | Dialog with commercial fields; website locked | Fixture assignment                  | Staff    | Cannot choose another website; cannot start without request | E-003     |
+| Dead end        | Offline agreement     | Spreadsheet / memory                          | No durable assignment               | Staff    | JP-001                                                      | Inference |
 
 ## Proposed journey
 
-| Stage | Goal | Behaviour | Response | Decision | Need |
-|---|---|---|---|---|---|
-| 1. Enter | Start create | Mode A from request detail CTA, or Mode B from list “ایجاد و اتصال سرویس” | Open create surface | Permitted? | UN-001 |
-| 2. Target | Bind website | Mode A: show locked tenant/website/family from request. Mode B: select tenant → website → family | Context summary | Tenant present? Website in scope? | UN-001 |
-| 3. Service context | Capture intake | Fill engagement, service-specific scope, title, description, optional attachments (client-aligned) | Inline validation | Valid? Duplicate? | UN-002, UN-004 |
-| 4. Commercial | Capture agreement | Owner, commercial model, start (and end/renewal if required), agreed amount, included scope, exclusions; Mode B: create reason | Model-specific checks | Terms complete? | UN-003 |
-| 5. Confirm | Prevent mis-attach | Review summary: website, family, model, amount, start; confirm | Confirm step or Dialog footer review | User confirms | UN-001 |
-| 6. Create | Persist once | Submit; disable control; reconcile on timeout | Assignment `scheduled`/`active` | Success / conflict / recovery | UN-001, UN-005 |
-| 7. Complete | Continue delivery | Success state with link to assignment detail | Staff lands on assignment | — | UN-003 |
+| Stage              | Goal               | Behaviour                                                                                                                      | Response                             | Decision                          | Need           |
+| ------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ | --------------------------------- | -------------- |
+| 1. Enter           | Start create       | Mode A from request detail CTA, or Mode B from list “ایجاد و اتصال سرویس”                                                      | Open create surface                  | Permitted?                        | UN-001         |
+| 2. Target          | Bind website       | Mode A: show locked tenant/website/family from request. Mode B: select tenant → website → family                               | Context summary                      | Tenant present? Website in scope? | UN-001         |
+| 3. Service context | Capture intake     | Fill engagement, service-specific scope, title, description, optional attachments (client-aligned)                             | Inline validation                    | Valid? Duplicate?                 | UN-002, UN-004 |
+| 4. Commercial      | Capture agreement  | Owner, commercial model, start (and end/renewal if required), agreed amount, included scope, exclusions; Mode B: create reason | Model-specific checks                | Terms complete?                   | UN-003         |
+| 5. Confirm         | Prevent mis-attach | Review summary: website, family, model, amount, start; confirm                                                                 | Confirm step or Dialog footer review | User confirms                     | UN-001         |
+| 6. Create          | Persist once       | Submit; disable control; reconcile on timeout                                                                                  | Assignment `scheduled`/`active`      | Success / conflict / recovery     | UN-001, UN-005 |
+| 7. Complete        | Continue delivery  | Success state with link to assignment detail                                                                                   | Staff lands on assignment            | —                                 | UN-003         |
 
 ## Mermaid flow diagram
 
@@ -240,72 +243,72 @@ flowchart TD
 
 ## Screen / state sequence
 
-| Step | State | Goal | Information shown | Primary actions | Exit |
-|---|---|---|---|---|---|
-| S-01 | Entry choose | Pick mode | List CTA + request CTA | Open Mode A or B | Form opening |
-| S-02 | Target binding | Identify website | Mode A locked cards; Mode B tenant/website/family selectors | Continue | Context ready |
-| S-03 | Service context | Fill intake | Radio service (Mode B), engagement radios, conditional scope, title, description, attachments | Edit fields | Valid context |
-| S-04 | Duplicate attention | Prevent clash | Warning like client duplicate alert + link to existing | Continue per policy / open existing | Proceed or abandon |
-| S-05 | Commercial terms | Fill agreement | Owner, model, dates, amount, scope, exclusions, Mode B reason | Edit fields | Ready to confirm |
-| S-06 | Confirming | Verify attach | Summary of website domain, family, model, amount, start | Confirm create / back | Submitting |
-| S-07 | Submitting | Prevent double submit | Progress status | None (disabled) | Success / fail / recover |
-| S-08 | Success | Hand off | Assignment id, website, next delivery action | View assignment / back to list | Done |
-| S-09 | Denied / empty / error | Recover | Explanation + next step | Retry, fix, escalate | Re-entry |
+| Step | State                  | Goal                  | Information shown                                                                             | Primary actions                     | Exit                     |
+| ---- | ---------------------- | --------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------ |
+| S-01 | Entry choose           | Pick mode             | List CTA + request CTA                                                                        | Open Mode A or B                    | Form opening             |
+| S-02 | Target binding         | Identify website      | Mode A locked cards; Mode B tenant/website/family selectors                                   | Continue                            | Context ready            |
+| S-03 | Service context        | Fill intake           | Radio service (Mode B), engagement radios, conditional scope, title, description, attachments | Edit fields                         | Valid context            |
+| S-04 | Duplicate attention    | Prevent clash         | Warning like client duplicate alert + link to existing                                        | Continue per policy / open existing | Proceed or abandon       |
+| S-05 | Commercial terms       | Fill agreement        | Owner, model, dates, amount, scope, exclusions, Mode B reason                                 | Edit fields                         | Ready to confirm         |
+| S-06 | Confirming             | Verify attach         | Summary of website domain, family, model, amount, start                                       | Confirm create / back               | Submitting               |
+| S-07 | Submitting             | Prevent double submit | Progress status                                                                               | None (disabled)                     | Success / fail / recover |
+| S-08 | Success                | Hand off              | Assignment id, website, next delivery action                                                  | View assignment / back to list      | Done                     |
+| S-09 | Denied / empty / error | Recover               | Explanation + next step                                                                       | Retry, fix, escalate                | Re-entry                 |
 
 ## Field model (aligned to client + admin)
 
 ### Section A — Target (attach)
 
-| Field | Mode A | Mode B | Required | Notes |
-|---|---|---|---|---|
-| Tenant | Read-only from request | Select first | Yes | Block if missing (E-005) |
-| Website | Read-only name + domain | Select from tenant websites | Yes | Same display pattern as client (`name — domain`) |
-| Service family | Read-only | Radio: seo, graphic-design, product-data-entry, social-media-support | Yes | Same four as client |
+| Field          | Mode A                             | Mode B                                                               | Required | Notes                                                                            |
+| -------------- | ---------------------------------- | -------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
+| Tenant         | Read-only from request             | Select first                                                         | Yes      | Block if missing (E-005)                                                         |
+| Website        | Read-only name + domain + coverage | Select from tenant websites                                          | Yes      | Display `name — domain — management coverage`; managed and external are eligible |
+| Service family | Read-only                          | Radio: seo, graphic-design, product-data-entry, social-media-support | Yes      | Same four as client                                                              |
 
 ### Section B — Service context (from client form)
 
-| Field | Control | Required | Rules (from E-002 unless noted) |
-|---|---|---|---|
-| Engagement preference | Radio: one-time, recurring, not-sure | Yes | A-003: if not-sure, commercial model must still be concrete before submit |
-| Service-specific scope | SEO/design select; product count / post count number | Conditional | Same option sets as client `ServiceSpecificFields` |
-| Title | Text | Yes | Max 100 |
-| Description | Textarea | Yes | Min 20, max 800; hint + counter |
-| Attachments | Multi file | No (A-005) | Max 5; ≤5MB; png/jpeg/webp/pdf/csv/xlsx |
+| Field                  | Control                                              | Required    | Rules (from E-002 unless noted)                                           |
+| ---------------------- | ---------------------------------------------------- | ----------- | ------------------------------------------------------------------------- |
+| Engagement preference  | Radio: one-time, recurring, not-sure                 | Yes         | A-003: if not-sure, commercial model must still be concrete before submit |
+| Service-specific scope | SEO/design select; product count / post count number | Conditional | Same option sets as client `ServiceSpecificFields`                        |
+| Title                  | Text                                                 | Yes         | Max 100                                                                   |
+| Description            | Textarea                                             | Yes         | Min 20, max 800; hint + counter                                           |
+| Attachments            | Multi file                                           | No (A-005)  | Max 5; ≤5MB; png/jpeg/webp/pdf/csv/xlsx                                   |
 
 ### Section C — Commercial (from admin Dialog + §16.6)
 
-| Field | Required | Notes |
-|---|---|---|
-| Owner / specialist | Yes | Staff directory / capability-scoped |
-| Commercial model | Yes | Fixed-scope, retainer, quota, milestone, custom, additional-work |
-| Start date | Yes | |
-| End / renewal date | Model-dependent | U-005 |
-| Agreed amount + currency | Yes for paid models | Label as agreed, not realized |
-| Included scope | Yes | Prefill from description/request; staff edits agreed text |
-| Exclusions | Recommended | Required before publish in parent quote flow; here required if policy says so |
-| Create reason | Mode B only | Short internal reason; audited (UN-005) |
-| Link to source request | Mode A required; Mode B optional | Preserve history |
+| Field                    | Required                         | Notes                                                                         |
+| ------------------------ | -------------------------------- | ----------------------------------------------------------------------------- |
+| Owner / specialist       | Yes                              | Staff directory / capability-scoped                                           |
+| Commercial model         | Yes                              | Fixed-scope, retainer, quota, milestone, custom, additional-work              |
+| Start date               | Yes                              |                                                                               |
+| End / renewal date       | Model-dependent                  | U-005                                                                         |
+| Agreed amount + currency | Yes for paid models              | Label as agreed, not realized                                                 |
+| Included scope           | Yes                              | Prefill from description/request; staff edits agreed text                     |
+| Exclusions               | Recommended                      | Required before publish in parent quote flow; here required if policy says so |
+| Create reason            | Mode B only                      | Short internal reason; audited (UN-005)                                       |
+| Link to source request   | Mode A required; Mode B optional | Preserve history                                                              |
 
 ## State-transition table (this slice)
 
-| From | Trigger | Actor | Preconditions | To | Data change | Failure |
-|---|---|---|---|---|---|---|
-| `accepted` request | Confirm create (Mode A) | Activation-capable staff | No linked assignment; config complete | Request `activated`; assignment `scheduled`/`active` | One assignment; audit | Conflict → existing |
-| No request | Confirm staff create (Mode B) | Staff-create capability | Tenant + website + fields; policy A-001 | Assignment `scheduled`/`active`; optional staff-origin request | One assignment; source=staff; reason | Deny / validation / conflict |
-| Submitting | Timeout uncertain | System/staff | Create may have succeeded | Recovery required | No blind second create | Reconcile by idempotency key |
-| Assignment exists | Open existing | Any permitted | Duplicate detected | View existing | None | — |
+| From               | Trigger                       | Actor                    | Preconditions                           | To                                                             | Data change                          | Failure                      |
+| ------------------ | ----------------------------- | ------------------------ | --------------------------------------- | -------------------------------------------------------------- | ------------------------------------ | ---------------------------- |
+| `accepted` request | Confirm create (Mode A)       | Activation-capable staff | No linked assignment; config complete   | Request `activated`; assignment `scheduled`/`active`           | One assignment; audit                | Conflict → existing          |
+| No request         | Confirm staff create (Mode B) | Staff-create capability  | Tenant + website + fields; policy A-001 | Assignment `scheduled`/`active`; optional staff-origin request | One assignment; source=staff; reason | Deny / validation / conflict |
+| Submitting         | Timeout uncertain             | System/staff             | Create may have succeeded               | Recovery required                                              | No blind second create               | Reconcile by idempotency key |
+| Assignment exists  | Open existing                 | Any permitted            | Duplicate detected                      | View existing                                                  | None                                 | —                            |
 
 ## Business-rule decision table
 
 ### Attach / create decision
 
-| Condition | C1 | C2 | C3 | C4 | C5 |
-|---|---:|---:|---:|---:|---:|
-| Actor permitted for mode | Yes | No | Yes | Yes | Yes |
-| Tenant present for website | Yes | Yes | No | Yes | Yes |
-| Required intake + commercial valid | Yes | Yes | Yes | No | Yes |
-| Active same family on website | No | No | No | No | Yes |
-| Result | Create once | Deny | Block: tenant required | Field errors | Warn + U-002 (block or override+reason) |
+| Condition                          |          C1 |   C2 |                     C3 |           C4 |                                      C5 |
+| ---------------------------------- | ----------: | ---: | ---------------------: | -----------: | --------------------------------------: |
+| Actor permitted for mode           |         Yes |   No |                    Yes |          Yes |                                     Yes |
+| Tenant present for website         |         Yes |  Yes |                     No |          Yes |                                     Yes |
+| Required intake + commercial valid |         Yes |  Yes |                    Yes |           No |                                     Yes |
+| Active same family on website      |          No |   No |                     No |           No |                                     Yes |
+| Result                             | Create once | Deny | Block: tenant required | Field errors | Warn + U-002 (block or override+reason) |
 
 ### Business-rule register
 
@@ -316,29 +319,30 @@ flowchart TD
 - **BR-S05 — Mode lock:** Mode A cannot change website or family; change requires different request or Mode B with audit reason.
 - **BR-S06 — Visibility separation:** Create reason and internal notes are not customer-visible by default (parent BR-002).
 - **BR-S07 — Origin audit:** Every assignment stores create mode, actor, time, optional request id, Mode B reason (UN-005).
+- **BR-S08 — Coverage is orthogonal:** Assignment creation does not require an active server plan and never changes website management coverage; external infrastructure remains explicitly external.
 
 ## Alternative, validation, failure and recovery
 
-| Path | Trigger | Behaviour | Exit |
-|---|---|---|---|
-| Validation failure | Missing/short fields | Inline errors; focus first error; retain input | Edit |
-| Invalid attachment | Type/size/count | File error; do not add file | Fix files |
-| Duplicate soft | Existing active/pending | Warning + link; continue only if policy allows | Confirm or open existing |
-| Duplicate hard | Server conflict | Do not create; open existing | Existing assignment |
-| Permission denied | Missing capability | Explain without leaking other tenants | Leave |
-| No websites for tenant | Empty selector | Explain; link to websites domain if permitted | Abort or add website elsewhere |
-| Submit network fail before accept | Error | Safe retry | Resubmit |
-| Uncertain after timeout | Unknown | Reconcile by idempotency / website+family+intent; forbid blind duplicate | Success or retry |
-| Cancel / dismiss | User exits | No write | Prior page |
+| Path                              | Trigger                 | Behaviour                                                                | Exit                           |
+| --------------------------------- | ----------------------- | ------------------------------------------------------------------------ | ------------------------------ |
+| Validation failure                | Missing/short fields    | Inline errors; focus first error; retain input                           | Edit                           |
+| Invalid attachment                | Type/size/count         | File error; do not add file                                              | Fix files                      |
+| Duplicate soft                    | Existing active/pending | Warning + link; continue only if policy allows                           | Confirm or open existing       |
+| Duplicate hard                    | Server conflict         | Do not create; open existing                                             | Existing assignment            |
+| Permission denied                 | Missing capability      | Explain without leaking other tenants                                    | Leave                          |
+| No websites for tenant            | Empty selector          | Explain; link to websites domain if permitted                            | Abort or add website elsewhere |
+| Submit network fail before accept | Error                   | Safe retry                                                               | Resubmit                       |
+| Uncertain after timeout           | Unknown                 | Reconcile by idempotency / website+family+intent; forbid blind duplicate | Success or retry               |
+| Cancel / dismiss                  | User exits              | No write                                                                 | Prior page                     |
 
 ## User control
 
-| Control | Behaviour |
-|---|---|
-| Back | From confirm → edit form; preserves values |
-| Cancel / dismiss | Ends flow; no assignment created |
-| Undo | Not applicable after create; use pause/cancel lifecycle on assignment (parent flow) |
-| Save draft | Not required for v0.1 if form is one sitting; **Unknown** if Mode B drafts needed (parent A-002) |
+| Control          | Behaviour                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| Back             | From confirm → edit form; preserves values                                                       |
+| Cancel / dismiss | Ends flow; no assignment created                                                                 |
+| Undo             | Not applicable after create; use pause/cancel lifecycle on assignment (parent flow)              |
+| Save draft       | Not required for v0.1 if form is one sitting; **Unknown** if Mode B drafts needed (parent A-002) |
 
 ## Roles and completion
 
@@ -348,45 +352,45 @@ flowchart TD
 
 ## Accessibility interactions
 
-| Check | Requirement for this flow |
-|---|---|
-| Keyboard | Full create path operable; no focus trap in Dialog |
-| Focus | On open, focus title; on validation fail, move to first invalid control; on success, focus success heading |
-| Labels | Every control labelled; required indicated in accessible name/text |
-| Errors | `aria-invalid` + describedby; errors text, not colour alone |
-| Status | Submitting and success announced (`aria-live`) |
-| Duplicate warning | `role="alert"`; actions keyboard reachable |
-| Targets | Primary actions ≥ 44×44 CSS px equivalent |
-| RTL | Persian labels; domain/`dir="ltr"` where needed like current Dialog |
+| Check             | Requirement for this flow                                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| Keyboard          | Full create path operable; no focus trap in Dialog                                                         |
+| Focus             | On open, focus title; on validation fail, move to first invalid control; on success, focus success heading |
+| Labels            | Every control labelled; required indicated in accessible name/text                                         |
+| Errors            | `aria-invalid` + describedby; errors text, not colour alone                                                |
+| Status            | Submitting and success announced (`aria-live`)                                                             |
+| Duplicate warning | `role="alert"`; actions keyboard reachable                                                                 |
+| Targets           | Primary actions ≥ 44×44 CSS px equivalent                                                                  |
+| RTL               | Persian labels; domain/`dir="ltr"` where needed like current Dialog                                        |
 
 ## Heuristic review (flow)
 
-| # | Heuristic | Finding | Severity | Release impact |
-|---|---|---|---|---|
-| 1 | Visibility of status | Must show submitting vs created vs conflict | 3 | Block without live status |
-| 2 | Match real world | Use client family names and website “name — domain” | 2 | Confusing if renamed |
-| 3 | User control | Cancel before create; no silent attach | 3 | Block if dismiss still saves |
-| 4 | Consistency | Mode A/B share sections; Mode A locks target | 2 | Dual forms drift |
-| 5 | Error prevention | Confirm summary + duplicate warning + tenant gate | 3 | Mis-attach risk |
-| 6 | Recognition | Prefill from request in Mode A | 2 | — |
-| 7 | Flexibility | Mode B for offline deals | 2 | — |
-| 8 | Minimalism | Do not require full quote UI when activating accepted request | 1 | — |
-| 9 | Error recovery | Idempotent reconcile copy | 3 | Duplicate assignments |
-| 10 | Help | Short hints on scope/exclusions; link to existing service on duplicate | 2 | — |
+| #   | Heuristic            | Finding                                                                | Severity | Release impact               |
+| --- | -------------------- | ---------------------------------------------------------------------- | -------- | ---------------------------- |
+| 1   | Visibility of status | Must show submitting vs created vs conflict                            | 3        | Block without live status    |
+| 2   | Match real world     | Use client family names and website “name — domain”                    | 2        | Confusing if renamed         |
+| 3   | User control         | Cancel before create; no silent attach                                 | 3        | Block if dismiss still saves |
+| 4   | Consistency          | Mode A/B share sections; Mode A locks target                           | 2        | Dual forms drift             |
+| 5   | Error prevention     | Confirm summary + duplicate warning + tenant gate                      | 3        | Mis-attach risk              |
+| 6   | Recognition          | Prefill from request in Mode A                                         | 2        | —                            |
+| 7   | Flexibility          | Mode B for offline deals                                               | 2        | —                            |
+| 8   | Minimalism           | Do not require full quote UI when activating accepted request          | 1        | —                            |
+| 9   | Error recovery       | Idempotent reconcile copy                                              | 3        | Duplicate assignments        |
+| 10  | Help                 | Short hints on scope/exclusions; link to existing service on duplicate | 2        | —                            |
 
 ## Analytics
 
-| Event | Question answered |
-|---|---|
-| `cs_assign_create_started` | Which mode is used? |
-| `cs_assign_create_validation_failed` | Which fields fail most? |
-| `cs_assign_create_duplicate_warned` | How often do collisions appear? |
-| `cs_assign_create_duplicate_blocked` | Is hard-block firing? |
-| `cs_assign_create_submitted` | Intent to attach |
-| `cs_assign_create_succeeded` | Completion rate by mode |
-| `cs_assign_create_conflict_existing` | Race/idempotency health |
-| `cs_assign_create_failed` | System failure rate |
-| `cs_assign_create_cancelled` | Abandonment |
+| Event                                | Question answered               |
+| ------------------------------------ | ------------------------------- |
+| `cs_assign_create_started`           | Which mode is used?             |
+| `cs_assign_create_validation_failed` | Which fields fail most?         |
+| `cs_assign_create_duplicate_warned`  | How often do collisions appear? |
+| `cs_assign_create_duplicate_blocked` | Is hard-block firing?           |
+| `cs_assign_create_submitted`         | Intent to attach                |
+| `cs_assign_create_succeeded`         | Completion rate by mode         |
+| `cs_assign_create_conflict_existing` | Race/idempotency health         |
+| `cs_assign_create_failed`            | System failure rate             |
+| `cs_assign_create_cancelled`         | Abandonment                     |
 
 Do not track attachment file contents.
 
@@ -404,6 +408,7 @@ Do not track attachment file contents.
 10. **Accessibility:** Given keyboard-only user, when completing Mode A create, then success is reachable without trap and errors are announced.
 11. **Audit:** Given successful Mode B create, when auditor opens history, then actor, reason, website, family, and commercial snapshot are present.
 12. **Analytics:** Given successful create, when instrumentation runs, then `cs_assign_create_succeeded` includes mode.
+13. **External website:** Given an eligible external tenant website, when staff create an assignment for a current service family, then create is allowed without an active server plan and coverage remains external.
 
 ## Edge cases
 
@@ -423,12 +428,12 @@ Do not track attachment file contents.
 
 ## Risks and dependencies
 
-| Risk | Mitigation |
-|---|---|
-| Staff-initiated bypass undermines quotation controls | Gate with capability + reason; product decision on A-001 |
-| Wrong website attached | Confirm summary with domain `dir=ltr`; revalidate ids on submit |
-| Drift from client intake | Share field definitions/docs; copy option keys from client |
-| API not specified for Mode B | Block implementation readiness until U-004 resolved |
+| Risk                                                 | Mitigation                                                      |
+| ---------------------------------------------------- | --------------------------------------------------------------- |
+| Staff-initiated bypass undermines quotation controls | Gate with capability + reason; product decision on A-001        |
+| Wrong website attached                               | Confirm summary with domain `dir=ltr`; revalidate ids on submit |
+| Drift from client intake                             | Share field definitions/docs; copy option keys from client      |
+| API not specified for Mode B                         | Block implementation readiness until U-004 resolved             |
 
 Dependencies: parent complementary-services flow; tenant/website data; staff capability model; attachment storage policy.
 

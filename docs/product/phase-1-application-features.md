@@ -42,7 +42,11 @@ The product has three application surfaces:
 
 Complementary ecommerce services such as SEO, graphic design, product data
 entry, and social-media support create additional revenue but remain secondary
-to the managed-infrastructure offering.
+to the managed-infrastructure offering. Customers may request these
+complementary services for websites hosted outside Unixsee; that eligibility
+does not imply Unixsee manages the website's server. The cross-surface product
+contract is defined in
+[`ux-flows/website-management-coverage.md`](./ux-flows/website-management-coverage.md).
 
 ## 3. Phase goals
 
@@ -65,8 +69,9 @@ Phase 1 must enable these complete outcomes across its delivery waves:
   Contact verification is not احراز هویت.
 - Customers and staff can complete a support-ticket workflow with messages and
   attachments.
-- Customers can request a complementary service; staff can scope, quote,
-  activate, deliver, track, renew, complete, or cancel it.
+- Customers can request a complementary service for a Unixsee-managed or
+  externally hosted website; staff can scope, quote, activate, deliver, track,
+  renew, complete, or cancel it.
 - Later in Phase 1, customers can see website identity, service state,
   monitoring status, alerts, usage, and relevant operational history.
 - Later in Phase 1, authorized users can request safe website operations and
@@ -261,27 +266,27 @@ stale values and recover through refetch or reconnection.
 
 ## 7. Feature map
 
-| Capability | Customer experience | Administrator experience | Phase priority |
-| --- | --- | --- | --- |
-| Access and security | Sign in, OTP verification, sessions | Account support and access control | First-wave |
-| Customers and tenants | Profile, membership, احراز هویت status | Create/find users; review certifications; approve tenants; contact-verification state | First-wave |
-| Plans and onboarding | Browse and submit a plan request | Review and enable chosen plan on a website | First-wave |
-| Websites | Owner list/detail after assignment | Create, assign, configure; inventory from discovery | First-wave |
-| Servers and agents | Indirect via owned websites | Enroll agents, review discovery, assign ownership | First-wave |
-| Tickets | Create, converse, and track | Queue, assign, reply, and resolve | First-wave |
-| Complementary services | Request and track delivery | Scope, quote, activate, deliver, and renew | First-wave |
-| Dashboard overview | Tenant summary | Cross-customer operational summary | Later Phase 1 / expands with feeds |
-| Monitoring and alerts | Health, traffic, checks, warnings | Fleet monitoring and alert handling | Later Phase 1 (beyond inventory) |
-| Operational actions | Request allowed actions | Dispatch, observe, retry, and audit | Later Phase 1 |
-| Activities | Customer-visible timeline of ops outcomes | Inspect/create permitted events; log resolved incidents | Later Phase 1 |
-| Unixsee messages | Tenant-targeted one-way inbox + popup | Compose, publish, edit, withdraw for one tenant | Phase 1 — [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
-| Website notices (اعلان‌ها) | Website-targeted popup/notice | Compose and target a specific website | Later Phase 1 |
-| Notifications (News) | Unixsee news / platform announcements | Compose, target, schedule, and publish news | Later Phase 1 |
-| Admin settings | — | Staff configuration and panel settings | Later Phase 1 |
-| Search | Find tenant resources and destinations | Find operational and business records | Later Phase 1 / supporting |
-| Profile | Manage identity and preferences | Assist with account state | First-wave (verification); expands later |
-| Billing projection | See renewal and commercial state | Maintain agreed commercial records | Limited / first-wave where needed for plans |
-| Domains | Coming-soon state only | No Phase 1 workflow | Deferred |
+| Capability                 | Customer experience                       | Administrator experience                                                              | Phase priority                                                   |
+| -------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Access and security        | Sign in, OTP verification, sessions       | Account support and access control                                                    | First-wave                                                       |
+| Customers and tenants      | Profile, membership, احراز هویت status    | Create/find users; review certifications; approve tenants; contact-verification state | First-wave                                                       |
+| Plans and onboarding       | Browse and submit a plan request          | Review and enable chosen plan on a website                                            | First-wave                                                       |
+| Websites                   | Owner list/detail after assignment        | Create, assign, configure; inventory from discovery                                   | First-wave                                                       |
+| Servers and agents         | Indirect via owned websites               | Enroll agents, review discovery, assign ownership                                     | First-wave                                                       |
+| Tickets                    | Create, converse, and track               | Queue, assign, reply, and resolve                                                     | First-wave                                                       |
+| Complementary services     | Request and track delivery                | Scope, quote, activate, deliver, and renew                                            | First-wave                                                       |
+| Dashboard overview         | Tenant summary                            | Cross-customer operational summary                                                    | Later Phase 1 / expands with feeds                               |
+| Monitoring and alerts      | Health, traffic, checks, warnings         | Fleet monitoring and alert handling                                                   | Later Phase 1 (beyond inventory)                                 |
+| Operational actions        | Request allowed actions                   | Dispatch, observe, retry, and audit                                                   | Later Phase 1                                                    |
+| Activities                 | Customer-visible timeline of ops outcomes | Inspect/create permitted events; log resolved incidents                               | Later Phase 1                                                    |
+| Unixsee messages           | Tenant-targeted one-way inbox + popup     | Compose, publish, edit, withdraw for one tenant                                       | Phase 1 — [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
+| Website notices (اعلان‌ها) | Website-targeted popup/notice             | Compose and target a specific website                                                 | Later Phase 1                                                    |
+| Notifications (News)       | Unixsee news / platform announcements     | Compose, target, schedule, and publish news                                           | Later Phase 1                                                    |
+| Admin settings             | —                                         | Staff configuration and panel settings                                                | Later Phase 1                                                    |
+| Search                     | Find tenant resources and destinations    | Find operational and business records                                                 | Later Phase 1 / supporting                                       |
+| Profile                    | Manage identity and preferences           | Assist with account state                                                             | First-wave (verification); expands later                         |
+| Billing projection         | See renewal and commercial state          | Maintain agreed commercial records                                                    | Limited / first-wave where needed for plans                      |
+| Domains                    | Coming-soon state only                    | No Phase 1 workflow                                                                   | Deferred                                                         |
 
 ## 8. Access, identity, and sessions
 
@@ -327,11 +332,11 @@ commercially **authorized**.
 
 Unixsee separates:
 
-| Step | Outcome |
-|---|---|
-| Sign up / sign in | Customer **user** account and session |
-| Contact verification (OTP / email) | Proven contact on that user |
-| احراز هویت | Staff-approved **tenant** (authorized customer organization) |
+| Step                               | Outcome                                                      |
+| ---------------------------------- | ------------------------------------------------------------ |
+| Sign up / sign in                  | Customer **user** account and session                        |
+| Contact verification (OTP / email) | Proven contact on that user                                  |
+| احراز هویت                         | Staff-approved **tenant** (authorized customer organization) |
 
 Customers submit required certifications for احراز هویت. Staff review those
 materials in the admin panel and approve or reject. **Authorized**, in this
@@ -594,10 +599,13 @@ records; it does not replace them.
 
 ### 12.1 Customer website list
 
-Customers can view their managed websites in table and card layouts. Each item
-should expose:
+Customers can view their tenant websites in table and card layouts. Mixed
+inventories must explicitly distinguish websites whose server Unixsee manages
+from websites on external infrastructure. Each item should expose:
 
 - Website name and domain.
+- Management coverage: Unixsee-managed, external infrastructure, or a
+  migration-only needs-review state.
 - Availability and last-check time.
 - Active plan or managed-service label.
 - Important alert summary.
@@ -612,6 +620,7 @@ making the default view difficult to understand.
 The detailed view may include:
 
 - Identity, domain, and customer-facing service status.
+- Management coverage and a concise explanation of Unixsee's responsibility.
 - Availability, last check, current traffic, and measurement timestamps.
 - Active alerts.
 - Storage usage and agreed quota.
@@ -625,12 +634,18 @@ The detailed view may include:
 Unknown, unsupported, stale, and not-yet-measured values must be distinct from
 healthy or zero values.
 
+For an external website, managed-infrastructure fields are not applicable; they
+must not be represented as unhealthy, disconnected, or zero merely because the
+server is outside Unixsee.
+
 ### 12.3 Administrator website management
 
 Staff need to:
 
 - Create a website during onboarding, or receive it from agent discovery.
 - Assign it to exactly one tenant.
+- Record explicit management coverage independently from plan, server, agent,
+  monitoring, and complementary-service state.
 - Assign a plan, server, and operational agent or integration.
 - Maintain safe metadata and approved management links.
 - Change lifecycle state: provisioning, active, suspended, maintenance,
@@ -641,6 +656,9 @@ Staff need to:
 
 Discovered websites update the admin websites inventory. After ownership
 assignment, the owning customer can see the website on their dashboard.
+Authenticated complementary-service intake may also introduce an external
+website without a Unixsee server plan; public intake does not create a
+tenant-owned website before identity and tenant ownership are resolved.
 
 ### 12.4 Server and agent associations
 
@@ -653,8 +671,10 @@ The administrator UI exposes only application-level management:
 - Website-to-server and website-to-agent assignments.
 - Configuration validation and communication status.
 
-Agents do not grant plan entitlement or customer visibility by themselves.
-Staff assignment remains the gate from discovery to owned customer website.
+Agents do not grant plan entitlement, management coverage, or customer
+visibility by themselves. Staff assignment remains the gate from discovery to
+owned customer website. External websites do not require an agent/server
+association and must show infrastructure telemetry as not applicable.
 
 Secret values and direct database or infrastructure consoles are outside the
 browser application.
@@ -667,6 +687,9 @@ browser application.
   behavior.
 - Assignment changes are authorized, validated, and audited.
 - Retired websites no longer appear as active but retain historical records.
+- Plan linkage, plan activation, agent health, and complementary-service
+  activation do not silently change management coverage.
+- Coverage handover and offboarding are explicit, effective-dated, and audited.
 
 ## 13. Monitoring, alerts, and incidents
 
@@ -848,10 +871,13 @@ Staff can:
 
 ### 16.1 Product role
 
-Complementary services help existing customers improve and operate their
-ecommerce presence beyond managed infrastructure. They should be sold as
-specialist engagements with a defined scope, commercial model, owner, and
-measurable delivery state.
+Complementary services help customers improve and operate their ecommerce
+presence beyond managed infrastructure. They are available for both
+Unixsee-managed websites and websites on external infrastructure and should be
+sold as specialist engagements with a defined scope, commercial model, owner,
+and measurable delivery state. Unixsee-managed servers remain the primary
+offer; complementary-service work on an external website does not include or
+activate server management.
 
 Phase 1 supports four service families:
 
@@ -951,6 +977,14 @@ The request form needs:
 - Description including goal, current state, deadline, and constraints.
 - Approved attachments.
 
+An authorized tenant may select an existing managed or external website. When
+no suitable website exists, the flow may collect a normalized domain and
+explicit confirmation that its server is outside Unixsee, then create/link the
+external website or hold the association for ownership review. A current
+Unixsee server plan, VPS, or agent is not a request prerequisite. Signed-out
+public intake may capture domain context but does not create a tenant-owned
+website.
+
 The UI should warn when the same website already has a pending request or
 active assignment of the same type. The backend decides whether a second
 request is allowed; the warning alone is not enforcement.
@@ -1027,6 +1061,8 @@ Customers can:
 
 - View active services, pending requests, and service history separately.
 - Filter by website and service family.
+- See the website's management coverage without confusing it with the service
+  assignment status.
 - Understand included scope, usage, stage, dates, and next required action.
 - View customer-visible activity and deliverables.
 - Open a support ticket connected to the assignment.
@@ -1044,7 +1080,8 @@ Staff need:
 - Quota and milestone updates.
 - Deliverable records and customer-visible notes.
 - Renewal, expiry, pause, cancellation, and completion workflows.
-- Filters by tenant, website, service, owner, state, due date, and renewal risk.
+- Filters by tenant, website, management coverage, service, owner, state, due
+  date, and renewal risk.
 - Revenue views for quoted, accepted, active recurring, completed project, and
   expiring service values.
 
@@ -1063,6 +1100,8 @@ It must clearly label estimated, quoted, agreed, and realized values.
 - Renewal does not erase the prior service period.
 - Additional work is visibly outside the existing included scope.
 - Every state, price, scope, quota, and ownership change is audited.
+- The four current families accept requests for external websites without an
+  active Unixsee server plan, and activation never changes management coverage.
 
 ## 17. Activities and audit records
 
@@ -1123,11 +1162,11 @@ permission-controlled.
 Phase 1 separates **three** customer-facing communication products. Do not
 collapse them into one model or one admin queue.
 
-| Product | Persian label (when used) | Purpose | Delivery |
-| --- | --- | --- | --- |
-| **Unixsee messages** | پیام‌های یونیکسی | Tenant-targeted one-way staff messages (optional website context) | Phase 1 — see [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
-| Notifications (News) | — / اخبار Unixsee | Platform news and Unixsee announcements in the customer dashboard | Later Phase 1 |
-| Website notices | اعلان‌ها | Admin-authored popup/notice for a **specific website** | Later Phase 1 |
+| Product              | Persian label (when used) | Purpose                                                           | Delivery                                                             |
+| -------------------- | ------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Unixsee messages** | پیام‌های یونیکسی          | Tenant-targeted one-way staff messages (optional website context) | Phase 1 — see [`unixsee-messages-prd.md`](./unixsee-messages-prd.md) |
+| Notifications (News) | — / اخبار Unixsee         | Platform news and Unixsee announcements in the customer dashboard | Later Phase 1                                                        |
+| Website notices      | اعلان‌ها                  | Admin-authored popup/notice for a **specific website**            | Later Phase 1                                                        |
 
 ### 18.0 Unixsee messages (پیام‌های یونیکسی)
 
