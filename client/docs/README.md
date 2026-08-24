@@ -4,45 +4,50 @@
 >
 > **Owner:** Frontend team
 >
-> **Last verified:** 2026-08-08
+> **Last verified:** 2026-08-24
 
-App-scoped docs for the Unixsee **client** Next.js surface (`client/`): public
-website and customer dashboard.
+App-local implementation rules, feature notes, and runbooks for the standalone
+Unixsee public/customer Next.js deployable. Start here after
+[`../AGENTS.md`](../AGENTS.md).
 
-Canonical product behavior, monorepo ownership, NestJS contracts, and agent
-boundaries live in the monorepo `docs/` tree — do not duplicate them here.
+## Task routes
 
-## Monorepo sources of truth
+| When changing…                                       | Read                                                                                           |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| File placement or app boundary                       | [`engineering/repository-structure.md`](engineering/repository-structure.md)                   |
+| Next.js, routing, data, forms, or localization       | [`engineering/nextjs.md`](engineering/nextjs.md) plus installed `node_modules/next/dist/docs/` |
+| Components, Tailwind, accessibility, motion, RTL/LTR | [`engineering/ui.md`](engineering/ui.md)                                                       |
+| Dashboard page or loading layout                     | [`engineering/ui.md`](engineering/ui.md#customer-dashboard-loading-skeletons)                  |
+| Review and validation                                | [`engineering/quality-and-review.md`](engineering/quality-and-review.md)                       |
+| Client-only feature notes                            | [`features/README.md`](features/README.md)                                                     |
+| Local development/deployment                         | [`runbooks/`](runbooks/)                                                                       |
+| Definition of done                                   | [`workflow/definition-of-done.md`](workflow/definition-of-done.md)                             |
 
-| Concern | Read |
-|---|---|
-| System overview / trust boundaries | [`../../docs/architecture/overview.md`](../../docs/architecture/overview.md) |
-| Folder ownership | [`../../docs/architecture/monorepo.md`](../../docs/architecture/monorepo.md) |
-| Phase 1 product behavior | [`../../docs/product/phase-1-application-features.md`](../../docs/product/phase-1-application-features.md) |
-| Frontend conventions (shared) | [`../../docs/frontend/README.md`](../../docs/frontend/README.md) |
-| UI-only phase boundaries | [`../../docs/architecture/decisions/0003-ui-only-phase-boundaries.md`](../../docs/architecture/decisions/0003-ui-only-phase-boundaries.md) |
-| NestJS routes | [`../../docs/backend/modules-and-routes.md`](../../docs/backend/modules-and-routes.md) |
+The dashboard skeleton rule is intentionally named at both routing layers
+because it is high frequency. The detailed UI document remains canonical.
 
-## App-scoped docs in this folder
+## App-local scope
 
-### Engineering
+- `engineering/` owns client implementation conventions.
+- `features/` owns client-only behavior notes that do not redefine shared
+  product contracts.
+- `design/` owns client presentation references.
+- `runbooks/` and `workflow/` own client operations and delivery practices.
 
-- [`engineering/repository-structure.md`](engineering/repository-structure.md): file placement inside `client/`
-- [`engineering/nextjs.md`](engineering/nextjs.md): App Router, data, forms, localization
-- [`engineering/ui.md`](engineering/ui.md): components, Tailwind, accessibility, motion, RTL/LTR
-- [`engineering/quality-and-review.md`](engineering/quality-and-review.md): local validation and review expectations
+Staff UI belongs in `admin-panel/`. Do not add an `(admin)` route group here
+unless an accepted monorepo decision changes that boundary.
 
-### Features, design, workflow, operations
+## Monorepo-only contract routes
 
-- [`features/`](features/): client-only feature notes
-- [`design/color-palette.md`](design/color-palette.md)
-- [`workflow/definition-of-done.md`](workflow/definition-of-done.md)
-- [`runbooks/development.md`](runbooks/development.md)
-- [`runbooks/deployment.md`](runbooks/deployment.md)
-- [`runbooks/staging.md`](runbooks/staging.md)
-- [`runbooks/server/`](runbooks/server/): host install notes used by this app’s deploy path
+Ordinary app implementation should be possible from this folder alone. When a
+task changes a shared product, auth, or API contract, work in the monorepo and
+load:
 
-## Admin panel
+- Client session/data contracts: [`../../docs/frontend/client-data-fetching.md`](../../docs/frontend/client-data-fetching.md)
+  and [`client-domain-data-fetching.md`](../../docs/frontend/client-domain-data-fetching.md)
+- ADRs [`0010`](../../docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md)
+  and [`0011`](../../docs/architecture/decisions/0011-client-nest-auth-integration.md)
+- API route map/contracts: [`../../docs/backend/`](../../docs/backend/)
+- Shared product behavior: [`../../docs/product/`](../../docs/product/)
 
-Staff UI belongs in monorepo `admin-panel/`, not inside this app. Do not add an
-`(admin)` route group here unless a superseding ADR changes that boundary.
+Do not invent a shared contract when those sources are unavailable.

@@ -1,52 +1,59 @@
-# Unixsee documentation
+# Unixsee shared documentation
 
-Canonical docs for the Unixsee monorepo. Application code will live in flat root
-folders; this tree is the source of truth for product behavior, architecture,
-and engineering conventions.
+Root `docs/` contains facts that affect more than one deployable: product
+behavior, system architecture, accepted decisions, API/agent contracts, and
+monorepo operations. Implementation conventions owned by one deployable live
+under that deployable's `docs/` directory.
 
 ## Start here
 
-| You want to…                                    | Read                                                                                                                                                                                                                                                                                                                           |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Understand the system                           | [`architecture/overview.md`](./architecture/overview.md)                                                                                                                                                                                                                                                                       |
-| Know which folder owns what                     | [`architecture/monorepo.md`](./architecture/monorepo.md)                                                                                                                                                                                                                                                                       |
-| Implement admin UI                              | [`product/README.md`](./product/README.md) → Phase 1 → matching UX flow → [`frontend/README.md`](./frontend/README.md)                                                                                                                                                                                                         |
-| Plan client Nest auth / data fetching           | [`frontend/client-data-fetching.md`](./frontend/client-data-fetching.md) + [`frontend/client-domain-data-fetching.md`](./frontend/client-domain-data-fetching.md) + ADRs [`0010`](./architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0011`](./architecture/decisions/0011-client-nest-auth-integration.md) |
-| Plan admin Nest auth / data fetching            | [`frontend/admin-data-fetching.md`](./frontend/admin-data-fetching.md) + [`frontend/admin-domain-data-fetching.md`](./frontend/admin-domain-data-fetching.md) + ADRs [`0010`](./architecture/decisions/0010-client-hybrid-auth-data-fetching.md) / [`0012`](./architecture/decisions/0012-admin-nest-auth-integration.md)      |
-| Work on NestJS                                  | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) → [`backend/contracts/`](./backend/contracts/)                                                                                                                                                                 |
-| Work on the Phase 1 VPS agent                   | [`agent/README.md`](./agent/README.md) + [`agent/setup.md`](./agent/setup.md) + [`prd.md`](./agent/prd.md)                                                                                                                                                                                                                     |
-| Work on monitoring-agent (later)                | [`../monitoring-agent/README.md`](../monitoring-agent/README.md)                                                                                                                                                                                                                                                               |
-| Change product behavior                         | [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) and [`quality/documentation.md`](./quality/documentation.md)                                                                                                                                                                            |
-| Plan customer dashboard AI assistant (deferred) | [`product/customer-assistant-prd.md`](./product/customer-assistant-prd.md) → ADR [`0013`](./architecture/decisions/0013-customer-assistant-nest-pgvector-rag.md) → [`backend/customer-assistant.md`](./backend/customer-assistant.md)                                                                                          |
-| Git / PR / Cursor review workflow               | [`quality/git-and-pr-workflow.md`](./quality/git-and-pr-workflow.md)                                                                                                                                                                                                                                                           |
-| Sync monorepo apps to server deploy repos       | [`quality/deployment-remotes.md`](./quality/deployment-remotes.md)                                                                                                                                                                                                                                                             |
-| Record a structural decision                    | [`architecture/decisions/`](./architecture/decisions/)                                                                                                                                                                                                                                                                         |
+| You want to…                                | Read                                                                                                                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Understand the system                       | [`architecture/overview.md`](./architecture/overview.md)                                                                                                          |
+| Know which folder owns a change or document | [`architecture/monorepo.md`](./architecture/monorepo.md)                                                                                                          |
+| Change shared product behavior              | [`product/README.md`](./product/README.md)                                                                                                                        |
+| Change a shared Next.js convention          | [`frontend/README.md`](./frontend/README.md)                                                                                                                      |
+| Change client Nest auth/data                | [`frontend/client-data-fetching.md`](./frontend/client-data-fetching.md) + [`frontend/client-domain-data-fetching.md`](./frontend/client-domain-data-fetching.md) |
+| Change admin Nest auth/data                 | [`frontend/admin-data-fetching.md`](./frontend/admin-data-fetching.md) + [`frontend/admin-domain-data-fetching.md`](./frontend/admin-domain-data-fetching.md)     |
+| Change Nest routes or wire contracts        | [`backend/README.md`](./backend/README.md) → [`backend/modules-and-routes.md`](./backend/modules-and-routes.md) → [`backend/contracts/`](./backend/contracts/)    |
+| Change VPS agent/backend integration        | [`agent/README.md`](./agent/README.md)                                                                                                                            |
+| Sync an app to its deploy repository        | [`quality/deployment-remotes.md`](./quality/deployment-remotes.md)                                                                                                |
+| Maintain the documentation system           | [`quality/documentation.md`](./quality/documentation.md)                                                                                                          |
+
+## App-local documentation
+
+Start inside the target app for implementation rules:
+
+| Deployable       | Agent route                                                      | Documentation index                                              |
+| ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Admin panel      | [`../admin-panel/AGENTS.md`](../admin-panel/AGENTS.md)           | [`../admin-panel/docs/README.md`](../admin-panel/docs/README.md) |
+| Client           | [`../client/AGENTS.md`](../client/AGENTS.md)                     | [`../client/docs/README.md`](../client/docs/README.md)           |
+| Backend          | [`../backend/AGENTS.md`](../backend/AGENTS.md)                   | [`../backend/docs/README.md`](../backend/docs/README.md)         |
+| VPS agent        | [`../agent/README.md`](../agent/README.md)                       | Shared integration docs: [`agent/README.md`](./agent/README.md)  |
+| Monitoring agent | [`../monitoring-agent/README.md`](../monitoring-agent/README.md) | [`../monitoring-agent/docs/`](../monitoring-agent/docs/)         |
+
+App-local docs must be sufficient for ordinary work in a single-app checkout.
+When work changes a cross-app contract, perform it in the monorepo and load the
+shared root document that owns that contract.
 
 ## Map
 
 ```text
 docs/
-├── architecture/     System overview, monorepo ownership, ADRs, Next.js layout
-├── frontend/         Conventions for admin-panel and client Next.js apps
-├── backend/          NestJS ownership, modules, route map, API contracts
-├── agent/            Edge agent ownership and ops pointers
-├── product/          Phase 1 features, notes, admin UX flows
-└── quality/          Validation and documentation standards
+├── architecture/  system boundaries and ADRs
+├── product/       shared product behavior and cross-surface UX flows
+├── frontend/      conventions/contracts shared by both Next.js apps
+├── backend/       API route maps and wire contracts consumed across apps
+├── agent/         agent/control-plane integration contracts
+└── quality/       monorepo validation, deployment, and docs policy
 ```
 
-## Reading order for new contributors
+## Authority rules
 
-1. [`architecture/overview.md`](./architecture/overview.md)
-2. [`architecture/monorepo.md`](./architecture/monorepo.md)
-3. [`architecture/decisions/0011-client-nest-auth-integration.md`](./architecture/decisions/0011-client-nest-auth-integration.md) (`client/` Nest auth)
-4. [`architecture/decisions/0012-admin-nest-auth-integration.md`](./architecture/decisions/0012-admin-nest-auth-integration.md) (`admin-panel/` Nest auth)
-5. [`product/phase-1-application-features.md`](./product/phase-1-application-features.md) (as needed)
-6. Surface-specific docs for the work you are doing
-
-## Rules of the docs
-
-- Product behavior lives under `product/`.
-- Engineering structure and conventions live under `architecture/`, `frontend/`,
-  `backend/`, and `agent/` (plus `monitoring-agent/` for the later monitor).
-- Cursor rules and `AGENTS.md` point here; they must not become a second source
-  of truth. See [`quality/documentation.md`](./quality/documentation.md).
+- Store each fact once at the narrowest scope that owns it.
+- Root `AGENTS.md`, app `AGENTS.md`, and `.cursor/rules` are routing surfaces,
+  not replacement manuals.
+- A local app convention overrides a shared default only for that app.
+- Accepted ADRs and contracts override explanatory or historical notes.
+- Where a standalone app carries a copied shared product document, treat it as
+  a mirror: update the monorepo owner first and sync the copy deliberately.

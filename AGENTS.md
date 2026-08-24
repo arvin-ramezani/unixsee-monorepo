@@ -1,214 +1,89 @@
-# Agent guide
+# Unixsee monorepo agent guide
 
-This file orients AI agents working in the Unixsee monorepo. Canonical detail
-lives under `docs/` — read docs instead of inventing structure or product
-behavior.
+Use this file for repository-wide boundaries and routing only. Shared product,
+architecture, API, and operational contracts live under [`docs/`](./docs/).
+Each deployable owns its implementation conventions under `<app>/docs/` and
+routes to them from `<app>/AGENTS.md`.
 
-## Mandatory read order
+## Read order
 
-Before making changes, read in this order as relevant to the task:
+Read only the context relevant to the task:
 
 1. [`docs/architecture/overview.md`](./docs/architecture/overview.md)
 2. [`docs/architecture/monorepo.md`](./docs/architecture/monorepo.md)
-3. Surface docs for the work:
-   - Frontend: [`docs/frontend/README.md`](./docs/frontend/README.md) and
-     [`docs/frontend/nextjs.md`](./docs/frontend/nextjs.md) (version-matched
-     Next.js docs under each app’s `node_modules/next/dist/docs/`)
-   - Admin panel UI (Select, DropdownMenu, Dialog/AlertDialog/Sheet):
-     [`admin-panel/docs/development/components.md`](./admin-panel/docs/development/components.md)
-     and [`admin-panel/AGENTS.md`](./admin-panel/AGENTS.md)
-   - Client dashboard pages (co-located `loading.tsx` + structure-matched
-     skeletons; keep skeletons in sync when layout changes):
-     [`client/docs/engineering/ui.md`](./client/docs/engineering/ui.md#customer-dashboard-loading-skeletons)
-     and [`client/AGENTS.md`](./client/AGENTS.md)
-   - Client auth session / Nest data fetching:
-     [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md)
-     (Layer 1) and
-     [`docs/frontend/client-domain-data-fetching.md`](./docs/frontend/client-domain-data-fetching.md)
-     (Layer 2), plus ADRs [`0010`](./docs/architecture/decisions/0010-client-hybrid-auth-data-fetching.md) /
-     [`0011`](./docs/architecture/decisions/0011-client-nest-auth-integration.md)
-   - Admin auth session / Nest data fetching:
-     [`docs/frontend/admin-data-fetching.md`](./docs/frontend/admin-data-fetching.md)
-     (Layer 1) and
-     [`docs/frontend/admin-domain-data-fetching.md`](./docs/frontend/admin-domain-data-fetching.md)
-     (Layer 2), plus ADR [`0012`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md)
-   - Backend: [`docs/backend/README.md`](./docs/backend/README.md),
-     [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md),
-     and [`docs/backend/contracts/`](./docs/backend/contracts/) when changing APIs
-   - Agent: [`docs/agent/README.md`](./docs/agent/README.md)
-4. Product: [`docs/product/phase-1-application-features.md`](./docs/product/phase-1-application-features.md)
-5. Matching UX flow under [`docs/product/ux-flows/`](./docs/product/ux-flows/) when doing admin UI
+3. The target app's `AGENTS.md` and documentation index:
+   - Admin: [`admin-panel/AGENTS.md`](./admin-panel/AGENTS.md) →
+     [`admin-panel/docs/README.md`](./admin-panel/docs/README.md)
+   - Client: [`client/AGENTS.md`](./client/AGENTS.md) →
+     [`client/docs/README.md`](./client/docs/README.md)
+   - Backend: [`backend/AGENTS.md`](./backend/AGENTS.md) →
+     [`backend/docs/README.md`](./backend/docs/README.md)
+   - VPS agent: [`docs/agent/README.md`](./docs/agent/README.md)
+   - Monitoring agent: [`monitoring-agent/README.md`](./monitoring-agent/README.md)
+4. Shared product or contract docs only when the task crosses an app boundary.
 
-Also respect [`docs/architecture/decisions/0011-client-nest-auth-integration.md`](./docs/architecture/decisions/0011-client-nest-auth-integration.md) for `client/` Nest auth/data-fetch (supersedes ADR 0003 for customer), and [`docs/architecture/decisions/0012-admin-nest-auth-integration.md`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md) for `admin-panel/` Nest auth/data-fetch. Backend ADRs [`0004`](./docs/architecture/decisions/0004-api-audience-namespaces.md) / [`0005`](./docs/architecture/decisions/0005-domain-modules-multi-audience-controllers.md) apply when changing Nest routes or modules.
+For admin product work, also read the matching flow under
+[`docs/product/ux-flows/`](./docs/product/ux-flows/).
+
+## High-frequency routes
+
+| When changing…                                              | Read first                                                                                                                                                                |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin Select, DropdownMenu, Dialog, AlertDialog, or Sheet   | [`admin-panel/docs/development/components.md`](./admin-panel/docs/development/components.md)                                                                              |
+| Client dashboard page layout                                | [`client/docs/engineering/ui.md`](./client/docs/engineering/ui.md#customer-dashboard-loading-skeletons)                                                                   |
+| Next.js fetch, cache, Server Actions, routing, or streaming | Target app's installed `node_modules/next/dist/docs/` plus its local Next.js doc                                                                                          |
+| Client Nest auth/data                                       | [`docs/frontend/client-data-fetching.md`](./docs/frontend/client-data-fetching.md) and [`client-domain-data-fetching.md`](./docs/frontend/client-domain-data-fetching.md) |
+| Admin Nest auth/data                                        | [`docs/frontend/admin-data-fetching.md`](./docs/frontend/admin-data-fetching.md) and [`admin-domain-data-fetching.md`](./docs/frontend/admin-domain-data-fetching.md)     |
+| Nest modules, routes, or DTOs                               | [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md) and [`docs/backend/contracts/`](./docs/backend/contracts/)                                   |
 
 ## Repository layout
 
-Flat deployables at repo root (no `apps/` / `packages/` yet):
-
 - `admin-panel/` — staff Next.js UI
-- `client/` — customer / public Next.js UI
-- `backend/` — NestJS (active control plane)
-- `agent/` — Phase 1 VPS agent (new; see `docs/agent/prd.md`)
-- `monitoring-agent/` — monitoring edge agent (existing; develop later)
-- `docs/` — canonical documentation
+- `client/` — customer/public Next.js UI
+- `backend/` — NestJS control plane
+- `agent/` — Phase 1 VPS agent
+- `monitoring-agent/` — monitoring edge agent (later development)
+- `docs/` — shared monorepo contracts and navigation
+
+Do not introduce `apps/` or `packages/` without an accepted ADR.
 
 ## Hard boundaries
 
-- **API URL convention (Critical):** The backend base URL (`UNIXSEE_CORE_API_BASE_URL` / `NEXT_PUBLIC_UNIXSEE_CORE_API_BASE_URL`) is always `.../api/v1`. The `/api/v1` prefix is **hardcoded** in the env variable. When writing fetch endpoints, use the existing `serverFetch`, `clientFetch`, or `publicFetch` utilities and pass only the **path after `/api/v1`**, e.g. `/admin/tickets`, `/auth/otp/request`, `/public/plans`. **Never** include `/v1/` in the endpoint string — doing so creates `/api/v1/v1/...` which is wrong. The `v1` is already in the base URL.
-  - ✅ Correct: `serverFetch('/admin/tickets')` → `http://host:4000/api/v1/admin/tickets`
-  - ❌ Wrong: `serverFetch('/v1/admin/tickets')` → `http://host:4000/api/v1/v1/admin/tickets`
-- Do not invent NestJS routes or DTOs that conflict with
+- The backend base URL already ends in `/api/v1`. Fetch helpers receive only
+  the path after that prefix: use `/admin/tickets`, never `/v1/admin/tickets`.
+- NestJS owns auth, persistence, business rules, orchestration, and agent
+  validation. Admin and client never access agents, VPS hosts, or databases
+  directly.
+- Do not invent routes or DTOs that conflict with
   [`docs/backend/modules-and-routes.md`](./docs/backend/modules-and-routes.md).
-- Do not redesign authentication; extend role/capability checks on `/admin` instead.
-- Do not add API, database, auth, or backend services inside Next.js apps except
-  where an Accepted ADR allows it (`client/` Nest auth/JWT fetch: ADR 0011;
-  `admin-panel/` Nest auth/admin JWT fetch: ADR 0012).
-- Admin and client never talk to agents or VPS hosts; NestJS is the control
-  plane.
-- Do not invent unavailable npm/pnpm scripts or claim lint/build/tests passed
-  unless they actually ran.
-- Do not treat deferred Phase 1 features as shipped.
-- Do not rewrite large product/UX specs unless fixing a factual conflict; prefer
-  indexes and cross-links.
-- Keep `.cursor/rules` thin; put lasting detail in `docs/`.
+- Do not redesign authentication. Follow ADR
+  [`0011`](./docs/architecture/decisions/0011-client-nest-auth-integration.md)
+  for client and ADR
+  [`0012`](./docs/architecture/decisions/0012-admin-nest-auth-integration.md)
+  for admin.
+- Do not treat deferred Phase 1 features as shipped or invent unavailable
+  scripts, dependencies, or validation results.
+- Preserve unrelated changes and keep changes inside the owning deployable.
 
-## Graphify knowledge graph
+## Repository analysis
 
-This repository uses Graphify as a local code knowledge graph.
+Use `graphify-out/graph.json` first for dependency, relationship, or impact
+questions: `graphify query`, then `graphify path` or `graphify explain` as
+needed. Repository docs override Graphify when they conflict. After structural
+code changes, run `graphify update .`.
 
-Graphify data location:
+## Documentation and validation
 
-- `graphify-out/graph.json`
+- Follow [`docs/quality/documentation.md`](./docs/quality/documentation.md).
+- Put shared contracts in root `docs/`; put app implementation conventions in
+  that app's `docs/`. Link to the canonical owner instead of copying it.
+- Keep `AGENTS.md` and `.cursor/rules` as compact routing surfaces that name
+  high-frequency rules.
+- Format every touched Prettier-supported file with the nearest project config,
+  then run Prettier `--check` on the same explicit file list.
 
-The graph is generated from the repository source code and should be used as the first source for repository relationship questions.
+## Deploy repositories
 
-### Before codebase analysis
-
-For questions involving:
-
-- architecture understanding
-- dependency discovery
-- impact analysis
-- finding related modules
-- tracing imports or relationships
-
-use Graphify first when `graphify-out/graph.json` exists.
-
-Preferred commands:
-
-```bash
-graphify query "<question>"
-```
-
-Use:
-
-```bash
-graphify path "<source>" "<target>"
-```
-
-for relationship tracing between files/components.
-
-Use:
-
-```bash
-graphify explain "<concept>"
-```
-
-for focused concept exploration.
-
-Avoid starting with broad grep/search when Graphify can provide a scoped relationship view.
-
-### Graph navigation priority
-
-Use this order:
-
-1. Graphify queries for relationship discovery
-2. Repository documentation under `docs/`
-3. Source code inspection
-4. Broad text search only when required
-
-If available:
-
-```text
-graphify-out/wiki/index.md
-```
-
-may be used for broad navigation before inspecting source files.
-
-Use:
-
-```text
-graphify-out/GRAPH_REPORT.md
-```
-
-only for broad architecture reviews or when Graphify queries do not provide enough context.
-
-### After code changes
-
-When modifying code:
-
-- keep the Graphify graph synchronized
-- update the graph after structural changes
-
-Run:
-
-```bash
-graphify update .
-```
-
-The graph update should be AST-only and should not require an external LLM/API key.
-
-### Graphify does not replace repository rules
-
-Graphify provides relationship knowledge.
-
-It does not override:
-
-- `docs/` as the canonical architecture/product source
-- `AGENTS.md` rules
-- ADR decisions
-- backend/frontend ownership boundaries
-
-When Graphify results conflict with repository documentation, follow the canonical documentation.
-
-## Code formatting
-
-- Every agent that creates or changes code must format every Prettier-supported
-  file it touched before handoff. Run Prettier with `--write` against the
-  explicit changed-file list and use the nearest project configuration.
-- Before claiming completion, run Prettier again with `--check` against the same
-  changed-file list and report any file that cannot be formatted.
-- Do not run repository-wide formatting when the task only changes a subset of
-  files, and do not format unrelated or user-owned changes.
-
-## Deploy remotes (server repos)
-
-Development happens in this monorepo. **Deployment / staging / real-server
-testing** uses separate single-app repositories per surface.
-
-When asked to **update the main repos** or **sync deploy repos**, follow
-[`docs/quality/deployment-remotes.md`](./docs/quality/deployment-remotes.md):
-
-| Monorepo path  | Remote repo                         | Branch    |
-| -------------- | ----------------------------------- | --------- |
-| `backend/`     | `unixseemaster-pixel/unixsee-api`   | `develop` |
-| `client/`      | `unixseemaster-pixel/unixsee-web`   | `staging` |
-| `admin-panel/` | `unixseemaster-pixel/unixsee-admin` | `dev`     |
-
-**Critical:** the root repo's `origin` must always stay
-`https://github.com/arvin-ramezani/unixsee-monorepo.git`. Deploy repos are
-separate clones — never repoint the root origin to an app repo, and always
-restore the root repo to the branch it was on before syncing.
-
-## Cursor rules
-
-| Rule                                                                     | When it applies               |
-| ------------------------------------------------------------------------ | ----------------------------- |
-| [`.cursor/rules/monorepo.mdc`](./.cursor/rules/monorepo.mdc)             | Always                        |
-| [`.cursor/rules/frontend-next.mdc`](./.cursor/rules/frontend-next.mdc)   | `admin-panel/**`, `client/**` |
-| [`.cursor/rules/backend-nestjs.mdc`](./.cursor/rules/backend-nestjs.mdc) | `backend/**`                  |
-| [`.cursor/rules/docs-product.mdc`](./.cursor/rules/docs-product.mdc)     | `docs/product/**`             |
-
-## Documentation standards
-
-[`docs/quality/documentation.md`](./docs/quality/documentation.md)
+For “sync/update main repos,” follow
+[`docs/quality/deployment-remotes.md`](./docs/quality/deployment-remotes.md).
+Never repoint the root `origin`; deploy repos are separate clones.

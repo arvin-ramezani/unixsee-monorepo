@@ -2,7 +2,7 @@
 
 > **Status:** Accepted
 >
-> **Last verified:** 2026-08-09
+> **Last verified:** 2026-08-24
 >
 > **ADR:** [`decisions/0001-flat-monorepo-layout.md`](./decisions/0001-flat-monorepo-layout.md)
 
@@ -10,12 +10,12 @@
 
 ```text
 unixsee-monorepo/
-├── admin-panel/        # Staff Next.js app (Nest auth allowed under ADR 0012)
-├── client/             # Customer / public Next.js app (active)
-├── backend/            # NestJS API and control plane (active)
-├── agent/              # Phase 1 VPS agent (new; PRD-owned)
-├── monitoring-agent/   # Monitoring edge agent (existing; develop later)
-├── docs/               # Canonical documentation
+├── admin-panel/        staff Next.js app + app-local docs
+├── client/             customer/public Next.js app + app-local docs
+├── backend/            NestJS control plane + app-local docs
+├── agent/              Phase 1 VPS agent
+├── monitoring-agent/   monitoring edge agent + local notes
+├── docs/               shared product, architecture, contracts, operations
 ├── README.md
 ├── CONTRIBUTING.md
 └── AGENTS.md
@@ -23,64 +23,67 @@ unixsee-monorepo/
 
 ## Ownership matrix
 
-| Path | Owner concern | May contain |
-|---|---|---|
-| `admin-panel/` | Administrator UI | Next.js App Router UI for staff workflows |
-| `client/` | Customer / public UI | Next.js App Router UI for public site and customer dashboard |
-| `backend/` | Platform API | NestJS modules, persistence, auth, orchestration, agent APIs |
-| `agent/` | Phase 1 edge runtime | New VPS agent: discovery, site stack, 3m visitors ([`../agent/prd.md`](../agent/prd.md)) |
-| `monitoring-agent/` | Monitoring edge runtime | Existing host/LiteSpeed monitor; later development |
-| `docs/` | Shared truth | Product, architecture, frontend, backend, agent, quality docs |
+| Path                | Owner concern                | Documentation ownership                                                        |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------------ |
+| `admin-panel/`      | Staff Next.js workflows      | Admin implementation rules under `admin-panel/docs/`                           |
+| `client/`           | Customer/public Next.js UI   | Client implementation rules under `client/docs/`                               |
+| `backend/`          | NestJS API and control plane | Backend-only rules/runbooks under `backend/docs/`                              |
+| `agent/`            | Phase 1 edge runtime         | Runtime source local; shared agent/control-plane contracts under `docs/agent/` |
+| `monitoring-agent/` | Monitoring edge runtime      | Local implementation notes under `monitoring-agent/docs/`                      |
+| `docs/`             | Cross-deployable truth       | Product, architecture, ADRs, API/agent contracts, monorepo operations          |
 
-Do not place application source for one surface inside another surface's folder.
+Do not place source or app-only conventions for one deployable inside another.
+See [`../quality/documentation.md`](../quality/documentation.md) for the
+canonical placement test.
 
 ## Shared-code policy
 
-Default: **no premature shared packages**.
+Default: no premature shared packages.
 
 - Keep each deployable self-contained until a second consumer needs the same
-  code.
-- When extraction is justified, introduce a shared location via an ADR; do not
-  invent a `packages/` tree casually.
-- Documentation, types contracts, and API specs may be shared through `docs/`
-  before any runtime package exists.
+  runtime code.
+- Introduce shared runtime packages only through an ADR.
+- Shared contracts may live under root `docs/` before shared runtime packages
+  exist.
 
-## Naming
+## Documentation routing
 
-- Use the folder names above consistently in docs, scripts, and discussion.
-- Inside Next.js apps, follow [`project.md`](./project.md).
-- Prefer clear domain names (`tickets`, `websites`, `plan-requests`) over
-  generic buckets.
+- Root `AGENTS.md` contains global boundaries and routes to the target app.
+- Each app `AGENTS.md` names its high-frequency conventions and routes to its
+  local docs index.
+- App-local docs support ordinary work in a single-app checkout.
+- Tasks that change product behavior, auth, an API contract, or another app
+  must run in the monorepo and load the relevant root docs.
+- Link to canonical owners; do not duplicate rule bodies to improve recall.
 
 ## Tooling status
 
-- `backend/` has its own Nest/pnpm tooling; run scripts from that folder.
-- `agent/` has its own npm tooling; run scripts from that folder (see
-  [`../../agent/README.md`](../../agent/README.md)).
-- `monitoring-agent/` has its own npm tooling; run scripts from that folder (see
-  [`../../monitoring-agent/README.md`](../../monitoring-agent/README.md)).
-- `client/` has its own npm tooling; run scripts from that folder (see
-  [`../../client/README.md`](../../client/README.md)).
-- `admin-panel/` has its own npm tooling; run scripts from that folder (see
-  [`../../admin-panel/README.md`](../../admin-panel/README.md)).
-- Root `npm run dev` starts `backend/`, `client/`, and `admin-panel/` together
-  via `concurrently` (ports 4000, 3001, 3000). Per-app installs and scripts
-  still live in each folder.
-- Monorepo-wide workspace tooling (root workspaces, shared CI) is not configured
-  yet beyond the root dev helper. Do not invent unavailable root scripts or
-  claim builds pass.
-- **Deploy remotes:** each app folder may sync to a single-app repo for real
-  servers — see [`../quality/deployment-remotes.md`](../quality/deployment-remotes.md).
-- Backend module/route targets:
-  [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md).
+- Run `backend/`, `client/`, `admin-panel/`, `agent/`, and `monitoring-agent/`
+  scripts from their own folders.
+- Root `npm run dev` starts backend, client, and admin together on ports 4000,
+  3001, and 3000.
+- No broader workspace tooling is configured. Do not invent root scripts or
+  claim validations that were not run.
+- Deploy repos are separate single-app clones; follow
+  [`../quality/deployment-remotes.md`](../quality/deployment-remotes.md).
 
 ## Where to put new work
 
-| Change type | Location |
-|---|---|
-| Admin UI feature | `admin-panel/` + related `docs/product/ux-flows/` |
-| Customer / public UI | `client/` + product docs |
-| API / business rules | `backend/` per [`../backend/modules-and-routes.md`](../backend/modules-and-routes.md) |
-| Agent behavior | `agent/` + `monitoring-agent/` + `docs/agent/` and product notes |
-| Structural decision | ADR under `docs/architecture/decisions/` |
-| Product behavior | `docs/product/` |
+| Change type                            | Location                             |
+| -------------------------------------- | ------------------------------------ |
+| Admin implementation or convention     | `admin-panel/` + `admin-panel/docs/` |
+| Client implementation or convention    | `client/` + `client/docs/`           |
+| Backend-only implementation or runbook | `backend/` + `backend/docs/`         |
+| Cross-app API/wire contract            | `docs/backend/` or `docs/agent/`     |
+| Shared frontend convention             | `docs/frontend/`                     |
+| Product behavior or cross-surface UX   | `docs/product/`                      |
+| Structural decision                    | `docs/architecture/decisions/`       |
+| Monitoring-agent implementation note   | `monitoring-agent/docs/`             |
+
+## Naming
+
+- Use the deployable folder names consistently in docs, scripts, and
+  discussion.
+- Prefer domain names such as `tickets`, `websites`, and `plan-requests` over
+  generic buckets.
+- Do not invent an `apps/` or `packages/` tree without an accepted decision.
