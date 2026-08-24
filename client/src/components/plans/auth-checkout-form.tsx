@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 
 import { createPlanRequestAction } from "@/actions/plans/create-plan-request";
+import { updateProfileAction } from "@/actions/users/update-profile";
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import { PlanRequestFileUpload } from "@/components/plans/plan-request-file-upload";
 import { Button } from "@/components/ui/button";
@@ -39,11 +40,13 @@ import {
 export function AuthCheckoutForm({
   plan,
   contactName,
+  hasName,
   contactPhone,
   contactEmail,
 }: {
   plan: DashboardPlan;
   contactName: string;
+  hasName: boolean;
   contactPhone: string | null;
   contactEmail: string | null;
 }) {
@@ -100,9 +103,7 @@ export function AuthCheckoutForm({
       }
     }
     return results;
-  }
-
-  async function onSubmit(data: AuthPlanRequestSchemaType) {
+  }    async function onSubmit(data: AuthPlanRequestSchemaType) {
     let uploadedAttachments: { fileName: string; downloadUrl: string }[] = [];
     if (fileObjects.length > 0) {
       uploadedAttachments = await uploadPublicFiles(fileObjects);
@@ -113,9 +114,15 @@ export function AuthCheckoutForm({
       ? normalizeWebsite(data.website)
       : undefined;
 
+    // If user provided a name and didn't have one before, save it to their profile
+    const nameToUse = data.contactName.trim();
+    if (!hasName && nameToUse) {
+      await updateProfileAction({ fullName: nameToUse });
+    }
+
     const result = await createPlanRequestAction({
       planId: plan.id,
-      contactName: data.contactName.trim(),
+      contactName: nameToUse || contactName,
       ...(contactPhone?.trim() ? { contactPhone: contactPhone.trim() } : {}),
       ...(contactEmail?.trim() ? { contactEmail: contactEmail.trim() } : {}),
       ...(websiteDomain ? { websiteDomain } : {}),
@@ -136,30 +143,32 @@ export function AuthCheckoutForm({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate aria-busy={pending || undefined}>
       <FieldGroup className="gap-5">
-        <Controller
-          name="contactName"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="auth-plan-name" className="gap-1">
-                {t("nameLabel")}
-                <RequiredInputIcon />
-              </FieldLabel>
-              <Input
-                {...field}
-                id="auth-plan-name"
-                autoComplete="name"
-                disabled={pending}
-                aria-invalid={fieldState.invalid}
-                className="h-12"
-                placeholder={t("namePlaceholder")}
-              />
-              {fieldState.error && (
-                <FieldError>{translateError(fieldState.error.message)}</FieldError>
-              )}
-            </Field>
-          )}
-        />
+        {!hasName && (
+          <Controller
+            name="contactName"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="auth-plan-name" className="gap-1">
+                  {t("nameLabel")}
+                  <RequiredInputIcon />
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id="auth-plan-name"
+                  autoComplete="name"
+                  disabled={pending}
+                  aria-invalid={fieldState.invalid}
+                  className="h-12"
+                  placeholder={t("namePlaceholder")}
+                />
+                {fieldState.error && (
+                  <FieldError>{translateError(fieldState.error.message)}</FieldError>
+                )}
+              </Field>
+            )}
+          />
+        )}
         <Controller
           name="website"
           control={form.control}

@@ -385,4 +385,30 @@ export class PlanRequestsService {
     this.logger.log('plan_request.declined', { planRequestId: id });
     return updated;
   }
+  async unlink(id: string) {
+    const request = await this.getAdmin(id);
+    if (
+      request.status === PlanRequestStatus.ENABLED ||
+      request.status === PlanRequestStatus.DECLINED
+    ) {
+      throw new ConflictException(ERROR_MESSAGES.fa.conflict);
+    }
+
+    const updated = await this.prisma.planRequest.update({
+      where: { id },
+      data: {
+        websiteId: null,
+        status: PlanRequestStatus.SUBMITTED,
+      },
+      include: {
+        plan: true,
+        tenant: true,
+        website: true,
+        linkedUser: true,
+      },
+    });
+
+    this.logger.log('plan_request.unlinked', { planRequestId: id });
+    return updated;
+  }
 }

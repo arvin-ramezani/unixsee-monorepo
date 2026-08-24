@@ -24,6 +24,7 @@ import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
 import { Roles } from '#/modules/auth/decorators/roles.decorator.js';
 import { RolesGuard } from '#/modules/auth/guards/roles.guard.js';
 import { UsersService } from '../services/users.service.js';
+import { TenantsService } from '#/modules/tenants/services/tenants.service.js';
 
 class AdminCreateUserDto {
   @IsString()
@@ -85,7 +86,7 @@ class AccountSecurityActionDto {
 @UseGuards(RolesGuard)
 @Roles(Role.ADMIN, Role.OPERATOR)
 export class AdminUsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly tenantsService: TenantsService) {}
 
   @Get()
   async list(
@@ -105,6 +106,12 @@ export class AdminUsersController {
   async get(@Param('id') id: string) {
     const data = await this.usersService.getAdmin(id);
     return ApiResponseBuilder.ok(data);
+  }
+
+  @Get(':id/tenant')
+  async getTenant(@Param('id') id: string) {
+    const tenant = await this.tenantsService.ensurePersonalTenantForUser(id);
+    return ApiResponseBuilder.ok(tenant);
   }
 
   @Post()

@@ -271,7 +271,7 @@ export type WebsiteGroupByOutputType = {
   id: string
   userId: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId: string | null
   planId: string | null
   domain: string
   displayName: string | null
@@ -316,7 +316,7 @@ export type WebsiteWhereInput = {
   id?: Prisma.UuidFilter<"Website"> | string
   userId?: Prisma.UuidNullableFilter<"Website"> | string | null
   tenantId?: Prisma.UuidFilter<"Website"> | string
-  vpsNodeId?: Prisma.UuidFilter<"Website"> | string
+  vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -334,7 +334,7 @@ export type WebsiteWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Website"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
-  vpsNode?: Prisma.XOR<Prisma.VpsNodeScalarRelationFilter, Prisma.VpsNodeWhereInput>
+  vpsNode?: Prisma.XOR<Prisma.VpsNodeNullableScalarRelationFilter, Prisma.VpsNodeWhereInput> | null
   plan?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
   metrics?: Prisma.WebMetricListRelationFilter
   probeMetrics?: Prisma.WebsiteProbeMetricListRelationFilter
@@ -355,7 +355,7 @@ export type WebsiteOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   tenantId?: Prisma.SortOrder
-  vpsNodeId?: Prisma.SortOrder
+  vpsNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -398,7 +398,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.WebsiteWhereInput | Prisma.WebsiteWhereInput[]
   userId?: Prisma.UuidNullableFilter<"Website"> | string | null
   tenantId?: Prisma.UuidFilter<"Website"> | string
-  vpsNodeId?: Prisma.UuidFilter<"Website"> | string
+  vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -415,7 +415,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Website"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
-  vpsNode?: Prisma.XOR<Prisma.VpsNodeScalarRelationFilter, Prisma.VpsNodeWhereInput>
+  vpsNode?: Prisma.XOR<Prisma.VpsNodeNullableScalarRelationFilter, Prisma.VpsNodeWhereInput> | null
   plan?: Prisma.XOR<Prisma.PlanNullableScalarRelationFilter, Prisma.PlanWhereInput> | null
   metrics?: Prisma.WebMetricListRelationFilter
   probeMetrics?: Prisma.WebsiteProbeMetricListRelationFilter
@@ -436,7 +436,7 @@ export type WebsiteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   tenantId?: Prisma.SortOrder
-  vpsNodeId?: Prisma.SortOrder
+  vpsNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -466,7 +466,7 @@ export type WebsiteScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Website"> | string
   userId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   tenantId?: Prisma.UuidWithAggregatesFilter<"Website"> | string
-  vpsNodeId?: Prisma.UuidWithAggregatesFilter<"Website"> | string
+  vpsNodeId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   domain?: Prisma.StringWithAggregatesFilter<"Website"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
@@ -502,7 +502,7 @@ export type WebsiteCreateInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -523,7 +523,7 @@ export type WebsiteUncheckedCreateInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -572,7 +572,7 @@ export type WebsiteUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -593,7 +593,7 @@ export type WebsiteUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -628,7 +628,7 @@ export type WebsiteCreateManyInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -668,7 +668,7 @@ export type WebsiteUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1181,7 +1181,7 @@ export type WebsiteCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -1201,7 +1201,7 @@ export type WebsiteCreateWithoutUserInput = {
 export type WebsiteUncheckedCreateWithoutUserInput = {
   id?: string
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -1265,7 +1265,7 @@ export type WebsiteScalarWhereInput = {
   id?: Prisma.UuidFilter<"Website"> | string
   userId?: Prisma.UuidNullableFilter<"Website"> | string | null
   tenantId?: Prisma.UuidFilter<"Website"> | string
-  vpsNodeId?: Prisma.UuidFilter<"Website"> | string
+  vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -1300,7 +1300,7 @@ export type WebsiteCreateWithoutTenantInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -1320,7 +1320,7 @@ export type WebsiteCreateWithoutTenantInput = {
 export type WebsiteUncheckedCreateWithoutTenantInput = {
   id?: string
   userId?: string | null
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -1489,7 +1489,7 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -1509,7 +1509,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -1573,7 +1573,7 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -1593,7 +1593,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1641,7 +1641,7 @@ export type WebsiteCreateWithoutTrafficSnapshotsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -1661,7 +1661,7 @@ export type WebsiteUncheckedCreateWithoutTrafficSnapshotsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -1725,7 +1725,7 @@ export type WebsiteUpdateWithoutTrafficSnapshotsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -1745,7 +1745,7 @@ export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1793,7 +1793,7 @@ export type WebsiteCreateWithoutMetricsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
   sslMetrics?: Prisma.WebsiteSslMetricCreateNestedManyWithoutWebsiteInput
@@ -1813,7 +1813,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -1877,7 +1877,7 @@ export type WebsiteUpdateWithoutMetricsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
   sslMetrics?: Prisma.WebsiteSslMetricUpdateManyWithoutWebsiteNestedInput
@@ -1897,7 +1897,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1945,7 +1945,7 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   sslMetrics?: Prisma.WebsiteSslMetricCreateNestedManyWithoutWebsiteInput
@@ -1965,7 +1965,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2029,7 +2029,7 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   sslMetrics?: Prisma.WebsiteSslMetricUpdateManyWithoutWebsiteNestedInput
@@ -2049,7 +2049,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2097,7 +2097,7 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2117,7 +2117,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2181,7 +2181,7 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -2201,7 +2201,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2249,7 +2249,7 @@ export type WebsiteCreateWithoutSslInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2269,7 +2269,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2333,7 +2333,7 @@ export type WebsiteUpdateWithoutSslInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -2353,7 +2353,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2401,7 +2401,7 @@ export type WebsiteCreateWithoutAlertsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2421,7 +2421,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2485,7 +2485,7 @@ export type WebsiteUpdateWithoutAlertsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -2505,7 +2505,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2553,7 +2553,7 @@ export type WebsiteCreateWithoutPlanInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
   sslMetrics?: Prisma.WebsiteSslMetricCreateNestedManyWithoutWebsiteInput
@@ -2573,7 +2573,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2647,7 +2647,7 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2667,7 +2667,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2731,7 +2731,7 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -2751,7 +2751,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2799,7 +2799,7 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2819,7 +2819,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -2883,7 +2883,7 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -2903,7 +2903,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2951,7 +2951,7 @@ export type WebsiteCreateWithoutTicketsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -2971,7 +2971,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3035,7 +3035,7 @@ export type WebsiteUpdateWithoutTicketsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3055,7 +3055,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3103,7 +3103,7 @@ export type WebsiteCreateWithoutActivitiesInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -3123,7 +3123,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3187,7 +3187,7 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3207,7 +3207,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3255,7 +3255,7 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -3275,7 +3275,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3339,7 +3339,7 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3359,7 +3359,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3407,7 +3407,7 @@ export type WebsiteCreateWithoutUnixseeMessagesInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
   tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
-  vpsNode: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
   plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
   metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
   probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
@@ -3427,7 +3427,7 @@ export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3491,7 +3491,7 @@ export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3511,7 +3511,7 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3544,7 +3544,7 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
 export type WebsiteCreateManyUserInput = {
   id?: string
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3579,7 +3579,7 @@ export type WebsiteUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3599,7 +3599,7 @@ export type WebsiteUpdateWithoutUserInput = {
 export type WebsiteUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3633,7 +3633,7 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
 export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3654,7 +3654,7 @@ export type WebsiteUncheckedUpdateManyWithoutUserInput = {
 export type WebsiteCreateManyTenantInput = {
   id?: string
   userId?: string | null
-  vpsNodeId: string
+  vpsNodeId?: string | null
   planId?: string | null
   domain: string
   displayName?: string | null
@@ -3689,7 +3689,7 @@ export type WebsiteUpdateWithoutTenantInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
@@ -3709,7 +3709,7 @@ export type WebsiteUpdateWithoutTenantInput = {
 export type WebsiteUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3743,7 +3743,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
 export type WebsiteUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3875,7 +3875,7 @@ export type WebsiteCreateManyPlanInput = {
   id?: string
   userId?: string | null
   tenantId: string
-  vpsNodeId: string
+  vpsNodeId?: string | null
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3910,7 +3910,7 @@ export type WebsiteUpdateWithoutPlanInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
-  vpsNode?: Prisma.VpsNodeUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
   metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
   probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
   sslMetrics?: Prisma.WebsiteSslMetricUpdateManyWithoutWebsiteNestedInput
@@ -3930,7 +3930,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3964,7 +3964,7 @@ export type WebsiteUncheckedUpdateManyWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  vpsNodeId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4133,7 +4133,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
   metrics?: boolean | Prisma.Website$metricsArgs<ExtArgs>
   probeMetrics?: boolean | Prisma.Website$probeMetricsArgs<ExtArgs>
@@ -4173,7 +4173,7 @@ export type WebsiteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   updatedAt?: boolean
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
 }, ExtArgs["result"]["website"]>
 
@@ -4199,7 +4199,7 @@ export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   updatedAt?: boolean
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
 }, ExtArgs["result"]["website"]>
 
@@ -4229,7 +4229,7 @@ export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
   metrics?: boolean | Prisma.Website$metricsArgs<ExtArgs>
   probeMetrics?: boolean | Prisma.Website$probeMetricsArgs<ExtArgs>
@@ -4249,13 +4249,13 @@ export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type WebsiteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
 }
 export type WebsiteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
-  vpsNode?: boolean | Prisma.VpsNodeDefaultArgs<ExtArgs>
+  vpsNode?: boolean | Prisma.Website$vpsNodeArgs<ExtArgs>
   plan?: boolean | Prisma.Website$planArgs<ExtArgs>
 }
 
@@ -4264,7 +4264,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     user: Prisma.$UserPayload<ExtArgs> | null
     tenant: Prisma.$TenantPayload<ExtArgs>
-    vpsNode: Prisma.$VpsNodePayload<ExtArgs>
+    vpsNode: Prisma.$VpsNodePayload<ExtArgs> | null
     plan: Prisma.$PlanPayload<ExtArgs> | null
     metrics: Prisma.$WebMetricPayload<ExtArgs>[]
     probeMetrics: Prisma.$WebsiteProbeMetricPayload<ExtArgs>[]
@@ -4284,7 +4284,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     userId: string | null
     tenantId: string
-    vpsNodeId: string
+    vpsNodeId: string | null
     planId: string | null
     domain: string
     displayName: string | null
@@ -4696,7 +4696,7 @@ export interface Prisma__WebsiteClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.Website$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  vpsNode<T extends Prisma.VpsNodeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VpsNodeDefaultArgs<ExtArgs>>): Prisma.Prisma__VpsNodeClient<runtime.Types.Result.GetResult<Prisma.$VpsNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  vpsNode<T extends Prisma.Website$vpsNodeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$vpsNodeArgs<ExtArgs>>): Prisma.Prisma__VpsNodeClient<runtime.Types.Result.GetResult<Prisma.$VpsNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   plan<T extends Prisma.Website$planArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$planArgs<ExtArgs>>): Prisma.Prisma__PlanClient<runtime.Types.Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   metrics<T extends Prisma.Website$metricsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$metricsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebMetricPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   probeMetrics<T extends Prisma.Website$probeMetricsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$probeMetricsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteProbeMetricPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5176,6 +5176,25 @@ export type Website$userArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Website.vpsNode
+ */
+export type Website$vpsNodeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VpsNode
+   */
+  select?: Prisma.VpsNodeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VpsNode
+   */
+  omit?: Prisma.VpsNodeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VpsNodeInclude<ExtArgs> | null
+  where?: Prisma.VpsNodeWhereInput
 }
 
 /**

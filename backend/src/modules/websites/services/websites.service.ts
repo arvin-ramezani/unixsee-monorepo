@@ -180,7 +180,7 @@ export class WebsitesService {
   }
   async createAdmin(input: {
     tenantId: string;
-    vpsNodeId: string;
+    vpsNodeId?: string;
     domain: string;
     displayName?: string;
     planId?: string;

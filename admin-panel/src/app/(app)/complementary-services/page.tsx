@@ -17,7 +17,7 @@ export type ComplementaryServicesPageProps = {
 async function fetchBackendComplementaryData() {
   try {
     const response = await serverFetch<{ items: AdminComplementaryRequestApiItem[]; total: number }>(
-      "/v1/admin/complementary-service-requests",
+      "/admin/complementary-service-requests",
       { method: "GET" },
     );
     if (response.success && response.data) {

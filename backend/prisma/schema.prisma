@@ -217,7 +217,7 @@ model User {
 
 model Tenant {
   id          String            @id @default(uuid()) @db.Uuid
-  name        String
+  name        String?
   displayName String?           @map("display_name")
   status      UserAccountStatus @default(ACTIVE)
 
@@ -386,7 +386,7 @@ model Website {
   id        String  @id @default(uuid()) @db.Uuid
   userId    String? @map("user_id") @db.Uuid
   tenantId  String  @map("tenant_id") @db.Uuid
-  vpsNodeId String  @map("vps_node_id") @db.Uuid
+  vpsNodeId String? @map("vps_node_id") @db.Uuid
   planId    String? @map("plan_id") @db.Uuid
 
   domain      String  @unique
@@ -410,7 +410,7 @@ model Website {
 
   user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
   tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  vpsNode VpsNode @relation(fields: [vpsNodeId], references: [id], onDelete: Cascade)
+  vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: SetNull)
   plan    Plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
 
   metrics               WebMetric[]
@@ -824,7 +824,7 @@ model Alert {
   metadata Json?
 
   website Website? @relation(fields: [websiteId], references: [id], onDelete: Cascade)
-  vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: Cascade)
+  vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: SetNull)
   server  Server?  @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)

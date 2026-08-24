@@ -155,7 +155,7 @@ export type TenantGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type TenantGroupByOutputType = {
   id: string
-  name: string
+  name: string | null
   displayName: string | null
   status: $Enums.UserAccountStatus
   createdAt: Date
@@ -185,7 +185,7 @@ export type TenantWhereInput = {
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   id?: Prisma.UuidFilter<"Tenant"> | string
-  name?: Prisma.StringFilter<"Tenant"> | string
+  name?: Prisma.StringNullableFilter<"Tenant"> | string | null
   displayName?: Prisma.StringNullableFilter<"Tenant"> | string | null
   status?: Prisma.EnumUserAccountStatusFilter<"Tenant"> | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
@@ -203,7 +203,7 @@ export type TenantWhereInput = {
 
 export type TenantOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -224,7 +224,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
-  name?: Prisma.StringFilter<"Tenant"> | string
+  name?: Prisma.StringNullableFilter<"Tenant"> | string | null
   displayName?: Prisma.StringNullableFilter<"Tenant"> | string | null
   status?: Prisma.EnumUserAccountStatusFilter<"Tenant"> | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
@@ -242,7 +242,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
 
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -257,7 +257,7 @@ export type TenantScalarWhereWithAggregatesInput = {
   OR?: Prisma.TenantScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TenantScalarWhereWithAggregatesInput | Prisma.TenantScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Tenant"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
+  name?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   displayName?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   status?: Prisma.EnumUserAccountStatusWithAggregatesFilter<"Tenant"> | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
@@ -266,7 +266,7 @@ export type TenantScalarWhereWithAggregatesInput = {
 
 export type TenantCreateInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -284,7 +284,7 @@ export type TenantCreateInput = {
 
 export type TenantUncheckedCreateInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -302,7 +302,7 @@ export type TenantUncheckedCreateInput = {
 
 export type TenantUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -320,7 +320,7 @@ export type TenantUpdateInput = {
 
 export type TenantUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -338,7 +338,7 @@ export type TenantUncheckedUpdateInput = {
 
 export type TenantCreateManyInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -347,7 +347,7 @@ export type TenantCreateManyInput = {
 
 export type TenantUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,7 +356,7 @@ export type TenantUpdateManyMutationInput = {
 
 export type TenantUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -536,7 +536,7 @@ export type TenantUpdateOneRequiredWithoutUnixseeMessagesNestedInput = {
 
 export type TenantCreateWithoutMembershipsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -553,7 +553,7 @@ export type TenantCreateWithoutMembershipsInput = {
 
 export type TenantUncheckedCreateWithoutMembershipsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -586,7 +586,7 @@ export type TenantUpdateToOneWithWhereWithoutMembershipsInput = {
 
 export type TenantUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -603,7 +603,7 @@ export type TenantUpdateWithoutMembershipsInput = {
 
 export type TenantUncheckedUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -620,7 +620,7 @@ export type TenantUncheckedUpdateWithoutMembershipsInput = {
 
 export type TenantCreateWithoutAuthorizationCasesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -637,7 +637,7 @@ export type TenantCreateWithoutAuthorizationCasesInput = {
 
 export type TenantUncheckedCreateWithoutAuthorizationCasesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -670,7 +670,7 @@ export type TenantUpdateToOneWithWhereWithoutAuthorizationCasesInput = {
 
 export type TenantUpdateWithoutAuthorizationCasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -687,7 +687,7 @@ export type TenantUpdateWithoutAuthorizationCasesInput = {
 
 export type TenantUncheckedUpdateWithoutAuthorizationCasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -704,7 +704,7 @@ export type TenantUncheckedUpdateWithoutAuthorizationCasesInput = {
 
 export type TenantCreateWithoutWebsitesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -721,7 +721,7 @@ export type TenantCreateWithoutWebsitesInput = {
 
 export type TenantUncheckedCreateWithoutWebsitesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -754,7 +754,7 @@ export type TenantUpdateToOneWithWhereWithoutWebsitesInput = {
 
 export type TenantUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -771,7 +771,7 @@ export type TenantUpdateWithoutWebsitesInput = {
 
 export type TenantUncheckedUpdateWithoutWebsitesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -788,7 +788,7 @@ export type TenantUncheckedUpdateWithoutWebsitesInput = {
 
 export type TenantCreateWithoutPlanRequestsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -805,7 +805,7 @@ export type TenantCreateWithoutPlanRequestsInput = {
 
 export type TenantUncheckedCreateWithoutPlanRequestsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -838,7 +838,7 @@ export type TenantUpdateToOneWithWhereWithoutPlanRequestsInput = {
 
 export type TenantUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -855,7 +855,7 @@ export type TenantUpdateWithoutPlanRequestsInput = {
 
 export type TenantUncheckedUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -872,7 +872,7 @@ export type TenantUncheckedUpdateWithoutPlanRequestsInput = {
 
 export type TenantCreateWithoutComplementaryRequestsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -889,7 +889,7 @@ export type TenantCreateWithoutComplementaryRequestsInput = {
 
 export type TenantUncheckedCreateWithoutComplementaryRequestsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -922,7 +922,7 @@ export type TenantUpdateToOneWithWhereWithoutComplementaryRequestsInput = {
 
 export type TenantUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -939,7 +939,7 @@ export type TenantUpdateWithoutComplementaryRequestsInput = {
 
 export type TenantUncheckedUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -956,7 +956,7 @@ export type TenantUncheckedUpdateWithoutComplementaryRequestsInput = {
 
 export type TenantCreateWithoutTicketsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -973,7 +973,7 @@ export type TenantCreateWithoutTicketsInput = {
 
 export type TenantUncheckedCreateWithoutTicketsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1006,7 +1006,7 @@ export type TenantUpdateToOneWithWhereWithoutTicketsInput = {
 
 export type TenantUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1023,7 +1023,7 @@ export type TenantUpdateWithoutTicketsInput = {
 
 export type TenantUncheckedUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1040,7 +1040,7 @@ export type TenantUncheckedUpdateWithoutTicketsInput = {
 
 export type TenantCreateWithoutNotificationsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1057,7 +1057,7 @@ export type TenantCreateWithoutNotificationsInput = {
 
 export type TenantUncheckedCreateWithoutNotificationsInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1090,7 +1090,7 @@ export type TenantUpdateToOneWithWhereWithoutNotificationsInput = {
 
 export type TenantUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1107,7 +1107,7 @@ export type TenantUpdateWithoutNotificationsInput = {
 
 export type TenantUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1124,7 +1124,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
 
 export type TenantCreateWithoutActivitiesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1141,7 +1141,7 @@ export type TenantCreateWithoutActivitiesInput = {
 
 export type TenantUncheckedCreateWithoutActivitiesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1174,7 +1174,7 @@ export type TenantUpdateToOneWithWhereWithoutActivitiesInput = {
 
 export type TenantUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1191,7 +1191,7 @@ export type TenantUpdateWithoutActivitiesInput = {
 
 export type TenantUncheckedUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1208,7 +1208,7 @@ export type TenantUncheckedUpdateWithoutActivitiesInput = {
 
 export type TenantCreateWithoutUnixseeMessagesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1225,7 +1225,7 @@ export type TenantCreateWithoutUnixseeMessagesInput = {
 
 export type TenantUncheckedCreateWithoutUnixseeMessagesInput = {
   id?: string
-  name: string
+  name?: string | null
   displayName?: string | null
   status?: $Enums.UserAccountStatus
   createdAt?: Date | string
@@ -1258,7 +1258,7 @@ export type TenantUpdateToOneWithWhereWithoutUnixseeMessagesInput = {
 
 export type TenantUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1275,7 +1275,7 @@ export type TenantUpdateWithoutUnixseeMessagesInput = {
 
 export type TenantUncheckedUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1470,7 +1470,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
+    name: string | null
     displayName: string | null
     status: $Enums.UserAccountStatus
     createdAt: Date

@@ -312,7 +312,7 @@ export class AuthenticationService {
 
     await this.tenantsService.ensurePersonalTenantForUser(
       userToSignIn.id,
-      userToSignIn.fullName ?? userToSignIn.phoneNumber ?? undefined,
+      userToSignIn.fullName ?? undefined,
     );
 
     const tokens = await this.createTokens({
@@ -380,7 +380,7 @@ export class AuthenticationService {
 
     await this.tenantsService.ensurePersonalTenantForUser(
       userToSignIn.id,
-      userToSignIn.fullName ?? userToSignIn.email ?? undefined,
+      userToSignIn.fullName ?? undefined,
     );
 
     const tokens = await this.createTokens({

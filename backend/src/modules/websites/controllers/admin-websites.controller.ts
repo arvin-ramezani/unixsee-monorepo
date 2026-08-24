@@ -28,8 +28,9 @@ class AdminCreateWebsiteDto {
   @IsUUID()
   tenantId!: string;
 
+  @IsOptional()
   @IsUUID()
-  vpsNodeId!: string;
+  vpsNodeId?: string;
 
   @IsString()
   @MaxLength(255)

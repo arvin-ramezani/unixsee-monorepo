@@ -196,3 +196,40 @@ export async function declinePlanRequestAction(input: {
     },
   );
 }
+
+export async function createWebsiteForPlanRequestAction(input: {
+  domain: string;
+  tenantId: string;
+  planId?: string;
+}): Promise<{ ok: boolean; website?: { id: string; domain: string }; message?: string }> {
+  try {
+    const response = await serverActionFetch<{ id: string; domain: string }>(
+      "/admin/websites",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          domain: input.domain,
+          tenantId: input.tenantId,
+          planId: input.planId,
+        }),
+      },
+    );
+
+    if (response.success && response.data) {
+      return { ok: true, website: response.data };
+    }
+    return { ok: false, message: response.message ?? "خطا در ایجاد وب‌سایت" };
+  } catch {
+    return { ok: false, message: "خطا در ارتباط با سرور" };
+  }
+}
+
+export async function unlinkPlanRequestWebsiteAction(input: {
+  requestId: string;
+}): Promise<PlanRequestMutationResult> {
+  return mutatePlanRequest(
+    input.requestId,
+    `/admin/plan-requests/${input.requestId}/unlink`,
+    { method: "POST" },
+  );
+}

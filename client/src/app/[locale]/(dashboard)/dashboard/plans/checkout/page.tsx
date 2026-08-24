@@ -75,6 +75,7 @@ export default async function CheckoutPage({
           <AuthCheckoutForm
             plan={plan}
             contactName={user?.fullName ?? ""}
+            hasName={Boolean(user?.fullName?.trim())}
             contactPhone={user?.phoneNumber ?? null}
             contactEmail={user?.email ?? null}
           />

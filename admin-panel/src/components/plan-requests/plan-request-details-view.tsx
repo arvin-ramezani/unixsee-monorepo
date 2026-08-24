@@ -10,13 +10,15 @@ import {
   ChevronDown,
   Globe2,
   LoaderCircle,
+  Plus,
+  X,
   XCircle,
 } from "lucide-react";
 
 import {
   declinePlanRequestAction,
   enablePlanRequestAction,
-  linkPlanRequestWebsiteAction,
+  createWebsiteForPlanRequestAction,
   listWebsitesForPlanRequestAction,
   type PlanRequestWebsiteOption,
 } from "@/actions/plan-requests/plan-request-actions";
@@ -104,9 +106,7 @@ function resolveEnablementBlockers(
     blockers.push(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE);
   }
 
-  if (selectedWebsite?.hasActivePlan) {
-    blockers.push(PLAN_REQUEST_BLOCKER.ACTIVE_PLAN_CONFLICT);
-  }
+  // ACTIVE_PLAN_CONFLICT is validated by the backend at enable time.
 
   return blockers;
 }
@@ -254,6 +254,7 @@ function PlanRequestDetailsBody({
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmEnable, setConfirmEnable] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [creatingWebsite, setCreatingWebsite] = useState(false);
   const websiteListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -344,35 +345,9 @@ function PlanRequestDetailsBody({
     setRefuseError(null);
   };
 
-  const handleSelectWebsite = async (website: PlanRequestWebsiteOption) => {
+  const handleSelectWebsite = (website: PlanRequestWebsiteOption) => {
     setFormError(null);
-    if (!request.linkedUserId && !request.linkedTenantId) {
-      setFormError("ابتدا کاربر/مستأجر باید به درخواست متصل باشد.");
-      return;
-    }
-
-    setSubmitting(true);
     setPendingWebsiteId(website.id);
-
-    try {
-      const result = await linkPlanRequestWebsiteAction({
-        requestId: request.id,
-        tenantId: website.tenantId,
-        websiteId: website.id,
-        linkedUserId: request.linkedUserId,
-      });
-
-      if (!result.ok) {
-        toastApiErrorMessage(result.message);
-        setPendingWebsiteId(null);
-        return;
-      }
-
-      syncRequest(result.request);
-      toast.success("وب‌سایت هدف انتخاب شد و به درخواست متصل شد.");
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   const handleEnable = async () => {
@@ -459,6 +434,39 @@ function PlanRequestDetailsBody({
     }
   };
 
+  const handleUnlinkWebsite = () => {
+    setPendingWebsiteId(null);
+  };
+  const handleCreateWebsite = async () => {
+    if (!request.domainHint || !request.linkedTenantId) return;
+    setCreatingWebsite(true);
+    try {
+      const result = await createWebsiteForPlanRequestAction({
+        domain: request.domainHint,
+        tenantId: request.linkedTenantId,
+      });
+      if (result.ok && result.website) {
+        setWebsites((prev) => [
+          ...prev,
+          {
+            id: result.website!.id,
+            domain: result.website!.domain,
+            displayName: null,
+            tenantId: request.linkedTenantId!,
+            tenantName: request.linkedTenantName ?? "",
+            hasActivePlan: false,
+            activePlanLabel: null,
+          },
+        ]);
+        setPendingWebsiteId(result.website!.id);
+        toast.success("وب‌سایت با موفقیت ایجاد شد.");
+      } else {
+        toast.error(result.message ?? "خطا در ایجاد وب‌سایت");
+      }
+    } finally {
+      setCreatingWebsite(false);
+    }
+  };
   // Website list can load from linked user alone; enablement still needs tenant + user.
   const canBrowseWebsites = Boolean(
     request.linkedUserId || request.linkedTenantId,
@@ -547,19 +555,34 @@ function PlanRequestDetailsBody({
               {canBrowseWebsites ? (
                 <>
                   {selectedWebsite || request.targetWebsiteDomain ? (
-                    <p className="rounded-lg bg-muted/40 px-3 py-2 text-sm">
-                      انتخاب‌شده:{" "}
-                      <span dir="ltr" className="font-medium">
-                        {selectedWebsite?.domain ?? request.targetWebsiteDomain}
-                      </span>
-                      {selectedWebsite ? (
-                        <span className="ms-2 text-muted-foreground">
-                          {selectedWebsite.hasActivePlan
-                            ? "— دارای پلن فعال"
-                            : "— بدون پلن"}
+                    <div className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 text-sm">
+                      <span className="flex-1">
+                        <span className="text-muted-foreground">{"انتخاب‌شده: "}</span>
+                        <span dir="ltr" className="font-medium">
+                          {selectedWebsite?.domain ?? request.targetWebsiteDomain}
                         </span>
+                        {selectedWebsite ? (
+                          <span className="ms-2 text-muted-foreground">
+                            {selectedWebsite.hasActivePlan
+                              ? "— دارای پلن فعال"
+                              : "— بدون پلن"}
+                          </span>
+                        ) : null}
+                      </span>
+                      {request.targetWebsiteId ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+                          disabled={submitting}
+                          onClick={() => handleUnlinkWebsite()}
+                          aria-label="حذف انتخاب وب‌سایت"
+                        >
+                          <X className="size-4" aria-hidden />
+                        </Button>
                       ) : null}
-                    </p>
+                    </div>
                   ) : null}
 
                   <SearchInput
@@ -588,9 +611,27 @@ function PlanRequestDetailsBody({
                         در حال بارگذاری وب‌سایت‌ها…
                       </p>
                     ) : websites.length === 0 ? (
-                      <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                        وب‌سایتی برای این کاربر پیدا نشد.
-                      </p>
+                      <div className="flex flex-col items-center gap-3 px-3 py-6 text-center">
+                        <p className="text-sm text-muted-foreground">
+                          وب‌سایتی برای این کاربر پیدا نشد.
+                        </p>
+                        {request.domainHint && request.linkedTenantId ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={creatingWebsite || submitting}
+                            onClick={() => void handleCreateWebsite()}
+                          >
+                            {creatingWebsite ? (
+                              <LoaderCircle className="ms-1 size-3.5 animate-spin" />
+                            ) : (
+                              <Plus className="ms-1 size-3.5" />
+                            )}
+                            ایجاد وب‌سایت از دامنه اعلانی
+                          </Button>
+                        ) : null}
+                      </div>
                     ) : (
                       <div
                         className="relative w-full"

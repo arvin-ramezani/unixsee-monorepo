@@ -1,3 +1,6 @@
+import { Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 import { WebsitesView } from "@/components/websites/websites-view";
 import { serverFetch } from "@/lib/api/server-fetch";
 import { WEBSITE_STATUS, type WebsiteType } from "@/lib/data/websites-data";
@@ -84,6 +87,13 @@ export default async function WebsitesPage({
         <p className="mt-1 text-sm text-muted-foreground">
           رکوردهای NestJS همراه با شاخه‌های نمونه تجاری
         </p>
+        <Link
+          href="/websites/new"
+          className={buttonVariants({ className: "mt-3 w-fit" })}
+        >
+          <Plus className="ms-1 size-4" />
+          افزودن وب‌سایت
+        </Link>
       </div>
       <WebsitesView websites={websites} initialStatus={initialStatus} />
     </div>
