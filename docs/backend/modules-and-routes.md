@@ -64,37 +64,37 @@ flowchart LR
 
 ### Auth — keep
 
-| Method | Path | Audience | Notes |
-|---|---|---|---|
-| POST | `/api/v1/auth/register` | Public | Existing |
-| POST | `/api/v1/auth/login` | Public | Existing |
-| POST | `/api/v1/auth/refresh` | Public + refresh JWT | Existing |
-| POST | `/api/v1/auth/logout` | Customer/staff JWT | Existing |
-| POST | `/api/v1/auth/otp/request` | Public | Existing |
-| POST | `/api/v1/auth/otp/verify` | Public | Existing |
-| POST | `/api/v1/auth/otp/monitoring-access/request` | Customer JWT | Existing |
-| POST | `/api/v1/auth/otp/monitoring-access/verify` | Customer JWT | Existing |
+| Method | Path                                         | Audience             | Notes    |
+| ------ | -------------------------------------------- | -------------------- | -------- |
+| POST   | `/api/v1/auth/register`                      | Public               | Existing |
+| POST   | `/api/v1/auth/login`                         | Public               | Existing |
+| POST   | `/api/v1/auth/refresh`                       | Public + refresh JWT | Existing |
+| POST   | `/api/v1/auth/logout`                        | Customer/staff JWT   | Existing |
+| POST   | `/api/v1/auth/otp/request`                   | Public               | Existing |
+| POST   | `/api/v1/auth/otp/verify`                    | Public               | Existing |
+| POST   | `/api/v1/auth/otp/monitoring-access/request` | Customer JWT         | Existing |
+| POST   | `/api/v1/auth/otp/monitoring-access/verify`  | Customer JWT         | Existing |
 
 Module: `auth`. No redesign.
 
 ### Users — extend `user` → `users`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/users/me` | Customer (existing) |
-| PATCH | `/api/v1/users/me` | Customer |
-| POST | `/api/v1/users/me/contacts/phone/otp/request` | Customer |
-| POST | `/api/v1/users/me/contacts/phone/otp/verify` | Customer |
-| POST | `/api/v1/users/me/contacts/email/otp/request` | Customer |
-| POST | `/api/v1/users/me/contacts/email/otp/verify` | Customer |
-| GET | `/api/v1/admin/users` | Admin |
-| GET | `/api/v1/admin/users/:id` | Admin |
-| POST | `/api/v1/admin/users` | Admin |
-| PATCH | `/api/v1/admin/users/:id` | Admin |
-| POST | `/api/v1/admin/users/:id/suspend` | Admin |
-| POST | `/api/v1/admin/users/:id/restore` | Admin |
-| POST | `/api/v1/admin/users/:id/revoke-sessions` | Admin |
-| POST | `/api/v1/admin/users/:id/start-recovery` | Admin |
+| Method | Path                                          | Audience            |
+| ------ | --------------------------------------------- | ------------------- |
+| GET    | `/api/v1/users/me`                            | Customer (existing) |
+| PATCH  | `/api/v1/users/me`                            | Customer            |
+| POST   | `/api/v1/users/me/contacts/phone/otp/request` | Customer            |
+| POST   | `/api/v1/users/me/contacts/phone/otp/verify`  | Customer            |
+| POST   | `/api/v1/users/me/contacts/email/otp/request` | Customer            |
+| POST   | `/api/v1/users/me/contacts/email/otp/verify`  | Customer            |
+| GET    | `/api/v1/admin/users`                         | Admin               |
+| GET    | `/api/v1/admin/users/:id`                     | Admin               |
+| POST   | `/api/v1/admin/users`                         | Admin               |
+| PATCH  | `/api/v1/admin/users/:id`                     | Admin               |
+| POST   | `/api/v1/admin/users/:id/suspend`             | Admin               |
+| POST   | `/api/v1/admin/users/:id/restore`             | Admin               |
+| POST   | `/api/v1/admin/users/:id/revoke-sessions`     | Admin               |
+| POST   | `/api/v1/admin/users/:id/start-recovery`      | Admin               |
 
 Never return passwords, OTP codes, recovery secrets, refresh hashes, or agent keys.
 Admin user payloads may include `hasActiveSession` (boolean) derived from refresh
@@ -105,64 +105,64 @@ state without exposing the hash.
 Customer identity package submit + staff review. Approve creates tenant +
 OWNER membership. Package fields stay off `/admin/users` list.
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/authorization-cases/me` | Customer (own case or `null`) |
-| PUT | `/api/v1/authorization-cases/me/draft` | Customer |
-| POST | `/api/v1/authorization-cases/me/submit` | Customer |
-| GET | `/api/v1/admin/authorization-cases` | Admin |
-| GET | `/api/v1/admin/authorization-cases/:id` | Admin |
-| POST | `/api/v1/admin/authorization-cases/:id/approve` | Admin |
-| POST | `/api/v1/admin/authorization-cases/:id/needs-info` | Admin |
-| POST | `/api/v1/admin/authorization-cases/:id/reject` | Admin |
+| Method | Path                                               | Audience                      |
+| ------ | -------------------------------------------------- | ----------------------------- |
+| GET    | `/api/v1/authorization-cases/me`                   | Customer (own case or `null`) |
+| PUT    | `/api/v1/authorization-cases/me/draft`             | Customer                      |
+| POST   | `/api/v1/authorization-cases/me/submit`            | Customer                      |
+| GET    | `/api/v1/admin/authorization-cases`                | Admin                         |
+| GET    | `/api/v1/admin/authorization-cases/:id`            | Admin                         |
+| POST   | `/api/v1/admin/authorization-cases/:id/approve`    | Admin                         |
+| POST   | `/api/v1/admin/authorization-cases/:id/needs-info` | Admin                         |
+| POST   | `/api/v1/admin/authorization-cases/:id/reject`     | Admin                         |
 
 Contract: [`contracts/authorization-cases.md`](./contracts/authorization-cases.md).
 
 ### Tenants — add
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/tenants/me` | Customer |
-| GET | `/api/v1/tenants/me/members` | Customer owner/admin |
-| GET | `/api/v1/admin/tenants` | Admin |
-| GET | `/api/v1/admin/tenants/:id` | Admin |
-| POST | `/api/v1/admin/tenants` | Admin |
-| PATCH | `/api/v1/admin/tenants/:id` | Admin |
-| GET/POST/PATCH | `/api/v1/admin/memberships` | Admin |
+| Method         | Path                         | Audience             |
+| -------------- | ---------------------------- | -------------------- |
+| GET            | `/api/v1/tenants/me`         | Customer             |
+| GET            | `/api/v1/tenants/me/members` | Customer owner/admin |
+| GET            | `/api/v1/admin/tenants`      | Admin                |
+| GET            | `/api/v1/admin/tenants/:id`  | Admin                |
+| POST           | `/api/v1/admin/tenants`      | Admin                |
+| PATCH          | `/api/v1/admin/tenants/:id`  | Admin                |
+| GET/POST/PATCH | `/api/v1/admin/memberships`  | Admin                |
 
 Tenant membership is the customer access boundary (not raw `userId` on websites alone).
 
 ### Dashboard — keep
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/dashboard/overview` | Customer (existing) |
-| GET | `/api/v1/dashboard/overview/charts` | Customer (existing) |
-| GET | `/api/v1/dashboard/websites/:websiteId` | Customer (existing) |
-| GET | `/api/v1/dashboard/websites/:websiteId/charts` | Customer (existing) |
-| GET | `/api/v1/dashboard/vps/:vpsNodeId/charts` | Customer (existing) |
-| GET | `/api/v1/dashboard/monitoring` | Customer + monitoring JWT (existing) |
+| Method | Path                                           | Audience                             |
+| ------ | ---------------------------------------------- | ------------------------------------ |
+| GET    | `/api/v1/dashboard/overview`                   | Customer (existing)                  |
+| GET    | `/api/v1/dashboard/overview/charts`            | Customer (existing)                  |
+| GET    | `/api/v1/dashboard/websites/:websiteId`        | Customer (existing)                  |
+| GET    | `/api/v1/dashboard/websites/:websiteId/charts` | Customer (existing)                  |
+| GET    | `/api/v1/dashboard/vps/:vpsNodeId/charts`      | Customer (existing)                  |
+| GET    | `/api/v1/dashboard/monitoring`                 | Customer + monitoring JWT (existing) |
 
 Customer read-model only. Prefer importing exported `websites` / `metrics` /
 `alerts` services instead of duplicating providers.
 
 ### Websites, metrics, ssl-certificates, alerts, uptime, health, event
 
-| Change | Detail |
-|---|---|
-| Export services | So dashboard/realtime consume module exports |
-| Customer reads | `GET /api/v1/websites`, `GET /api/v1/websites/:id`, `GET /api/v1/alerts` |
-| Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires |
-| Fix stub | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
+| Change                | Detail                                                                                    |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| Export services       | So dashboard/realtime consume module exports                                              |
+| Customer reads        | `GET /api/v1/websites`, `GET /api/v1/websites/:id`, `GET /api/v1/alerts`                  |
+| Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires  |
+| Fix stub              | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
 
 ### Agent plane — Phase 1 (`agent/`)
 
-| Method | Path | Audience |
-|---|---|---|
-| POST | `/api/internal/agent/v1/enroll` | Agent (`agentInstanceId`; one-time token → secret) |
-| POST | `/api/internal/agent/v1/ingest` | Agent (HMAC; independently optional OLS/stack/3m/24h sections) |
-| POST | `/api/internal/agent/v1/heartbeat` | Agent (HMAC freshness + command lease) |
-| POST | `/api/internal/agent/v1/commands/:id/result` | Agent (HMAC terminal command result) |
+| Method | Path                                         | Audience                                                       |
+| ------ | -------------------------------------------- | -------------------------------------------------------------- |
+| POST   | `/api/internal/agent/v1/enroll`              | Agent (`agentInstanceId`; one-time token → secret)             |
+| POST   | `/api/internal/agent/v1/ingest`              | Agent (HMAC; independently optional OLS/stack/3m/24h sections) |
+| POST   | `/api/internal/agent/v1/heartbeat`           | Agent (HMAC freshness + command lease)                         |
+| POST   | `/api/internal/agent/v1/commands/:id/result` | Agent (HMAC terminal command result)                           |
 
 Product install uses enrollment, then HMAC. **Source of truth:**
 [`../agent/prd.md`](../agent/prd.md) and
@@ -185,26 +185,26 @@ Consultant requests are modeled as **complementary-service** public intake
 
 ### Plans — add `plans`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/public/plans` | Public |
-| GET | `/api/v1/plans` | Customer (published) |
-| GET/POST/PATCH | `/api/v1/admin/plans` | Admin |
+| Method         | Path                   | Audience             |
+| -------------- | ---------------------- | -------------------- |
+| GET            | `/api/v1/public/plans` | Public               |
+| GET            | `/api/v1/plans`        | Customer (published) |
+| GET/POST/PATCH | `/api/v1/admin/plans`  | Admin                |
 
 ### Plan requests — add `plan-requests`
 
-| Method | Path | Audience |
-|---|---|---|
-| POST | `/api/v1/public/plan-requests/account-check` | Public (early phone/email/website match; `{ exists, matchedBy }`) |
-| POST | `/api/v1/public/plan-requests` | Public (**legacy** anonymous create — superseded guest intent; prefer OTP → user → customer create) |
-| POST | `/api/v1/plan-requests` | Customer (logged-in create; **target** after guest OTP verify) |
-| GET | `/api/v1/plan-requests` | Customer (own) |
-| GET | `/api/v1/plan-requests/:id` | Customer (own) |
-| GET | `/api/v1/admin/plan-requests` | Admin |
-| GET | `/api/v1/admin/plan-requests/:id` | Admin |
-| POST | `/api/v1/admin/plan-requests/:id/link` | Admin (existing user/tenant) |
-| POST | `/api/v1/admin/plan-requests/:id/enable` | Admin |
-| POST | `/api/v1/admin/plan-requests/:id/decline` | Admin |
+| Method | Path                                         | Audience                                                                                            |
+| ------ | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| POST   | `/api/v1/public/plan-requests/account-check` | Public (early phone/email/website match; `{ exists, matchedBy }`)                                   |
+| POST   | `/api/v1/public/plan-requests`               | Public (**legacy** anonymous create — superseded guest intent; prefer OTP → user → customer create) |
+| POST   | `/api/v1/plan-requests`                      | Customer (logged-in create; **target** after guest OTP verify)                                      |
+| GET    | `/api/v1/plan-requests`                      | Customer (own)                                                                                      |
+| GET    | `/api/v1/plan-requests/:id`                  | Customer (own)                                                                                      |
+| GET    | `/api/v1/admin/plan-requests`                | Admin                                                                                               |
+| GET    | `/api/v1/admin/plan-requests/:id`            | Admin                                                                                               |
+| POST   | `/api/v1/admin/plan-requests/:id/link`       | Admin (existing user/tenant)                                                                        |
+| POST   | `/api/v1/admin/plan-requests/:id/enable`     | Admin                                                                                               |
+| POST   | `/api/v1/admin/plan-requests/:id/decline`    | Admin                                                                                               |
 
 Guest product intent: verify phone **or** email via auth OTP → create user on
 success → `POST /api/v1/plan-requests`. Contracts:
@@ -217,17 +217,17 @@ user/tenant and at most one active plan per website.
 
 ### Complementary services — add `complementary-services`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/public/service-catalog` | Public |
-| POST | `/api/v1/public/complementary-service-requests` | Public (consultant/complementary intake) |
-| GET | `/api/v1/complementary-service-requests` | Customer (own) |
-| GET | `/api/v1/complementary-service-requests/:id` | Customer (own) |
-| POST | `/api/v1/complementary-service-requests/:id/withdraw` | Customer |
-| GET/PATCH | `/api/v1/admin/complementary-service-requests` | Admin |
-| POST | `/api/v1/admin/complementary-service-requests/:id/quotations` | Admin |
-| POST | `/api/v1/admin/service-assignments` | Admin |
-| GET/PATCH | `/api/v1/admin/usage`, `/api/v1/admin/deliverables` | Admin |
+| Method    | Path                                                          | Audience                                 |
+| --------- | ------------------------------------------------------------- | ---------------------------------------- |
+| GET       | `/api/v1/public/service-catalog`                              | Public                                   |
+| POST      | `/api/v1/public/complementary-service-requests`               | Public (consultant/complementary intake) |
+| GET       | `/api/v1/complementary-service-requests`                      | Customer (own)                           |
+| GET       | `/api/v1/complementary-service-requests/:id`                  | Customer (own)                           |
+| POST      | `/api/v1/complementary-service-requests/:id/withdraw`         | Customer                                 |
+| GET/PATCH | `/api/v1/admin/complementary-service-requests`                | Admin                                    |
+| POST      | `/api/v1/admin/complementary-service-requests/:id/quotations` | Admin                                    |
+| POST      | `/api/v1/admin/service-assignments`                           | Admin                                    |
+| GET/PATCH | `/api/v1/admin/usage`, `/api/v1/admin/deliverables`           | Admin                                    |
 
 ---
 
@@ -235,22 +235,23 @@ user/tenant and at most one active plan per website.
 
 ### Servers — add `servers`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET/POST | `/api/v1/admin/servers` | Admin |
-| GET/PATCH/DELETE | `/api/v1/admin/servers/:id` | Admin (DELETE revokes tokens + agent, then removes row) |
-| POST | `/api/v1/admin/servers/:id/enrollment-tokens` | Admin (one-time reveal) |
-| POST | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin |
-| POST | `/api/v1/admin/servers/:id/agent/revoke` | Admin (invalidate agent secret; reason required) |
+| Method           | Path                                                          | Audience                                                |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| GET/POST         | `/api/v1/admin/servers`                                       | Admin                                                   |
+| GET/PATCH/DELETE | `/api/v1/admin/servers/:id`                                   | Admin (DELETE revokes tokens + agent, then removes row) |
+| POST             | `/api/v1/admin/servers/:id/enrollment-tokens`                 | Admin (one-time reveal)                                 |
+| POST             | `/api/v1/admin/servers/:id/enrollment-tokens/:tokenId/revoke` | Admin                                                   |
+| POST             | `/api/v1/admin/servers/:id/agent/revoke`                      | Admin (invalidate agent secret; reason required)        |
 
 | GET/PATCH | `/api/v1/admin/websites/:id` | Admin (manual WP URL + latest agent context) |
+
 ### Discoveries — add `discoveries`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/admin/discoveries` | Admin |
-| GET | `/api/v1/admin/discoveries/:id` | Admin |
-| POST | `/api/v1/admin/discoveries/:id/assign` | Admin → managed website |
+| Method | Path                                   | Audience                |
+| ------ | -------------------------------------- | ----------------------- |
+| GET    | `/api/v1/admin/discoveries`            | Admin                   |
+| GET    | `/api/v1/admin/discoveries/:id`        | Admin                   |
+| POST   | `/api/v1/admin/discoveries/:id/assign` | Admin → managed website |
 
 | POST | `/api/v1/admin/discoveries/:id/stack-refresh` | Admin → queued Agent command |
 | POST | `/api/v1/admin/websites/:id/stack-refresh` | Admin → queued Agent command |
@@ -263,12 +264,16 @@ default plan from a linked plan request.
 
 Owned with `websites` + `discoveries` services:
 
-| Method | Path | Audience |
-|---|---|---|
-| POST | `/api/v1/admin/websites` | Admin |
-| POST | `/api/v1/admin/websites/:id/assign` | Admin |
-| POST | `/api/v1/admin/websites/:id/transfer` | Admin (audited) |
-| POST | `/api/v1/admin/websites/:id/retire` | Admin |
+| Method | Path                                  | Audience        |
+| ------ | ------------------------------------- | --------------- |
+| POST   | `/api/v1/admin/websites`              | Admin           |
+| POST   | `/api/v1/admin/websites/:id/assign`   | Admin           |
+| POST   | `/api/v1/admin/websites/:id/transfer` | Admin (audited) |
+| POST   | `/api/v1/admin/websites/:id/retire`   | Admin           |
+
+Plan assignment and activation are distinct: `planId` is the linked plan and
+`planActivatedAt` records when it started. See
+[`contracts/websites-admin.md`](./contracts/websites-admin.md).
 
 ---
 
@@ -281,25 +286,25 @@ Customer DTO/lifecycle contract:
 Shared service taxonomy:
 [`contracts/ticket-service-categories.md`](./contracts/ticket-service-categories.md).
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/tickets/services` | Customer (service category catalog) |
-| GET/POST | `/api/v1/tickets` | Customer |
-| GET | `/api/v1/tickets/:id` | Customer |
-| POST | `/api/v1/tickets/:id/messages` | Customer |
-| POST | `/api/v1/tickets/:id/attachments/upload` | Customer (multipart `file` → Supabase) |
-| GET | `/api/v1/tickets/:id/attachments/:attachmentId/download` | Customer (signed download URL) |
-| POST | `/api/v1/tickets/:id/close` | Customer (`RESOLVED` → `CLOSED`) |
-| POST | `/api/v1/tickets/:id/reopen` | Customer (`CLOSED` → `IN_PROGRESS`) |
-| GET | `/api/v1/admin/tickets` | Admin |
-| GET | `/api/v1/admin/tickets/:id` | Admin (incl. internal notes) |
-| POST | `/api/v1/admin/tickets/:id/in-progress` | Admin (`SUBMITTED` → `IN_PROGRESS`) |
-| POST | `/api/v1/admin/tickets/:id/assign` | Admin |
-| POST | `/api/v1/admin/tickets/:id/resolve` | Admin (`*` → `RESOLVED`; sets auto-close) |
-| POST | `/api/v1/admin/tickets/:id/reopen` | Admin (`RESOLVED` → `IN_PROGRESS`) |
-| POST | `/api/v1/admin/tickets/:id/messages` | Admin (blocked when `RESOLVED`/`CLOSED`) |
-| POST | `/api/v1/admin/tickets/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
-| GET | `/api/v1/admin/tickets/:id/attachments/:attachmentId/download` | Admin (signed download URL) |
+| Method   | Path                                                           | Audience                                  |
+| -------- | -------------------------------------------------------------- | ----------------------------------------- |
+| GET      | `/api/v1/tickets/services`                                     | Customer (service category catalog)       |
+| GET/POST | `/api/v1/tickets`                                              | Customer                                  |
+| GET      | `/api/v1/tickets/:id`                                          | Customer                                  |
+| POST     | `/api/v1/tickets/:id/messages`                                 | Customer                                  |
+| POST     | `/api/v1/tickets/:id/attachments/upload`                       | Customer (multipart `file` → Supabase)    |
+| GET      | `/api/v1/tickets/:id/attachments/:attachmentId/download`       | Customer (signed download URL)            |
+| POST     | `/api/v1/tickets/:id/close`                                    | Customer (`RESOLVED` → `CLOSED`)          |
+| POST     | `/api/v1/tickets/:id/reopen`                                   | Customer (`CLOSED` → `IN_PROGRESS`)       |
+| GET      | `/api/v1/admin/tickets`                                        | Admin                                     |
+| GET      | `/api/v1/admin/tickets/:id`                                    | Admin (incl. internal notes)              |
+| POST     | `/api/v1/admin/tickets/:id/in-progress`                        | Admin (`SUBMITTED` → `IN_PROGRESS`)       |
+| POST     | `/api/v1/admin/tickets/:id/assign`                             | Admin                                     |
+| POST     | `/api/v1/admin/tickets/:id/resolve`                            | Admin (`*` → `RESOLVED`; sets auto-close) |
+| POST     | `/api/v1/admin/tickets/:id/reopen`                             | Admin (`RESOLVED` → `IN_PROGRESS`)        |
+| POST     | `/api/v1/admin/tickets/:id/messages`                           | Admin (blocked when `RESOLVED`/`CLOSED`)  |
+| POST     | `/api/v1/admin/tickets/:id/attachments/upload`                 | Admin (multipart `file` → Supabase)       |
+| GET      | `/api/v1/admin/tickets/:id/attachments/:attachmentId/download` | Admin (signed download URL)               |
 
 Staff shapes:
 [`contracts/tickets-admin.md`](./contracts/tickets-admin.md).
@@ -311,11 +316,11 @@ send attachment metadata on create — upload bytes after create via
 
 ### Notifications — add `notifications`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/notifications` | Customer |
-| POST | `/api/v1/notifications/:id/read` | Customer |
-| GET/POST/PATCH | `/api/v1/admin/notifications` | Admin (`locales.fa` + `locales.en`) |
+| Method         | Path                             | Audience                            |
+| -------------- | -------------------------------- | ----------------------------------- |
+| GET            | `/api/v1/notifications`          | Customer                            |
+| POST           | `/api/v1/notifications/:id/read` | Customer                            |
+| GET/POST/PATCH | `/api/v1/admin/notifications`    | Admin (`locales.fa` + `locales.en`) |
 
 ### Unixsee messages — add `unixsee-messages`
 
@@ -323,20 +328,20 @@ Tenant-targeted one-way staff → customer messages (پیام‌های یونی�
 from News `notifications` and from ticket thread `/tickets/:id/messages`.
 Contract: [`contracts/unixsee-messages.md`](./contracts/unixsee-messages.md).
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/unixsee-messages` | Customer (`items`, `total`, `hasUnread`) |
-| GET | `/api/v1/unixsee-messages/:id` | Customer |
-| GET | `/api/v1/unixsee-messages/:id/attachments/:attachmentId/download` | Customer (signed URL) |
-| POST | `/api/v1/unixsee-messages/:id/read` | Customer |
-| GET/POST | `/api/v1/admin/unixsee-messages` | Admin |
-| GET | `/api/v1/admin/unixsee-messages/tenants/:tenantId/compose-context` | Admin |
-| GET/PATCH | `/api/v1/admin/unixsee-messages/:id` | Admin |
-| POST | `/api/v1/admin/unixsee-messages/:id/publish` | Admin |
-| POST | `/api/v1/admin/unixsee-messages/:id/withdraw` | Admin |
-| POST | `/api/v1/admin/unixsee-messages/:id/attachments/upload` | Admin (multipart `file` → Supabase) |
-| GET | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId/download` | Admin (signed URL) |
-| DELETE | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId` | Admin |
+| Method    | Path                                                                    | Audience                                 |
+| --------- | ----------------------------------------------------------------------- | ---------------------------------------- |
+| GET       | `/api/v1/unixsee-messages`                                              | Customer (`items`, `total`, `hasUnread`) |
+| GET       | `/api/v1/unixsee-messages/:id`                                          | Customer                                 |
+| GET       | `/api/v1/unixsee-messages/:id/attachments/:attachmentId/download`       | Customer (signed URL)                    |
+| POST      | `/api/v1/unixsee-messages/:id/read`                                     | Customer                                 |
+| GET/POST  | `/api/v1/admin/unixsee-messages`                                        | Admin                                    |
+| GET       | `/api/v1/admin/unixsee-messages/tenants/:tenantId/compose-context`      | Admin                                    |
+| GET/PATCH | `/api/v1/admin/unixsee-messages/:id`                                    | Admin                                    |
+| POST      | `/api/v1/admin/unixsee-messages/:id/publish`                            | Admin                                    |
+| POST      | `/api/v1/admin/unixsee-messages/:id/withdraw`                           | Admin                                    |
+| POST      | `/api/v1/admin/unixsee-messages/:id/attachments/upload`                 | Admin (multipart `file` → Supabase)      |
+| GET       | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId/download` | Admin (signed URL)                       |
+| DELETE    | `/api/v1/admin/unixsee-messages/:id/attachments/:attachmentId`          | Admin                                    |
 
 Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
 `websiteId`, `links[]`. Attachments upload after create via
@@ -344,24 +349,24 @@ Single-language `title` + `body` + `contentLocale` (`fa`\|`en`). Optional
 
 ### Activities — add `activities`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/activities` | Customer |
-| GET | `/api/v1/admin/activities` | Admin |
+| Method | Path                       | Audience |
+| ------ | -------------------------- | -------- |
+| GET    | `/api/v1/activities`       | Customer |
+| GET    | `/api/v1/admin/activities` | Admin    |
 
 ### Audit — add `audit`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/admin/audit-records` | Admin |
+| Method | Path                          | Audience |
+| ------ | ----------------------------- | -------- |
+| GET    | `/api/v1/admin/audit-records` | Admin    |
 
 Customer activities ≠ staff audit. Do not silently rewrite history.
 
 ### Admin overview — thin `admin-overview`
 
-| Method | Path | Audience |
-|---|---|---|
-| GET | `/api/v1/admin/overview` | Admin |
+| Method | Path                     | Audience |
+| ------ | ------------------------ | -------- |
+| GET    | `/api/v1/admin/overview` | Admin    |
 
 Triage aggregates only (tickets → plan-requests → complementary reviews). No
 mutations. Capability-scoped counts.
@@ -372,19 +377,19 @@ mutations. Capability-scoped counts.
 
 ### Operational actions — add `operational-actions`
 
-| Method | Path | Audience |
-|---|---|---|
-| POST | `/api/v1/websites/:id/actions` | Customer |
-| GET | `/api/v1/websites/:id/actions/:actionId` | Customer |
-| GET | `/api/v1/admin/operational-actions` | Admin |
-| POST | `/api/v1/admin/operational-actions/:id/retry` | Admin (when safe) |
+| Method | Path                                          | Audience          |
+| ------ | --------------------------------------------- | ----------------- |
+| POST   | `/api/v1/websites/:id/actions`                | Customer          |
+| GET    | `/api/v1/websites/:id/actions/:actionId`      | Customer          |
+| GET    | `/api/v1/admin/operational-actions`           | Admin             |
+| POST   | `/api/v1/admin/operational-actions/:id/retry` | Admin (when safe) |
 
 ### Realtime (existing, keep narrow)
 
-| Channel | Who | Purpose |
-|---|---|---|
+| Channel                                                   | Who                                             | Purpose                         |
+| --------------------------------------------------------- | ----------------------------------------------- | ------------------------------- |
 | `/realtime` rooms `user:{id}`, `vps:{id}`, `website:{id}` | Customer JWT (+ monitoring JWT for infra rooms) | Live monitoring ticks/snapshots |
-| Admin sockets | Deferred | REST for queues until needed |
+| Admin sockets                                             | Deferred                                        | REST for queues until needed    |
 
 Realtime never carries enrollment secrets, refresh tokens, or cross-tenant data.
 Reconnect must refetch REST as source of truth.
@@ -420,9 +425,9 @@ Omit controllers that an audience does not need.
 
 ### Infrastructure modules (no audience routes)
 
-| Module | Role |
-|---|---|
-| `mail` | SMTP / OTP delivery helper |
+| Module    | Role                                                                                                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mail`    | SMTP / OTP delivery helper                                                                                                                                                                                    |
 | `storage` | Supabase Object Storage (`StorageService`: upload, download, remove, signed URL). Import into domain modules; no HTTP controllers yet. Env: `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_BUCKET`. |
 
 ## Implementation slices

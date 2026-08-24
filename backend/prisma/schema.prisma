@@ -205,7 +205,7 @@ model User {
   authoredNotifications   Notification[]                @relation("NotificationAuthor")
   unixseeMessageReads     UnixseeMessageRead[]
   authoredUnixseeMessages UnixseeMessage[]              @relation("UnixseeMessageAuthor")
-  requestedAgentCommands  AgentCommand[]                 @relation("AgentCommandRequester")
+  requestedAgentCommands  AgentCommand[]                @relation("AgentCommandRequester")
   auditRecords            AuditRecord[]                 @relation("AuditActor")
   operationalActions      OperationalAction[]           @relation("OperationalActionRequester")
 
@@ -272,8 +272,8 @@ model AuthorizationCase {
   city                      String                @default("")
   address                   String                @default("")
   postalCode                String                @default("") @map("postal_code")
-  nationalIdCardFileName      String?               @map("national_id_card_file_name")
-  nationalIdCardStorageKey    String?               @map("national_id_card_storage_key")
+  nationalIdCardFileName    String?               @map("national_id_card_file_name")
+  nationalIdCardStorageKey  String?               @map("national_id_card_storage_key")
   attestedTruthful          Boolean               @default(false) @map("attested_truthful")
 
   staffReason      String?   @map("staff_reason")
@@ -296,10 +296,10 @@ model AuthorizationCase {
 }
 
 model Server {
-  id        String  @id @default(uuid()) @db.Uuid
-  name      String  @unique
-  ipAddress String  @map("ip_address")
-  notes     String?
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String  @unique
+  ipAddress       String  @map("ip_address")
+  notes           String?
   controlPanelUrl String? @map("control_panel_url")
 
   vpsNodes         VpsNode[]
@@ -362,7 +362,7 @@ model VpsNode {
   websites    Website[]
   discoveries WebsiteDiscovery[]
 
-  agentCommands AgentCommand[]
+  agentCommands           AgentCommand[]
   // Time-series metrics. Keep append-only for easy TimescaleDB migration later.
   vpsMetrics              VpsMetric[]
   webMetrics              WebMetric[]
@@ -383,11 +383,12 @@ model VpsNode {
 }
 
 model Website {
-  id        String  @id @default(uuid()) @db.Uuid
-  userId    String? @map("user_id") @db.Uuid
-  tenantId  String  @map("tenant_id") @db.Uuid
-  vpsNodeId String? @map("vps_node_id") @db.Uuid
-  planId    String? @map("plan_id") @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String?   @map("user_id") @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  vpsNodeId       String?   @map("vps_node_id") @db.Uuid
+  planId          String?   @map("plan_id") @db.Uuid
+  planActivatedAt DateTime? @map("plan_activated_at") @db.Timestamptz(6)
 
   domain      String  @unique
   displayName String? @map("display_name")
@@ -397,9 +398,9 @@ model Website {
   homeDirectory   String? @map("home_directory")
   documentRoot    String? @map("document_root")
 
-  wordpressAdminUrl String? @map("wordpress_admin_url")
-  isActive Boolean                @default(true) @map("is_active")
-  status   WebsiteLifecycleStatus @default(ACTIVE)
+  wordpressAdminUrl String?                @map("wordpress_admin_url")
+  isActive          Boolean                @default(true) @map("is_active")
+  status            WebsiteLifecycleStatus @default(ACTIVE)
 
   // Latest website status snapshot for fast dashboard cards.
   // Historical probe data is stored in WebsiteProbeMetric.
@@ -408,10 +409,10 @@ model Website {
   lastResponseTimeMs Int?      @map("last_response_time_ms")
   lastProbeAt        DateTime? @map("last_probe_at") @db.Timestamptz(6)
 
-  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   vpsNode VpsNode? @relation(fields: [vpsNodeId], references: [id], onDelete: SetNull)
-  plan    Plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+  plan    Plan?    @relation(fields: [planId], references: [id], onDelete: SetNull)
 
   metrics               WebMetric[]
   probeMetrics          WebsiteProbeMetric[]
@@ -426,9 +427,9 @@ model Website {
   unixseeMessages       UnixseeMessage[]
   operationalActions    OperationalAction[]
 
-  trafficSnapshots      WebsiteTrafficSnapshot[]
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  trafficSnapshots WebsiteTrafficSnapshot[]
+  createdAt        DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([userId])
   @@index([tenantId])
@@ -480,10 +481,10 @@ model WebsiteDiscovery {
 
   activeVisitorSamples WebsiteActiveVisitorSample[]
 
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  trafficSnapshot      WebsiteTrafficSnapshot?
-  agentCommands        AgentCommand[]
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt       DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  trafficSnapshot WebsiteTrafficSnapshot?
+  agentCommands   AgentCommand[]
+  updatedAt       DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@unique([serverId, domain])
   @@index([status])
@@ -513,7 +514,7 @@ model WebsiteTrafficSnapshot {
   visitors24hStatus          Json?     @map("visitors_24h_status")
 
   discovery WebsiteDiscovery @relation(fields: [discoveryId], references: [id], onDelete: Cascade)
-  website   Website?          @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+  website   Website?         @relation(fields: [websiteId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -555,6 +556,7 @@ model AgentCommand {
   @@index([discoveryId, requestedAt(sort: Desc)])
   @@map("agent_commands")
 }
+
 model WebsiteActiveVisitorSample {
   recordedAt      DateTime @map("recorded_at") @db.Timestamptz(6)
   discoveryId     String   @map("discovery_id") @db.Uuid

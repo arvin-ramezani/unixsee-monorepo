@@ -47,6 +47,8 @@ export type WebsiteType = {
   };
   service: {
     plan: string;
+    /** Undefined fixture values preserve legacy active-plan behavior; null is linked but inactive. */
+    planActivatedAt?: string | null;
     serverLocation: string;
     server: string;
     controlPanel: "DirectAdmin";
@@ -86,7 +88,10 @@ export function billingPeriodMonths(period: string): number {
 }
 
 /** Advance an ISO YYYY-MM-DD by N calendar months (UTC noon anchor). */
-export function advanceIsoDateByMonths(isoDate: string, months: number): string {
+export function advanceIsoDateByMonths(
+  isoDate: string,
+  months: number,
+): string {
   const date = new Date(`${isoDate}T12:00:00.000Z`);
   if (Number.isNaN(date.getTime())) {
     return isoDate;

@@ -40,7 +40,11 @@ export function getPlanByName(name: string): PlanType | undefined {
   return PLANS.find((plan) => plan.name === name);
 }
 
-/** Non-empty plan name means the website already has an active plan. */
-export function websiteHasActivePlan(plan: string | null | undefined): boolean {
-  return Boolean(plan && plan.trim().length > 0);
+/** A linked plan is active only after its activation timestamp is recorded. */
+export function websiteHasActivePlan(
+  plan: string | null | undefined,
+  planActivatedAt?: string | null,
+): boolean {
+  const hasLinkedPlan = Boolean(plan && plan.trim().length > 0 && plan !== "—");
+  return hasLinkedPlan && planActivatedAt !== null;
 }

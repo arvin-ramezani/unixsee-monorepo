@@ -21,32 +21,35 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
   account alone is not enough. Tenant approval happens via احراز هویت review
   or staff create/approve in `/users` (or create-and-return during discovery
   assignment), not from the plan-request surface.
+- Linking a plan to a website does not start it. Activation is explicit and
+  records a start timestamp; discovery and ordinary assignment create inactive
+  links.
 - Each **website has at most one active plan** at a time.
 - **Agent discovery** is staff-only inventory, not plan entitlement or
   customer visibility.
 
 ## Surfaces
 
-| Record | Admin route | UX flow |
-|---|---|---|
-| Plan request | `/plan-requests` | `ux-flows/admin-plan-requests.md` |
-| User / tenant / احراز هویت | `/users` | `ux-flows/admin-users.md` |
-| Server / agent / discovery | `/servers` | `ux-flows/admin-servers-websites-agents.md` |
-| Managed website | `/websites` | same servers/websites flow |
+| Record                     | Admin route      | UX flow                                     |
+| -------------------------- | ---------------- | ------------------------------------------- |
+| Plan request               | `/plan-requests` | `ux-flows/admin-plan-requests.md`           |
+| User / tenant / احراز هویت | `/users`         | `ux-flows/admin-users.md`                   |
+| Server / agent / discovery | `/servers`       | `ux-flows/admin-servers-websites-agents.md` |
+| Managed website            | `/websites`      | same servers/websites flow                  |
 
 These are sibling queues with cross-links, not one wizard.
 
 ## Origins
 
-| Origin | Creates | Does not create alone |
-|---|---|---|
-| Plan request (after OTP) | Chosen-plan intake for admin enablement; request linked to existing user | Tenant, managed website, enrollment, sale |
-| Public plan-request OTP verify | Customer **user** account + verified contact + session (before request submit) | Tenant, plan enablement, website assignment |
-| Public signup (if enabled) | User account | Tenant, plan enablement, website assignment |
-| احراز هویت approval | Tenant (authorized customer) | Plan enablement by itself |
-| Admin create / approve (`/users` or assignment return) | User and/or tenant, owner | Website assignment, plan enablement |
-| Agent discovery | Staff-only candidate | Tenant, plan, customer visibility |
-| Enable plan on website | Active plan on that website | Payment settlement (Phase 1) |
+| Origin                                                 | Creates                                                                        | Does not create alone                       |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------- |
+| Plan request (after OTP)                               | Chosen-plan intake for admin enablement; request linked to existing user       | Tenant, managed website, enrollment, sale   |
+| Public plan-request OTP verify                         | Customer **user** account + verified contact + session (before request submit) | Tenant, plan enablement, website assignment |
+| Public signup (if enabled)                             | User account                                                                   | Tenant, plan enablement, website assignment |
+| احراز هویت approval                                    | Tenant (authorized customer)                                                   | Plan enablement by itself                   |
+| Admin create / approve (`/users` or assignment return) | User and/or tenant, owner                                                      | Website assignment, plan enablement         |
+| Agent discovery                                        | Staff-only candidate                                                           | Tenant, plan, customer visibility           |
+| Enable plan on website                                 | Active plan on that website                                                    | Payment settlement (Phase 1)                |
 
 ## Hard separations
 
@@ -68,6 +71,6 @@ link the user that already exists from intake or `/users`.
 - Public entry sync: `phase-1-public-entry-channels.md`
 - Public plan-request UX: `../ux-flows/customer-public-plan-request.md`
 - Agent sequence: `servers-agent-data-flow.md`
-- Open: one-plan conflict mode (hard-block vs replace); exact certification
-  document set; Nest sync for guest verify-then-create (see public contract
-  Draft note)
+- Active-plan conflict mode is a hard block; exact certification document set
+  and Nest sync for guest verify-then-create remain open (see public contract
+  Draft note).

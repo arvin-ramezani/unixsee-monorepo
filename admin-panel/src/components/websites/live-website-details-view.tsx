@@ -15,6 +15,16 @@ import { Input } from "@/components/ui/input";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 2000));
 const value = (input?: string | null) => input || "—";
+const formatPlanActivation = (input?: string | null) => {
+  if (!input) return "—";
+  const date = new Date(input);
+  if (Number.isNaN(date.getTime())) return input;
+  return new Intl.DateTimeFormat("fa-IR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+};
+
 export function LiveWebsiteDetailsView({
   website,
 }: {
@@ -80,6 +90,13 @@ export function LiveWebsiteDetailsView({
     100,
     Math.round(((traffic?.visitors24hCoverageSeconds ?? 0) / 86400) * 100),
   );
+  const hasLinkedPlan = Boolean(website.plan);
+  const hasActivePlan = Boolean(website.plan && website.planActivatedAt);
+  const planState = hasActivePlan
+    ? "فعال"
+    : hasLinkedPlan
+      ? "متصل و غیرفعال"
+      : "بدون پلن";
   return (
     <div className="flex flex-col gap-4 pt-4" dir="rtl">
       <AdminBackLink href="/websites">بازگشت به وب‌سایت‌ها</AdminBackLink>
@@ -93,6 +110,29 @@ export function LiveWebsiteDetailsView({
           {website.vpsNode?.server?.name ?? "بدون سرور"}
         </p>
       </header>
+      <section className="rounded-2xl border border-border bg-card p-4">
+        <h2 className="font-semibold">پلن وب‌سایت</h2>
+        <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl bg-muted/30 p-3">
+            <dt className="text-xs text-muted-foreground">پلن متصل</dt>
+            <dd className="mt-1 font-medium" dir="ltr">
+              {website.plan?.nameEn ?? website.plan?.code ?? "—"}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-muted/30 p-3">
+            <dt className="text-xs text-muted-foreground">وضعیت پلن</dt>
+            <dd className="mt-1 font-medium">{planState}</dd>
+          </div>
+          <div className="rounded-xl bg-muted/30 p-3">
+            <dt className="text-xs text-muted-foreground">
+              زمان شروع و فعال‌سازی
+            </dt>
+            <dd className="mt-1">
+              {formatPlanActivation(website.planActivatedAt)}
+            </dd>
+          </div>
+        </dl>
+      </section>
       {message && (
         <div
           role="status"

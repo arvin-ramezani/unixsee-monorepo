@@ -106,7 +106,12 @@ function resolveEnablementBlockers(
     blockers.push(PLAN_REQUEST_BLOCKER.MISSING_WEBSITE);
   }
 
-  // ACTIVE_PLAN_CONFLICT is validated by the backend at enable time.
+  if (
+    selectedWebsite?.hasActivePlan &&
+    selectedWebsite.planCode !== request.chosenPlanId
+  ) {
+    blockers.push(PLAN_REQUEST_BLOCKER.ACTIVE_PLAN_CONFLICT);
+  }
 
   return blockers;
 }
@@ -141,6 +146,10 @@ export function PlanRequestDetailsView({
 }
 
 function PlanRequestSummary({ request }: { request: PlanRequestType }) {
+  const linkedUserName = request.linkedUserName ?? request.contactName;
+  const linkedUserMobile = request.linkedUserMobile ?? request.contactMobile;
+  const linkedUserEmail = request.linkedUserEmail ?? request.contactEmail;
+
   return (
     <div className="flex flex-col gap-4">
       <section className="flex flex-col gap-3 rounded-xl border border-border p-4">
@@ -148,9 +157,7 @@ function PlanRequestSummary({ request }: { request: PlanRequestType }) {
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-xs text-muted-foreground">نام حساب</dt>
-            <dd className="mt-1">
-              {request.linkedUserName ?? request.contactName}
-            </dd>
+            <dd className="mt-1">{linkedUserName}</dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">موبایل ثبت‌شده</dt>
@@ -199,19 +206,29 @@ function PlanRequestSummary({ request }: { request: PlanRequestType }) {
             <dt className="text-xs text-muted-foreground">ثبت</dt>
             <dd className="mt-1">{request.submittedAt}</dd>
           </div>
-          {request.linkedUserName || request.linkedUserId ? (
+          {request.linkedUserId && (
             <div>
               <dt className="text-xs text-muted-foreground">کاربر متصل</dt>
-              <dd className="mt-1">
-                {request.linkedUserName ?? "کاربر متصل"}
-                {request.linkedUserId ? (
-                  <span className="ms-2 text-muted-foreground" dir="ltr">
-                    {request.linkedUserId}
+              <dd className="mt-1 space-y-1">
+                <Link
+                  href={`/users/${request.linkedUserId}`}
+                  className="block font-medium underline-offset-4 hover:underline"
+                >
+                  {linkedUserName}
+                </Link>
+                {linkedUserMobile && (
+                  <span className="block w-fit text-muted-foreground" dir="ltr">
+                    {linkedUserMobile}
                   </span>
-                ) : null}
+                )}
+                {linkedUserEmail && (
+                  <span className="block w-fit text-muted-foreground" dir="ltr">
+                    {linkedUserEmail}
+                  </span>
+                )}
               </dd>
             </div>
-          ) : null}
+          )}
           {request.linkedTenantName ? (
             <div>
               <dt className="text-xs text-muted-foreground">مستأجر</dt>
@@ -305,8 +322,8 @@ function PlanRequestDetailsBody({
   }, [request.linkedUserId, request.linkedTenantId, debouncedQuery]);
 
   const selectedWebsite =
-    websites.find((website) => website.id === request.targetWebsiteId) ??
     websites.find((website) => website.id === pendingWebsiteId) ??
+    websites.find((website) => website.id === request.targetWebsiteId) ??
     null;
 
   const blockers = resolveEnablementBlockers(request, selectedWebsite);
@@ -315,7 +332,7 @@ function PlanRequestDetailsBody({
     canEnable &&
     blockers.length === 0 &&
     !isTerminal &&
-    Boolean(request.targetWebsiteId || selectedWebsite);
+    Boolean(pendingWebsiteId || request.targetWebsiteId || selectedWebsite);
 
   const rowVirtualizer = useVirtualizer({
     count: websites.length,
@@ -347,6 +364,7 @@ function PlanRequestDetailsBody({
 
   const handleSelectWebsite = (website: PlanRequestWebsiteOption) => {
     setFormError(null);
+    setConfirmEnable(false);
     setPendingWebsiteId(website.id);
   };
 
@@ -365,7 +383,8 @@ function PlanRequestDetailsBody({
       return;
     }
 
-    const websiteId = request.targetWebsiteId ?? selectedWebsite?.id;
+    const websiteId =
+      pendingWebsiteId ?? request.targetWebsiteId ?? selectedWebsite?.id;
     if (!websiteId) {
       setFormError("وب‌سایت هدف مشخص نیست.");
       return;
@@ -454,11 +473,14 @@ function PlanRequestDetailsBody({
             displayName: null,
             tenantId: request.linkedTenantId!,
             tenantName: request.linkedTenantName ?? "",
+            hasLinkedPlan: false,
             hasActivePlan: false,
-            activePlanLabel: null,
+            planCode: null,
+            planLabel: null,
           },
         ]);
         setPendingWebsiteId(result.website!.id);
+        setConfirmEnable(false);
         toast.success("وب‌سایت با موفقیت ایجاد شد.");
       } else {
         toast.error(result.message ?? "خطا در ایجاد وب‌سایت");
@@ -557,15 +579,20 @@ function PlanRequestDetailsBody({
                   {selectedWebsite || request.targetWebsiteDomain ? (
                     <div className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 text-sm">
                       <span className="flex-1">
-                        <span className="text-muted-foreground">{"انتخاب‌شده: "}</span>
+                        <span className="text-muted-foreground">
+                          {"انتخاب‌شده: "}
+                        </span>
                         <span dir="ltr" className="font-medium">
-                          {selectedWebsite?.domain ?? request.targetWebsiteDomain}
+                          {selectedWebsite?.domain ??
+                            request.targetWebsiteDomain}
                         </span>
                         {selectedWebsite ? (
                           <span className="ms-2 text-muted-foreground">
                             {selectedWebsite.hasActivePlan
                               ? "— دارای پلن فعال"
-                              : "— بدون پلن"}
+                              : selectedWebsite.hasLinkedPlan
+                                ? "— پلن متصل و غیرفعال"
+                                : "— بدون پلن"}
                           </span>
                         ) : null}
                       </span>
@@ -611,26 +638,10 @@ function PlanRequestDetailsBody({
                         در حال بارگذاری وب‌سایت‌ها…
                       </p>
                     ) : websites.length === 0 ? (
-                      <div className="flex flex-col items-center gap-3 px-3 py-6 text-center">
+                      <div className="flex flex-col items-center px-3 py-6 text-center">
                         <p className="text-sm text-muted-foreground">
                           وب‌سایتی برای این کاربر پیدا نشد.
                         </p>
-                        {request.domainHint && request.linkedTenantId ? (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            disabled={creatingWebsite || submitting}
-                            onClick={() => void handleCreateWebsite()}
-                          >
-                            {creatingWebsite ? (
-                              <LoaderCircle className="ms-1 size-3.5 animate-spin" />
-                            ) : (
-                              <Plus className="ms-1 size-3.5" />
-                            )}
-                            ایجاد وب‌سایت از دامنه اعلانی
-                          </Button>
-                        ) : null}
                       </div>
                     ) : (
                       <div
@@ -639,15 +650,17 @@ function PlanRequestDetailsBody({
                       >
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                           const website = websites[virtualRow.index];
-                          const isSelected =
-                            website.id === request.targetWebsiteId ||
-                            website.id === pendingWebsiteId;
+                          const isSelected = website.id === selectedWebsite?.id;
+                          const hasPlanConflict =
+                            website.hasActivePlan &&
+                            website.planCode !== request.chosenPlanId;
 
                           return (
                             <div
                               key={website.id}
                               role="option"
                               aria-selected={isSelected}
+                              aria-disabled={hasPlanConflict}
                               className="absolute start-0 top-0 w-full px-1"
                               style={{
                                 height: `${virtualRow.size}px`,
@@ -656,7 +669,7 @@ function PlanRequestDetailsBody({
                             >
                               <button
                                 type="button"
-                                disabled={submitting}
+                                disabled={submitting || hasPlanConflict}
                                 onClick={() =>
                                   void handleSelectWebsite(website)
                                 }
@@ -676,8 +689,11 @@ function PlanRequestDetailsBody({
                                   {website.tenantName}
                                   {" · "}
                                   {website.hasActivePlan
-                                    ? `دارای پلن فعال${website.activePlanLabel ? ` (${website.activePlanLabel})` : ""}`
-                                    : "بدون پلن"}
+                                    ? `دارای پلن فعال${website.planLabel ? ` (${website.planLabel})` : ""}`
+                                    : website.hasLinkedPlan
+                                      ? `پلن متصل و غیرفعال${website.planLabel ? ` (${website.planLabel})` : ""}`
+                                      : "بدون پلن"}
+                                  {hasPlanConflict && " · غیرقابل انتخاب"}
                                 </span>
                               </button>
                             </div>
@@ -686,6 +702,23 @@ function PlanRequestDetailsBody({
                       </div>
                     )}
                   </div>
+                  {request.domainHint && request.linkedTenantId && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="self-start"
+                      disabled={creatingWebsite || submitting}
+                      onClick={() => void handleCreateWebsite()}
+                    >
+                      {creatingWebsite ? (
+                        <LoaderCircle className="ms-1 size-3.5 animate-spin" />
+                      ) : (
+                        <Plus className="ms-1 size-3.5" />
+                      )}
+                      ایجاد وب‌سایت از دامنه اعلانی
+                    </Button>
+                  )}
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">
@@ -795,8 +828,8 @@ function PlanRequestDetailsBody({
         ) : null}
         {!isTerminal && blockers.length > 0 ? (
           <p className="w-full text-xs text-muted-foreground">
-            دکمه فعال‌سازی پس از انتخاب وب‌سایت بدون پلن فعال در دسترس قرار
-            می‌گیرد.
+            دکمه فعال‌سازی پس از انتخاب وب‌سایت بدون پلن یا دارای همین پلن در
+            دسترس قرار می‌گیرد.
           </p>
         ) : null}
         {confirmEnable && canActivate ? (

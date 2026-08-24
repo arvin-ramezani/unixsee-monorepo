@@ -6,9 +6,11 @@ import { Globe2, LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -26,6 +28,14 @@ type UserOption = {
 type PlanOption = { id: string; name: string };
 
 type FieldErrors = { domain?: string; userId?: string };
+
+const PLAN_ASSIGNMENT_MODE = {
+  LINK_ONLY: "LINK_ONLY",
+  ACTIVATE_NOW: "ACTIVATE_NOW",
+} as const;
+
+type PlanAssignmentMode =
+  (typeof PLAN_ASSIGNMENT_MODE)[keyof typeof PLAN_ASSIGNMENT_MODE];
 
 function userLabel(u: UserOption): string {
   if (u.fullName) return u.fullName;
@@ -46,6 +56,8 @@ export function CreateWebsiteForm({
   const [displayName, setDisplayName] = useState("");
   const [userId, setUserId] = useState("");
   const [planId, setPlanId] = useState("");
+  const [planAssignmentMode, setPlanAssignmentMode] =
+    useState<PlanAssignmentMode>(PLAN_ASSIGNMENT_MODE.LINK_ONLY);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -91,6 +103,9 @@ export function CreateWebsiteForm({
           displayName: displayName.trim() || undefined,
           tenantId,
           planId: planId || undefined,
+          activatePlan:
+            Boolean(planId) &&
+            planAssignmentMode === PLAN_ASSIGNMENT_MODE.ACTIVATE_NOW,
         }),
       });
       if (result.success) {
@@ -108,6 +123,7 @@ export function CreateWebsiteForm({
   }
 
   const selectedUser = initialUsers.find((u) => u.id === userId);
+  const selectedPlan = initialPlans.find((plan) => plan.id === planId);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -174,9 +190,11 @@ export function CreateWebsiteForm({
               >
                 <div className="flex flex-col gap-0.5">
                   <span>{userLabel(user)}</span>
-                  {user.fullName && user.phoneNumber && (
+                  {user.fullName && (user.phoneNumber || user.email) && (
                     <span className="text-xs text-muted-foreground">
-                      {user.phoneNumber}
+                      {[user.phoneNumber, user.email]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </span>
                   )}
                 </div>
@@ -192,20 +210,67 @@ export function CreateWebsiteForm({
       <div className="space-y-2">
         <label className="text-sm font-medium">پلن (اختیاری)</label>
         <Select
-          value={planId}
-          onValueChange={(value: string | null) => setPlanId(value ?? "")}
+          value={planId || "__none__"}
+          onValueChange={(value: string | null) => {
+            const nextPlanId = value === "__none__" ? "" : (value ?? "");
+            setPlanId(nextPlanId);
+            if (!nextPlanId) {
+              setPlanAssignmentMode(PLAN_ASSIGNMENT_MODE.LINK_ONLY);
+            }
+          }}
         >
           <SelectTrigger>
-            <SelectValue placeholder="بدون پلن" />
+            <SelectValue placeholder="بدون پلن">
+              {selectedPlan?.name ?? "بدون پلن"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
-            {initialPlans.map((plan) => (
-              <SelectItem key={plan.id} value={plan.id}>
-                {plan.name}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              <SelectItem value="__none__">بدون پلن</SelectItem>
+              {initialPlans.map((plan) => (
+                <SelectItem key={plan.id} value={plan.id}>
+                  {plan.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
+        {planId && (
+          <RadioGroup
+            value={planAssignmentMode}
+            onValueChange={(value) =>
+              setPlanAssignmentMode(value as PlanAssignmentMode)
+            }
+            className="rounded-xl border p-3"
+          >
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2 hover:bg-muted/50">
+              <RadioGroupItem
+                value={PLAN_ASSIGNMENT_MODE.LINK_ONLY}
+                id="plan-link-only"
+              />
+              <span className="space-y-1">
+                <span className="block text-sm font-medium">فقط اتصال پلن</span>
+                <span className="block text-xs text-muted-foreground">
+                  پلن به وب‌سایت متصل می‌شود، اما شروع و فعال نمی‌شود.
+                </span>
+              </span>
+            </label>
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2 hover:bg-muted/50">
+              <RadioGroupItem
+                value={PLAN_ASSIGNMENT_MODE.ACTIVATE_NOW}
+                id="plan-activate-now"
+              />
+              <span className="space-y-1">
+                <span className="block text-sm font-medium">
+                  اتصال و فعال‌سازی فوری
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  زمان شروع پلن همین حالا ثبت می‌شود.
+                </span>
+              </span>
+            </label>
+          </RadioGroup>
+        )}
       </div>
 
       <div className="flex gap-3">

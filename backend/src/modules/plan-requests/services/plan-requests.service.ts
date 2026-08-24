@@ -133,9 +133,8 @@ export class PlanRequestsService {
     }
 
     if (domain) {
-      const website = await this.usersService.findCustomerOwningWebsiteDomain(
-        domain,
-      );
+      const website =
+        await this.usersService.findCustomerOwningWebsiteDomain(domain);
       if (website) {
         return { exists: true, matchedBy: 'website' };
       }
@@ -314,15 +313,25 @@ export class PlanRequestsService {
         throw new BadRequestException(ERROR_MESSAGES.fa.validation);
       }
 
-      if (website.planId && website.planId !== request.planId) {
+      if (
+        website.planActivatedAt &&
+        website.planId &&
+        website.planId !== request.planId
+      ) {
         throw new ConflictException(ERROR_MESSAGES.fa.conflict);
       }
 
       const enabled = await this.prisma.$transaction(async (tx) => {
-        await tx.website.update({
-          where: { id: website.id },
-          data: { planId: request.planId },
-        });
+        const activatedAt = new Date();
+        if (!website.planActivatedAt) {
+          await tx.website.update({
+            where: { id: website.id },
+            data: {
+              planId: request.planId,
+              planActivatedAt: activatedAt,
+            },
+          });
+        }
 
         return tx.planRequest.update({
           where: { id },
@@ -330,10 +339,15 @@ export class PlanRequestsService {
             status: PlanRequestStatus.ENABLED,
             tenantId,
             websiteId: website.id,
-            enabledAt: new Date(),
+            enabledAt: activatedAt,
             ...(idempotencyKey ? { idempotencyKey } : {}),
           },
-          include: { plan: true, tenant: true, website: true, linkedUser: true },
+          include: {
+            plan: true,
+            tenant: true,
+            website: true,
+            linkedUser: true,
+          },
         });
       });
 

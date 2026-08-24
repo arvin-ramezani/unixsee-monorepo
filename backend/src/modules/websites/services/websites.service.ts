@@ -184,8 +184,13 @@ export class WebsitesService {
     domain: string;
     displayName?: string;
     planId?: string;
+    activatePlan?: boolean;
     userId?: string;
   }) {
+    if (input.activatePlan && !input.planId) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+    }
+
     const website = await this.prisma.website.create({
       data: {
         tenantId: input.tenantId,
@@ -193,6 +198,7 @@ export class WebsitesService {
         domain: input.domain,
         displayName: input.displayName,
         planId: input.planId,
+        planActivatedAt: input.planId && input.activatePlan ? new Date() : null,
         userId: input.userId,
         isActive: true,
         status: WebsiteLifecycleStatus.ACTIVE,
@@ -224,6 +230,7 @@ export class WebsitesService {
       data: {
         tenantId: input.tenantId,
         ...(input.planId ? { planId: input.planId } : {}),
+        ...(input.planId ? { planActivatedAt: null } : {}),
         status: WebsiteLifecycleStatus.ACTIVE,
         isActive: true,
       },

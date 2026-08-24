@@ -85,7 +85,9 @@ export class DiscoveriesService {
               tenantId: input.tenantId,
               userId: input.userId ?? existingWebsite.userId,
               vpsNodeId,
-              ...(input.planId !== undefined ? { planId: input.planId } : {}),
+              ...(input.planId !== undefined
+                ? { planId: input.planId, planActivatedAt: null }
+                : {}),
               displayName: discovery.displayName ?? existingWebsite.displayName,
               directAdminUser:
                 discovery.directAdminUser ?? existingWebsite.directAdminUser,
@@ -103,6 +105,7 @@ export class DiscoveriesService {
               userId: input.userId,
               vpsNodeId,
               planId: input.planId,
+              planActivatedAt: null,
               displayName: discovery.displayName,
               directAdminUser: discovery.directAdminUser,
               homeDirectory: discovery.homeDirectory,

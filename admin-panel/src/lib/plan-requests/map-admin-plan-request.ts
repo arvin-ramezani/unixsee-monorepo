@@ -5,17 +5,14 @@ import {
 } from "@/lib/data/plan-requests-data";
 
 export type NestPlanRequestStatus =
-  | "SUBMITTED"
-  | "LINKED"
-  | "ENABLED"
-  | "DECLINED";
+  "SUBMITTED" | "LINKED" | "ENABLED" | "DECLINED";
 
 export type AdminPlanRequestDto = {
   id: string;
   planId: string;
   status: NestPlanRequestStatus | string;
   contactName: string;
-  contactPhone: string;
+  contactPhone: string | null;
   contactEmail: string | null;
   websiteDomain: string | null;
   notes: string | null;
@@ -44,6 +41,8 @@ export type AdminPlanRequestDto = {
   linkedUser?: {
     id: string;
     fullName: string | null;
+    phoneNumber: string | null;
+    email: string | null;
   } | null;
 };
 
@@ -115,7 +114,11 @@ export function mapAdminPlanRequestToUi(
     domainHint: item.websiteDomain,
     notes: item.notes,
     linkedUserId: item.linkedUserId,
-    linkedUserName: item.linkedUser?.fullName?.trim() || null,
+    linkedUserName:
+      item.linkedUser?.fullName?.trim() ||
+      (item.linkedUserId ? item.contactName.trim() : null),
+    linkedUserMobile: item.linkedUser?.phoneNumber ?? null,
+    linkedUserEmail: item.linkedUser?.email ?? null,
     linkedTenantId: item.tenantId,
     linkedTenantName: item.tenant?.name?.trim() || null,
     targetWebsiteId: item.websiteId,

@@ -21,11 +21,10 @@ import {
 } from "@/components/ui/accordion";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import { HeaderAuthControl } from "./header-auth-control";
 
 type NavigationItem = {
   key: string;
-  href: string;
+  href?: string;
   items?: readonly {
     key: string;
     href: string;

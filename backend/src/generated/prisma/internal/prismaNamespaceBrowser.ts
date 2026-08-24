@@ -248,6 +248,7 @@ export const WebsiteScalarFieldEnum = {
   tenantId: 'tenantId',
   vpsNodeId: 'vpsNodeId',
   planId: 'planId',
+  planActivatedAt: 'planActivatedAt',
   domain: 'domain',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',

@@ -64,6 +64,8 @@ export type PlanRequestType = {
   notes: string | null;
   linkedUserId: string | null;
   linkedUserName: string | null;
+  linkedUserMobile?: string | null;
+  linkedUserEmail?: string | null;
   linkedTenantId: string | null;
   linkedTenantName: string | null;
   targetWebsiteId: string | null;

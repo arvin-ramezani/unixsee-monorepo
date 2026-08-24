@@ -39,6 +39,7 @@ const mapLive = (item: AdminWebsiteAgentContext): WebsiteType => {
     },
     service: {
       plan: item.plan?.code ?? "—",
+      planActivatedAt: item.planActivatedAt ?? null,
       serverLocation: "—",
       server: item.vpsNode?.server?.name ?? "—",
       controlPanel: "DirectAdmin",

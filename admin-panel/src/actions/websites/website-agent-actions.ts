@@ -13,6 +13,7 @@ export type AdminWebsiteAgentContext = {
   displayName?: string | null;
   wordpressAdminUrl?: string | null;
   status?: string;
+  planActivatedAt?: string | null;
   tenant?: { id: string; name: string };
   plan?: { id: string; code: string; nameEn: string } | null;
   vpsNode?: {

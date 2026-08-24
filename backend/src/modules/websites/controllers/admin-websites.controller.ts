@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  IsBoolean,
   IsOptional,
   IsString,
   IsUrl,
@@ -44,6 +45,10 @@ class AdminCreateWebsiteDto {
   @IsOptional()
   @IsUUID()
   planId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  activatePlan?: boolean;
 
   @IsOptional()
   @IsUUID()

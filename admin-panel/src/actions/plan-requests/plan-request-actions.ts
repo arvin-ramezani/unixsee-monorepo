@@ -15,8 +15,7 @@ import {
 import type { ApiResponse } from "@/types/auth.types";
 
 export type PlanRequestMutationResult =
-  | { ok: true; request: PlanRequestType }
-  | { ok: false; message: string };
+  { ok: true; request: PlanRequestType } | { ok: false; message: string };
 
 export type PlanRequestWebsiteOption = {
   id: string;
@@ -24,8 +23,10 @@ export type PlanRequestWebsiteOption = {
   displayName: string | null;
   tenantId: string;
   tenantName: string;
+  hasLinkedPlan: boolean;
   hasActivePlan: boolean;
-  activePlanLabel: string | null;
+  planCode: string | null;
+  planLabel: string | null;
 };
 
 export type ListPlanRequestWebsitesResult =
@@ -38,6 +39,7 @@ type AdminWebsiteListItem = {
   displayName: string | null;
   tenantId: string;
   planId: string | null;
+  planActivatedAt: string | null;
   tenant?: { id: string; name: string } | null;
   plan?: { id: string; code: string; nameEn: string } | null;
 };
@@ -74,16 +76,34 @@ async function mutatePlanRequest(
   }
 }
 
-function mapWebsiteOption(item: AdminWebsiteListItem): PlanRequestWebsiteOption {
+function mapWebsiteOption(
+  item: AdminWebsiteListItem,
+): PlanRequestWebsiteOption {
   return {
     id: item.id,
     domain: item.domain,
     displayName: item.displayName,
     tenantId: item.tenantId,
     tenantName: item.tenant?.name?.trim() || "—",
-    hasActivePlan: Boolean(item.planId),
-    activePlanLabel: item.plan?.nameEn ?? item.plan?.code ?? null,
+    hasLinkedPlan: Boolean(item.planId),
+    hasActivePlan: Boolean(item.planId && item.planActivatedAt),
+    planCode: item.plan?.code ?? null,
+    planLabel: item.plan?.nameEn ?? item.plan?.code ?? null,
   };
+}
+
+function normalizeWebsiteDomainInput(domain: string): string | null {
+  const trimmed = domain.trim().toLowerCase();
+  if (!trimmed) return null;
+
+  try {
+    const url = new URL(
+      /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`,
+    );
+    return url.hostname.replace(/^www\./, "") || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function listWebsitesForPlanRequestAction(input: {
@@ -200,17 +220,24 @@ export async function declinePlanRequestAction(input: {
 export async function createWebsiteForPlanRequestAction(input: {
   domain: string;
   tenantId: string;
-  planId?: string;
-}): Promise<{ ok: boolean; website?: { id: string; domain: string }; message?: string }> {
+}): Promise<{
+  ok: boolean;
+  website?: { id: string; domain: string };
+  message?: string;
+}> {
+  const domain = normalizeWebsiteDomainInput(input.domain);
+  if (!domain) {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.validation };
+  }
+
   try {
     const response = await serverActionFetch<{ id: string; domain: string }>(
       "/admin/websites",
       {
         method: "POST",
         body: JSON.stringify({
-          domain: input.domain,
+          domain,
           tenantId: input.tenantId,
-          planId: input.planId,
         }),
       },
     );
@@ -218,9 +245,9 @@ export async function createWebsiteForPlanRequestAction(input: {
     if (response.success && response.data) {
       return { ok: true, website: response.data };
     }
-    return { ok: false, message: response.message ?? "خطا در ایجاد وب‌سایت" };
+    return { ok: false, message: staffErrorMessage(response) };
   } catch {
-    return { ok: false, message: "خطا در ارتباط با سرور" };
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
   }
 }
 
