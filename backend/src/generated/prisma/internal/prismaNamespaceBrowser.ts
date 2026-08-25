@@ -249,6 +249,7 @@ export const WebsiteScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   planId: 'planId',
   planActivatedAt: 'planActivatedAt',
+  managementCoverage: 'managementCoverage',
   domain: 'domain',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
@@ -611,10 +612,19 @@ export const ComplementaryServiceRequestScalarFieldEnum = {
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',
   details: 'details',
+  title: 'title',
+  engagementPreference: 'engagementPreference',
+  scope: 'scope',
   tenantId: 'tenantId',
   websiteId: 'websiteId',
+  websiteDomain: 'websiteDomain',
+  websiteTargetType: 'websiteTargetType',
+  websiteCoverageSnapshot: 'websiteCoverageSnapshot',
+  websiteResolutionState: 'websiteResolutionState',
+  authorizationState: 'authorizationState',
   createdByUserId: 'createdByUserId',
   withdrawnAt: 'withdrawnAt',
+  acceptedAt: 'acceptedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -642,6 +652,7 @@ export const ServiceAssignmentScalarFieldEnum = {
   assigneeNote: 'assigneeNote',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
+  authorizationState: 'authorizationState',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -11,13 +11,14 @@ import { SLIDE_IN_VARIANT } from "@/constants/variants";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Hash } from "lucide-react";
+import { Video } from "@/components/ui/video";
 
 const MotionBadge = motion.create(Badge);
 const MotionCardTitle = motion.create(CardTitle);
 const MotionCardDescription = motion.create(CardDescription);
 
 type MobileProblemSectionCardProps = {
-  videoIndex: number;
+  index: number;
   title: string;
   description?: string;
   subTitle?: string;
@@ -28,7 +29,7 @@ type MobileProblemSectionCardProps = {
 };
 
 export function MobileProblemSectionCard({
-  videoIndex,
+  index,
   title,
   description,
   subTitle,
@@ -68,17 +69,25 @@ export function MobileProblemSectionCard({
       >
         <div className="bg-primary relative w-full rounded-2xl lg:flex dark:bg-white">
           <div className="relative aspect-video h-auto w-full bg-black/35 lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]">
-            <video
-              src={`/videos/unixsee-team/new/${videoIndex}.mp4`}
-              className="absolute inset-0 h-full w-full object-contain"
-              playsInline
-              autoPlay
-              muted
-              loop
-              controlsList="nodownload noplaybackrate"
-              disableRemotePlayback
-              controls
-            />
+            {index === 0 ? (
+              <Video
+                className="absolute inset-0 h-full w-full object-contain"
+                poster="/videos/unixsee-team/slide-1/slide-1-poster.webp"
+                desktopMp4="/videos/unixsee-team/slide-1/slide-1-wide.mp4"
+                desktopWebm="/videos/unixsee-team/slide-1/slide-1-wide.webm"
+                mobileMp4="/videos/unixsee-team/slide-1/slide-1-mobile.mp4"
+                mobileWebm="/videos/unixsee-team/slide-1/slide-1-mobile.webm"
+              />
+            ) : (
+              <Video
+                className="absolute inset-0 h-full w-full object-contain"
+                poster="/videos/unixsee-team/slide-2/slide-2-poster.webp"
+                desktopMp4="/videos/unixsee-team/slide-2/slide-2-wide.mp4"
+                desktopWebm="/videos/unixsee-team/slide-2/slide-2-wide.webm"
+                mobileMp4="/videos/unixsee-team/slide-2/slide-2-mobile.mp4"
+                mobileWebm="/videos/unixsee-team/slide-2/slide-2-mobile.webm"
+              />
+            )}
           </div>
 
           <div className="absolute inset-x-0 bottom-0 flex w-full items-end justify-between rounded-2xl bg-[linear-gradient(0deg,hsl(0_0%_100%/0.06)_0%,hsl(0_0%_100%/0)_100%)] p-8 lg:gap-8 dark:bg-[linear-gradient(0deg,oklch(0.26_0.04_254.5/0.75)_0%,oklch(0.26_0.04_254.5/0)_100%)]">
@@ -150,7 +159,7 @@ export function MobileProblemSectionCard({
             animate={fireAnimate ? SLIDE_IN_VARIANT.animate : {}}
             transition={{ delay: 1.2 }}
             custom={isRtl}
-            className="dark:text-text-secondary text-muted mt-4 flex flex-wrap gap-x-2 gap-y-1.5 text-[.6rem] leading-[10px] font-light text-nowrap uppercase lg:mt-auto"
+            className="dark:text-text-secondary text-muted mt-4 flex flex-wrap gap-x-2 gap-y-1.5 text-[.6rem] leading-2.5 font-light text-nowrap uppercase lg:mt-auto"
           >
             {/* {subTitle} */}
             {tags.map((tag) => (

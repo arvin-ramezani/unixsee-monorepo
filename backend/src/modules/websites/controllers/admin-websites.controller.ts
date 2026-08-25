@@ -20,7 +20,7 @@ import {
 } from 'class-validator';
 
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
-import { Role } from '#/generated/prisma/enums.js';
+import { Role, WebsiteManagementCoverage } from '#/generated/prisma/enums.js';
 import { Roles } from '#/modules/auth/decorators/roles.decorator.js';
 import { RolesGuard } from '#/modules/auth/guards/roles.guard.js';
 import { WebsitesService } from '../services/websites.service.js';
@@ -96,6 +96,8 @@ export class AdminWebsitesController {
     @Query('search') search?: string,
     @Query('tenantId') tenantId?: string,
     @Query('userId') userId?: string,
+    @Query('managementCoverage')
+    managementCoverage?: WebsiteManagementCoverage,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ) {
@@ -103,6 +105,7 @@ export class AdminWebsitesController {
       search,
       tenantId,
       userId,
+      managementCoverage,
       skip: skip ? Number(skip) : 0,
       take: take ? Number(take) : 50,
     });

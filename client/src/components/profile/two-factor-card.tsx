@@ -185,9 +185,9 @@ export function TwoFactorSetupDialog({
               <CheckCircle2 aria-hidden="true" className="size-5" />
               <p className="text-sm font-medium">{t("enabled")}</p>
             </Alert>
-            {showCodes ? (
+            {showCodes && (
               <RecoveryCodes codes={recoveryCodes} title={t("newRecovery")} />
-            ) : null}
+            )}
             <div className="mt-5 flex flex-wrap gap-2">
               <Button
                 type="button"
@@ -309,9 +309,9 @@ function DialogActions({
         disabled={working}
         className="bg-primary text-primary-foreground inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium disabled:opacity-60"
       >
-        {working ? (
+        {working && (
           <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
-        ) : null}
+        )}
         {working ? t("working") : primary}
       </Button>
     </div>

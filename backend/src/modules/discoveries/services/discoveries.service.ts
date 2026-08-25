@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
-import { DiscoveryStatus } from '#/generated/prisma/enums.js';
+import {
+  DiscoveryStatus,
+  WebsiteManagementCoverage,
+} from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -85,6 +88,7 @@ export class DiscoveriesService {
               tenantId: input.tenantId,
               userId: input.userId ?? existingWebsite.userId,
               vpsNodeId,
+              managementCoverage: WebsiteManagementCoverage.UNIXSEE_MANAGED,
               ...(input.planId !== undefined
                 ? { planId: input.planId, planActivatedAt: null }
                 : {}),
@@ -104,6 +108,7 @@ export class DiscoveriesService {
               tenantId: input.tenantId,
               userId: input.userId,
               vpsNodeId,
+              managementCoverage: WebsiteManagementCoverage.UNIXSEE_MANAGED,
               planId: input.planId,
               planActivatedAt: null,
               displayName: discovery.displayName,

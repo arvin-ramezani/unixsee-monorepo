@@ -20,12 +20,12 @@ export function TicketCard({ ticket }: { ticket: TicketListItem }) {
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            {ticket.unread ? (
+            {ticket.unread && (
               <span
                 className="size-2 shrink-0 rounded-full bg-warning"
                 aria-label={t("unread")}
               />
-            ) : null}
+            )}
             <h3 className="truncate font-semibold text-foreground">
               <Link
                 href={`/dashboard/tickets/${ticket.id}`}

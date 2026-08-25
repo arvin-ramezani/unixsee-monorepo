@@ -656,9 +656,11 @@ Staff need to:
 
 Discovered websites update the admin websites inventory. After ownership
 assignment, the owning customer can see the website on their dashboard.
-Authenticated complementary-service intake may also introduce an external
-website without a Unixsee server plan; public intake does not create a
-tenant-owned website before identity and tenant ownership are resolved.
+Authenticated complementary-service intake may collect an external domain, but
+customer submission creates only the request. Staff acceptance creates or
+reuses a planless external Website only when an authorized tenant exists.
+Without a tenant, the accepted request remains domain-only until authorization
+reconciliation. Public intake does not create a tenant-owned Website.
 
 ### 12.4 Server and agent associations
 
@@ -977,13 +979,14 @@ The request form needs:
 - Description including goal, current state, deadline, and constraints.
 - Approved attachments.
 
-An authorized tenant may select an existing managed or external website. When
-no suitable website exists, the flow may collect a normalized domain and
-explicit confirmation that its server is outside Unixsee, then create/link the
-external website or hold the association for ownership review. A current
-Unixsee server plan, VPS, or agent is not a request prerequisite. Signed-out
-public intake may capture domain context but does not create a tenant-owned
-website.
+A customer may select an existing managed or external Website. When no suitable
+Website exists, the same field may collect a normalized external domain.
+Submission stores that domain only on the request. Explicit staff acceptance
+then rechecks the domain and either reuses/creates one planless external Website
+for an authorized tenant or marks the accepted request
+`DEFERRED_NO_TENANT`. Assignment and activation remain separate. A Unixsee
+server plan, VPS, or agent is not a request prerequisite, and no complementary
+transition activates one.
 
 The UI should warn when the same website already has a pending request or
 active assignment of the same type. The backend decides whether a second

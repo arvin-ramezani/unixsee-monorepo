@@ -39,7 +39,13 @@ export default async function ComplementaryServiceDetailsPage({
           label: t("title"),
           href: "/dashboard/complementary-services",
         },
-        { label: t(`fixtures.titles.${service.titleKey}`) },
+        {
+          label:
+            service.title ??
+            (service.titleKey
+              ? t(`fixtures.titles.${service.titleKey}`)
+              : t(`services.${service.serviceType}`)),
+        },
       ]}
       searchPlaceholder={t("searchHeader")}
     >

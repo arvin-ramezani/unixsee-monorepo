@@ -85,6 +85,7 @@ export function AuthorizationWizard({
   const tChallenges = useTranslations("Authorization.challenges");
   const tAlerts = useTranslations("Authorization.alerts");
   const tFormErrors = useTranslations("FormErrors");
+  const tCommon = useTranslations("Common");
   const locale = useLocale();
   const isFa = locale.startsWith("fa");
 
@@ -355,20 +356,20 @@ export function AuthorizationWizard({
         </ol>
       </header>
 
-      {staffReason ? (
+      {!!staffReason && (
         <div
           className="border-warning/40 bg-warning/10 rounded-xl border p-3 text-sm"
           role="status"
         >
           {staffReason}
         </div>
-      ) : null}
+      )}
 
-      {flash ? (
+      {!!flash && (
         <p className="text-sm" role="status" aria-live="polite">
           {flash}
         </p>
-      ) : null}
+      )}
 
       {step === AUTHORIZATION_STEPS.IDENTITY && (
         <form
@@ -837,22 +838,16 @@ export function AuthorizationWizard({
                 onEdit={() => setStep(AUTHORIZATION_STEPS.IDENTITY)}
                 editLabel={tActions("editSection")}
               />
-              {pkg.mobileChallenge === "skipped_already_verified" ? (
+              {pkg.mobileChallenge === "skipped_already_verified" && (
                 <ReviewRow
                   label={tFields("mobileBelongs")}
                   value={
-                    pkg.mobileBelongsToNationalId
-                      ? isFa
-                        ? "بله"
-                        : "Yes"
-                      : isFa
-                        ? "خیر"
-                        : "No"
+                    pkg.mobileBelongsToNationalId ? tCommon("yes") : tCommon("no")
                   }
                   onEdit={() => setStep(AUTHORIZATION_STEPS.IDENTITY)}
                   editLabel={tActions("editSection")}
                 />
-              ) : null}
+              )}
               <ReviewRow
                 label={tFields("birthDate")}
                 value={pkg.birthDate}

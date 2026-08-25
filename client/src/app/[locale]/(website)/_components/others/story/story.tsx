@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable no-restricted-syntax -- Legacy component superseded by ./wp-story.tsx (the only story imported, via problem-section.tsx); retained temporarily and slated for deletion. Not localized because it is unreferenced dead code. */
+
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";

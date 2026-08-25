@@ -1,21 +1,10 @@
 export type WebsiteStatus =
-  | "online"
-  | "needsAttention"
-  | "maintenance"
-  | "setupPending";
+  "online" | "needsAttention" | "maintenance" | "setupPending";
 export type WebsiteBackup = "successful" | "needsReview" | "scheduled";
 export type WebsitePlan =
-  | "starter"
-  | "business"
-  | "pro"
-  | "premium"
-  | "dedicatedPlan";
+  "starter" | "business" | "pro" | "premium" | "dedicatedPlan";
 export type WebsiteDescription =
-  | "ecommerce"
-  | "portfolio"
-  | "saas"
-  | "agency"
-  | "blog";
+  "ecommerce" | "portfolio" | "saas" | "agency" | "blog";
 
 export interface WebsiteRecord {
   id: string;
@@ -28,6 +17,8 @@ export interface WebsiteRecord {
   status: WebsiteStatus;
   backup: WebsiteBackup;
   updatedAt: string;
+  managementCoverage:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
 }
 
 export const websiteRecords: WebsiteRecord[] = [
@@ -42,6 +33,7 @@ export const websiteRecords: WebsiteRecord[] = [
     status: "online",
     backup: "successful",
     updatedAt: "2026-05-24T10:24:00Z",
+    managementCoverage: "UNIXSEE_MANAGED",
   },
   {
     id: "luna-studio",
@@ -54,6 +46,7 @@ export const websiteRecords: WebsiteRecord[] = [
     status: "needsAttention",
     backup: "needsReview",
     updatedAt: "2026-05-22T15:15:00Z",
+    managementCoverage: "UNIXSEE_MANAGED",
   },
   {
     id: "orbit-labs",
@@ -66,6 +59,7 @@ export const websiteRecords: WebsiteRecord[] = [
     status: "online",
     backup: "successful",
     updatedAt: "2026-05-21T09:42:00Z",
+    managementCoverage: "UNIXSEE_MANAGED",
   },
   {
     id: "nova-agency",
@@ -78,6 +72,7 @@ export const websiteRecords: WebsiteRecord[] = [
     status: "maintenance",
     backup: "scheduled",
     updatedAt: "2026-05-20T11:30:00Z",
+    managementCoverage: "UNIXSEE_MANAGED",
   },
   {
     id: "pixel-nest",
@@ -90,5 +85,6 @@ export const websiteRecords: WebsiteRecord[] = [
     status: "setupPending",
     backup: "scheduled",
     updatedAt: "2026-05-19T17:10:00Z",
+    managementCoverage: "UNIXSEE_MANAGED",
   },
 ];

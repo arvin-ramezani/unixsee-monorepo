@@ -112,6 +112,9 @@ export function WebsitesManager({
   const [status, setStatus] = useState<"all" | WebsiteStatus>("all");
   const [plan, setPlan] = useState<"all" | WebsitePlan>("all");
   const [backup, setBackup] = useState<"all" | WebsiteBackup>("all");
+  const [coverage, setCoverage] = useState<
+    "all" | WebsiteRecord["managementCoverage"]
+  >("all");
   const [sort, setSort] = useState<"updated" | "name">("updated");
   const { view } = useDashboardView();
   const prefersReducedMotion = useReducedMotion();
@@ -124,17 +127,36 @@ export function WebsitesManager({
       const statusMatch = status === "all" || website.status === status;
       const planMatch = plan === "all" || website.plan === plan;
       const backupMatch = backup === "all" || website.backup === backup;
+      const coverageMatch =
+        coverage === "all" || website.managementCoverage === coverage;
       const queryMatch =
         !normalizedQuery ||
         `${website.name} ${website.domain}`
           .toLowerCase()
           .includes(normalizedQuery);
-      return tabMatch && statusMatch && planMatch && backupMatch && queryMatch;
+      return (
+        tabMatch &&
+        statusMatch &&
+        planMatch &&
+        backupMatch &&
+        coverageMatch &&
+        queryMatch
+      );
     });
     return sort === "name"
       ? [...matches].sort((a, b) => a.name.localeCompare(b.name, locale))
       : matches;
-  }, [activeTab, backup, locale, plan, query, sort, status, websites]);
+  }, [
+    activeTab,
+    backup,
+    coverage,
+    locale,
+    plan,
+    query,
+    sort,
+    status,
+    websites,
+  ]);
 
   const resetFilters = () => {
     setActiveTab("all");
@@ -142,6 +164,7 @@ export function WebsitesManager({
     setStatus("all");
     setPlan("all");
     setBackup("all");
+    setCoverage("all");
     setSort("updated");
   };
   const statusOptions = [
@@ -247,6 +270,28 @@ export function WebsitesManager({
             })),
           ]}
         />
+        <SelectControl
+          label={t("filters.coverageLabel")}
+          value={coverage}
+          onChange={(value) =>
+            setCoverage(value as "all" | WebsiteRecord["managementCoverage"])
+          }
+          options={[
+            { value: "all", label: t("filters.coverage") },
+            {
+              value: "UNIXSEE_MANAGED",
+              label: common("coverage.UNIXSEE_MANAGED"),
+            },
+            {
+              value: "EXTERNAL_INFRASTRUCTURE",
+              label: common("coverage.EXTERNAL_INFRASTRUCTURE"),
+            },
+            {
+              value: "UNCLASSIFIED",
+              label: common("coverage.UNCLASSIFIED"),
+            },
+          ]}
+        />
       </div>
 
       <DashboardFadeIn
@@ -314,6 +359,11 @@ export function WebsitesManager({
                         <span className="text-foreground block truncate font-semibold">
                           {website.name}
                         </span>
+                        {website.managementCoverage !== "UNIXSEE_MANAGED" && (
+                          <span className="border-border bg-muted text-muted-foreground mt-1 block w-fit rounded-full border px-2 py-0.5 text-[10px] font-medium">
+                            {t("table.externalComplementaryNote")}
+                          </span>
+                        )}
                         <span className="text-muted-foreground mt-1 block truncate text-xs font-normal">
                           {common(`descriptions.${website.description}`)}
                         </span>
@@ -334,13 +384,27 @@ export function WebsitesManager({
                     </Link>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {common(`plans.${website.plan}`)}
+                    {website.managementCoverage === "UNIXSEE_MANAGED"
+                      ? common(`plans.${website.plan}`)
+                      : t("table.notApplicable")}
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={website.status} />
+                    {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+                      <StatusBadge status={website.status} />
+                    ) : (
+                      <span className="text-muted-foreground text-xs">
+                        {t("table.notApplicable")}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <BackupBadge backup={website.backup} />
+                    {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+                      <BackupBadge backup={website.backup} />
+                    ) : (
+                      <span className="text-muted-foreground text-xs">
+                        {t("table.notApplicable")}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell className="leading-5 tabular-nums">
                     <time dateTime={website.updatedAt}>
@@ -403,10 +467,22 @@ export function WebsitesManager({
                     {website.domain}
                   </p>
                 </div>
-                <StatusBadge status={website.status} />
+                {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+                  <StatusBadge status={website.status} />
+                ) : (
+                  <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-1 text-[10px]">
+                    {common("coverage.EXTERNAL_INFRASTRUCTURE")}
+                  </span>
+                )}
               </div>
               <div className="border-border mt-4 flex items-center justify-between border-t pt-3">
-                <BackupBadge backup={website.backup} />
+                {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+                  <BackupBadge backup={website.backup} />
+                ) : (
+                  <span className="text-muted-foreground text-xs">
+                    {t("table.complementaryOnly")}
+                  </span>
+                )}
                 <Link
                   href={`/dashboard/websites/${website.id}`}
                   className="border-border focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium focus-visible:ring-2"

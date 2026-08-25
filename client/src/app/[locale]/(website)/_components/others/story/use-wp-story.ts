@@ -22,6 +22,7 @@ export function isVideoStorySource(src: string) {
   return /\.(mp4|webm|ogg|mov)(?:$|\?)/i.test(src);
 }
 
+/* eslint-disable no-restricted-syntax -- Team member names (proper nouns) and placeholder role labels for the WP-driven story rail; replaced by WordPress API content, not localizable UI copy. */
 export const PROFILES = [
   {
     order: 10,
@@ -246,6 +247,7 @@ export const PROFILES = [
     ],
   },
 ];
+/* eslint-enable no-restricted-syntax */
 
 const STORY_SEEN_STORAGE_KEY = "unixsee:wp-story-seen:v1";
 const STORY_HOLD_THRESHOLD_MS = 500;

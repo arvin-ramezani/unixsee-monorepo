@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsEnum,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -9,7 +10,10 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { ComplementaryRequestStatus } from '#/generated/prisma/enums.js';
+import {
+  ComplementaryEngagementPreference,
+  ComplementaryRequestStatus,
+} from '#/generated/prisma/enums.js';
 
 export class CreatePublicComplementaryRequestDto {
   @IsUUID()
@@ -33,6 +37,37 @@ export class CreatePublicComplementaryRequestDto {
   @IsString()
   @MaxLength(4000)
   details?: string;
+}
+
+export class CreateComplementaryRequestDto {
+  @IsUUID()
+  catalogItemId!: string;
+
+  @IsOptional()
+  @IsUUID()
+  websiteId?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(253)
+  websiteDomain?: string;
+
+  @IsEnum(ComplementaryEngagementPreference)
+  engagementPreference!: ComplementaryEngagementPreference;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(100)
+  title!: string;
+
+  @IsString()
+  @MinLength(20)
+  @MaxLength(800)
+  description!: string;
+
+  @IsOptional()
+  @IsObject()
+  scope?: Record<string, unknown>;
 }
 
 export class PatchComplementaryRequestDto {

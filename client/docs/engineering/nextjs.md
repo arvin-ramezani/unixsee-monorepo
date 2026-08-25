@@ -31,7 +31,9 @@ Shared monorepo conventions: [`../../../docs/frontend/nextjs.md`](../../../docs/
 
 - Locale-aware application routes live below `src/app/[locale]`.
 - Use navigation helpers from `src/i18n/navigation.ts` for localized links and routing.
-- Keep user-facing strings in next-intl messages or typed repository-owned content with localized variants.
+- All user-facing text is next-intl. Never hardcode UI strings (including Persian) in components: add new copy to `src/messages/en.json` and `src/messages/fa.json` (mirror keys in both) and read it with `useTranslations`/`t()`; use `common(...)` for shared enum labels. A `no-restricted-syntax` lint rule flags hardcoded Persian (enforced at `error`).
+  - ❌ `label="پوشش مدیریتی"`   ✅ `label={t("filters.coverage")}`
+- Keep repository-owned static content in typed modules or messages with localized variants.
 - Preserve Persian RTL and English LTR rendering, metadata, and navigation.
 - Validate dynamic route parameters before using them to select data or construct backend calls.
 

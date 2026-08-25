@@ -66,11 +66,21 @@ export const SERVICE_COMMERCIAL_MODEL_LABELS: Record<
 
 export type ComplementaryServiceRequestType = {
   id: string;
+  apiId?: string;
   customerName: string;
   customerId: string;
+  customerPhone?: string | null;
+  customerEmail?: string | null;
   websiteId: string;
   websiteDomain: string;
   websiteTitle: string;
+  managementCoverage?:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED" | null;
+  resolutionState?:
+    "PENDING_ACCEPTANCE" | "LINKED" | "DEFERRED_NO_TENANT" | null;
+  authorizationState?:
+    "AUTHORIZED" | "NOT_AUTHORIZED" | "NOT_AUTHORIZED_AT_ACTIVATION" | null;
+  serviceActivationState?: "NOT_STARTED" | "ACTIVE" | "COMPLETED";
   family: ComplementaryServiceFamilyType;
   title: string;
   description: string;
@@ -146,127 +156,128 @@ export type ComplementaryServiceAssignmentType = {
   agreedAmount: string;
 };
 
-export const COMPLEMENTARY_SERVICE_REQUESTS: ComplementaryServiceRequestType[] = [
-  {
-    id: "CSR-1048",
-    customerName: "علی رضایی",
-    customerId: "user-101",
-    websiteId: "website-002",
-    websiteDomain: "artin-shop.ir",
-    websiteTitle: "فروشگاه اینترنتی آرتین",
-    family: COMPLEMENTARY_SERVICE_FAMILY.SEO,
-    title: "بهبود رتبه صفحات دسته‌بندی",
-    description:
-      "بررسی مشکلات فنی و محتوایی صفحات دسته‌بندی و ارائه برنامه اجرایی برای سه ماه آینده.",
-    preferredEngagement: "همکاری مستمر",
-    status: SERVICE_REQUEST_STATUS.ACCEPTED,
-    ownerName: "مهدی کریمی",
-    submittedAt: "۱۲ مرداد ۱۴۰۵",
-    updatedAt: "امروز، ۱۰:۴۰",
-    nextAction: "ایجاد سرویس و تعیین تاریخ شروع",
-    dueLabel: "امروز",
-    customerNote: "پیشنهاد شماره ۲ در تاریخ ۱۷ مرداد تأیید شده است.",
-  },
-  {
-    id: "CSR-1047",
-    customerName: "سارا محمدی",
-    customerId: "user-102",
-    websiteId: "website-004",
-    websiteDomain: "parsmod.com",
-    websiteTitle: "پارس مد",
-    family: COMPLEMENTARY_SERVICE_FAMILY.GRAPHIC_DESIGN,
-    title: "طراحی بنر کمپین پاییز",
-    description:
-      "طراحی مجموعه بنرهای صفحه اصلی و شبکه‌های اجتماعی برای کمپین پاییز.",
-    preferredEngagement: "یک‌باره",
-    status: SERVICE_REQUEST_STATUS.QUOTED,
-    ownerName: "نگار احمدی",
-    submittedAt: "۱۴ مرداد ۱۴۰۵",
-    updatedAt: "دیروز، ۱۶:۲۰",
-    nextAction: "پیگیری تصمیم مشتری",
-    dueLabel: "۲ روز دیگر",
-    customerNote: "پیشنهاد قیمت برای مشتری ارسال شده است.",
-  },
-  {
-    id: "CSR-1046",
-    customerName: "مریم حسینی",
-    customerId: "user-106",
-    websiteId: "website-006",
-    websiteDomain: "habibeh.ir",
-    websiteTitle: "فروشگاه حبیبه",
-    family: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
-    title: "ورود محصولات کالکشن جدید",
-    description:
-      "ورود حدود ۲۵۰ محصول با تصاویر، ویژگی‌ها و دسته‌بندی‌های ارائه‌شده در فایل اکسل.",
-    preferredEngagement: "یک‌باره",
-    status: SERVICE_REQUEST_STATUS.NEEDS_CUSTOMER_INFORMATION,
-    ownerName: "رضا اکبری",
-    submittedAt: "۱۰ مرداد ۱۴۰۵",
-    updatedAt: "امروز، ۰۹:۱۵",
-    nextAction: "دریافت فایل تصاویر و ویژگی‌ها",
-    dueLabel: "۳ روز گذشته",
-    customerNote: "فایل اصلی دریافت شده، اما تصاویر محصولات ناقص است.",
-  },
-  {
-    id: "CSR-1045",
-    customerName: "محمد احمدی",
-    customerId: "user-103",
-    websiteId: "website-005",
-    websiteDomain: "mohammadi-design.ir",
-    websiteTitle: "استودیو طراحی محمدی",
-    family: COMPLEMENTARY_SERVICE_FAMILY.SOCIAL_MEDIA,
-    title: "برنامه محتوایی ماهانه اینستاگرام",
-    description:
-      "تهیه تقویم محتوایی و طراحی دوازده پست برای معرفی خدمات استودیو.",
-    preferredEngagement: "مطمئن نیستم",
-    status: SERVICE_REQUEST_STATUS.UNDER_REVIEW,
-    ownerName: "نگار احمدی",
-    submittedAt: "۱۶ مرداد ۱۴۰۵",
-    updatedAt: "امروز، ۰۸:۳۰",
-    nextAction: "بررسی اهداف و کانال‌های انتشار",
-    dueLabel: "فردا",
-    customerNote: null,
-  },
-  {
-    id: "CSR-1044",
-    customerName: "علی رضایی",
-    customerId: "user-101",
-    websiteId: "website-001",
-    websiteDomain: "greenario.com",
-    websiteTitle: "فروشگاه آرتین",
-    family: COMPLEMENTARY_SERVICE_FAMILY.SEO,
-    title: "ممیزی فنی سئو",
-    description:
-      "ممیزی ایندکس، ساختار لینک‌ها، سرعت صفحات و مشکلات فنی اثرگذار بر جستجو.",
-    preferredEngagement: "یک‌باره",
-    status: SERVICE_REQUEST_STATUS.SUBMITTED,
-    ownerName: null,
-    submittedAt: "۱۷ مرداد ۱۴۰۵",
-    updatedAt: "۲ ساعت پیش",
-    nextAction: "تخصیص کارشناس و شروع بررسی",
-    dueLabel: "۲ روز دیگر",
-    customerNote: null,
-  },
-  {
-    id: "CSR-1039",
-    customerName: "سارا محمدی",
-    customerId: "user-102",
-    websiteId: "website-004",
-    websiteDomain: "parsmod.com",
-    websiteTitle: "پارس مد",
-    family: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
-    title: "پاک‌سازی اطلاعات محصولات",
-    description: "اصلاح دسته‌بندی و ویژگی‌های محصولات قدیمی فروشگاه.",
-    preferredEngagement: "یک‌باره",
-    status: SERVICE_REQUEST_STATUS.ACTIVATED,
-    ownerName: "رضا اکبری",
-    submittedAt: "۲۸ تیر ۱۴۰۵",
-    updatedAt: "۵ مرداد، ۱۴:۱۰",
-    nextAction: "مشاهده سرویس فعال",
-    dueLabel: null,
-    customerNote: "سرویس فعال و به تیم ورود اطلاعات تحویل داده شده است.",
-  },
-];
+export const COMPLEMENTARY_SERVICE_REQUESTS: ComplementaryServiceRequestType[] =
+  [
+    {
+      id: "CSR-1048",
+      customerName: "علی رضایی",
+      customerId: "user-101",
+      websiteId: "website-002",
+      websiteDomain: "artin-shop.ir",
+      websiteTitle: "فروشگاه اینترنتی آرتین",
+      family: COMPLEMENTARY_SERVICE_FAMILY.SEO,
+      title: "بهبود رتبه صفحات دسته‌بندی",
+      description:
+        "بررسی مشکلات فنی و محتوایی صفحات دسته‌بندی و ارائه برنامه اجرایی برای سه ماه آینده.",
+      preferredEngagement: "همکاری مستمر",
+      status: SERVICE_REQUEST_STATUS.ACCEPTED,
+      ownerName: "مهدی کریمی",
+      submittedAt: "۱۲ مرداد ۱۴۰۵",
+      updatedAt: "امروز، ۱۰:۴۰",
+      nextAction: "ایجاد سرویس و تعیین تاریخ شروع",
+      dueLabel: "امروز",
+      customerNote: "پیشنهاد شماره ۲ در تاریخ ۱۷ مرداد تأیید شده است.",
+    },
+    {
+      id: "CSR-1047",
+      customerName: "سارا محمدی",
+      customerId: "user-102",
+      websiteId: "website-004",
+      websiteDomain: "parsmod.com",
+      websiteTitle: "پارس مد",
+      family: COMPLEMENTARY_SERVICE_FAMILY.GRAPHIC_DESIGN,
+      title: "طراحی بنر کمپین پاییز",
+      description:
+        "طراحی مجموعه بنرهای صفحه اصلی و شبکه‌های اجتماعی برای کمپین پاییز.",
+      preferredEngagement: "یک‌باره",
+      status: SERVICE_REQUEST_STATUS.QUOTED,
+      ownerName: "نگار احمدی",
+      submittedAt: "۱۴ مرداد ۱۴۰۵",
+      updatedAt: "دیروز، ۱۶:۲۰",
+      nextAction: "پیگیری تصمیم مشتری",
+      dueLabel: "۲ روز دیگر",
+      customerNote: "پیشنهاد قیمت برای مشتری ارسال شده است.",
+    },
+    {
+      id: "CSR-1046",
+      customerName: "مریم حسینی",
+      customerId: "user-106",
+      websiteId: "website-006",
+      websiteDomain: "habibeh.ir",
+      websiteTitle: "فروشگاه حبیبه",
+      family: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
+      title: "ورود محصولات کالکشن جدید",
+      description:
+        "ورود حدود ۲۵۰ محصول با تصاویر، ویژگی‌ها و دسته‌بندی‌های ارائه‌شده در فایل اکسل.",
+      preferredEngagement: "یک‌باره",
+      status: SERVICE_REQUEST_STATUS.NEEDS_CUSTOMER_INFORMATION,
+      ownerName: "رضا اکبری",
+      submittedAt: "۱۰ مرداد ۱۴۰۵",
+      updatedAt: "امروز، ۰۹:۱۵",
+      nextAction: "دریافت فایل تصاویر و ویژگی‌ها",
+      dueLabel: "۳ روز گذشته",
+      customerNote: "فایل اصلی دریافت شده، اما تصاویر محصولات ناقص است.",
+    },
+    {
+      id: "CSR-1045",
+      customerName: "محمد احمدی",
+      customerId: "user-103",
+      websiteId: "website-005",
+      websiteDomain: "mohammadi-design.ir",
+      websiteTitle: "استودیو طراحی محمدی",
+      family: COMPLEMENTARY_SERVICE_FAMILY.SOCIAL_MEDIA,
+      title: "برنامه محتوایی ماهانه اینستاگرام",
+      description:
+        "تهیه تقویم محتوایی و طراحی دوازده پست برای معرفی خدمات استودیو.",
+      preferredEngagement: "مطمئن نیستم",
+      status: SERVICE_REQUEST_STATUS.UNDER_REVIEW,
+      ownerName: "نگار احمدی",
+      submittedAt: "۱۶ مرداد ۱۴۰۵",
+      updatedAt: "امروز، ۰۸:۳۰",
+      nextAction: "بررسی اهداف و کانال‌های انتشار",
+      dueLabel: "فردا",
+      customerNote: null,
+    },
+    {
+      id: "CSR-1044",
+      customerName: "علی رضایی",
+      customerId: "user-101",
+      websiteId: "website-001",
+      websiteDomain: "greenario.com",
+      websiteTitle: "فروشگاه آرتین",
+      family: COMPLEMENTARY_SERVICE_FAMILY.SEO,
+      title: "ممیزی فنی سئو",
+      description:
+        "ممیزی ایندکس، ساختار لینک‌ها، سرعت صفحات و مشکلات فنی اثرگذار بر جستجو.",
+      preferredEngagement: "یک‌باره",
+      status: SERVICE_REQUEST_STATUS.SUBMITTED,
+      ownerName: null,
+      submittedAt: "۱۷ مرداد ۱۴۰۵",
+      updatedAt: "۲ ساعت پیش",
+      nextAction: "تخصیص کارشناس و شروع بررسی",
+      dueLabel: "۲ روز دیگر",
+      customerNote: null,
+    },
+    {
+      id: "CSR-1039",
+      customerName: "سارا محمدی",
+      customerId: "user-102",
+      websiteId: "website-004",
+      websiteDomain: "parsmod.com",
+      websiteTitle: "پارس مد",
+      family: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
+      title: "پاک‌سازی اطلاعات محصولات",
+      description: "اصلاح دسته‌بندی و ویژگی‌های محصولات قدیمی فروشگاه.",
+      preferredEngagement: "یک‌باره",
+      status: SERVICE_REQUEST_STATUS.ACTIVATED,
+      ownerName: "رضا اکبری",
+      submittedAt: "۲۸ تیر ۱۴۰۵",
+      updatedAt: "۵ مرداد، ۱۴:۱۰",
+      nextAction: "مشاهده سرویس فعال",
+      dueLabel: null,
+      customerNote: "سرویس فعال و به تیم ورود اطلاعات تحویل داده شده است.",
+    },
+  ];
 
 export const COMPLEMENTARY_SERVICE_ASSIGNMENTS: ComplementaryServiceAssignmentType[] =
   [

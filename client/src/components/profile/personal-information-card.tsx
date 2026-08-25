@@ -613,6 +613,7 @@ export function ProfileForm({
                       : "hover:bg-muted",
                   )}
                 >
+                  {/* eslint-disable-next-line no-restricted-syntax -- Language endonyms; each locale option shows its own native name (فارسی/English) regardless of the active locale. */}
                   {locale === "fa" ? "فارسی" : "English"}
                 </span>
               </Label>

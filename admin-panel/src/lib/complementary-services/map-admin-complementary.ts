@@ -6,17 +6,18 @@ import {
   type ComplementaryServiceAssignmentType,
   type ComplementaryServiceFamilyType,
   type ServiceRequestStatusType,
-  type ServiceAssignmentStatusType,
 } from "@/lib/data/complementary-services-data";
 
 /** Backend ComplementaryRequestStatus → frontend ServiceRequestStatusType */
 const STATUS_MAP: Record<string, ServiceRequestStatusType> = {
   SUBMITTED: SERVICE_REQUEST_STATUS.SUBMITTED,
+  ACCEPTED: SERVICE_REQUEST_STATUS.ACCEPTED,
   QUOTED: SERVICE_REQUEST_STATUS.QUOTED,
   ASSIGNED: SERVICE_REQUEST_STATUS.ACCEPTED,
   IN_PROGRESS: SERVICE_REQUEST_STATUS.ACCEPTED,
   COMPLETED: SERVICE_REQUEST_STATUS.ACCEPTED,
   WITHDRAWN: SERVICE_REQUEST_STATUS.DECLINED,
+  CANCELLED: SERVICE_REQUEST_STATUS.DECLINED,
 };
 
 /** Catalog item code → frontend family type */
@@ -25,6 +26,7 @@ const FAMILY_MAP: Record<string, ComplementaryServiceFamilyType> = {
   GRAPHIC_DESIGN: COMPLEMENTARY_SERVICE_FAMILY.GRAPHIC_DESIGN,
   PRODUCT_DATA_ENTRY: COMPLEMENTARY_SERVICE_FAMILY.PRODUCT_DATA_ENTRY,
   SOCIAL_MEDIA: COMPLEMENTARY_SERVICE_FAMILY.SOCIAL_MEDIA,
+  SOCIAL_MEDIA_SUPPORT: COMPLEMENTARY_SERVICE_FAMILY.SOCIAL_MEDIA,
 };
 
 function formatDate(iso: string): string {
@@ -56,6 +58,8 @@ function resolveNextAction(status: string): string {
   switch (status) {
     case "SUBMITTED":
       return "بررسی اولیه درخواست";
+    case "ACCEPTED":
+      return "ایجاد یا فعالسازی سرویس";
     case "QUOTED":
       return "پیگیری تصمیم مشتری";
     case "ASSIGNED":
@@ -76,9 +80,19 @@ export type AdminComplementaryRequestApiItem = {
   catalogItemId: string;
   status: string;
   contactName: string;
-  contactPhone: string;
+  contactPhone: string | null;
   contactEmail?: string | null;
   details?: string | null;
+  title?: string | null;
+  engagementPreference?: "ONE_TIME" | "RECURRING" | "NOT_SURE" | null;
+  websiteDomain?: string | null;
+  websiteTargetType?: "EXISTING_WEBSITE" | "TYPED_DOMAIN" | null;
+  websiteCoverageSnapshot?:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED" | null;
+  websiteResolutionState?:
+    "PENDING_ACCEPTANCE" | "LINKED" | "DEFERRED_NO_TENANT" | null;
+  authorizationState?:
+    "AUTHORIZED" | "NOT_AUTHORIZED" | "NOT_AUTHORIZED_AT_ACTIVATION" | null;
   tenantId?: string | null;
   websiteId?: string | null;
   createdAt: string;
@@ -90,6 +104,12 @@ export type AdminComplementaryRequestApiItem = {
     nameEn: string;
     descriptionFa?: string | null;
     descriptionEn?: string | null;
+  } | null;
+  createdByUser?: {
+    id: string;
+    fullName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
   } | null;
   tenant?: {
     id: string;
@@ -123,35 +143,47 @@ export function mapAdminRequestToUi(
     FAMILY_MAP[item.catalogItem?.code ?? ""] ??
     COMPLEMENTARY_SERVICE_FAMILY.SEO;
   const status = STATUS_MAP[item.status] ?? SERVICE_REQUEST_STATUS.SUBMITTED;
-  const websiteDomain = item.website?.domain ?? "نامشخص";
+  const websiteDomain = item.website?.domain ?? item.websiteDomain ?? "نامشخص";
   const websiteTitle = item.website?.displayName ?? websiteDomain;
-  const customerName = item.tenant?.name ?? item.contactName;
+  const customerName = item.createdByUser?.fullName?.trim() || item.contactName;
   const lastAssignment = item.assignments?.[item.assignments.length - 1];
 
   return {
     id: item.id.slice(0, 8).toUpperCase(),
+    apiId: item.id,
     customerName,
-    customerId: item.tenantId ?? "",
+    customerId: item.tenantId ?? item.createdByUser?.id ?? "",
+    customerPhone: item.createdByUser?.phoneNumber ?? item.contactPhone,
+    customerEmail: item.createdByUser?.email ?? item.contactEmail ?? null,
     websiteId: item.websiteId ?? "",
     websiteDomain,
     websiteTitle,
     family,
-    title: item.catalogItem?.nameFa ?? "سرویس تکمیلی",
+    title: item.title?.trim() || item.catalogItem?.nameFa || "سرویس تکمیلی",
     description: item.details ?? item.catalogItem?.descriptionFa ?? "",
-    preferredEngagement: "",
+    preferredEngagement:
+      item.engagementPreference === "ONE_TIME"
+        ? "یک‌باره"
+        : item.engagementPreference === "RECURRING"
+          ? "همکاری مستمر"
+          : item.engagementPreference === "NOT_SURE"
+            ? "مطمئن نیستم"
+            : "",
     status,
     ownerName: lastAssignment?.assigneeNote ?? null,
     submittedAt: formatDate(item.createdAt),
     updatedAt: formatRelative(item.updatedAt),
     nextAction: resolveNextAction(item.status),
     dueLabel: null,
-    customerNote: item.contactEmail ?? null,
+    customerNote: null,
   };
 }
 
 export function mapAdminAssignmentToUi(
   request: AdminComplementaryRequestApiItem,
-  assignment: NonNullable<AdminComplementaryRequestApiItem["assignments"]>[number],
+  assignment: NonNullable<
+    AdminComplementaryRequestApiItem["assignments"]
+  >[number],
 ): ComplementaryServiceAssignmentType {
   const family =
     FAMILY_MAP[request.catalogItem?.code ?? ""] ??

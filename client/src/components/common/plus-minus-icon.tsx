@@ -32,7 +32,7 @@ export function PlusMinusIcon({
       className={cn("pointer-events-none size-4 shrink-0", className)}
       {...props}
     >
-      {title ? <title>{title}</title> : null}
+      {!!title && <title>{title}</title>}
 
       {/* Horizontal bar: always visible */}
       <rect

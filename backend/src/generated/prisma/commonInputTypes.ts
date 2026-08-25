@@ -321,6 +321,13 @@ export type EnumVpsNodeStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumVpsNodeStatusFilter<$PrismaModel>
 }
 
+export type EnumWebsiteManagementCoverageFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage
+}
+
 export type EnumWebsiteLifecycleStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.WebsiteLifecycleStatus | Prisma.EnumWebsiteLifecycleStatusFieldRefInput<$PrismaModel>
   in?: $Enums.WebsiteLifecycleStatus[] | Prisma.ListEnumWebsiteLifecycleStatusFieldRefInput<$PrismaModel>
@@ -342,6 +349,16 @@ export type IntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type EnumWebsiteManagementCoverageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWebsiteManagementCoverageWithAggregatesFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel>
 }
 
 export type EnumWebsiteLifecycleStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -707,6 +724,41 @@ export type EnumComplementaryRequestStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel> | $Enums.ComplementaryRequestStatus
 }
 
+export type EnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryEngagementPreference | Prisma.EnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel> | $Enums.ComplementaryEngagementPreference | null
+}
+
+export type EnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteTargetType | Prisma.EnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel> | $Enums.ComplementaryWebsiteTargetType | null
+}
+
+export type EnumWebsiteManagementCoverageNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage | null
+}
+
+export type EnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteResolutionState | Prisma.EnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel> | $Enums.ComplementaryWebsiteResolutionState | null
+}
+
+export type EnumComplementaryAuthorizationStateNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryAuthorizationState | Prisma.EnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel> | $Enums.ComplementaryAuthorizationState | null
+}
+
 export type EnumComplementaryRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ComplementaryRequestStatus | Prisma.EnumComplementaryRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ComplementaryRequestStatus[] | Prisma.ListEnumComplementaryRequestStatusFieldRefInput<$PrismaModel>
@@ -715,6 +767,56 @@ export type EnumComplementaryRequestStatusWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel>
+}
+
+export type EnumComplementaryEngagementPreferenceNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryEngagementPreference | Prisma.EnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryEngagementPreference | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel>
+}
+
+export type EnumComplementaryWebsiteTargetTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteTargetType | Prisma.EnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryWebsiteTargetType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel>
+}
+
+export type EnumWebsiteManagementCoverageNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumWebsiteManagementCoverageNullableWithAggregatesFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel>
+}
+
+export type EnumComplementaryWebsiteResolutionStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteResolutionState | Prisma.EnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryWebsiteResolutionState | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel>
+}
+
+export type EnumComplementaryAuthorizationStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryAuthorizationState | Prisma.EnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryAuthorizationStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryAuthorizationState | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel>
 }
 
 export type DecimalFilter<$PrismaModel = never> = {
@@ -1230,6 +1332,13 @@ export type NestedEnumVpsNodeStatusWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumVpsNodeStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumWebsiteManagementCoverageFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage
+}
+
 export type NestedEnumWebsiteLifecycleStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.WebsiteLifecycleStatus | Prisma.EnumWebsiteLifecycleStatusFieldRefInput<$PrismaModel>
   in?: $Enums.WebsiteLifecycleStatus[] | Prisma.ListEnumWebsiteLifecycleStatusFieldRefInput<$PrismaModel>
@@ -1240,6 +1349,16 @@ export type NestedEnumWebsiteLifecycleStatusFilter<$PrismaModel = never> = {
 export type NestedBoolNullableFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type NestedEnumWebsiteManagementCoverageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWebsiteManagementCoverageWithAggregatesFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWebsiteManagementCoverageFilter<$PrismaModel>
 }
 
 export type NestedEnumWebsiteLifecycleStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1567,6 +1686,41 @@ export type NestedEnumComplementaryRequestStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel> | $Enums.ComplementaryRequestStatus
 }
 
+export type NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryEngagementPreference | Prisma.EnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel> | $Enums.ComplementaryEngagementPreference | null
+}
+
+export type NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteTargetType | Prisma.EnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel> | $Enums.ComplementaryWebsiteTargetType | null
+}
+
+export type NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage | null
+}
+
+export type NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteResolutionState | Prisma.EnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel> | $Enums.ComplementaryWebsiteResolutionState | null
+}
+
+export type NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryAuthorizationState | Prisma.EnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel> | $Enums.ComplementaryAuthorizationState | null
+}
+
 export type NestedEnumComplementaryRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ComplementaryRequestStatus | Prisma.EnumComplementaryRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ComplementaryRequestStatus[] | Prisma.ListEnumComplementaryRequestStatusFieldRefInput<$PrismaModel>
@@ -1575,6 +1729,56 @@ export type NestedEnumComplementaryRequestStatusWithAggregatesFilter<$PrismaMode
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumComplementaryRequestStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumComplementaryEngagementPreferenceNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryEngagementPreference | Prisma.EnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryEngagementPreference[] | Prisma.ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryEngagementPreference | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryEngagementPreferenceNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumComplementaryWebsiteTargetTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteTargetType | Prisma.EnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteTargetType[] | Prisma.ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryWebsiteTargetType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryWebsiteTargetTypeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumWebsiteManagementCoverageNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WebsiteManagementCoverage | Prisma.EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  in?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.WebsiteManagementCoverage[] | Prisma.ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumWebsiteManagementCoverageNullableWithAggregatesFilter<$PrismaModel> | $Enums.WebsiteManagementCoverage | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWebsiteManagementCoverageNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumComplementaryWebsiteResolutionStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryWebsiteResolutionState | Prisma.EnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryWebsiteResolutionState[] | Prisma.ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryWebsiteResolutionState | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryWebsiteResolutionStateNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumComplementaryAuthorizationStateNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComplementaryAuthorizationState | Prisma.EnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ComplementaryAuthorizationState[] | Prisma.ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumComplementaryAuthorizationStateNullableWithAggregatesFilter<$PrismaModel> | $Enums.ComplementaryAuthorizationState | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComplementaryAuthorizationStateNullableFilter<$PrismaModel>
 }
 
 export type NestedDecimalFilter<$PrismaModel = never> = {

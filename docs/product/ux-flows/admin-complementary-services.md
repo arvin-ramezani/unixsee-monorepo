@@ -228,6 +228,25 @@ Role names are descriptive placeholders. Enforcement must use approved capabilit
 | Act                | Review or progress a request     | Attempt to select or create work            | No action exists                 | Administrator  | None                              | JP-002: complete operational dead end             | E-002        |
 | Continue elsewhere | Finish the task                  | Unknown                                     | Unknown                          | Staff/customer | Likely offline or not implemented | JP-003: current method and workaround are unknown | Evidence gap |
 
+## External target acceptance refinement
+
+For a typed domain, `Accept` is an explicit staff action before assignment:
+
+1. Recheck the normalized domain without disclosing cross-tenant ownership.
+2. If an authorized tenant exists, reuse a same-tenant Website or create one
+   planless `EXTERNAL_INFRASTRUCTURE` Website and link it.
+3. If no tenant exists, accept domain-only as `DEFERRED_NO_TENANT`.
+4. Show customer full name, every available phone/email, domain, coverage,
+   resolution, authorization, request decision, and service activation as
+   separate facts.
+5. Activation creates/reuses one complementary assignment. It never assigns a
+   server plan or changes coverage.
+
+The customer flow is
+[Customer complementary-service request](./client-complementary-service-request.md);
+the wire contract is
+[Customer complementary-service requests](../../backend/contracts/complementary-services-customer.md).
+
 ## Proposed journey
 
 | Stage                | Goal                       | Behaviour                                                                                       | Response                                                         | Decision                                   | Backstage                          | Problem | Need   |

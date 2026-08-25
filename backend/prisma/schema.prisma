@@ -88,12 +88,42 @@ enum PlanRequestStatus {
 
 enum ComplementaryRequestStatus {
   SUBMITTED
+  ACCEPTED
   QUOTED
   ASSIGNED
   IN_PROGRESS
   COMPLETED
   WITHDRAWN
   CANCELLED
+}
+
+enum WebsiteManagementCoverage {
+  UNIXSEE_MANAGED
+  EXTERNAL_INFRASTRUCTURE
+  UNCLASSIFIED
+}
+
+enum ComplementaryWebsiteTargetType {
+  EXISTING_WEBSITE
+  TYPED_DOMAIN
+}
+
+enum ComplementaryWebsiteResolutionState {
+  PENDING_ACCEPTANCE
+  LINKED
+  DEFERRED_NO_TENANT
+}
+
+enum ComplementaryAuthorizationState {
+  AUTHORIZED
+  NOT_AUTHORIZED
+  NOT_AUTHORIZED_AT_ACTIVATION
+}
+
+enum ComplementaryEngagementPreference {
+  ONE_TIME
+  RECURRING
+  NOT_SURE
 }
 
 enum DiscoveryStatus {
@@ -383,12 +413,13 @@ model VpsNode {
 }
 
 model Website {
-  id              String    @id @default(uuid()) @db.Uuid
-  userId          String?   @map("user_id") @db.Uuid
-  tenantId        String    @map("tenant_id") @db.Uuid
-  vpsNodeId       String?   @map("vps_node_id") @db.Uuid
-  planId          String?   @map("plan_id") @db.Uuid
-  planActivatedAt DateTime? @map("plan_activated_at") @db.Timestamptz(6)
+  id                 String                    @id @default(uuid()) @db.Uuid
+  userId             String?                   @map("user_id") @db.Uuid
+  tenantId           String                    @map("tenant_id") @db.Uuid
+  vpsNodeId          String?                   @map("vps_node_id") @db.Uuid
+  planId             String?                   @map("plan_id") @db.Uuid
+  planActivatedAt    DateTime?                 @map("plan_activated_at") @db.Timestamptz(6)
+  managementCoverage WebsiteManagementCoverage @default(UNCLASSIFIED) @map("management_coverage")
 
   domain      String  @unique
   displayName String? @map("display_name")
@@ -933,17 +964,26 @@ model ServiceCatalogItem {
 }
 
 model ComplementaryServiceRequest {
-  id              String                     @id @default(uuid()) @db.Uuid
-  catalogItemId   String                     @map("catalog_item_id") @db.Uuid
-  status          ComplementaryRequestStatus @default(SUBMITTED)
-  contactName     String                     @map("contact_name")
-  contactPhone    String                     @map("contact_phone")
-  contactEmail    String?                    @map("contact_email")
-  details         String?
-  tenantId        String?                    @map("tenant_id") @db.Uuid
-  websiteId       String?                    @map("website_id") @db.Uuid
-  createdByUserId String?                    @map("created_by_user_id") @db.Uuid
-  withdrawnAt     DateTime?                  @map("withdrawn_at") @db.Timestamptz(6)
+  id                      String                               @id @default(uuid()) @db.Uuid
+  catalogItemId           String                               @map("catalog_item_id") @db.Uuid
+  status                  ComplementaryRequestStatus           @default(SUBMITTED)
+  contactName             String                               @map("contact_name")
+  contactPhone            String?                              @map("contact_phone")
+  contactEmail            String?                              @map("contact_email")
+  details                 String?
+  title                   String?
+  engagementPreference    ComplementaryEngagementPreference?   @map("engagement_preference")
+  scope                   Json?
+  tenantId                String?                              @map("tenant_id") @db.Uuid
+  websiteId               String?                              @map("website_id") @db.Uuid
+  websiteDomain           String?                              @map("website_domain")
+  websiteTargetType       ComplementaryWebsiteTargetType?      @map("website_target_type")
+  websiteCoverageSnapshot WebsiteManagementCoverage?           @map("website_coverage_snapshot")
+  websiteResolutionState  ComplementaryWebsiteResolutionState? @map("website_resolution_state")
+  authorizationState      ComplementaryAuthorizationState?     @map("authorization_state")
+  createdByUserId         String?                              @map("created_by_user_id") @db.Uuid
+  withdrawnAt             DateTime?                            @map("withdrawn_at") @db.Timestamptz(6)
+  acceptedAt              DateTime?                            @map("accepted_at") @db.Timestamptz(6)
 
   catalogItem   ServiceCatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Restrict)
   tenant        Tenant?            @relation(fields: [tenantId], references: [id], onDelete: SetNull)
@@ -959,6 +999,8 @@ model ComplementaryServiceRequest {
   @@index([status])
   @@index([catalogItemId])
   @@index([tenantId])
+  @@index([createdByUserId])
+  @@index([websiteDomain])
   @@map("complementary_service_requests")
 }
 
@@ -980,11 +1022,12 @@ model ServiceQuotation {
 }
 
 model ServiceAssignment {
-  id           String    @id @default(uuid()) @db.Uuid
-  requestId    String    @map("request_id") @db.Uuid
-  assigneeNote String?   @map("assignee_note")
-  startedAt    DateTime? @map("started_at") @db.Timestamptz(6)
-  completedAt  DateTime? @map("completed_at") @db.Timestamptz(6)
+  id                 String                           @id @default(uuid()) @db.Uuid
+  requestId          String                           @map("request_id") @db.Uuid
+  assigneeNote       String?                          @map("assignee_note")
+  startedAt          DateTime?                        @map("started_at") @db.Timestamptz(6)
+  completedAt        DateTime?                        @map("completed_at") @db.Timestamptz(6)
+  authorizationState ComplementaryAuthorizationState? @map("authorization_state")
 
   request      ComplementaryServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
   usageRecords ServiceUsage[]

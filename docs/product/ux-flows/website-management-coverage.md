@@ -6,13 +6,36 @@
 | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | Project            | Unixsee public site, customer dashboard, and admin panel                                                             |
 | Flow or service    | Distinguish Unixsee-managed websites from externally hosted websites                                                 |
-| Version            | 0.1                                                                                                                  |
-| Status             | Proposed                                                                                                             |
+| Version            | 0.2                                                                                                                  |
+| Status             | Accepted                                                                                                             |
 | Date               | 2026-08-24                                                                                                           |
 | Primary owner      | Product and operations                                                                                               |
 | Reviewers required | Product, managed-infrastructure operations, complementary-service delivery, engineering, QA, accessibility, security |
 
 ## Executive decision
+
+### Accepted intake refinement (v0.2)
+
+Customers do not create Website records directly. The complementary-service
+request field may accept an existing Website or a typed domain. A typed domain
+is normalized and stored only on the request.
+
+An external Website record is created or reused only when staff explicitly
+accepts the request and an authorized tenant exists. Without a tenant,
+acceptance remains domain-only as `DEFERRED_NO_TENANT`. Service assignment and
+activation are later, independent states and may record
+`NOT_AUTHORIZED_AT_ACTIVATION`.
+
+This section supersedes later proposed wording that says customer submission
+“adds,” creates, or links an external Website. Rejection or withdrawal never
+creates a Website. Cross-tenant conflicts return a generic conflict without
+disclosing ownership. No complementary transition assigns or activates a
+managed-server plan.
+
+Detailed customer flow:
+[Customer complementary-service request](./client-complementary-service-request.md).
+Backend wire contract:
+[Customer complementary-service requests](../../backend/contracts/complementary-services-customer.md).
 
 Unixsee remains a managed-server company first. Complementary services may now
 be requested for websites whose infrastructure Unixsee does not manage.
@@ -31,16 +54,21 @@ complementary-service state.
 `UNCLASSIFIED` is not selectable for new records. The exact field and API enum
 names belong to technical design; the semantics above are the product contract.
 
+Migration decision (v0.2): every Website that predates this feature is backfilled
+to `UNIXSEE_MANAGED`, because the product previously admitted Website records only
+through the managed-server journey. `UNCLASSIFIED` remains reserved for future
+ambiguous imports or exceptional records that require staff review.
+
 ## Confidence summary
 
-| Area                          | Confidence                     | Reason                                                                                                      |
-| ----------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Product direction             | High                           | The owner confirmed managed servers remain primary and external websites may request complementary services |
-| Current journey               | High                           | Product docs, Prisma models, customer fixtures, and admin website views were inspected                      |
-| Classification model          | Medium                         | It resolves observed ambiguity but has not been tested with customers or staff                              |
-| Eligibility                   | High for current four families | SEO, design, product entry, and social support do not inherently require Unixsee-managed infrastructure     |
-| Migration and ownership rules | Low                            | Legacy classification evidence and external-domain verification policy are not approved                     |
-| Accessibility and measurement | Medium                         | Expert requirements are defined; no usability or analytics evidence exists                                  |
+| Area                          | Confidence                     | Reason                                                                                                       |
+| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Product direction             | High                           | The owner confirmed managed servers remain primary and external websites may request complementary services  |
+| Current journey               | High                           | Product docs, Prisma models, customer fixtures, and admin website views were inspected                       |
+| Classification model          | Medium                         | It resolves observed ambiguity but has not been tested with customers or staff                               |
+| Eligibility                   | High for current four families | SEO, design, product entry, and social support do not inherently require Unixsee-managed infrastructure      |
+| Migration and ownership rules | Medium                         | Legacy records have an accepted managed backfill; future authority evidence and reclassification remain open |
+| Accessibility and measurement | Medium                         | Expert requirements are defined; no usability or analytics evidence exists                                   |
 
 ## Outcome and scope
 
@@ -82,29 +110,29 @@ and meaning of its primary managed-server offer.
 
 ## Evidence and authority
 
-| ID    | Authority                 | Source                                                   | Finding                                                                                                           |
-| ----- | ------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| E-001 | Confirmed direction       | Product owner, 2026-08-24                                | External websites may request complementary services; managed servers remain the primary Unixsee offer            |
-| E-002 | Confirmed product context | `docs/architecture/overview.md` and Phase 1 §2           | Unixsee is positioned as a premium managed-infrastructure service; complementary services are secondary           |
-| E-003 | Observed documentation    | Phase 1 §12.1 and §16.1                                  | Existing language assumes managed websites and existing managed customers                                         |
-| E-004 | Observed data model       | `backend/prisma/schema.prisma`, `Website`                | Website has plan, plan activation, VPS, lifecycle, and telemetry fields but no explicit management-coverage field |
-| E-005 | Observed implementation   | Customer complementary-service fixtures and request page | Website choices contain only identity; no management distinction is available                                     |
-| E-006 | Observed implementation   | Admin and customer website lists/details                 | Plan, lifecycle, server, agent, and monitoring are shown, but management responsibility is not explicit           |
-| E-007 | Accepted contract         | `docs/backend/contracts/websites-admin.md`               | A linked plan is not necessarily active; plan linkage cannot represent management coverage safely                 |
-| E-008 | Observed backend          | Complementary-service request model and service          | Requests may exist without a website or tenant; no coverage eligibility rule is implemented                       |
+| ID    | Authority                 | Source                                          | Finding                                                                                                      |
+| ----- | ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| E-001 | Confirmed direction       | Product owner, 2026-08-24                       | External websites may request complementary services; managed servers remain the primary Unixsee offer       |
+| E-002 | Confirmed product context | `docs/architecture/overview.md` and Phase 1 §2  | Unixsee is positioned as a premium managed-infrastructure service; complementary services are secondary      |
+| E-003 | Observed documentation    | Phase 1 §12.1 and §16.1                         | Existing language assumes managed websites and existing managed customers                                    |
+| E-004 | Accepted implementation   | `backend/prisma/schema.prisma`, `Website`       | Website has explicit management coverage independent of plan, activation, VPS, lifecycle, and telemetry      |
+| E-005 | Accepted implementation   | Customer complementary-service request page     | Real catalog/Website data and a writable combobox expose identity and management coverage                    |
+| E-006 | Observed implementation   | Admin and customer website lists/details        | Plan, lifecycle, server, agent, and monitoring are shown, but management responsibility is not explicit      |
+| E-007 | Accepted contract         | `docs/backend/contracts/websites-admin.md`      | A linked plan is not necessarily active; plan linkage cannot represent management coverage safely            |
+| E-008 | Accepted implementation   | Complementary-service request model and service | Domain snapshot, target, coverage, resolution, and authorization remain explicit before and after acceptance |
 
 ### Assumptions and unknowns
 
-| ID    | Type     | Statement                                                                                             | Risk / validation                                             |
-| ----- | -------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| A-001 | Inferred | Tenant owners and tenant administrators may add an external website during authenticated intake       | Confirm in capability design                                  |
-| A-002 | Inferred | The four current complementary-service families are eligible for both coverage states                 | Confirm with each delivery lead                               |
-| A-003 | Inferred | External-domain authority can be attested at intake and verified later when a service requires access | Security and legal review                                     |
-| U-001 | Unknown  | What evidence is sufficient to classify legacy records as managed                                     | Define migration and exception review                         |
-| U-002 | Unknown  | Whether external-domain ownership must be verified before request, quotation, or assignment           | Product/security decision                                     |
-| U-003 | Unknown  | Which roles can change coverage and whether dual approval is required                                 | Capability decision                                           |
-| U-004 | Unknown  | Which managed benefits remain visible after offboarding                                               | Operations and retention policy                               |
-| U-005 | Unknown  | Whether future catalog items may be managed-only                                                      | Catalog policy; default must not silently become managed-only |
+| ID    | Type     | Statement                                                                                               | Risk / validation                                               |
+| ----- | -------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| A-001 | Accepted | Customers may type an external domain during intake; this creates only a request until staff acceptance | Enforced by the customer create contract                        |
+| A-002 | Inferred | The four current complementary-service families are eligible for both coverage states                   | Confirm with each delivery lead                                 |
+| A-003 | Inferred | External-domain authority can be attested at intake and verified later when a service requires access   | Security and legal review                                       |
+| D-004 | Accepted | Pre-feature Website records came only from the managed-server journey                                   | Backfill them to `UNIXSEE_MANAGED`; review only true exceptions |
+| U-002 | Unknown  | Whether external-domain ownership must be verified before request, quotation, or assignment             | Product/security decision                                       |
+| U-003 | Unknown  | Which roles can change coverage and whether dual approval is required                                   | Capability decision                                             |
+| U-004 | Unknown  | Which managed benefits remain visible after offboarding                                                 | Operations and retention policy                                 |
+| U-005 | Unknown  | Whether future catalog items may be managed-only                                                        | Catalog policy; default must not silently become managed-only   |
 
 ## Users and needs
 
@@ -438,10 +466,10 @@ eligibility appears as a secondary, truthful expansion.
 | D-003 | Capability matrix for classification changes               | Block mutation          | Product/security                                                 |
 | D-004 | Catalog eligibility representation                         | Conditional             | Product/backend                                                  |
 
-**Conditionally ready.** The cross-surface flow, terminology, current-family
-eligibility, and prototype acceptance criteria are ready. Production technical
-design and implementation are blocked by D-001–D-003 and legacy migration
-policy U-001.
+**Implemented for the accepted v0.2 intake scope.** The cross-surface flow,
+terminology, customer intake, staff acceptance, coverage persistence, legacy
+backfill, and lifecycle separation are implemented. Future reclassification,
+authority evidence, and managed-benefit retention remain policy follow-ups.
 
 ### Research questions
 

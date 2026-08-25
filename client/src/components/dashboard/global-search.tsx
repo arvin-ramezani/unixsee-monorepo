@@ -456,7 +456,7 @@ function SearchPopupContent({
         </div>
       )}
 
-      {query.trim() && totalMatches > visibleCount ? (
+      {!!query.trim() && totalMatches > visibleCount && (
         <div className="border-border border-t p-2">
           <Link
             href={{ pathname: "/dashboard/search", query: { q: query } }}
@@ -469,7 +469,7 @@ function SearchPopupContent({
             />
           </Link>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -9,11 +9,7 @@ import {
 } from "@/components/complementary-services/complementary-services-manager";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import type { Locale } from "@/i18n/routing";
-import {
-  complementaryServices,
-  consultationRequests,
-  serviceWebsites,
-} from "@/lib/data/complementary-services/complementary-services-data";
+import { fetchComplementaryServicesDashboardData } from "@/lib/complementary-services/complementary-services-api";
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -49,10 +45,16 @@ export default async function ComplementaryServicesPage({
 
   const initialTab: ComplementaryServicesTab =
     tabValue === "requests" || tabValue === "history" ? tabValue : "active";
+  const dashboardResult = await fetchComplementaryServicesDashboardData();
   const initialState: ComplementaryServicesState =
     stateValue === "loading" || stateValue === "error" || stateValue === "empty"
       ? stateValue
-      : "ready";
+      : dashboardResult.ok
+        ? "ready"
+        : "error";
+  const dashboardData = dashboardResult.ok
+    ? dashboardResult.data
+    : { services: [], requests: [], websites: [] };
 
   return (
     <DashboardShell
@@ -63,9 +65,9 @@ export default async function ComplementaryServicesPage({
     >
       <ComplementaryServicesHeader />
       <ComplementaryServicesManager
-        services={complementaryServices}
-        requests={consultationRequests}
-        websites={serviceWebsites}
+        services={dashboardData.services}
+        requests={dashboardData.requests}
+        websites={dashboardData.websites}
         initialTab={initialTab}
         initialState={initialState}
       />

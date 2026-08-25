@@ -2245,6 +2245,10 @@
     }
   },
   "Metadata": {
+    "default": {
+      "title": "Unixsee | Managed Infrastructure & Technical Services",
+      "description": "Managed hosting, performance optimization, and technical consulting for modern businesses."
+    },
     "dashboard": {
       "title": "Unixsee Dashboard",
       "description": "Manage websites, domains, and backups."
@@ -2359,6 +2363,8 @@
       "grid": "Grid view"
     },
     "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "pageNumber": "Page {page, number}",
@@ -2381,6 +2387,11 @@
       "successful": "Successful",
       "scheduled": "Scheduled",
       "needsReview": "Needs Review"
+    },
+    "coverage": {
+      "UNIXSEE_MANAGED": "Managed by Unixsee",
+      "EXTERNAL_INFRASTRUCTURE": "External hosting",
+      "UNCLASSIFIED": "Unclassified"
     },
     "descriptions": {
       "ecommerce": "eCommerce Store",
@@ -4044,7 +4055,9 @@
       "sortLabel": "Sort websites",
       "lastUpdated": "Sort: Last Updated",
       "name": "Sort: Name",
-      "reset": "Reset filters"
+      "reset": "Reset filters",
+      "coverageLabel": "Filter by coverage",
+      "coverage": "Coverage"
     },
     "table": {
       "caption": "All websites and their current service status",
@@ -4060,7 +4073,11 @@
       "emptyTitle": "No websites found",
       "emptyDescription": "Try changing your search or filters.",
       "clearFilters": "Clear filters",
-      "summary": "Showing {start, number} to {end, number} of {total, number} websites"
+      "summary": "Showing {start, number} to {end, number} of {total, number} websites",
+      "notApplicable": "Not applicable",
+      "complementaryOnly": "Complementary services only",
+      "externalComplementaryNote": "External hosting — complementary services only",
+      "externalNote": "This server isn't hosted or managed by Unixsee; infrastructure status, monitoring, and backup don't apply to it."
     },
     "help": {
       "title": "Need Help?",
@@ -4817,6 +4834,18 @@
       "one-time": "One-time",
       "not-sure": "Not sure"
     },
+    "coverageDescriptive": {
+      "UNIXSEE_MANAGED": "Hosted and managed by Unixsee",
+      "EXTERNAL_INFRASTRUCTURE": "External hosting — complementary services only",
+      "UNCLASSIFIED": "Coverage not yet classified"
+    },
+    "target": {
+      "placeholder": "example.com or choose a website",
+      "hint": "Choose a managed website or enter a domain with external hosting.",
+      "groupExternal": "External hosting",
+      "useForRequest": "Use {domain} for this request",
+      "externalNote": "External hosting — Unixsee does not manage this server. This domain is only the context for the request and is added to your websites list only after admin approval and ownership verification."
+    },
     "tabs": {
       "label": "Service lifecycle",
       "active": "Active",
@@ -4859,7 +4888,8 @@
       "submitted": "Submitted",
       "view": "View request",
       "cancel": "Cancel request",
-      "cancelledFeedback": "The consultation request was cancelled."
+      "cancelledFeedback": "The consultation request was cancelled.",
+      "withdrawError": "Cancelling the request failed. Please try again."
     },
     "cancelDialog": {
       "title": "Cancel this request?",
@@ -4959,7 +4989,11 @@
         "website": "Select a website.",
         "engagement": "Select an engagement type.",
         "title": "Enter a short request title.",
-        "description": "Add at least 20 characters so we can understand the request."
+        "description": "Add at least 20 characters so we can understand the request.",
+        "profileIncomplete": "To submit a request, complete your full name and at least one phone number or email in your profile.",
+        "conflict": "This domain can't be used. The domain owner's information is not shown.",
+        "validation": "The request details are invalid. Check the domain and required fields.",
+        "generic": "The request could not be submitted. Please try again."
       },
       "submit": "Submit consultation request",
       "submitting": "Submitting request...",
@@ -4968,7 +5002,22 @@
       "success": {
         "title": "Consultation request submitted",
         "description": "Your local sample request is ready for Unixsee review. No data was sent or uploaded.",
-        "action": "View requests"
+        "action": "View requests",
+        "submitted": "Your request for <ltr>{domain}</ltr> has been submitted and will appear in your request history. This does not create an active website or service."
+      },
+      "loadError": {
+        "title": "Couldn't load the form",
+        "description": "The service or website list is unavailable. Please reload the page."
+      },
+      "review": {
+        "title": "Review request",
+        "service": "Service",
+        "domain": "Domain",
+        "coverage": "Management coverage",
+        "externalNote": "Complementary services do not include hosting, monitoring, backups, security, or server management."
+      },
+      "submitError": {
+        "title": "Request submission failed"
       }
     },
     "detail": {
@@ -4980,6 +5029,7 @@
       "usageDescription": "Usage in the current service period.",
       "progressTitle": "Project progress",
       "progressDescription": "Current stage and expected completion for this one-time project.",
+      "usageEmpty": "Usage details have not been recorded yet.",
       "scopeTitle": "Included scope",
       "scopeDescription": "The agreed work included in this engagement.",
       "scopeItems": {

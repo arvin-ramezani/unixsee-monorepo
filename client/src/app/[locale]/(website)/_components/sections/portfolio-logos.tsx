@@ -605,9 +605,9 @@ export default function PortfolioLogos({ id }: PortfolioLogosProps) {
                 key={cellIndex}
                 className={`relative flex h-24 items-center justify-center overflow-hidden ${borderClasses}`}
               >
-                {logo ? (
+                {logo && (
                   <LogoCell logo={logo} shouldAnimate={shouldAnimate} />
-                ) : null}
+                )}
               </div>
             );
           })}

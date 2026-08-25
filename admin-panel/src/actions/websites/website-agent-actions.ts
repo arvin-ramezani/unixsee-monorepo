@@ -11,6 +11,8 @@ export type AdminWebsiteAgentContext = {
   id: string;
   domain: string;
   displayName?: string | null;
+  managementCoverage?:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
   wordpressAdminUrl?: string | null;
   status?: string;
   planActivatedAt?: string | null;

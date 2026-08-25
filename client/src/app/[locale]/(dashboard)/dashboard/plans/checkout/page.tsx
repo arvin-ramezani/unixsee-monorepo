@@ -88,12 +88,12 @@ export default async function CheckoutPage({
               <dt className="text-muted-foreground">{t("planLabel")}</dt>
               <dd className="font-medium">{plan.name}</dd>
             </div>
-            {plan.description ? (
+            {Boolean(plan.description) && (
               <div className="space-y-1">
                 <dt className="text-muted-foreground">{t("detailsLabel")}</dt>
                 <dd className="text-sm leading-6">{plan.description}</dd>
               </div>
-            ) : null}
+            )}
           </dl>
         </Panel>
       </div>

@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
+import { ArrowLeft } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { RequestServiceAside } from "@/components/complementary-services/request-service-aside";
 import { RequestServiceForm } from "@/components/complementary-services/request-service-form";
+import ServicesQuickActions from "@/components/complementary-services/services-quick-actions";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { fetchComplementaryRequestFormData } from "@/lib/complementary-services/complementary-services-api";
 import {
-  complementaryServices,
-  consultationRequests,
+  catalogCodeToServiceType,
+  type ComplementaryRequestFormData,
+} from "@/lib/complementary-services/types";
+import {
   serviceTypes,
-  serviceWebsites,
   type ComplementaryServiceType,
 } from "@/lib/data/complementary-services/complementary-services-data";
-import { ArrowLeft } from "lucide-react";
-import ServicesQuickActions from "@/components/complementary-services/services-quick-actions";
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -24,6 +26,12 @@ interface PageProps {
     state?: string | string[];
   }>;
 }
+
+const EMPTY_FORM_DATA: ComplementaryRequestFormData = {
+  catalog: [],
+  websites: [],
+  requests: [],
+};
 
 export async function generateMetadata({
   params,
@@ -47,6 +55,8 @@ export default async function RequestServicePage({
 
   const t = await getTranslations("ComplementaryServices");
   const query = await searchParams;
+  const formResult = await fetchComplementaryRequestFormData();
+  const formData = formResult.ok ? formResult.data : EMPTY_FORM_DATA;
 
   const serviceValue = Array.isArray(query.service)
     ? query.service[0]
@@ -62,7 +72,7 @@ export default async function RequestServicePage({
     ? (serviceValue as ComplementaryServiceType)
     : "";
 
-  const initialWebsite = serviceWebsites.some(
+  const initialWebsite = formData.websites.some(
     (item) => item.id === websiteValue,
   )
     ? websiteValue!
@@ -104,12 +114,15 @@ export default async function RequestServicePage({
 
           <div className="min-w-0">
             <RequestServiceForm
-              websites={serviceWebsites}
-              activeServices={complementaryServices}
-              requests={consultationRequests}
+              catalog={formData.catalog.filter((item) =>
+                Boolean(catalogCodeToServiceType(item.code)),
+              )}
+              websites={formData.websites}
+              requests={formData.requests}
               initialService={initialService}
               initialWebsite={initialWebsite}
               previewState={stateValue}
+              loadError={!formResult.ok}
             />
           </div>
 

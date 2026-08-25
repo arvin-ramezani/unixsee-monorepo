@@ -144,7 +144,7 @@ export function ServiceUsage({
         <ProjectProgress usage={usage} />
       )}
       {showDate &&
-      (usage.type === "quota" ? usage.renewsAt : usage.expectedCompletionAt) ? (
+      !!(usage.type === "quota" ? usage.renewsAt : usage.expectedCompletionAt) && (
         <p className="text-muted-foreground mt-3 text-xs">
           {usage.type === "quota"
             ? t("renews", {
@@ -157,7 +157,7 @@ export function ServiceUsage({
                 ),
               })}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }

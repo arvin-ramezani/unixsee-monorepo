@@ -51,7 +51,7 @@ export default function ProblemSectionCarousel({}: ProblemSectionCarouselType) {
             className="rounded-3xl lg:p-6 lg:px-8 2xl:p-16"
           >
             <ProblemSectionCard
-              videoIndex={index + 2}
+              index={index}
               title={t(`items.${item.key}.title`)}
               description={t(`items.${item.key}.description`)}
               subTitle={t(`items.${item.key}.subTitle`)}
@@ -61,7 +61,7 @@ export default function ProblemSectionCarousel({}: ProblemSectionCarouselType) {
               isFirstIndex={index === 0}
             />
             <MobileProblemSectionCard
-              videoIndex={index + 2}
+              index={index}
               title={t(`items.${item.key}.title`)}
               description={t(`items.${item.key}.description`)}
               tags={t.raw(`items.${item.key}.tags`)}

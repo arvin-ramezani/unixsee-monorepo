@@ -9,13 +9,14 @@ import { slideIn } from "@/lib/variants";
 import { SLIDE_IN_VARIANT } from "@/constants/variants";
 import { cn } from "@/lib/utils";
 import { Hash } from "lucide-react";
+import { Video } from "@/components/ui/video";
 
 const MotionCardTitle = motion.create(CardTitle);
 const MotionCardDescription = motion.create(CardDescription);
 const cardBackgroundColor = "var(--problem-card-background)";
 
 type ProblemSectionCardProps = {
-  videoIndex: number;
+  index: number;
   title: string;
   description?: string;
   subTitle?: string;
@@ -26,7 +27,7 @@ type ProblemSectionCardProps = {
 };
 
 export function ProblemSectionCard({
-  videoIndex,
+  index,
   title,
   description,
   subTitle,
@@ -128,17 +129,25 @@ export function ProblemSectionCard({
           {/* <div className="h-full w-full bg-black/35 lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]" /> */}
           {/* <div className="relative h-full w-full lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]"> */}
           <div className="relative aspect-video h-full w-full lg:m-auto lg:h-auto lg:w-full">
-            <video
-              src={`/videos/unixsee-team/new/${videoIndex === 2 ? "2.mp4" : "3.MP4"}`}
-              className="absolute inset-0 h-full w-full object-contain"
-              playsInline
-              autoPlay
-              muted
-              loop
-              controlsList="nodownload noplaybackrate"
-              disableRemotePlayback
-              controls
-            />
+            {index === 0 ? (
+              <Video
+                className="absolute inset-0 h-full w-full object-contain"
+                poster="/videos/unixsee-team/slide-1/slide-1-poster.webp"
+                desktopMp4="/videos/unixsee-team/slide-1/slide-1-wide.mp4"
+                desktopWebm="/videos/unixsee-team/slide-1/slide-1-wide.webm"
+                mobileMp4="/videos/unixsee-team/slide-1/slide-1-mobile.mp4"
+                mobileWebm="/videos/unixsee-team/slide-1/slide-1-mobile.webm"
+              />
+            ) : (
+              <Video
+                className="absolute inset-0 h-full w-full object-contain"
+                poster="/videos/unixsee-team/slide-2/slide-2-poster.webp"
+                desktopMp4="/videos/unixsee-team/slide-2/slide-2-wide.mp4"
+                desktopWebm="/videos/unixsee-team/slide-2/slide-2-wide.webm"
+                mobileMp4="/videos/unixsee-team/slide-2/slide-2-mobile.mp4"
+                mobileWebm="/videos/unixsee-team/slide-2/slide-2-mobile.webm"
+              />
+            )}
           </div>
         </div>
       </motion.div>

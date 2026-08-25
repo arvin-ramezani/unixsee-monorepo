@@ -20,6 +20,8 @@ A change is complete when every applicable item below is satisfied or explicitly
 - [ ] Strict TypeScript and existing repository conventions are preserved.
 - [ ] Loading, empty, error, permission, and cleanup states are handled where relevant.
 - [ ] Persian RTL and English LTR behavior were checked for user-facing changes.
+- [ ] No new hardcoded user-facing strings; new copy was added to `src/messages/{en,fa}.json` and read via `t()`/`common()` (no Persian literals in components).
+- [ ] Conditionals are positive-only (`{cond && <X/>}`); a ternary is used only when both branches render UI, never `{cond ? <X/> : null}`.
 - [ ] Accessibility and responsive behavior were reviewed.
 - [ ] No unrelated refactor, dependency, generated file, backup, or debug output was added.
 

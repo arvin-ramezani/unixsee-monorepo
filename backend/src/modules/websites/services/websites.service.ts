@@ -6,7 +6,10 @@ import {
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
-import { WebsiteLifecycleStatus } from '#/generated/prisma/enums.js';
+import {
+  WebsiteLifecycleStatus,
+  WebsiteManagementCoverage,
+} from '#/generated/prisma/enums.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -23,6 +26,9 @@ export class WebsitesService {
     const tenantIds = await this.tenantAccess.getAccessibleTenantIds(userId);
     const websites = await this.prisma.website.findMany({
       where: { tenantId: { in: tenantIds } },
+      include: {
+        plan: { select: { id: true, code: true, nameEn: true } },
+      },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -55,6 +61,7 @@ export class WebsitesService {
     tenantId?: string;
     userId?: string;
     search?: string;
+    managementCoverage?: WebsiteManagementCoverage;
   }) {
     let tenantFilter:
       | { tenantId: string }
@@ -75,6 +82,9 @@ export class WebsitesService {
 
     const where = {
       ...tenantFilter,
+      ...(params?.managementCoverage
+        ? { managementCoverage: params.managementCoverage }
+        : {}),
       ...(params?.search
         ? {
             OR: [
@@ -195,6 +205,7 @@ export class WebsitesService {
       data: {
         tenantId: input.tenantId,
         vpsNodeId: input.vpsNodeId,
+        managementCoverage: WebsiteManagementCoverage.UNIXSEE_MANAGED,
         domain: input.domain,
         displayName: input.displayName,
         planId: input.planId,

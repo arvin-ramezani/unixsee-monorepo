@@ -18,6 +18,7 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
   const t = useTranslations("Websites");
   const common = useTranslations("Common");
   const format = useFormatter();
+  const isManaged = website.managementCoverage === "UNIXSEE_MANAGED";
 
   return (
     <article className="border-border bg-background hover:bg-muted/30 flex flex-col rounded-xl border p-5 transition-colors">
@@ -38,7 +39,13 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
             {common(`descriptions.${website.description}`)}
           </p>
         </div>
-        <StatusBadge status={website.status} />
+        {isManaged ? (
+          <StatusBadge status={website.status} />
+        ) : (
+          <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-1 text-[11px] font-medium">
+            {common("coverage.EXTERNAL_INFRASTRUCTURE")}
+          </span>
+        )}
       </div>
 
       <Link
@@ -53,11 +60,16 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
         />
       </Link>
 
+      {!isManaged && (
+        <p className="text-muted-foreground mt-3 text-xs leading-5">
+          {t("table.externalNote")}
+        </p>
+      )}
       <dl className="border-border mt-4 grid grid-cols-2 gap-3 border-t pt-4 text-sm">
         <div>
           <dt className="text-muted-foreground text-xs">{t("table.plan")}</dt>
           <dd className="mt-1 font-medium">
-            {common(`plans.${website.plan}`)}
+            {isManaged ? common(`plans.${website.plan}`) : t("table.complementaryOnly")}
           </dd>
         </div>
         <div>

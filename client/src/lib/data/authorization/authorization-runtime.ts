@@ -8,6 +8,8 @@ import {
   type AuthorizationStatus,
 } from "@/lib/data/authorization/authorization-data";
 
+/* eslint-disable no-restricted-syntax -- Prototype-only in-memory mock data (relative-time labels, demo staff reasons, Persian dates); real content is served by NestJS once persistence is wired. */
+
 /**
  * Prototype-only in-memory authorization state for the signed-in customer.
  * NestJS will own persistence later.

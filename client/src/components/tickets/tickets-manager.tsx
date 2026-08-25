@@ -511,12 +511,12 @@ export function TicketsManager({
                   <div className="flex items-start gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        {ticket.unread ? (
+                        {ticket.unread && (
                           <span
                             className="bg-warning size-2 shrink-0 rounded-full"
                             aria-label={t("unread")}
                           />
-                        ) : null}
+                        )}
                         <h3 className="truncate font-semibold">
                           {ticket.subject}
                         </h3>

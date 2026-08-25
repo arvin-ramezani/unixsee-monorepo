@@ -22,6 +22,7 @@ docs/backend/contracts/
 ├── ticket-service-categories.md   # shared ticket service taxonomy
 ├── tickets-customer.md            # customer dashboard ticket API
 ├── tickets-admin.md               # staff queue ticket API
+├── complementary-services-customer.md # customer complementary target intake/acceptance
 ├── plan-requests-customer.md      # customer plan-request create/list
 ├── plan-requests-public.md        # anonymous public plan-request intake
 ├── plan-requests-admin.md         # staff plan-request queue
@@ -33,20 +34,21 @@ docs/backend/contracts/
 
 ## Index
 
-| Contract                                                         | Audience                        | Purpose                                                                      |
-| ---------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------- |
-| [`api-errors.md`](./api-errors.md)                               | Shared                          | `ApiResponse` failure envelope, global codes, frontend mapping rules         |
-| [`ticket-service-categories.md`](./ticket-service-categories.md) | Shared                          | Canonical ticket service enum for client, admin, and Nest                    |
-| [`tickets-customer.md`](./tickets-customer.md)                   | `/api/v1/tickets/*`             | Customer create, list, detail, reply, attach, close, reopen                  |
-| [`tickets-admin.md`](./tickets-admin.md)                         | `/api/v1/admin/tickets/*`       | Staff list, detail (incl. internal notes), assign, resolve, reopen, messages |
-| [`plan-requests-customer.md`](./plan-requests-customer.md)       | `/api/v1/plan-requests/*`       | Logged-in create, list, detail                                               |
-| [`plan-requests-public.md`](./plan-requests-public.md)           | `/api/v1/public/plan-requests`  | Anonymous create; account guard                                              |
-| [`plan-requests-admin.md`](./plan-requests-admin.md)             | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline                                    |
-| [`websites-admin.md`](./websites-admin.md)                       | `/api/v1/admin/websites/*`      | Staff website creation, assignment, and plan activation state                |
-| [`servers-admin.md`](./servers-admin.md)                         | `/api/v1/admin/servers/*`       | Staff servers, enrollment, agent revoke, server delete                       |
-| [`users-admin.md`](./users-admin.md)                             | `/api/v1/admin/users/*`         | Staff customer directory + tenant membership summary                         |
-| [`users-me-contacts.md`](./users-me-contacts.md)                 | `/api/v1/users/me/contacts/*`   | Customer phone/email OTP verification                                        |
-| [`unixsee-messages.md`](./unixsee-messages.md)                   | Customer + admin                | Tenant-targeted one-way Unixsee messages                                     |
+| Contract                                                                     | Audience                        | Purpose                                                                           |
+| ---------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------- |
+| [`api-errors.md`](./api-errors.md)                                           | Shared                          | `ApiResponse` failure envelope, global codes, frontend mapping rules              |
+| [`ticket-service-categories.md`](./ticket-service-categories.md)             | Shared                          | Canonical ticket service enum for client, admin, and Nest                         |
+| [`tickets-customer.md`](./tickets-customer.md)                               | `/api/v1/tickets/*`             | Customer create, list, detail, reply, attach, close, reopen                       |
+| [`tickets-admin.md`](./tickets-admin.md)                                     | `/api/v1/admin/tickets/*`       | Staff list, detail (incl. internal notes), assign, resolve, reopen, messages      |
+| [`complementary-services-customer.md`](./complementary-services-customer.md) | Customer + admin acceptance     | Domain-only intake, delayed external Website resolution, and lifecycle separation |
+| [`plan-requests-customer.md`](./plan-requests-customer.md)                   | `/api/v1/plan-requests/*`       | Logged-in create, list, detail                                                    |
+| [`plan-requests-public.md`](./plan-requests-public.md)                       | `/api/v1/public/plan-requests`  | Anonymous create; account guard                                                   |
+| [`plan-requests-admin.md`](./plan-requests-admin.md)                         | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline                                         |
+| [`websites-admin.md`](./websites-admin.md)                                   | `/api/v1/admin/websites/*`      | Staff website creation, assignment, and plan activation state                     |
+| [`servers-admin.md`](./servers-admin.md)                                     | `/api/v1/admin/servers/*`       | Staff servers, enrollment, agent revoke, server delete                            |
+| [`users-admin.md`](./users-admin.md)                                         | `/api/v1/admin/users/*`         | Staff customer directory + tenant membership summary                              |
+| [`users-me-contacts.md`](./users-me-contacts.md)                             | `/api/v1/users/me/contacts/*`   | Customer phone/email OTP verification                                             |
+| [`unixsee-messages.md`](./unixsee-messages.md)                               | Customer + admin                | Tenant-targeted one-way Unixsee messages                                          |
 
 ## Writing rules
 

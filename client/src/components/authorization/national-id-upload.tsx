@@ -80,7 +80,7 @@ export function NationalIdUpload({
             : "border-border bg-muted/30",
         )}
       >
-        {previewUrl ? (
+        {!!previewUrl && (
           // Prototype preview only — Nest will serve capability-gated images later.
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -88,7 +88,7 @@ export function NationalIdUpload({
             alt={tFields("document")}
             className="mb-4 max-h-56 w-full rounded-lg object-contain"
           />
-        ) : null}
+        )}
 
         <p id={statusId} className="text-sm" aria-live="polite">
           {announced}
@@ -105,7 +105,7 @@ export function NationalIdUpload({
             <ImagePlus aria-hidden="true" className="size-4" />
             {fileName ? t("replace") : t("upload")}
           </Button>
-          {fileName ? (
+          {!!fileName && (
             <Button
               type="button"
               variant="ghost"
@@ -116,7 +116,7 @@ export function NationalIdUpload({
               <Trash2 aria-hidden="true" className="size-4" />
               {t("remove")}
             </Button>
-          ) : null}
+          )}
         </div>
 
         <input

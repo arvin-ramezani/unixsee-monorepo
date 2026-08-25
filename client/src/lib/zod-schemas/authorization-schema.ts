@@ -8,8 +8,10 @@ const iranPostalCodeRegex = /^(\d{10}|[۰-۹]{10})$/;
 const iranNationalMobileRegex = /^(0?9\d{9}|\+989\d{9}|۰?۹[۰-۹]{9})$/;
 
 function toAsciiDigits(value: string) {
-  return value.replace(/[۰-۹]/g, (digit) =>
-    String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)),
+  return value.replace(
+    /[۰-۹]/g,
+    // eslint-disable-next-line no-restricted-syntax -- Persian-digit lookup table for numeral->ASCII conversion, not UI copy.
+    (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)),
   );
 }
 

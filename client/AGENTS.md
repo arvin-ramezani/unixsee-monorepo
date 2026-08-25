@@ -37,8 +37,14 @@ blocks change, update its skeleton in the same change. Detailed rules:
   agent/VPS communication.
 - The API base URL already ends in `/api/v1`; pass `/auth/otp/request`, never
   `/v1/auth/otp/request`, to fetch helpers.
-- Preserve translations, Persian RTL, English LTR, keyboard behavior, focus,
-  and ARIA semantics.
+- All user-facing text is next-intl. Never hardcode UI strings, including
+  Persian: add copy to `src/messages/en.json` and `src/messages/fa.json`
+  (mirror keys in both) and read it with `useTranslations`/`t()` — use
+  `common(...)` for shared enum labels. A `no-restricted-syntax` lint rule
+  flags Persian literals (enforced at `error`; see `docs/engineering/nextjs.md`).
+  ❌ `label="پوشش مدیریتی"`   ✅ `label={t("filters.coverage")}`
+- Preserve existing translations, Persian RTL, English LTR, keyboard behavior,
+  focus, and ARIA semantics.
 - Preserve positive-only JSX: `{condition && <Component />}`; coerce
   strings/numbers first. Use a ternary only when both branches render UI.
 - Keep code, comments, file names, and technical docs in English.

@@ -183,12 +183,12 @@ export default function Story({ className }: StoryProps) {
             <span className="text-xs font-medium text-white/70">
               {activeStory.createdAt}
             </span>
-            {isActiveProfileSeen ? (
+            {isActiveProfileSeen && (
               <span className="inline-flex size-4 items-center justify-center rounded-full bg-white/16 text-white/86 ring-1 ring-white/18 backdrop-blur-sm">
                 <CheckCircle2Icon className="size-3" />
                 <span className="sr-only">Seen</span>
               </span>
-            ) : null}
+            )}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
@@ -598,7 +598,7 @@ export default function Story({ className }: StoryProps) {
                       </motion.div>
                     </AnimatePresence>
 
-                    {mobileSwipeTargetProfile && mobileSwipeTargetStory ? (
+                    {mobileSwipeTargetProfile && mobileSwipeTargetStory && (
                       <motion.div
                         key={`mobile-preview-${mobileSwipeTargetProfile.name}`}
                         animate={{
@@ -638,7 +638,7 @@ export default function Story({ className }: StoryProps) {
                         )}
                         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/70 via-black/35 to-transparent" />
                       </motion.div>
-                    ) : null}
+                    )}
 
                     <button
                       type="button"
@@ -831,7 +831,7 @@ export default function Story({ className }: StoryProps) {
                                 />
                               )}
                               <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/70 via-black/35 to-transparent" />
-                              {isSeenPreview ? (
+                              {isSeenPreview && (
                                 <>
                                   <div className="pointer-events-none absolute inset-0 bg-black/38" />
                                   <div className="absolute inset-s-3 top-3 z-10 flex size-7 items-center justify-center rounded-full bg-black/42 text-white/88 ring-1 ring-white/16 backdrop-blur-sm">
@@ -839,8 +839,8 @@ export default function Story({ className }: StoryProps) {
                                     <span className="sr-only">Seen</span>
                                   </div>
                                 </>
-                              ) : null}
-                              {isActiveProfile ? (
+                              )}
+                              {isActiveProfile && (
                                 <>
                                   <button
                                     type="button"
@@ -865,10 +865,10 @@ export default function Story({ className }: StoryProps) {
                                     <span className="sr-only">Next story</span>
                                   </button>
                                 </>
-                              ) : null}
-                              {isActiveProfile ? storyMetaOverlay : null}
+                              )}
+                              {isActiveProfile && storyMetaOverlay}
                             </div>
-                            {isActiveProfile ? (
+                            {isActiveProfile && (
                               <>
                                 <button
                                   type="button"
@@ -903,7 +903,7 @@ export default function Story({ className }: StoryProps) {
                                   <span className="sr-only">Next story</span>
                                 </button>
                               </>
-                            ) : null}
+                            )}
                           </motion.div>
                         );
                       })}

@@ -43,6 +43,7 @@ export type WebsiteMinAggregateOutputType = {
   vpsNodeId: string | null
   planId: string | null
   planActivatedAt: Date | null
+  managementCoverage: $Enums.WebsiteManagementCoverage | null
   domain: string | null
   displayName: string | null
   directAdminUser: string | null
@@ -66,6 +67,7 @@ export type WebsiteMaxAggregateOutputType = {
   vpsNodeId: string | null
   planId: string | null
   planActivatedAt: Date | null
+  managementCoverage: $Enums.WebsiteManagementCoverage | null
   domain: string | null
   displayName: string | null
   directAdminUser: string | null
@@ -89,6 +91,7 @@ export type WebsiteCountAggregateOutputType = {
   vpsNodeId: number
   planId: number
   planActivatedAt: number
+  managementCoverage: number
   domain: number
   displayName: number
   directAdminUser: number
@@ -124,6 +127,7 @@ export type WebsiteMinAggregateInputType = {
   vpsNodeId?: true
   planId?: true
   planActivatedAt?: true
+  managementCoverage?: true
   domain?: true
   displayName?: true
   directAdminUser?: true
@@ -147,6 +151,7 @@ export type WebsiteMaxAggregateInputType = {
   vpsNodeId?: true
   planId?: true
   planActivatedAt?: true
+  managementCoverage?: true
   domain?: true
   displayName?: true
   directAdminUser?: true
@@ -170,6 +175,7 @@ export type WebsiteCountAggregateInputType = {
   vpsNodeId?: true
   planId?: true
   planActivatedAt?: true
+  managementCoverage?: true
   domain?: true
   displayName?: true
   directAdminUser?: true
@@ -280,6 +286,7 @@ export type WebsiteGroupByOutputType = {
   vpsNodeId: string | null
   planId: string | null
   planActivatedAt: Date | null
+  managementCoverage: $Enums.WebsiteManagementCoverage
   domain: string
   displayName: string | null
   directAdminUser: string | null
@@ -326,6 +333,7 @@ export type WebsiteWhereInput = {
   vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planActivatedAt?: Prisma.DateTimeNullableFilter<"Website"> | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFilter<"Website"> | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -366,6 +374,7 @@ export type WebsiteOrderByWithRelationInput = {
   vpsNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   planActivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  managementCoverage?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -410,6 +419,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planActivatedAt?: Prisma.DateTimeNullableFilter<"Website"> | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFilter<"Website"> | $Enums.WebsiteManagementCoverage
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -449,6 +459,7 @@ export type WebsiteOrderByWithAggregationInput = {
   vpsNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
   planId?: Prisma.SortOrderInput | Prisma.SortOrder
   planActivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  managementCoverage?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   directAdminUser?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -480,6 +491,7 @@ export type WebsiteScalarWhereWithAggregatesInput = {
   vpsNodeId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableWithAggregatesFilter<"Website"> | string | null
   planActivatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Website"> | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageWithAggregatesFilter<"Website"> | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringWithAggregatesFilter<"Website"> | string
   displayName?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
@@ -499,6 +511,7 @@ export type WebsiteScalarWhereWithAggregatesInput = {
 export type WebsiteCreateInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -539,6 +552,7 @@ export type WebsiteUncheckedCreateInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -571,6 +585,7 @@ export type WebsiteUncheckedCreateInput = {
 export type WebsiteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -611,6 +626,7 @@ export type WebsiteUncheckedUpdateInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -647,6 +663,7 @@ export type WebsiteCreateManyInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -666,6 +683,7 @@ export type WebsiteCreateManyInput = {
 export type WebsiteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -689,6 +707,7 @@ export type WebsiteUncheckedUpdateManyInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -722,6 +741,7 @@ export type WebsiteCountOrderByAggregateInput = {
   vpsNodeId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   planActivatedAt?: Prisma.SortOrder
+  managementCoverage?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
@@ -750,6 +770,7 @@ export type WebsiteMaxOrderByAggregateInput = {
   vpsNodeId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   planActivatedAt?: Prisma.SortOrder
+  managementCoverage?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
@@ -773,6 +794,7 @@ export type WebsiteMinOrderByAggregateInput = {
   vpsNodeId?: Prisma.SortOrder
   planId?: Prisma.SortOrder
   planActivatedAt?: Prisma.SortOrder
+  managementCoverage?: Prisma.SortOrder
   domain?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   directAdminUser?: Prisma.SortOrder
@@ -928,6 +950,10 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeNestedInput = {
   update?: Prisma.WebsiteUpdateWithWhereUniqueWithoutVpsNodeInput | Prisma.WebsiteUpdateWithWhereUniqueWithoutVpsNodeInput[]
   updateMany?: Prisma.WebsiteUpdateManyWithWhereWithoutVpsNodeInput | Prisma.WebsiteUpdateManyWithWhereWithoutVpsNodeInput[]
   deleteMany?: Prisma.WebsiteScalarWhereInput | Prisma.WebsiteScalarWhereInput[]
+}
+
+export type EnumWebsiteManagementCoverageFieldUpdateOperationsInput = {
+  set?: $Enums.WebsiteManagementCoverage
 }
 
 export type EnumWebsiteLifecycleStatusFieldUpdateOperationsInput = {
@@ -1189,6 +1215,7 @@ export type WebsiteUpdateOneWithoutUnixseeMessagesNestedInput = {
 export type WebsiteCreateWithoutUserInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1227,6 +1254,7 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1292,6 +1320,7 @@ export type WebsiteScalarWhereInput = {
   vpsNodeId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planId?: Prisma.UuidNullableFilter<"Website"> | string | null
   planActivatedAt?: Prisma.DateTimeNullableFilter<"Website"> | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFilter<"Website"> | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFilter<"Website"> | string
   displayName?: Prisma.StringNullableFilter<"Website"> | string | null
   directAdminUser?: Prisma.StringNullableFilter<"Website"> | string | null
@@ -1311,6 +1340,7 @@ export type WebsiteScalarWhereInput = {
 export type WebsiteCreateWithoutTenantInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1349,6 +1379,7 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1407,6 +1438,7 @@ export type WebsiteUpdateManyWithWhereWithoutTenantInput = {
 export type WebsiteCreateWithoutVpsNodeInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1445,6 +1477,7 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   tenantId: string
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1503,6 +1536,7 @@ export type WebsiteUpdateManyWithWhereWithoutVpsNodeInput = {
 export type WebsiteCreateWithoutDiscoveriesInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1542,6 +1576,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1589,6 +1624,7 @@ export type WebsiteUpdateToOneWithWhereWithoutDiscoveriesInput = {
 export type WebsiteUpdateWithoutDiscoveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1628,6 +1664,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1659,6 +1696,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
 export type WebsiteCreateWithoutTrafficSnapshotsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1698,6 +1736,7 @@ export type WebsiteUncheckedCreateWithoutTrafficSnapshotsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1745,6 +1784,7 @@ export type WebsiteUpdateToOneWithWhereWithoutTrafficSnapshotsInput = {
 export type WebsiteUpdateWithoutTrafficSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1784,6 +1824,7 @@ export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1815,6 +1856,7 @@ export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
 export type WebsiteCreateWithoutMetricsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1854,6 +1896,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -1901,6 +1944,7 @@ export type WebsiteUpdateToOneWithWhereWithoutMetricsInput = {
 export type WebsiteUpdateWithoutMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1940,6 +1984,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1971,6 +2016,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
 export type WebsiteCreateWithoutProbeMetricsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2010,6 +2056,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2057,6 +2104,7 @@ export type WebsiteUpdateToOneWithWhereWithoutProbeMetricsInput = {
 export type WebsiteUpdateWithoutProbeMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2096,6 +2144,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2127,6 +2176,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
 export type WebsiteCreateWithoutSslMetricsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2166,6 +2216,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2213,6 +2264,7 @@ export type WebsiteUpdateToOneWithWhereWithoutSslMetricsInput = {
 export type WebsiteUpdateWithoutSslMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2252,6 +2304,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2283,6 +2336,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
 export type WebsiteCreateWithoutSslInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2322,6 +2376,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2369,6 +2424,7 @@ export type WebsiteUpdateToOneWithWhereWithoutSslInput = {
 export type WebsiteUpdateWithoutSslInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2408,6 +2464,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2439,6 +2496,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
 export type WebsiteCreateWithoutAlertsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2478,6 +2536,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2525,6 +2584,7 @@ export type WebsiteUpdateToOneWithWhereWithoutAlertsInput = {
 export type WebsiteUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2564,6 +2624,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2595,6 +2656,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
 export type WebsiteCreateWithoutPlanInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2633,6 +2695,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   tenantId: string
   vpsNodeId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2691,6 +2754,7 @@ export type WebsiteUpdateManyWithWhereWithoutPlanInput = {
 export type WebsiteCreateWithoutPlanRequestsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2730,6 +2794,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2777,6 +2842,7 @@ export type WebsiteUpdateToOneWithWhereWithoutPlanRequestsInput = {
 export type WebsiteUpdateWithoutPlanRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2816,6 +2882,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2847,6 +2914,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
 export type WebsiteCreateWithoutComplementaryRequestsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2886,6 +2954,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -2933,6 +3002,7 @@ export type WebsiteUpdateToOneWithWhereWithoutComplementaryRequestsInput = {
 export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2972,6 +3042,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3003,6 +3074,7 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
 export type WebsiteCreateWithoutTicketsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3042,6 +3114,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3089,6 +3162,7 @@ export type WebsiteUpdateToOneWithWhereWithoutTicketsInput = {
 export type WebsiteUpdateWithoutTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3128,6 +3202,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3159,6 +3234,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
 export type WebsiteCreateWithoutActivitiesInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3198,6 +3274,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3245,6 +3322,7 @@ export type WebsiteUpdateToOneWithWhereWithoutActivitiesInput = {
 export type WebsiteUpdateWithoutActivitiesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3284,6 +3362,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3315,6 +3394,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
 export type WebsiteCreateWithoutOperationalActionsInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3354,6 +3434,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3401,6 +3482,7 @@ export type WebsiteUpdateToOneWithWhereWithoutOperationalActionsInput = {
 export type WebsiteUpdateWithoutOperationalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3440,6 +3522,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3471,6 +3554,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
 export type WebsiteCreateWithoutUnixseeMessagesInput = {
   id?: string
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3510,6 +3594,7 @@ export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3557,6 +3642,7 @@ export type WebsiteUpdateToOneWithWhereWithoutUnixseeMessagesInput = {
 export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3596,6 +3682,7 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3630,6 +3717,7 @@ export type WebsiteCreateManyUserInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3649,6 +3737,7 @@ export type WebsiteCreateManyUserInput = {
 export type WebsiteUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3687,6 +3776,7 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3722,6 +3812,7 @@ export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3744,6 +3835,7 @@ export type WebsiteCreateManyTenantInput = {
   vpsNodeId?: string | null
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3763,6 +3855,7 @@ export type WebsiteCreateManyTenantInput = {
 export type WebsiteUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3801,6 +3894,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3836,6 +3930,7 @@ export type WebsiteUncheckedUpdateManyWithoutTenantInput = {
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3858,6 +3953,7 @@ export type WebsiteCreateManyVpsNodeInput = {
   tenantId: string
   planId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3877,6 +3973,7 @@ export type WebsiteCreateManyVpsNodeInput = {
 export type WebsiteUpdateWithoutVpsNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3915,6 +4012,7 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3950,6 +4048,7 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3972,6 +4071,7 @@ export type WebsiteCreateManyPlanInput = {
   tenantId: string
   vpsNodeId?: string | null
   planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
   domain: string
   displayName?: string | null
   directAdminUser?: string | null
@@ -3991,6 +4091,7 @@ export type WebsiteCreateManyPlanInput = {
 export type WebsiteUpdateWithoutPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4029,6 +4130,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4064,6 +4166,7 @@ export type WebsiteUncheckedUpdateManyWithoutPlanInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
   domain?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4217,6 +4320,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   vpsNodeId?: boolean
   planId?: boolean
   planActivatedAt?: boolean
+  managementCoverage?: boolean
   domain?: boolean
   displayName?: boolean
   directAdminUser?: boolean
@@ -4258,6 +4362,7 @@ export type WebsiteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   vpsNodeId?: boolean
   planId?: boolean
   planActivatedAt?: boolean
+  managementCoverage?: boolean
   domain?: boolean
   displayName?: boolean
   directAdminUser?: boolean
@@ -4285,6 +4390,7 @@ export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   vpsNodeId?: boolean
   planId?: boolean
   planActivatedAt?: boolean
+  managementCoverage?: boolean
   domain?: boolean
   displayName?: boolean
   directAdminUser?: boolean
@@ -4312,6 +4418,7 @@ export type WebsiteSelectScalar = {
   vpsNodeId?: boolean
   planId?: boolean
   planActivatedAt?: boolean
+  managementCoverage?: boolean
   domain?: boolean
   displayName?: boolean
   directAdminUser?: boolean
@@ -4328,7 +4435,7 @@ export type WebsiteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "planActivatedAt" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "wordpressAdminUrl" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
+export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "planActivatedAt" | "managementCoverage" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "wordpressAdminUrl" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
 export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -4390,6 +4497,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     vpsNodeId: string | null
     planId: string | null
     planActivatedAt: Date | null
+    managementCoverage: $Enums.WebsiteManagementCoverage
     domain: string
     displayName: string | null
     directAdminUser: string | null
@@ -4850,6 +4958,7 @@ export interface WebsiteFieldRefs {
   readonly vpsNodeId: Prisma.FieldRef<"Website", 'String'>
   readonly planId: Prisma.FieldRef<"Website", 'String'>
   readonly planActivatedAt: Prisma.FieldRef<"Website", 'DateTime'>
+  readonly managementCoverage: Prisma.FieldRef<"Website", 'WebsiteManagementCoverage'>
   readonly domain: Prisma.FieldRef<"Website", 'String'>
   readonly displayName: Prisma.FieldRef<"Website", 'String'>
   readonly directAdminUser: Prisma.FieldRef<"Website", 'String'>

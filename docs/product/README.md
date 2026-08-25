@@ -43,20 +43,22 @@ Operational clarifications that support Phase 1 and UX flows:
 
 ## Diagrams
 
-| File                                                         | Topic                                                                       |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| [`diagrams/user-flows.drawio`](./diagrams/user-flows.drawio) | Guest consultant, plan/website request, complementary-service request flows |
+| File                                                                                                 | Topic                                                                               |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`diagrams/user-flows.drawio`](./diagrams/user-flows.drawio)                                         | Guest consultant, plan/website request, complementary-service request flows         |
+| [`diagrams/complementary-external-target-flow.md`](./diagrams/complementary-external-target-flow.md) | Typed external domain → staff acceptance → Website resolution → separate activation |
 
 ## Customer / public UX flows
 
-| Doc                                                                                      | Flow                                                                                                       |
-| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`ux-flows/client-auth.md`](./ux-flows/client-auth.md)                                   | Public customer sign-in, sign-up, verification, password recovery                                          |
-| [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md)                 | احراز هویت submission → become tenant                                                                      |
-| [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md) | Guest / dashboard plan request intake                                                                      |
-| [`ux-flows/website-management-coverage.md`](./ux-flows/website-management-coverage.md)   | Cross-surface distinction between Unixsee-managed and external websites; complementary-service eligibility |
-| [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)           | Unixsee messages / پیام‌های یونیکسی (popup, unread indicator, inbox)                                       |
-| UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md)           | Auth shell, tokens, inputs, RTL, motion                                                                    |
+| Doc                                                                                                      | Flow                                                                                                       |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`ux-flows/client-auth.md`](./ux-flows/client-auth.md)                                                   | Public customer sign-in, sign-up, verification, password recovery                                          |
+| [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md)                                 | احراز هویت submission → become tenant                                                                      |
+| [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md)                 | Guest / dashboard plan request intake                                                                      |
+| [`ux-flows/client-complementary-service-request.md`](./ux-flows/client-complementary-service-request.md) | Customer existing/typed domain request flow; no Website creation at submission                             |
+| [`ux-flows/website-management-coverage.md`](./ux-flows/website-management-coverage.md)                   | Cross-surface distinction between Unixsee-managed and external websites; complementary-service eligibility |
+| [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)                           | Unixsee messages / پیام‌های یونیکسی (popup, unread indicator, inbox)                                       |
+| UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md)                           | Auth shell, tokens, inputs, RTL, motion                                                                    |
 
 ## Admin UX flows
 

@@ -76,6 +76,7 @@ export type AuthorizationCase = {
   updatedAt: string;
 };
 
+/* eslint-disable no-restricted-syntax -- Bilingual reference data: Persian sits in labelFa paired with labelEn (localized typed module, the pattern docs/engineering/nextjs.md permits). */
 export const IRAN_PROVINCES = [
   { id: "tehran", labelFa: "تهران", labelEn: "Tehran" },
   { id: "isfahan", labelFa: "اصفهان", labelEn: "Isfahan" },
@@ -109,6 +110,7 @@ export const IRAN_CITIES: Record<
     { id: "nazarabad", labelFa: "نظرآباد", labelEn: "Nazarabad" },
   ],
 };
+/* eslint-enable no-restricted-syntax */
 
 export const AUTHORIZATION_UPLOAD = {
   accept: "image/jpeg,image/png,image/webp",

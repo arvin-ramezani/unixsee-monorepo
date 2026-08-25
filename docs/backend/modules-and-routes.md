@@ -217,17 +217,20 @@ user/tenant and at most one active plan per website.
 
 ### Complementary services — add `complementary-services`
 
-| Method    | Path                                                          | Audience                                 |
-| --------- | ------------------------------------------------------------- | ---------------------------------------- |
-| GET       | `/api/v1/public/service-catalog`                              | Public                                   |
-| POST      | `/api/v1/public/complementary-service-requests`               | Public (consultant/complementary intake) |
-| GET       | `/api/v1/complementary-service-requests`                      | Customer (own)                           |
-| GET       | `/api/v1/complementary-service-requests/:id`                  | Customer (own)                           |
-| POST      | `/api/v1/complementary-service-requests/:id/withdraw`         | Customer                                 |
-| GET/PATCH | `/api/v1/admin/complementary-service-requests`                | Admin                                    |
-| POST      | `/api/v1/admin/complementary-service-requests/:id/quotations` | Admin                                    |
-| POST      | `/api/v1/admin/service-assignments`                           | Admin                                    |
-| GET/PATCH | `/api/v1/admin/usage`, `/api/v1/admin/deliverables`           | Admin                                    |
+| Method    | Path                                                          | Audience                                    |
+| --------- | ------------------------------------------------------------- | ------------------------------------------- |
+| GET       | `/api/v1/public/service-catalog`                              | Public                                      |
+| POST      | `/api/v1/public/complementary-service-requests`               | Public (consultant/complementary intake)    |
+| POST      | `/api/v1/complementary-service-requests`                      | Customer (exactly one Website ID or domain) |
+| GET       | `/api/v1/complementary-service-requests`                      | Customer (own)                              |
+| GET       | `/api/v1/complementary-service-requests/:id`                  | Customer (own)                              |
+| POST      | `/api/v1/complementary-service-requests/:id/withdraw`         | Customer                                    |
+| GET/PATCH | `/api/v1/admin/complementary-service-requests`                | Admin                                       |
+| GET       | `/api/v1/admin/complementary-service-requests/:id`            | Admin                                       |
+| POST      | `/api/v1/admin/complementary-service-requests/:id/accept`     | Admin; idempotent acceptance                |
+| POST      | `/api/v1/admin/complementary-service-requests/:id/quotations` | Admin                                       |
+| POST      | `/api/v1/admin/service-assignments`                           | Admin                                       |
+| GET/PATCH | `/api/v1/admin/usage`, `/api/v1/admin/deliverables`           | Admin                                       |
 
 ---
 

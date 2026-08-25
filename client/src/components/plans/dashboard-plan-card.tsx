@@ -29,9 +29,9 @@ export function DashboardPlanCard({
 
       <div className="flex flex-1 flex-col gap-2">
         <h2 className="text-lg font-semibold">{plan.name}</h2>
-        {plan.description ? (
+        {Boolean(plan.description) && (
           <p className="text-sm text-muted-foreground">{plan.description}</p>
-        ) : null}
+        )}
       </div>
 
       <Button

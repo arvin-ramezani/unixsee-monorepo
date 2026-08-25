@@ -487,7 +487,6 @@ export const MotionGrowDialogContent = React.forwardRef<
           data-slot="dialog-content"
           className="pointer-events-none! fixed inset-0 z-50 outline-none lg:pointer-events-auto!"
           {...props}
-          onClick={(e) => console.log("---------------------------------")}
         >
           <motion.div
             data-lenis-prevent

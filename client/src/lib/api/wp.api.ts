@@ -10,19 +10,14 @@ export async function getFirstConnection() {
     },
     cache: "no-store",
   });
-  console.log(
-    "---------------------------",
-    response,
-    "------------------------------",
-  );
+
   if (!response.ok) {
     const data = await response.json();
-    console.log(data, "errrror body");
+
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   const data = await response.json();
-  console.log(data);
 
   return data;
 }

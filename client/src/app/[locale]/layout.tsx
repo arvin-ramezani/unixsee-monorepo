@@ -4,7 +4,7 @@ import { hasLocale } from "next-intl";
 import { LocaleType } from "@/types/intl.types";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getDirection } from "@/lib/i18n";
 import { DirectionProvider } from "../../components/ui/direction";
 import { kalamehFont, YekanBakhFont } from "@/lib/fonts";
@@ -23,16 +23,13 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const locale = (await params)?.locale;
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("Metadata.default");
   const isFa = locale === "fa";
 
-  const title = isFa
-    ? "یونیکسی | زیرساخت مدیریت‌شده و خدمات فنی"
-    : "Unixsee | Managed Infrastructure & Technical Services";
-
-  const description = isFa
-    ? "ارائه خدمات میزبانی مدیریت‌شده، بهینه‌سازی عملکرد و مشاوره فنی برای کسب‌وکارهای مدرن."
-    : "Managed hosting, performance optimization, and technical consulting for modern businesses.";
+  const title = t("title");
+  const description = t("description");
 
   return {
     title,

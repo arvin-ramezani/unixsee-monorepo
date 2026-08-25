@@ -43,7 +43,8 @@ export interface ServiceActivity {
 export interface ComplementaryService {
   id: string;
   serviceType: ComplementaryServiceType;
-  titleKey:
+  title?: string;
+  titleKey?:
     | "campaignDesign"
     | "socialSupport"
     | "catalogEntry"
@@ -57,7 +58,7 @@ export interface ComplementaryService {
   startedAt?: string;
   endsAt?: string;
   completedAt?: string;
-  usage: ServiceUsage;
+  usage?: ServiceUsage;
   scopeKeys: Array<
     | "designAllowance"
     | "postPlanning"
@@ -75,9 +76,12 @@ export interface ConsultationRequest {
   websiteName: string;
   domain: string;
   engagementPreference: ConsultationEngagementPreference;
-  titleKey: "seasonalSeo" | "newBrandSystem" | "monthlySocial";
-  summaryKey: "seasonalSeo" | "newBrandSystem" | "monthlySocial";
+  title?: string;
+  summary?: string;
+  titleKey?: "seasonalSeo" | "newBrandSystem" | "monthlySocial";
+  summaryKey?: "seasonalSeo" | "newBrandSystem" | "monthlySocial";
   status: "requested" | "cancelled";
+  canWithdraw?: boolean;
   requestedAt: string;
 }
 

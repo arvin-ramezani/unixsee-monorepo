@@ -10,6 +10,7 @@ type Locale = "en" | "fa";
 
 const LOCALES: { value: Locale; label: string }[] = [
   { value: "en", label: "EN" },
+  // eslint-disable-next-line no-restricted-syntax -- Persian language endonym; must render in native script regardless of active locale.
   { value: "fa", label: "فا" },
 ];
 

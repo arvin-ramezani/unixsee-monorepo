@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -13,6 +13,7 @@ import {
 import { useFormatter, useTranslations } from "next-intl";
 import { useReducedMotion, motion } from "framer-motion";
 
+import { withdrawComplementaryRequestAction } from "@/actions/complementary-services/create-complementary-request";
 import { MobileFilterDisclosure } from "@/components/common/mobile-filter-disclosure";
 import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
@@ -257,7 +258,10 @@ export function ActiveServiceCard({
             {t(`services.${service.serviceType}`)}
           </p>
           <h2 className="mt-1 truncate text-xl font-semibold">
-            {t(`fixtures.titles.${service.titleKey}`)}
+            {service.title ??
+              (service.titleKey
+                ? t(`fixtures.titles.${service.titleKey}`)
+                : t(`services.${service.serviceType}`))}
           </h2>
           <p className="text-muted-foreground mt-2 truncate text-sm">
             {service.websiteName} · <span dir="ltr">{service.domain}</span>
@@ -269,17 +273,19 @@ export function ActiveServiceCard({
         <span className="bg-muted rounded-md px-2.5 py-1.5">
           {t(`engagement.${service.engagementType}`)}
         </span>
-        {service.startedAt && service.endsAt ? (
+        {!!(service.startedAt && service.endsAt) && (
           <span className="bg-muted inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5">
             <CalendarDays aria-hidden="true" className="size-3.5" />
             {format.dateTime(new Date(service.startedAt), "shortDate")} –{" "}
             {format.dateTime(new Date(service.endsAt), "shortDate")}
           </span>
-        ) : null}
+        )}
       </div>
-      <div className="mt-6">
-        <ServiceUsage usage={service.usage} showDate />
-      </div>
+      {service.usage && (
+        <div className="mt-6">
+          <ServiceUsage usage={service.usage} showDate />
+        </div>
+      )}
       <Link
         href={`/dashboard/complementary-services/${service.id}`}
         className="border-border text-link focus-visible:ring-ring mt-auto inline-flex min-h-11 items-center justify-between border-t pt-5 text-sm font-medium focus-visible:ring-2"
@@ -312,13 +318,19 @@ export function ConsultationRequestCard({
             <ComplementaryServiceStatusBadge status={request.status} />
           </div>
           <h2 className="mt-2 text-lg font-semibold">
-            {t(`fixtures.requestTitles.${request.titleKey}`)}
+            {request.title ??
+              (request.titleKey
+                ? t(`fixtures.requestTitles.${request.titleKey}`)
+                : t(`services.${request.serviceType}`))}
           </h2>
           <p className="text-muted-foreground mt-1 text-sm">
             {request.websiteName} · <span dir="ltr">{request.domain}</span>
           </p>
           <p className="text-muted-foreground mt-3 max-w-3xl text-sm leading-6">
-            {t(`fixtures.requestSummaries.${request.summaryKey}`)}
+            {request.summary ??
+              (request.summaryKey
+                ? t(`fixtures.requestSummaries.${request.summaryKey}`)
+                : "")}
           </p>
         </div>
         <dl className="grid shrink-0 grid-cols-2 gap-x-6 gap-y-3 text-sm sm:min-w-64">
@@ -350,7 +362,7 @@ export function ConsultationRequestCard({
         >
           {t("requests.view")}
         </Link>
-        {request.status === "requested" ? (
+        {request.status === "requested" && request.canWithdraw !== false && (
           <Button
             type="button"
             onClick={() => onCancel(request)}
@@ -359,7 +371,7 @@ export function ConsultationRequestCard({
           >
             {t("requests.cancel")}
           </Button>
-        ) : null}
+        )}
       </div>
     </Panel>
   );
@@ -379,7 +391,10 @@ export function ServiceHistoryItem({
         <div className="flex flex-wrap items-center gap-2">
           <div>
             <h2 className="mb-2 font-semibold">
-              {t(`fixtures.titles.${service.titleKey}`)}
+              {service.title ??
+                (service.titleKey
+                  ? t(`fixtures.titles.${service.titleKey}`)
+                  : t(`services.${service.serviceType}`))}
             </h2>
             <ComplementaryServiceStatusBadge status={service.status} />
           </div>
@@ -390,11 +405,11 @@ export function ServiceHistoryItem({
       </div>
       <div className="text-muted-foreground flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
         <span>{t(`engagement.${service.engagementType}`)}</span>
-        {service.completedAt ? (
+        {!!service.completedAt && (
           <time dateTime={service.completedAt}>
             {format.dateTime(new Date(service.completedAt), "shortDate")}
           </time>
-        ) : null}
+        )}
         <Link
           href={`/dashboard/complementary-services/${service.id}`}
           className="text-link focus-visible:ring-ring inline-flex min-h-10 items-center font-medium focus-visible:ring-2"
@@ -426,14 +441,14 @@ export function ComplementaryServicesEmptyState({
         <p className="text-muted-foreground mt-2 text-sm leading-6">
           {t(filtered ? "filteredDescription" : `${tab}Description`)}
         </p>
-        {!filtered ? (
+        {!filtered && (
           <Link
             href="/dashboard/complementary-services/request"
             className="bg-primary text-primary-foreground focus-visible:ring-ring mt-5 inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium focus-visible:ring-2"
           >
             {t("action")}
           </Link>
-        ) : null}
+        )}
       </div>
     </Panel>
   );
@@ -443,10 +458,12 @@ export function CancelRequestDialog({
   request,
   onClose,
   onConfirm,
+  pending,
 }: {
   request?: ConsultationRequest;
   onClose: () => void;
   onConfirm: () => void;
+  pending?: boolean;
 }) {
   const t = useTranslations("ComplementaryServices.cancelDialog");
   return (
@@ -461,7 +478,11 @@ export function CancelRequestDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>{t("keep")}</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={onConfirm}>
+          <AlertDialogAction
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={pending}
+          >
             {t("confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -492,6 +513,8 @@ export function ComplementaryServicesManager({
   >("all");
   const [cancelTarget, setCancelTarget] = useState<ConsultationRequest>();
   const [cancelledIds, setCancelledIds] = useState<string[]>([]);
+  const [withdrawPending, startWithdraw] = useTransition();
+  const [withdrawError, setWithdrawError] = useState(false);
   const liveRegion = useRef<HTMLParagraphElement>(null);
   const active = services.filter((item) => item.status === "active");
   const history = services.filter((item) =>
@@ -550,6 +573,11 @@ export function ComplementaryServicesManager({
       <p ref={liveRegion} aria-live="polite" className="sr-only">
         {cancelledIds.length ? t("requests.cancelledFeedback") : ""}
       </p>
+      {withdrawError && (
+        <p role="alert" className="text-destructive mt-4 text-sm">
+          {t("requests.withdrawError")}
+        </p>
+      )}
       {tab === "requests" && (
         <div className="border-link/20 bg-accent/50 text-muted-foreground mt-5 rounded-xl border p-4 text-sm leading-6">
           {t("requests.explanation")}
@@ -597,9 +625,20 @@ export function ComplementaryServicesManager({
       <CancelRequestDialog
         request={cancelTarget}
         onClose={() => setCancelTarget(undefined)}
+        pending={withdrawPending}
         onConfirm={() => {
-          if (cancelTarget) setCancelledIds((ids) => [...ids, cancelTarget.id]);
-          setCancelTarget(undefined);
+          if (!cancelTarget) return;
+          const requestId = cancelTarget.id;
+          setWithdrawError(false);
+          startWithdraw(async () => {
+            const result = await withdrawComplementaryRequestAction(requestId);
+            if (result.ok) {
+              setCancelledIds((ids) => [...ids, requestId]);
+              setCancelTarget(undefined);
+            } else {
+              setWithdrawError(true);
+            }
+          });
         }}
       />
     </section>

@@ -37,7 +37,10 @@ export function ServiceDetailsHeader({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight">
-              {t(`fixtures.titles.${service.titleKey}`)}
+              {service.title ??
+                (service.titleKey
+                  ? t(`fixtures.titles.${service.titleKey}`)
+                  : t(`services.${service.serviceType}`))}
             </h1>
             <ComplementaryServiceStatusBadge status={service.status} />
           </div>
@@ -203,18 +206,22 @@ export function ServiceDetailsView({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.7fr)]">
         <Panel className="p-5 sm:p-6">
           <h2 className="text-xl font-semibold">
-            {service.usage.type === "quota"
+            {service.usage?.type === "quota"
               ? t("usageTitle")
               : t("progressTitle")}
           </h2>
           <p className="text-muted-foreground mt-1 text-sm">
-            {service.usage.type === "quota"
-              ? t("usageDescription")
-              : t("progressDescription")}
+            {service.usage
+              ? service.usage.type === "quota"
+                ? t("usageDescription")
+                : t("progressDescription")
+              : t("usageEmpty")}
           </p>
-          <div className="mt-7">
-            <ServiceUsage usage={service.usage} showDate />
-          </div>
+          {service.usage && (
+            <div className="mt-7">
+              <ServiceUsage usage={service.usage} showDate />
+            </div>
+          )}
         </Panel>
         <ServiceScopeCard service={service} />
       </div>

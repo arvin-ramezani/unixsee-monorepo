@@ -126,6 +126,7 @@ export type PlanRequestStatus = (typeof PlanRequestStatus)[keyof typeof PlanRequ
 
 export const ComplementaryRequestStatus = {
   SUBMITTED: 'SUBMITTED',
+  ACCEPTED: 'ACCEPTED',
   QUOTED: 'QUOTED',
   ASSIGNED: 'ASSIGNED',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -135,6 +136,50 @@ export const ComplementaryRequestStatus = {
 } as const
 
 export type ComplementaryRequestStatus = (typeof ComplementaryRequestStatus)[keyof typeof ComplementaryRequestStatus]
+
+
+export const WebsiteManagementCoverage = {
+  UNIXSEE_MANAGED: 'UNIXSEE_MANAGED',
+  EXTERNAL_INFRASTRUCTURE: 'EXTERNAL_INFRASTRUCTURE',
+  UNCLASSIFIED: 'UNCLASSIFIED'
+} as const
+
+export type WebsiteManagementCoverage = (typeof WebsiteManagementCoverage)[keyof typeof WebsiteManagementCoverage]
+
+
+export const ComplementaryWebsiteTargetType = {
+  EXISTING_WEBSITE: 'EXISTING_WEBSITE',
+  TYPED_DOMAIN: 'TYPED_DOMAIN'
+} as const
+
+export type ComplementaryWebsiteTargetType = (typeof ComplementaryWebsiteTargetType)[keyof typeof ComplementaryWebsiteTargetType]
+
+
+export const ComplementaryWebsiteResolutionState = {
+  PENDING_ACCEPTANCE: 'PENDING_ACCEPTANCE',
+  LINKED: 'LINKED',
+  DEFERRED_NO_TENANT: 'DEFERRED_NO_TENANT'
+} as const
+
+export type ComplementaryWebsiteResolutionState = (typeof ComplementaryWebsiteResolutionState)[keyof typeof ComplementaryWebsiteResolutionState]
+
+
+export const ComplementaryAuthorizationState = {
+  AUTHORIZED: 'AUTHORIZED',
+  NOT_AUTHORIZED: 'NOT_AUTHORIZED',
+  NOT_AUTHORIZED_AT_ACTIVATION: 'NOT_AUTHORIZED_AT_ACTIVATION'
+} as const
+
+export type ComplementaryAuthorizationState = (typeof ComplementaryAuthorizationState)[keyof typeof ComplementaryAuthorizationState]
+
+
+export const ComplementaryEngagementPreference = {
+  ONE_TIME: 'ONE_TIME',
+  RECURRING: 'RECURRING',
+  NOT_SURE: 'NOT_SURE'
+} as const
+
+export type ComplementaryEngagementPreference = (typeof ComplementaryEngagementPreference)[keyof typeof ComplementaryEngagementPreference]
 
 
 export const DiscoveryStatus = {

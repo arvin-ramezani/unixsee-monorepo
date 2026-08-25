@@ -68,6 +68,31 @@ export const WEBSITE_PLAN_FILTER = {
 
 export type WebsitePlanFilterType =
   (typeof WEBSITE_PLAN_FILTER)[keyof typeof WEBSITE_PLAN_FILTER];
+export const WEBSITE_COVERAGE_FILTER = {
+  ALL: "ALL",
+  UNIXSEE_MANAGED: "UNIXSEE_MANAGED",
+  EXTERNAL_INFRASTRUCTURE: "EXTERNAL_INFRASTRUCTURE",
+  UNCLASSIFIED: "UNCLASSIFIED",
+} as const;
+
+export type WebsiteCoverageFilterType =
+  (typeof WEBSITE_COVERAGE_FILTER)[keyof typeof WEBSITE_COVERAGE_FILTER];
+
+const WEBSITE_COVERAGE_FILTER_OPTIONS = [
+  { value: WEBSITE_COVERAGE_FILTER.ALL, label: "همه پوشش‌ها" },
+  {
+    value: WEBSITE_COVERAGE_FILTER.UNIXSEE_MANAGED,
+    label: "مدیریت‌شده توسط یونیکسی",
+  },
+  {
+    value: WEBSITE_COVERAGE_FILTER.EXTERNAL_INFRASTRUCTURE,
+    label: "میزبانی خارجی",
+  },
+  {
+    value: WEBSITE_COVERAGE_FILTER.UNCLASSIFIED,
+    label: "طبقه‌بندی‌نشده",
+  },
+] as const;
 
 const WEBSITE_STATUS_CONFIG: Record<
   WebsiteStatusType,
@@ -180,6 +205,7 @@ function getPlanFilterLabel(value: WebsitePlanFilterType) {
 
 function WebsiteTableRow({ website }: { website: WebsiteType }) {
   const router = useRouter();
+  const isManaged = website.managementCoverage === "UNIXSEE_MANAGED";
   const websiteHref = `/websites/${website.id}`;
   const rowLabel = `مشاهده وب‌سایت ${website.domain}`;
 
@@ -250,24 +276,32 @@ function WebsiteTableRow({ website }: { website: WebsiteType }) {
         </div>
       </TableCell>
       <TableCell className="px-4 py-3">
-        {formatStatusBadge(website.status)}
+        {isManaged ? (
+          formatStatusBadge(website.status)
+        ) : (
+          <span className="rounded-full border border-border bg-muted px-2 py-1 text-xs text-muted-foreground">
+            میزبانی خارجی
+          </span>
+        )}
       </TableCell>
       <TableCell className="px-4 py-3">
         <span className="text-sm font-medium text-foreground">
-          {getAgentLabel(website)}
+          {isManaged ? getAgentLabel(website) : "کاربرد ندارد"}
         </span>
       </TableCell>
       <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground">
-        {website.lastAvailabilityCheckAt}
+        {isManaged ? website.lastAvailabilityCheckAt : "کاربرد ندارد"}
       </TableCell>
       <TableCell className="px-4 py-3 text-sm whitespace-nowrap text-muted-foreground">
-        {website.lastAgentDataAt}
+        {isManaged ? website.lastAgentDataAt : "کاربرد ندارد"}
       </TableCell>
     </TableRow>
   );
 }
 
 function WebsiteCard({ website }: { website: WebsiteType }) {
+  const isManaged = website.managementCoverage === "UNIXSEE_MANAGED";
+
   return (
     <Link
       href={`/websites/${website.id}`}
@@ -278,7 +312,13 @@ function WebsiteCard({ website }: { website: WebsiteType }) {
           <p className="font-medium text-foreground">{website.domain}</p>
           <p className="mt-1 text-sm text-muted-foreground">{website.title}</p>
         </div>
-        {formatStatusBadge(website.status)}
+        {isManaged ? (
+          formatStatusBadge(website.status)
+        ) : (
+          <span className="rounded-full border border-border bg-muted px-2 py-1 text-xs text-muted-foreground">
+            میزبانی خارجی
+          </span>
+        )}
       </div>
 
       <div className="mt-4 flex items-center gap-2">
@@ -295,13 +335,13 @@ function WebsiteCard({ website }: { website: WebsiteType }) {
         <div>
           <p className="text-xs">Agent</p>
           <p className="mt-1 font-medium text-foreground">
-            {getAgentLabel(website)}
+            {isManaged ? getAgentLabel(website) : "کاربرد ندارد"}
           </p>
         </div>
         <div>
           <p className="text-xs">آخرین بررسی</p>
           <p className="mt-1 font-medium text-foreground">
-            {website.lastAvailabilityCheckAt}
+            {isManaged ? website.lastAvailabilityCheckAt : "کاربرد ندارد"}
           </p>
         </div>
       </div>
@@ -326,6 +366,9 @@ export function WebsitesView({
   const [plan, setPlan] = useState<WebsitePlanFilterType>(
     WEBSITE_PLAN_FILTER.ALL,
   );
+  const [coverage, setCoverage] = useState<WebsiteCoverageFilterType>(
+    WEBSITE_COVERAGE_FILTER.ALL,
+  );
   const [showFilters, setShowFilters] = useState(false);
 
   const handleStatusChange = (value: string | null) => {
@@ -340,6 +383,12 @@ export function WebsitesView({
     }
   };
 
+  const handleCoverageChange = (value: string | null) => {
+    if (value !== null) {
+      setCoverage(value as WebsiteCoverageFilterType);
+    }
+  };
+
   const handlePlanChange = (value: string | null) => {
     if (value !== null) {
       setPlan(value as WebsitePlanFilterType);
@@ -349,6 +398,9 @@ export function WebsitesView({
   const statusLabel = getStatusFilterLabel(status);
   const agentLabel = getAgentFilterLabel(agentStatus);
   const planLabel = getPlanFilterLabel(plan);
+  const coverageLabel =
+    WEBSITE_COVERAGE_FILTER_OPTIONS.find((option) => option.value === coverage)
+      ?.label ?? "همه پوشش‌ها";
 
   const filteredWebsites = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -374,10 +426,19 @@ export function WebsitesView({
           website.monitoring.agentStatus === "DISCONNECTED");
       const matchesPlan =
         plan === WEBSITE_PLAN_FILTER.ALL || website.service.plan === plan;
+      const matchesCoverage =
+        coverage === WEBSITE_COVERAGE_FILTER.ALL ||
+        (website.managementCoverage ?? "UNCLASSIFIED") === coverage;
 
-      return matchesQuery && matchesStatus && matchesAgent && matchesPlan;
+      return (
+        matchesQuery &&
+        matchesStatus &&
+        matchesAgent &&
+        matchesPlan &&
+        matchesCoverage
+      );
     });
-  }, [agentStatus, plan, query, status, websites]);
+  }, [agentStatus, coverage, plan, query, status, websites]);
 
   const summaryCounts = useMemo(() => {
     const onlineCount = filteredWebsites.filter(
@@ -458,7 +519,7 @@ export function WebsitesView({
           </div>
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[minmax(220px,420px)_repeat(3,minmax(140px,180px))]">
+        <div className="grid gap-2 lg:grid-cols-[minmax(220px,420px)_repeat(4,minmax(140px,180px))]">
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -496,6 +557,20 @@ export function WebsitesView({
             </Select>
           </div>
 
+          <div className="hidden lg:block">
+            <Select value={coverage} onValueChange={handleCoverageChange}>
+              <SelectTrigger className="w-full" aria-label="فیلتر پوشش مدیریتی">
+                <SelectValue>{coverageLabel}</SelectValue>
+              </SelectTrigger>
+              <SelectContent alignItemWithTrigger={false}>
+                {WEBSITE_COVERAGE_FILTER_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="hidden lg:block">
             <Select value={plan} onValueChange={handlePlanChange}>
               <SelectTrigger className="w-full" aria-label="فیلتر طرح">
@@ -540,6 +615,18 @@ export function WebsitesView({
               </SelectContent>
             </Select>
 
+            <Select value={coverage} onValueChange={handleCoverageChange}>
+              <SelectTrigger className="w-full" aria-label="فیلتر پوشش مدیریتی">
+                <SelectValue>{coverageLabel}</SelectValue>
+              </SelectTrigger>
+              <SelectContent alignItemWithTrigger={false}>
+                {WEBSITE_COVERAGE_FILTER_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={plan} onValueChange={handlePlanChange}>
               <SelectTrigger className="w-full" aria-label="فیلتر طرح">
                 <SelectValue>{planLabel}</SelectValue>

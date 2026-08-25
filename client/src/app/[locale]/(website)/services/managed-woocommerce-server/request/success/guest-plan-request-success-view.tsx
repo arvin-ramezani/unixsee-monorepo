@@ -37,12 +37,12 @@ export function GuestPlanRequestSuccessView({
           {t("description")}
         </p>
 
-        {planName ? (
+        {Boolean(planName) && (
           <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-4 py-1.5 text-sm">
             <span className="text-muted-foreground">{t("planLabel")}:</span>
             <span className="font-medium">{planName}</span>
           </p>
-        ) : null}
+        )}
 
         <section className="mt-8 w-full rounded-3xl border bg-white p-5 text-start dark:bg-card sm:p-6">
           <h2 className="flex items-center gap-2 text-sm font-semibold">

@@ -77,11 +77,11 @@ export function NotificationList({
                       >
                         {item.title}
                       </p>
-                      {!item.isSeen ? (
+                      {!item.isSeen && (
                         <span className="mt-2 size-2.5 shrink-0 rounded-full bg-primary dark:bg-link group-data-[is-unseen=false]/notification:hidden">
                           <span className="sr-only">{unseenLabel}</span>
                         </span>
-                      ) : null}
+                      )}
                     </div>
                     <p
                       dir="auto"

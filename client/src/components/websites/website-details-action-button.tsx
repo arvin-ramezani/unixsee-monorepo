@@ -73,11 +73,11 @@ export function WebsiteDetailsActionButton({
         />
         <span className="min-w-0 text-start">
           <span className="block">{label}</span>
-          {description ? (
+          {Boolean(description) && (
             <span className="mt-1 block text-xs font-normal text-muted-foreground">
               {description}
             </span>
-          ) : null}
+          )}
         </span>
       </Button>
       <span className="sr-only" role="status" aria-live="polite">

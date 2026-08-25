@@ -2,8 +2,19 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { CalendarClock, Globe2, Plus, X } from "lucide-react";
+import {
+  CalendarClock,
+  Check,
+  Globe2,
+  LoaderCircle,
+  Plus,
+  X,
+} from "lucide-react";
 
+import {
+  acceptComplementaryRequestAction,
+  rejectComplementaryRequestAction,
+} from "@/actions/complementary-services/complementary-service-actions";
 import { AdminBackLink } from "@/components/common/admin-back-link";
 import {
   AlertDialog,
@@ -20,7 +31,7 @@ import {
   SERVICE_REQUEST_STATUS,
   type ComplementaryServiceRequestType,
 } from "@/lib/data/complementary-services-data";
-import { declineRuntimeComplementaryRequest } from "@/lib/data/complementary-services-runtime";
+
 import { toast } from "sonner";
 import {
   CreateServiceDialog,
@@ -43,12 +54,37 @@ export function RequestDetailsView({
   const [rejectReason, setRejectReason] = useState("");
   const [rejectError, setRejectError] = useState("");
   const [rejecting, setRejecting] = useState(false);
+  const [accepting, setAccepting] = useState(false);
+  const apiRequestId = request.apiId ?? request.id;
 
   const canActivate = request.status === SERVICE_REQUEST_STATUS.ACCEPTED;
+  const canAccept =
+    request.status !== SERVICE_REQUEST_STATUS.ACCEPTED &&
+    request.status !== SERVICE_REQUEST_STATUS.ACTIVATED &&
+    request.status !== SERVICE_REQUEST_STATUS.DECLINED;
   const canReject =
     request.status !== SERVICE_REQUEST_STATUS.ACTIVATED &&
     request.status !== SERVICE_REQUEST_STATUS.DECLINED;
 
+  async function handleAccept() {
+    if (accepting) return;
+    setAccepting(true);
+    const result = await acceptComplementaryRequestAction({
+      requestId: apiRequestId,
+    });
+    setAccepting(false);
+
+    if (!result.ok) {
+      toast.error(result.message);
+      return;
+    }
+
+    setRequest(result.request);
+    toast.success(
+      "درخواست پذیرفته شد. ایجاد وب‌سایت و فعالسازی سرویس همچنان وضعیت‌های جدا هستند.",
+    );
+    router.refresh();
+  }
   function handleSuccess(payload: CreateServiceSuccessPayload) {
     setRequest((current) => ({
       ...current,
@@ -63,7 +99,7 @@ export function RequestDetailsView({
     router.refresh();
   }
 
-  function handleReject(event: FormEvent<HTMLFormElement>) {
+  async function handleReject(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = rejectReason.trim();
     if (!trimmed) {
@@ -72,18 +108,14 @@ export function RequestDetailsView({
     }
 
     setRejecting(true);
-    const result = declineRuntimeComplementaryRequest({
-      requestId: request.id,
+    const result = await rejectComplementaryRequestAction({
+      requestId: apiRequestId,
       reason: trimmed,
     });
     setRejecting(false);
 
     if (!result.ok) {
-      setRejectError(
-        result.reason === "not_rejectable"
-          ? "این درخواست در وضعیت قابل رد نیست."
-          : "رد درخواست انجام نشد.",
-      );
+      setRejectError(result.message);
       return;
     }
 
@@ -108,7 +140,9 @@ export function RequestDetailsView({
         <div className="mb-2">
           <ServiceStatusBadge kind="request" status={request.status} />
         </div>
-        <h1 className="text-xl font-semibold tracking-tight">{request.title}</h1>
+        <h1 className="text-xl font-semibold tracking-tight">
+          {request.title}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           درخواست {request.id} · آخرین بروزرسانی {request.updatedAt}
         </p>
@@ -163,6 +197,58 @@ export function RequestDetailsView({
             <dt className="text-xs text-muted-foreground">زمان ثبت</dt>
             <dd className="mt-1 text-sm font-medium">{request.submittedAt}</dd>
           </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">نام کامل مشتری</dt>
+            <dd className="mt-1 text-sm font-medium">{request.customerName}</dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">راه ارتباطی</dt>
+            <dd className="mt-1 text-sm font-medium">
+              {[request.customerPhone, request.customerEmail]
+                .filter(Boolean)
+                .join(" · ") || "ثبت نشده"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">پوشش مدیریتی</dt>
+            <dd className="mt-1 text-sm font-medium">
+              {request.managementCoverage === "UNIXSEE_MANAGED"
+                ? "میزبانی و مدیریت‌شده توسط یونیکسی"
+                : "میزبانی خارجی — فقط خدمات تکمیلی"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">
+              وضعیت احراز مالکیت
+            </dt>
+            <dd className="mt-1 text-sm font-medium">
+              {request.authorizationState === "AUTHORIZED"
+                ? "مستأجر مجاز"
+                : request.authorizationState === "NOT_AUTHORIZED_AT_ACTIVATION"
+                  ? "هنگام فعالسازی مجاز نبود"
+                  : "هنوز مستأجر مجاز ندارد"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">حل مقصد</dt>
+            <dd className="mt-1 text-sm font-medium">
+              {request.resolutionState === "LINKED"
+                ? "به وب‌سایت متصل"
+                : request.resolutionState === "DEFERRED_NO_TENANT"
+                  ? "تعویق تا احراز مالکیت"
+                  : "در انتظار پذیرش"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">فعالسازی سرویس</dt>
+            <dd className="mt-1 text-sm font-medium">
+              {request.serviceActivationState === "ACTIVE"
+                ? "فعال"
+                : request.serviceActivationState === "COMPLETED"
+                  ? "تکمیل‌شده"
+                  : "شروع نشده"}
+            </dd>
+          </div>
         </dl>
 
         <section className="rounded-xl border border-accent bg-accent/15 p-4">
@@ -191,6 +277,19 @@ export function RequestDetailsView({
       </div>
 
       <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:flex-wrap sm:justify-end">
+        {canAccept && (
+          <Button type="button" onClick={handleAccept} disabled={accepting}>
+            {accepting ? (
+              <LoaderCircle
+                data-icon="inline-start"
+                className="animate-spin motion-reduce:animate-none"
+              />
+            ) : (
+              <Check data-icon="inline-start" />
+            )}
+            {accepting ? "در حال پذیرش..." : "پذیرش درخواست"}
+          </Button>
+        )}{" "}
         {canActivate && (
           <Button type="button" onClick={() => setCreateOpen(true)}>
             <Plus data-icon="inline-start" />
@@ -287,11 +386,7 @@ export function RequestDetailsView({
               >
                 انصراف
               </Button>
-              <Button
-                type="submit"
-                variant="destructive"
-                disabled={rejecting}
-              >
+              <Button type="submit" variant="destructive" disabled={rejecting}>
                 {rejecting ? "در حال ثبت..." : "تأیید رد"}
               </Button>
             </AlertDialogFooter>

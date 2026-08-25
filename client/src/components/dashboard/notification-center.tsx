@@ -189,12 +189,12 @@ function NotificationTrigger({
       )}
     >
       <Bell aria-hidden="true" className="size-5" />
-      {hasUnseenCandidate ? (
+      {hasUnseenCandidate && (
         <span
           aria-hidden="true"
           className="absolute inset-e-2.5 top-2 size-2.5 rounded-full border-2 border-background bg-secondary group-data-[unseen-count=0]/notification-trigger:hidden"
         />
-      ) : null}
+      )}
     </Button>
   );
 }
@@ -237,7 +237,7 @@ function NotificationPanel({
             {t("unseenCount", { count: unseenCount })}
           </p>
         </div>
-        {unseenCount > 0 ? (
+        {unseenCount > 0 && (
           <Button
             type="button"
             variant="ghost"
@@ -247,7 +247,7 @@ function NotificationPanel({
           >
             {t("markAllSeen")}
           </Button>
-        ) : null}
+        )}
       </div>
 
       {notifications.length > 0 ? (
@@ -278,16 +278,16 @@ function NotificationPanel({
                         <p className="line-clamp-2 text-sm font-semibold leading-5">
                           {copy.title}
                         </p>
-                        {isUnseen ? (
+                        {isUnseen && (
                           <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary dark:bg-link">
                             <span className="sr-only">{t("unseen")}</span>
                           </span>
-                        ) : null}
+                        )}
                       </div>
                       <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
                         {copy.detail}
                       </p>
-                      {item.relative ? (
+                      {item.relative && (
                         <time
                           dateTime={item.occurredAt}
                           className="mt-1 block text-[0.7rem] text-muted-foreground"
@@ -299,7 +299,7 @@ function NotificationPanel({
                             "long",
                           )}
                         </time>
-                      ) : null}
+                      )}
                     </div>
                   </Link>
                 </li>

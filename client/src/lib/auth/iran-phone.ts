@@ -1,5 +1,6 @@
 /** Convert Persian digits to ASCII digits. */
 export function toEnglishDigits(input: string): string {
+  // eslint-disable-next-line no-restricted-syntax -- Persian-digit lookup table for numeral->ASCII conversion, not UI copy.
   return input.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));
 }
 

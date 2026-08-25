@@ -1,6 +1,8 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+
+import { createComplementaryRequestAction } from "@/actions/complementary-services/create-complementary-request";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -11,6 +13,10 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+import {
+  WebsiteTargetCombobox,
+  type WebsiteTarget,
+} from "@/components/complementary-services/website-target-combobox";
 import { Panel } from "@/components/dashboard/panel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -26,12 +32,15 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@/i18n/navigation";
+import {
+  catalogCodeToServiceType,
+  type ComplementaryCatalogItem,
+  type ComplementaryRequestSummary,
+  type ComplementaryWebsiteOption,
+} from "@/lib/complementary-services/types";
 import type {
-  ComplementaryService,
   ComplementaryServiceType,
   ConsultationEngagementPreference,
-  ConsultationRequest,
-  ServiceWebsite,
 } from "@/lib/data/complementary-services/complementary-services-data";
 import { cn } from "@/lib/utils";
 import {
@@ -224,26 +233,39 @@ export function ServiceSpecificFields({
 }
 
 export function RequestServiceForm({
+  catalog,
   websites,
-  activeServices,
   requests,
   initialService = "",
   initialWebsite = "",
   previewState,
+  loadError = false,
 }: {
-  websites: ServiceWebsite[];
-  activeServices: ComplementaryService[];
-  requests: ConsultationRequest[];
+  catalog: ComplementaryCatalogItem[];
+  websites: ComplementaryWebsiteOption[];
+  requests: ComplementaryRequestSummary[];
   initialService?: ComplementaryServiceType | "";
   initialWebsite?: string;
   previewState?: string;
+  loadError?: boolean;
 }) {
   const t = useTranslations("ComplementaryServices");
   const prefersReducedMotion = useReducedMotion();
   const [service, setService] = useState<ComplementaryServiceType | "">(
     initialService,
   );
-  const [website, setWebsite] = useState(initialWebsite);
+  const initialWebsiteOption = websites.find(
+    (item) => item.id === initialWebsite,
+  );
+  const [websiteTarget, setWebsiteTarget] = useState<WebsiteTarget | null>(
+    initialWebsiteOption
+      ? {
+          websiteId: initialWebsiteOption.id,
+          displayDomain: initialWebsiteOption.domain,
+          coverage: initialWebsiteOption.managementCoverage,
+        }
+      : null,
+  );
   const [engagement, setEngagement] = useState<
     ConsultationEngagementPreference | ""
   >("");
@@ -255,41 +277,81 @@ export function RequestServiceForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(previewState === "submitting");
   const [success, setSuccess] = useState(previewState === "success");
-  const duplicate = Boolean(
-    service &&
-    website &&
-    (activeServices.some(
-      (item) =>
-        item.websiteId === website &&
-        item.serviceType === service &&
-        item.status === "active",
-    ) ||
-      requests.some(
-        (item) =>
-          item.websiteId === website &&
-          item.serviceType === service &&
-          item.status === "requested",
-      )),
+  const [submitError, setSubmitError] = useState("");
+  const [submittedDomain, setSubmittedDomain] = useState(
+    initialWebsiteOption?.domain ?? "",
   );
-
-  function submit(event: FormEvent<HTMLFormElement>) {
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
+  const selectedCatalog = catalog.find(
+    (item) => catalogCodeToServiceType(item.code) === service,
+  );
+  const duplicate = Boolean(
+    selectedCatalog &&
+    websiteTarget &&
+    requests.some(
+      (item) =>
+        item.catalogItemId === selectedCatalog.id &&
+        item.status !== "WITHDRAWN" &&
+        item.status !== "CANCELLED" &&
+        item.status !== "COMPLETED" &&
+        (websiteTarget.websiteId
+          ? item.websiteId === websiteTarget.websiteId
+          : item.websiteDomain === websiteTarget.websiteDomain),
+    ),
+  );
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors: Record<string, string> = {};
-    if (!service) nextErrors.service = t("form.errors.service");
-    if (!website) nextErrors.website = t("form.errors.website");
+    if (!service || !selectedCatalog)
+      nextErrors.service = t("form.errors.service");
+    if (!websiteTarget) nextErrors.website = t("form.errors.website");
     if (!engagement) nextErrors.engagement = t("form.errors.engagement");
     if (!title.trim()) nextErrors.title = t("form.errors.title");
     if (description.trim().length < 20)
       nextErrors.description = t("form.errors.description");
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
-    setSubmitting(true);
-    window.setTimeout(() => {
-      setSubmitting(false);
-      setSuccess(true);
-    }, 650);
-  }
+    setSubmitError("");
+    if (
+      Object.keys(nextErrors).length ||
+      !selectedCatalog ||
+      !websiteTarget ||
+      !engagement
+    ) {
+      return;
+    }
 
+    setSubmitting(true);
+    const result = await createComplementaryRequestAction({
+      catalogItemId: selectedCatalog.id,
+      ...(websiteTarget.websiteId
+        ? { websiteId: websiteTarget.websiteId }
+        : { websiteDomain: websiteTarget.websiteDomain }),
+      engagementPreference: engagement,
+      title,
+      description,
+      ...(scope ? { scope: { value: scope } } : {}),
+      idempotencyKey,
+    });
+    setSubmitting(false);
+
+    if (!result.ok) {
+      const message =
+        result.error.code === "PROFILE_INCOMPLETE"
+          ? t("form.errors.profileIncomplete")
+          : result.error.key === "conflict"
+            ? t("form.errors.conflict")
+            : result.error.key === "validation"
+              ? t("form.errors.validation")
+              : t("form.errors.generic");
+      setSubmitError(message);
+      return;
+    }
+
+    setSubmittedDomain(
+      result.data.websiteDomain || websiteTarget.displayDomain,
+    );
+    setSuccess(true);
+  }
   function addFiles(fileList: FileList | null) {
     const nextFiles = Array.from(fileList ?? []);
     const invalid = nextFiles.find(
@@ -337,7 +399,10 @@ export function RequestServiceForm({
             {t("form.success.title")}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm leading-6">
-            {t("form.success.description")}
+            {t.rich("form.success.submitted", {
+              domain: submittedDomain,
+              ltr: (chunks) => <span dir="ltr">{chunks}</span>,
+            })}
           </p>
           <Link
             href={{
@@ -356,6 +421,15 @@ export function RequestServiceForm({
     <form onSubmit={submit} noValidate>
       <Panel className="p-5 sm:p-6">
         <div className="grid gap-6">
+          {loadError && (
+            <Alert variant="destructive">
+              <AlertTriangle aria-hidden="true" className="size-4" />
+              <AlertTitle>{t("form.loadError.title")}</AlertTitle>
+              <AlertDescription>
+                {t("form.loadError.description")}
+              </AlertDescription>
+            </Alert>
+          )}
           <ServiceTypeSelector
             value={service}
             onChange={(value) => {
@@ -366,39 +440,23 @@ export function RequestServiceForm({
             error={errors.service}
           />
           <div className="lg:grid lg:grid-cols-2 lg:gap-4">
-            <Label className="inline-block w-full flex-1 gap-2 text-sm font-medium">
-              {t("form.website.label")}
-              <span className="text-destructive">*</span>
-              <Select
-                value={website}
-                onValueChange={(next) => {
-                  setWebsite(next);
-                  setErrors((current) => ({ ...current, website: "" }));
-                }}
-              >
-                <SelectTrigger
-                  className="mt-2 h-11! w-full"
-                  aria-invalid={Boolean(errors.website)}
-                  aria-describedby={
-                    errors.website ? "website-error" : undefined
-                  }
-                >
-                  <SelectValue placeholder={t("form.website.placeholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {websites.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name} — {item.domain}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.website && (
-                <span id="website-error" className="text-destructive text-xs">
-                  {errors.website}
-                </span>
-              )}
-            </Label>
+            <div className="w-full flex-1">
+              <p className="text-sm font-medium">
+                {t("form.website.label")}{" "}
+                <span className="text-destructive">*</span>
+              </p>
+              <div className="mt-2">
+                <WebsiteTargetCombobox
+                  websites={websites}
+                  value={websiteTarget}
+                  onChange={(next) => {
+                    setWebsiteTarget(next);
+                    setErrors((current) => ({ ...current, website: "" }));
+                  }}
+                  error={errors.website}
+                />
+              </div>
+            </div>
             <ServiceSpecificFields
               className="mt-6 flex-1 lg:mt-0"
               service={service}
@@ -488,6 +546,63 @@ export function RequestServiceForm({
               <span className="tabular-nums">{description.length}/800</span>
             </span>
           </Label>
+          {websiteTarget && !!service && (
+            <section
+              className="border-border bg-muted/20 rounded-xl border p-4"
+              aria-labelledby="request-review-title"
+            >
+              <h2 id="request-review-title" className="text-sm font-semibold">
+                {t("form.review.title")}
+              </h2>
+              <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
+                <div>
+                  <dt className="text-muted-foreground text-xs">
+                    {t("form.review.service")}
+                  </dt>
+                  <dd className="mt-1 font-medium">
+                    {service === "seo"
+                      ? t("services.seo")
+                      : service === "graphic-design"
+                        ? t("services.graphic-design")
+                        : service === "product-data-entry"
+                          ? t("services.product-data-entry")
+                          : t("services.social-media-support")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground text-xs">
+                    {t("form.review.domain")}
+                  </dt>
+                  <dd className="mt-1 font-medium" dir="ltr">
+                    {websiteTarget.displayDomain}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground text-xs">
+                    {t("form.review.coverage")}
+                  </dt>
+                  <dd className="mt-1 font-medium">
+                    {websiteTarget.coverage === "UNIXSEE_MANAGED"
+                      ? t("coverageDescriptive.UNIXSEE_MANAGED")
+                      : t("coverageDescriptive.EXTERNAL_INFRASTRUCTURE")}
+                  </dd>
+                </div>
+              </dl>
+              {websiteTarget.coverage !== "UNIXSEE_MANAGED" && (
+                <p className="text-muted-foreground mt-3 text-xs leading-5">
+                  {t("form.review.externalNote")}
+                </p>
+              )}
+            </section>
+          )}
+
+          {!!submitError && (
+            <Alert variant="destructive" role="alert">
+              <AlertTriangle aria-hidden="true" className="size-4" />
+              <AlertTitle>{t("form.submitError.title")}</AlertTitle>
+              <AlertDescription>{submitError}</AlertDescription>
+            </Alert>
+          )}
           <div className="min-w-0">
             <span className="text-sm font-medium">
               {t("form.attachments.label")}
@@ -513,7 +628,7 @@ export function RequestServiceForm({
             )}
             <ul
               className={cn(
-                "relative flex w-full min-w-0 max-w-full flex-col gap-2",
+                "relative flex w-full max-w-full min-w-0 flex-col gap-2",
                 files.length > 0 && "mt-3",
               )}
             >
@@ -571,7 +686,7 @@ export function RequestServiceForm({
                             },
                           }
                     }
-                    className="border-border bg-muted/40 flex min-h-11 w-full min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-xl border px-3 text-sm sm:gap-3"
+                    className="border-border bg-muted/40 flex min-h-11 w-full max-w-full min-w-0 items-center gap-2 overflow-hidden rounded-xl border px-3 text-sm sm:gap-3"
                   >
                     <Paperclip
                       aria-hidden="true"
@@ -610,7 +725,7 @@ export function RequestServiceForm({
         <DashboardButton
           type="submit"
           size="xl"
-          disabled={submitting}
+          disabled={submitting || loadError || catalog.length === 0}
           className=""
         >
           {submitting ? (

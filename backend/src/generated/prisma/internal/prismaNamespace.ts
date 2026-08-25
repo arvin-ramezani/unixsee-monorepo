@@ -3730,6 +3730,7 @@ export const WebsiteScalarFieldEnum = {
   vpsNodeId: 'vpsNodeId',
   planId: 'planId',
   planActivatedAt: 'planActivatedAt',
+  managementCoverage: 'managementCoverage',
   domain: 'domain',
   displayName: 'displayName',
   directAdminUser: 'directAdminUser',
@@ -4092,10 +4093,19 @@ export const ComplementaryServiceRequestScalarFieldEnum = {
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',
   details: 'details',
+  title: 'title',
+  engagementPreference: 'engagementPreference',
+  scope: 'scope',
   tenantId: 'tenantId',
   websiteId: 'websiteId',
+  websiteDomain: 'websiteDomain',
+  websiteTargetType: 'websiteTargetType',
+  websiteCoverageSnapshot: 'websiteCoverageSnapshot',
+  websiteResolutionState: 'websiteResolutionState',
+  authorizationState: 'authorizationState',
   createdByUserId: 'createdByUserId',
   withdrawnAt: 'withdrawnAt',
+  acceptedAt: 'acceptedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4123,6 +4133,7 @@ export const ServiceAssignmentScalarFieldEnum = {
   assigneeNote: 'assigneeNote',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
+  authorizationState: 'authorizationState',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4521,6 +4532,20 @@ export type ListEnumVpsNodeStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'WebsiteManagementCoverage'
+ */
+export type EnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebsiteManagementCoverage'>
+
+
+
+/**
+ * Reference to a field of type 'WebsiteManagementCoverage[]'
+ */
+export type ListEnumWebsiteManagementCoverageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebsiteManagementCoverage[]'>
+
+
+
+/**
  * Reference to a field of type 'WebsiteLifecycleStatus'
  */
 export type EnumWebsiteLifecycleStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebsiteLifecycleStatus'>
@@ -4714,6 +4739,62 @@ export type EnumComplementaryRequestStatusFieldRefInput<$PrismaModel> = FieldRef
  */
 export type ListEnumComplementaryRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryRequestStatus[]'>
     
+
+
+/**
+ * Reference to a field of type 'ComplementaryEngagementPreference'
+ */
+export type EnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryEngagementPreference'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryEngagementPreference[]'
+ */
+export type ListEnumComplementaryEngagementPreferenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryEngagementPreference[]'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryWebsiteTargetType'
+ */
+export type EnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryWebsiteTargetType'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryWebsiteTargetType[]'
+ */
+export type ListEnumComplementaryWebsiteTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryWebsiteTargetType[]'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryWebsiteResolutionState'
+ */
+export type EnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryWebsiteResolutionState'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryWebsiteResolutionState[]'
+ */
+export type ListEnumComplementaryWebsiteResolutionStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryWebsiteResolutionState[]'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryAuthorizationState'
+ */
+export type EnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryAuthorizationState'>
+
+
+
+/**
+ * Reference to a field of type 'ComplementaryAuthorizationState[]'
+ */
+export type ListEnumComplementaryAuthorizationStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplementaryAuthorizationState[]'>
+
 
 
 /**

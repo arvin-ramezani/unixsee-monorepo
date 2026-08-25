@@ -19,6 +19,7 @@ const mapLive = (item: AdminWebsiteAgentContext): WebsiteType => {
     tenantName: item.tenant?.name ?? "بدون مستأجر",
     tenantId: item.tenant?.id ?? "",
     serverId: item.vpsNode?.server?.id ?? "",
+    managementCoverage: item.managementCoverage ?? "UNCLASSIFIED",
     status:
       item.status === "ACTIVE"
         ? WEBSITE_STATUS.ONLINE

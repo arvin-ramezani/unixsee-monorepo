@@ -11,9 +11,9 @@ function PlanCardSkeleton({ recommended = false }: { recommended?: boolean }) {
         recommended && "border-primary ring-1 ring-primary",
       )}
     >
-      {recommended ? (
+      {recommended && (
         <Skeleton className="absolute -top-3 inset-s-1/2 h-5 w-24 -translate-x-1/2 rounded-full" />
-      ) : null}
+      )}
       <div className="flex flex-1 flex-col gap-2">
         <Skeleton className="h-6 w-28" />
         <Skeleton className="h-4 w-full" />

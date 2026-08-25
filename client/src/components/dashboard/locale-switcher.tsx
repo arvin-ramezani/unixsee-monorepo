@@ -46,7 +46,8 @@ export function LocaleSwitcher() {
             : "text-muted-foreground",
         )}
       >
-        فا
+        {/* eslint-disable-next-line no-restricted-syntax -- Persian language endonym; must render in native script regardless of active locale. */}
+        {"فا"}
       </span>
       <span aria-hidden="true" className="text-muted-foreground/60">
         /

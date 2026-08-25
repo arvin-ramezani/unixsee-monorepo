@@ -35,9 +35,9 @@ export function DashboardBreadcrumb({
 
           return (
             <Fragment key={`${item.href ?? "current"}-${item.label}`}>
-              {index > 0 ? (
+              {index > 0 && (
                 <BreadcrumbSeparator className="shrink-0">/</BreadcrumbSeparator>
-              ) : null}
+              )}
               <BreadcrumbItem className="min-w-0">
                 {current ? (
                   <BreadcrumbPage

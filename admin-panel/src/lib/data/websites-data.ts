@@ -25,6 +25,8 @@ export type WebsiteType = {
   tenantName: string;
   tenantId: string;
   serverId: string;
+  managementCoverage?:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
   status: WebsiteStatusType;
   availabilityStatus: WebsiteStatusType;
   lastAvailabilityCheckAt: string;
