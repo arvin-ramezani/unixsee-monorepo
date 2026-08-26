@@ -19,7 +19,7 @@ const titleStyles = {
     "text-[1.75rem] leading-[1.25] font-extrabold",
     "md:text-[2.125rem] md:leading-[1.22]",
     "xl:text-[2.5rem] xl:leading-[1.2]",
-    "rtl:leading-[1.38] md:rtl:leading-[1.34] xl:rtl:leading-[1.3]",
+    "rtl:leading-[1.8] md:rtl:leading-[1.34] xl:rtl:leading-[1.3]",
   ].join(" "),
 
   h3: [

@@ -10,11 +10,24 @@ export type PlansSectionProps = {
 export default function PlansSection({ id }: PlansSectionProps) {
   const t = useTranslations("ManagedServerPage.PlansSection");
   return (
-    <Section id={id} className="bg-muted" containerClassName="flex-col! pb-0!">
-      <Title as="h2" className="mx-auto mb-4 max-w-lg text-center lg:max-w-3xl">
-        {t("heading")}
-      </Title>
-      <p className="text-center">{t("subHeading")}</p>
+    <Section
+      id={id}
+      className="bg-muted"
+      containerClassName="flex-col! items-stretch! pb-0!"
+    >
+      <Title
+        as="h2"
+        className="mx-auto mb-4 text-center md:mx-0 md:text-start lg:max-w-3xl"
+        dangerouslySetInnerHTML={{ __html: t.raw("heading") }}
+      />
+      {/* {t("heading")}
+      </Title> */}
+      <p
+        className="mx-auto max-w-sm text-center md:mx-0 md:text-start rtl:leading-7"
+        dangerouslySetInnerHTML={{ __html: t.raw("subHeading") }}
+      />
+      {/* {t("subHeading")}
+      </p> */}
 
       <PlansList className="mt-8 lg:mt-20 [&_article]:border!" />
     </Section>

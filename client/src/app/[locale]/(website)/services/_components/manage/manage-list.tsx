@@ -13,7 +13,7 @@ export default function ManageList({ className }: ManageListProps) {
   const t = useTranslations("MigrationPage.ManageSection.items");
 
   return (
-    <ul className={cn("grid grid-cols-1 gap-6 lg:grid-cols-3", className)}>
+    <ul className={cn("grid grid-cols-1 gap-10 lg:grid-cols-3", className)}>
       {MANAGE_ITEMS_KEYS.map((itemKey) => (
         <ManageItem
           key={itemKey}

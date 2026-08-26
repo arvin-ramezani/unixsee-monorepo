@@ -16,7 +16,7 @@ export default function PerformanceSection({ id }: PerformanceSectionProps) {
       className="bg-muted"
       containerClassName="gap-10 lg:items-stretch lg:gap-20"
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-6 text-center md:items-start md:text-start">
         <Badge
           variant={"outline"}
           className="border-primary bg-primary/20 px-3 py-1.5"

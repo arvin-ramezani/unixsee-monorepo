@@ -19,14 +19,14 @@ export default function HeroSection({ id }: HeroSectionProps) {
       className="lg:py-24"
       containerClassName="flex flex-col gap-12 lg:flex-row lg:items-center lg:gap-20 lg:pt-9!"
     >
-      <div className="flex flex-col gap-4 lg:flex-1">
+      <div className="flex flex-col gap-4 text-center md:text-start lg:flex-1">
         <Text className="-mb-6 text-lg">{t("subTitle")}</Text>
         <Title>{t("heading")}</Title>
         <Text className="mt-0">{t("description")}</Text>
 
         <RadialRevealLink
           href="/"
-          className="h-12 w-full text-white lg:w-auto lg:min-w-48 lg:self-start"
+          className="h-12 w-full text-white md:w-auto md:self-start md:px-6"
         >
           {t("primaryCTA")}
         </RadialRevealLink>

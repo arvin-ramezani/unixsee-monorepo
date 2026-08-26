@@ -19,15 +19,18 @@ export default function ConnectSection({ id }: ConnectSectionProps) {
       className="bg-muted"
       containerClassName="flex-col lg:flex-row-reverse gap-10 lg:gap-20"
     >
-      <div className="flex flex-col gap-4">
-        <Title as="h2" className="lg:leading-14">
-          {t("heading")}
-        </Title>
+      <div className="flex flex-col gap-4 text-center md:text-start">
+        <Title
+          as="h2"
+          className="lg:leading-14"
+          dangerouslySetInnerHTML={{ __html: t.raw("heading") }}
+        />
+        {/* </Title> */}
         <Text className="text-foreground text-lg">{t("description")}</Text>
         <RadialRevealLink
           variant={"link"}
           href={t("cta.href")}
-          className="text-text-link w-fit hover:no-underline lg:min-w-auto lg:self-start lg:px-2"
+          className="text-text-link w-full hover:no-underline md:w-fit lg:min-w-auto lg:self-start lg:px-2"
         >
           {t("cta.label")}
         </RadialRevealLink>

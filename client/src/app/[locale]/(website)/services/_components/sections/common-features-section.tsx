@@ -76,11 +76,17 @@ export default function CommonFeaturesSection({
       containerClassName="flex-col! items-center!"
     >
       <div className="mx-auto w-full">
-        <div className="mb-8 text-center">
-          <Title as="h3" className="mx-auto mb-4 text-center lg:max-w-3xl">
-            {t("title")}
-          </Title>
-          <Text className="text-center">{t("description")}</Text>
+        <div className="mb-8 text-center md:text-start">
+          <Title
+            as="h3"
+            className="mb-4 lg:max-w-3xl"
+            dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+          />
+          {/* {t("title")}
+            </Title> */}
+          <Text dangerouslySetInnerHTML={{ __html: t.raw("description") }} />
+          {/* {t("description")}
+            </Text> */}
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -99,7 +105,7 @@ export default function CommonFeaturesSection({
                   <IconComponent className="h-5 w-5" />
                 </div>
                 <div>
-                  <h4 className="text-foreground mb-0.5 text-xl font-semibold">
+                  <h4 className="text-foreground mb-2 text-xl font-semibold">
                     {item.label}
                   </h4>
                   <p className="text-muted-foreground">{item.value}</p>
@@ -114,19 +120,25 @@ export default function CommonFeaturesSection({
         <div className="bg-primary/5 pointer-events-none absolute -inset-e-20 -top-20 h-64 w-64 rounded-full blur-[60px]" />
         <div className="bg-secondary/5 pointer-events-none absolute -inset-s-20 -bottom-20 h-64 w-64 rounded-full blur-[60px]" />
 
-        <div className="relative z-10 mb-10 text-center">
-          <Title
-            as="h3"
-            className="flex items-center justify-center gap-4 text-center"
-          >
-            <div className="text-primary border-border bg-card inline-flex h-12 w-12 items-center justify-center rounded-2xl border">
-              <Cpu className="h-6 w-6" />
-            </div>
-            {tTechnical("title")}
-          </Title>
-          <Text className="mx-auto mt-3 max-w-2xl text-center">
-            {tTechnical("subtitle")}
-          </Text>
+        <div className="relative z-10 mb-10 flex justify-center gap-4 md:justify-start">
+          <div className="text-primary border-border bg-card hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl border md:flex">
+            <Cpu className="h-6 w-6" />
+          </div>
+          <div>
+            <Title
+              as="h3"
+              className="flex items-center justify-center gap-4 text-center md:justify-start md:text-start"
+              dangerouslySetInnerHTML={{ __html: tTechnical.raw("title") }}
+            />
+            {/* {tTechnical("title")}
+            </Title> */}
+            <Text
+              className="mx-auto mt-3 max-w-2xl text-center md:text-start"
+              dangerouslySetInnerHTML={{ __html: tTechnical.raw("subtitle") }}
+            />
+            {/* {tTechnical("subtitle")}
+            </Text> */}
+          </div>
         </div>
 
         <div className="relative z-10 grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -145,7 +157,7 @@ export default function CommonFeaturesSection({
                   <IconComponent className="h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="text-foreground mb-2 text-xl font-bold tracking-wide">
+                  <h4 className="text-foreground mb-2 text-xl font-bold rtl:leading-9">
                     {item.title}
                   </h4>
                   <p className="text-muted-foreground leading-relaxed font-light">
