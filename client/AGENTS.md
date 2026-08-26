@@ -19,9 +19,17 @@ docs only for shared product, auth, or API contract changes.
 Framework workflows are available under [`.agents/skills/`](.agents/skills/).
 Installed Next.js docs and repository contracts override skill defaults.
 
-## High-frequency UI rule
+## High-frequency UI rules
 
-Every async customer-dashboard route under
+- **Buttons and button links:** Always use `RadialRevealButton` and
+  `RadialRevealLink` from `src/components/common/radial-reveal/` for
+  `default`, `outline`, `secondary`, and `destructive` button-styled CTAs
+  and matching navigational button links. Do **not** wrap `ghost`, `link`,
+  `plain`, or ordinary text links with radial-reveal — keep those on shadcn
+  `Button` / `Link`. Details:
+  [`docs/engineering/ui.md`](docs/engineering/ui.md).
+
+- **Dashboard loading skeletons:** Every async customer-dashboard route under
 `src/app/[locale]/(dashboard)/dashboard/` needs a co-located `loading.tsx` and
 a structure-matched skeleton. When the page's grid, rails, max-width, or major
 blocks change, update its skeleton in the same change. Detailed rules:
