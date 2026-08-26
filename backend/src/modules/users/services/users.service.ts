@@ -7,10 +7,7 @@ import {
 
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import type { Prisma } from '#/generated/prisma/client.js';
-import {
-  Role,
-  UserAccountStatus,
-} from '#/generated/prisma/enums.js';
+import { Role, UserAccountStatus } from '#/generated/prisma/enums.js';
 import bcrypt from 'bcryptjs';
 import { createAppLogger } from '#/common/logging/app-logger.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
@@ -34,7 +31,6 @@ export class UsersService {
     private readonly mailService: MailService,
     private readonly storageService: StorageService,
   ) {}
-
 
   /** Never expose hashedRt/password; surface session presence only. */
   private toAdminUserView<T extends { hashedRt: string | null }>(user: T) {
@@ -91,10 +87,7 @@ export class UsersService {
   async findCustomerOwningWebsiteDomain(domain: string) {
     const website = await this.prisma.website.findFirst({
       where: {
-        OR: [
-          { domain },
-          { domain: `www.${domain}` },
-        ],
+        OR: [{ domain }, { domain: `www.${domain}` }],
         user: {
           role: { in: [Role.USER, Role.TENANT] },
         },
@@ -252,12 +245,12 @@ export class UsersService {
 
     await this.mailService.sendPhoneOtpMockEmail({
       phoneNumber,
-      otp: otp.otp,
+      otp: otp.code,
     });
 
     this.logger.log('user.phone_verify.otp_created', {
       userId,
-      otpId: otp.id,
+      otpId: otp.challenge.id,
     });
     return { delivered: true as const };
   }
@@ -311,8 +304,6 @@ export class UsersService {
       omit: userPublicOmit,
     });
 
-    await this.otpService.remove(input.otp);
-
     this.logger.log('user.phone_verify.completed', { userId });
     return updated;
   }
@@ -357,20 +348,17 @@ export class UsersService {
 
     await this.mailService.sendEmailOtpMockEmail({
       email: normalized,
-      otp: otp.otp,
+      otp: otp.code,
     });
 
     this.logger.log('user.email_verify.otp_created', {
       userId,
-      otpId: otp.id,
+      otpId: otp.challenge.id,
     });
     return { delivered: true as const };
   }
 
-  async verifyEmailOtp(
-    userId: string,
-    input: { email: string; otp: string },
-  ) {
+  async verifyEmailOtp(userId: string, input: { email: string; otp: string }) {
     RequestContext.setUserId(userId);
     const normalized = input.email.trim().toLowerCase();
     this.logger.log('user.email_verify.attempt', {
@@ -416,8 +404,6 @@ export class UsersService {
       },
       omit: userPublicOmit,
     });
-
-    await this.otpService.remove(input.otp);
 
     this.logger.log('user.email_verify.completed', { userId });
     return updated;
@@ -623,7 +609,7 @@ export class UsersService {
       });
       await this.mailService.sendPhoneOtpMockEmail({
         phoneNumber: phone,
-        otp: otp.otp,
+        otp: otp.code,
       });
     } else {
       channel = 'email';
@@ -634,7 +620,7 @@ export class UsersService {
       });
       await this.mailService.sendEmailOtpMockEmail({
         email: email!,
-        otp: otp.otp,
+        otp: otp.code,
       });
     }
 
@@ -662,7 +648,10 @@ export class UsersService {
 
   async uploadAvatar(userId: string, file: Express.Multer.File) {
     if (!file.mimetype.startsWith('image/')) {
-      throw new BadRequestException({ code: 'INVALID_FILE_TYPE', message: 'Only image files are allowed' });
+      throw new BadRequestException({
+        code: 'INVALID_FILE_TYPE',
+        message: 'Only image files are allowed',
+      });
     }
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -671,11 +660,17 @@ export class UsersService {
     }
 
     const ext = file.originalname.split('.').pop() || 'jpg';
-    const storageKey = 'avatars/' + userId + '/' + crypto.randomUUID() + '.' + ext;
+    const storageKey =
+      'avatars/' + userId + '/' + crypto.randomUUID() + '.' + ext;
 
-    await this.storageService.upload(storageKey, file.buffer, { contentType: file.mimetype });
+    await this.storageService.upload(storageKey, file.buffer, {
+      contentType: file.mimetype,
+    });
 
-    const { signedUrl } = await this.storageService.createSignedUrl(storageKey, 30 * 24 * 60 * 60);
+    const { signedUrl } = await this.storageService.createSignedUrl(
+      storageKey,
+      30 * 24 * 60 * 60,
+    );
 
     const updated = await this.prisma.user.update({
       where: { id: userId },
@@ -686,5 +681,4 @@ export class UsersService {
     this.logger.log('user.avatar_uploaded', { userId });
     return updated;
   }
-
 }

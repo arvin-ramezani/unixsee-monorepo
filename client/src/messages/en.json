@@ -2222,6 +2222,120 @@
       }
     }
   },
+  "AboutPage": {
+    "PositioningSection": {
+      "heading": "About Unixsee",
+      "lead": "Unixsee is not just your store's host. It is the operational partner behind its growth.",
+      "support": "Unixsee is built for stores that do not want infrastructure to be a permanent preoccupation.",
+      "base": {
+        "label": "Based in",
+        "value": "Babolsar, Mazandaran"
+      }
+    },
+    "OriginSection": {
+      "heading": "Why Unixsee was built",
+      "lead": "Unixsee was founded with one clear purpose: to close the gap between general-purpose hosting and what a WooCommerce store actually needs.",
+      "stakesIntro": "An online store is not just a website. Any one of these can hit sales, customer trust, and brand credibility directly:",
+      "stakes": {
+        "slowness": {
+          "title": "Slow pages",
+          "description": "Every second of delay widens the gap between a visit and a purchase."
+        },
+        "payment": {
+          "title": "Payment errors",
+          "description": "A cart that fails at checkout usually does not come back."
+        },
+        "database": {
+          "title": "Database faults",
+          "description": "Orders, stock levels, and prices all depend on a healthy database."
+        },
+        "security": {
+          "title": "Security incidents",
+          "description": "A single breach targets both customer data and brand credibility."
+        },
+        "downtime": {
+          "title": "Short outages",
+          "description": "Even a few minutes offline is expensive during peak selling hours."
+        }
+      },
+      "close": "That is why a WooCommerce store's infrastructure has to go beyond ordinary hosting — it has to be designed for selling, stability, and growth."
+    },
+    "NameSection": {
+      "heading": "What the name means",
+      "lead": "The name Unixsee comes from two ideas put together.",
+      "parts": {
+        "unix": {
+          "term": "Unix",
+          "description": "A mark of power, stability, and the technical roots of infrastructure."
+        },
+        "see": {
+          "term": "See",
+          "description": "A sign of observability, monitoring, and a continuous watch over the store's health."
+        }
+      },
+      "close": "That combination defines how we work: powerful infrastructure that is always seen, always monitored, and always ready to perform better."
+    },
+    "ScopeSection": {
+      "heading": "What we do",
+      "lead": "At Unixsee we do not simply provide hosting. We build an operational platform for WooCommerce stores.",
+      "items": {
+        "monitoring": {
+          "title": "Continuous monitoring",
+          "description": "Ongoing monitoring of managed servers and services."
+        },
+        "operations": {
+          "title": "Infrastructure maintenance and operations",
+          "description": "Continuous updating, tuning, and upkeep of the infrastructure."
+        },
+        "support": {
+          "title": "Round-the-clock operational support",
+          "description": "Access to the technical team at any hour of the day or night."
+        },
+        "incident": {
+          "title": "Incident management",
+          "description": "Detecting, containing, and following through on faults until service is stable again."
+        },
+        "security": {
+          "title": "Security",
+          "description": "Hardening, backups, and access control for the store's infrastructure."
+        },
+        "applications": {
+          "title": "Control and observability applications",
+          "description": "Web tools for control, observability, access, and security across the store's infrastructure."
+        }
+      },
+      "moreLabel": "More detail"
+    },
+    "SupportSection": {
+      "heading": "How we think about support",
+      "lead": "For us, support is not simply answering tickets.",
+      "pillars": {
+        "prevention": {
+          "title": "Ahead of the crisis",
+          "description": "We work to identify problems before they turn into crises."
+        },
+        "watch": {
+          "title": "Watching the technical state",
+          "description": "We keep the store's technical condition under continuous watch."
+        },
+        "clearing": {
+          "title": "Clearing technical obstacles",
+          "description": "As the business grows, we remove technical obstacles from its path in advance."
+        }
+      },
+      "close": "We are alongside you so your store runs faster, steadier, safer, and readier to grow."
+    },
+    "ContactSection": {
+      "heading": "Address and direct contact",
+      "lead": "If you want to know who you are dealing with before any conversation starts, this is our address and landline.",
+      "phoneLabel": "Landline"
+    },
+    "NextStepSection": {
+      "heading": "Next step",
+      "description": "If you would like to review your store's current state together, request an assessment. If you are still evaluating, a call or a message is enough.",
+      "contactLabel": "Contact Unixsee"
+    }
+  },
   "common": {
     "emailPlaceholder": "Enter your email...",
     "copywrite": ". All rights reserved.",
@@ -2241,7 +2355,9 @@
     },
     "address": {
       "label": "Address",
-      "value": "Iran, Mazandaran, Babolsar, Pasdaran Street, Corner of Pasdaran 24, Tarannom Complex, 6th Floor"
+      "value": "Iran, Mazandaran, Babolsar, Pasdaran Street, Corner of Pasdaran 24, Tarannom Complex, 6th Floor",
+      "locality": "Babolsar",
+      "region": "Mazandaran"
     }
   },
   "Metadata": {
@@ -2351,6 +2467,10 @@
     "websiteDetails": {
       "title": "{name} | Unixsee",
       "description": "Monitoring details for {name}."
+    },
+    "about": {
+      "title": "About Unixsee | Operational partner for WooCommerce growth",
+      "description": "What Unixsee is, why it was built, and what it takes responsibility for. Our address, landline, and how we approach support for WooCommerce store infrastructure."
     }
   },
   "Common": {
@@ -2391,7 +2511,7 @@
     "coverage": {
       "UNIXSEE_MANAGED": "Managed by Unixsee",
       "EXTERNAL_INFRASTRUCTURE": "External hosting",
-      "UNCLASSIFIED": "Unclassified"
+      "UNCLASSIFIED": "Hosting type not set"
     },
     "descriptions": {
       "ecommerce": "eCommerce Store",
@@ -2523,7 +2643,7 @@
   "Dashboard": {
     "hero": {
       "title": "Welcome Back, {name}!",
-      "description": "Manage your websites, domains, backups, and account services from one place.",
+      "description": "Monitor your websites, traffic, hosting coverage, and account services from one place.",
       "addSite": "Add Site"
     },
     "table": {
@@ -2534,7 +2654,8 @@
       "domain": "Connected Domain",
       "plan": "Plan",
       "status": "Status",
-      "backup": "Backup",
+      "visitors24h": "Visitors (24h)",
+      "notApplicable": "Not applicable",
       "lastUpdated": "Last Updated",
       "siteActions": "Actions for {name}",
       "summary": "Showing {start, number} to {end, number} of {total, number} websites"
@@ -2558,9 +2679,9 @@
       "ticketResolved": "Support ticket #{id} resolved"
     },
     "status": {
-      "title": "Website Status",
-      "total": "{count} total",
-      "attention": "Needs Attention",
+      "title": "Managed Website Status",
+      "total": "{count} managed",
+      "needsAttention": "Needs Attention",
       "online": "Online & Healthy",
       "maintenance": "Under Maintenance",
       "setupPending": "Setup Pending",
@@ -4030,7 +4151,7 @@
   },
   "Websites": {
     "title": "Websites",
-    "description": "Manage your websites, connected domains, plans, backups, and support from one place.",
+    "description": "Manage your websites, connected domains, hosting coverage, traffic, and support from one place.",
     "addSite": "Add Site",
     "moreAddOptions": "More add-site options",
     "searchHeader": "Search for websites, domains, tickets...",
@@ -4050,8 +4171,6 @@
       "status": "Status",
       "planLabel": "Filter by plan",
       "plan": "Plan",
-      "backupLabel": "Filter by backup",
-      "backup": "Backup",
       "sortLabel": "Sort websites",
       "lastUpdated": "Sort: Last Updated",
       "name": "Sort: Name",
@@ -4065,7 +4184,7 @@
       "domain": "Connected Domain",
       "plan": "Plan",
       "status": "Status",
-      "backup": "Backup",
+      "visitors24h": "Visitors (24h)",
       "lastUpdated": "Last Updated",
       "actions": "Actions",
       "manage": "Manage",
@@ -4075,9 +4194,12 @@
       "clearFilters": "Clear filters",
       "summary": "Showing {start, number} to {end, number} of {total, number} websites",
       "notApplicable": "Not applicable",
-      "complementaryOnly": "Complementary services only",
-      "externalComplementaryNote": "External hosting — complementary services only",
-      "externalNote": "This server isn't hosted or managed by Unixsee; infrastructure status, monitoring, and backup don't apply to it."
+      "externalNote": "This website uses hosting outside Unixsee. Unixsee does not monitor or manage its server infrastructure."
+    },
+    "visitors24h": {
+      "unit": "visitors",
+      "collecting": "Collecting data",
+      "unavailable": "Not measured yet"
     },
     "help": {
       "title": "Need Help?",
@@ -4836,7 +4958,7 @@
     },
     "coverageDescriptive": {
       "UNIXSEE_MANAGED": "Hosted and managed by Unixsee",
-      "EXTERNAL_INFRASTRUCTURE": "External hosting — complementary services only",
+      "EXTERNAL_INFRASTRUCTURE": "External hosting",
       "UNCLASSIFIED": "Coverage not yet classified"
     },
     "target": {

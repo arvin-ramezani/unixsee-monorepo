@@ -6,7 +6,6 @@ import {
   Cloud,
   CreditCard,
   FileText,
-  Globe2,
   Headphones,
   History,
   Layers3,
@@ -22,26 +21,7 @@ import {
   Wrench,
   MessagesSquare,
 } from "lucide-react";
-
-export type SiteStatus =
-  "online" | "attention" | "maintenance" | "setupPending";
-export type BackupStatus = "successful" | "scheduled" | "needsReview";
-export type PlanCode = "starter" | "business" | "pro" | "premium" | "dedicated";
-export type DescriptionCode =
-  "ecommerce" | "portfolio" | "saas" | "agency" | "blog";
-
-export interface Website {
-  id: string;
-  name: string;
-  description: DescriptionCode;
-  domain: string;
-  monogram: string;
-  accent: "success" | "danger" | "violet" | "info" | "warning";
-  plan: PlanCode;
-  status: SiteStatus;
-  backup: BackupStatus;
-  updatedAt: string;
-}
+import type { WebsiteRecord, WebsiteStatus } from "@/lib/websites-data";
 
 export type NotificationKind =
   "platformUpdate" | "seoGuide" | "designShowcase" | "socialMediaTrends";
@@ -60,69 +40,6 @@ export interface NotificationItem extends FeedItem {
   notificationId: string;
   seenAt: string | null;
 }
-
-export const websites: Website[] = [
-  {
-    id: "greenario-store",
-    name: "Greenario Store",
-    description: "ecommerce",
-    domain: "greenario.com",
-    monogram: "G",
-    accent: "success",
-    plan: "starter",
-    status: "online",
-    backup: "successful",
-    updatedAt: "2024-05-24T10:24:00Z",
-  },
-  {
-    id: "luna-studio",
-    name: "Luna Studio",
-    description: "portfolio",
-    domain: "lunastudio.co",
-    monogram: "L",
-    accent: "danger",
-    plan: "business",
-    status: "online",
-    backup: "scheduled",
-    updatedAt: "2024-05-23T16:18:00Z",
-  },
-  {
-    id: "orbit-labs",
-    name: "Orbit Labs",
-    description: "saas",
-    domain: "orbitlabs.io",
-    monogram: "O",
-    accent: "violet",
-    plan: "pro",
-    status: "attention",
-    backup: "needsReview",
-    updatedAt: "2024-05-22T11:07:00Z",
-  },
-  {
-    id: "nova-agency",
-    name: "Nova Agency",
-    description: "agency",
-    domain: "novaagency.com",
-    monogram: "N",
-    accent: "info",
-    plan: "premium",
-    status: "online",
-    backup: "successful",
-    updatedAt: "2024-05-21T09:35:00Z",
-  },
-  {
-    id: "pixel-nest",
-    name: "Pixel Nest",
-    description: "blog",
-    domain: "pixelnest.dev",
-    monogram: "P",
-    accent: "warning",
-    plan: "dedicated",
-    status: "maintenance",
-    backup: "scheduled",
-    updatedAt: "2024-05-20T14:41:00Z",
-  },
-];
 
 export const notifications: NotificationItem[] = [
   {
@@ -169,18 +86,18 @@ export const notifications: NotificationItem[] = [
 
 /** Status metadata for the Website Status card — icon + tone per status */
 const statusMeta: Record<
-  SiteStatus,
+  WebsiteStatus,
   { icon: LucideIcon; tone: "success" | "warning" | "info" }
 > = {
-  attention: { icon: CircleAlert, tone: "warning" },
+  needsAttention: { icon: CircleAlert, tone: "warning" },
   online: { icon: CircleCheck, tone: "success" },
   maintenance: { icon: Wrench, tone: "info" },
   setupPending: { icon: Clock3, tone: "info" },
 };
 
 /** Order of rows in the Website Status card — operational health first */
-const statusOrder: SiteStatus[] = [
-  "attention",
+const statusOrder: WebsiteStatus[] = [
+  "needsAttention",
   "online",
   "maintenance",
   "setupPending",
@@ -202,17 +119,20 @@ export const websiteSummaryToneStyles = {
 } as const;
 
 /** Derive website status summary from the websites array (replaces hardcoded overviewItems) */
-export function getWebsiteStatusSummary() {
-  const total = websites.length;
+export function getWebsiteStatusSummary(websites: WebsiteRecord[]) {
+  const managedWebsites = websites.filter(
+    (website) => website.managementCoverage === "UNIXSEE_MANAGED",
+  );
+  const total = managedWebsites.length;
 
-  const counts: Record<SiteStatus, number> = {
-    attention: 0,
+  const counts: Record<WebsiteStatus, number> = {
+    needsAttention: 0,
     online: 0,
     maintenance: 0,
     setupPending: 0,
   };
 
-  for (const site of websites) {
+  for (const site of managedWebsites) {
     counts[site.status]++;
   }
 
@@ -246,18 +166,18 @@ export const navigation = [
     href: "/dashboard",
   },
   {
-    key: "domains",
-    activeItem: "Domains",
-    icon: Globe2,
-    href: "/dashboard/domains",
-    disabled: true,
-  },
-  {
     key: "websites",
     activeItem: "Websites",
     icon: WalletCards,
     href: "/dashboard/websites",
   },
+  // {
+  //   key: "domains",
+  //   activeItem: "Domains",
+  //   icon: Globe2,
+  //   href: "/dashboard/domains",
+  //   disabled: true,
+  // },
   {
     key: "billing",
     activeItem: undefined,

@@ -13,6 +13,14 @@ import {
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
+type Visitors24hSnapshot = {
+  uniqueVisitors24h: number | null;
+  visitors24hWindowSeconds: number | null;
+  visitors24hCoverageSeconds: number | null;
+  visitors24hMeasuredAt: Date | null;
+  visitors24hStatus: unknown;
+};
+
 @Injectable()
 export class WebsitesService {
   private readonly logger = createAppLogger(WebsitesService.name);
@@ -28,6 +36,18 @@ export class WebsitesService {
       where: { tenantId: { in: tenantIds } },
       include: {
         plan: { select: { id: true, code: true, nameEn: true } },
+        trafficSnapshots: {
+          where: { visitors24hMeasuredAt: { not: null } },
+          orderBy: { visitors24hMeasuredAt: 'desc' },
+          take: 1,
+          select: {
+            uniqueVisitors24h: true,
+            visitors24hWindowSeconds: true,
+            visitors24hCoverageSeconds: true,
+            visitors24hMeasuredAt: true,
+            visitors24hStatus: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -37,7 +57,13 @@ export class WebsitesService {
       count: websites.length,
     });
 
-    return websites;
+    return websites.map(({ trafficSnapshots, ...website }) => ({
+      ...website,
+      visitors24h: this.toCustomerVisitors24h(
+        website.managementCoverage,
+        trafficSnapshots[0],
+      ),
+    }));
   }
 
   async getWebsiteForUser(userId: string, websiteId: string) {
@@ -289,5 +315,57 @@ export class WebsitesService {
 
     this.logger.log('website.retired', { websiteId });
     return updated;
+  }
+
+  private toCustomerVisitors24h(
+    managementCoverage: WebsiteManagementCoverage,
+    snapshot?: Visitors24hSnapshot,
+  ) {
+    if (
+      managementCoverage !== WebsiteManagementCoverage.UNIXSEE_MANAGED ||
+      !snapshot
+    ) {
+      return null;
+    }
+
+    const status = this.readAgentFieldStatus(snapshot.visitors24hStatus);
+    const windowSeconds = snapshot.visitors24hWindowSeconds;
+    const coverageSeconds = snapshot.visitors24hCoverageSeconds;
+    const hasCompleteWindow =
+      windowSeconds === 86_400 &&
+      coverageSeconds !== null &&
+      coverageSeconds >= windowSeconds;
+    const isReady =
+      status.state === 'ok' &&
+      snapshot.uniqueVisitors24h !== null &&
+      hasCompleteWindow;
+    const isCollecting =
+      status.reason === 'warming_up' ||
+      (windowSeconds !== null &&
+        coverageSeconds !== null &&
+        coverageSeconds < windowSeconds);
+
+    return {
+      uniqueVisitors: isReady ? snapshot.uniqueVisitors24h : null,
+      windowSeconds,
+      coverageSeconds,
+      measuredAt: snapshot.visitors24hMeasuredAt,
+      status: isReady ? 'READY' : isCollecting ? 'COLLECTING' : 'UNAVAILABLE',
+    } as const;
+  }
+
+  private readAgentFieldStatus(value: unknown) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return { state: null, reason: null };
+    }
+
+    const state =
+      'state' in value && typeof value.state === 'string' ? value.state : null;
+    const reason =
+      'reason' in value && typeof value.reason === 'string'
+        ? value.reason
+        : null;
+
+    return { state, reason };
   }
 }

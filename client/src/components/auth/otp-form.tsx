@@ -45,7 +45,6 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   const tAuthErrors = useTranslations("Auth.errors");
   const router = useRouter();
   const reduceMotion = useReducedMotion();
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const autoSubmitCodeRef = useRef<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
@@ -61,10 +60,6 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   const pending = form.formState.isSubmitting || success;
 
   useEffect(() => {
-    titleRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
     if (cooldown <= 0) return;
     const id = window.setInterval(() => {
       setCooldown((value) => Math.max(0, value - 1));
@@ -73,10 +68,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   }, [cooldown]);
 
   function translateError(message?: string) {
-    return translateFormError(
-      (key) => tErrors(key as FormErrorKey),
-      message,
-    );
+    return translateFormError((key) => tErrors(key as FormErrorKey), message);
   }
 
   async function onSubmit(data: OtpSchemaType) {
@@ -148,11 +140,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
 
   return (
     <div>
-      <AuthPageHeader
-        titleRef={titleRef}
-        title={t("title")}
-        description={t("description")}
-      />
+      <AuthPageHeader title={t("title")} description={t("description")} />
       <p className="text-muted-foreground mt-3 text-sm">{maskedMessage}</p>
 
       <form
@@ -175,15 +163,15 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
           )}
         />
 
-        {!!formError && (
-          <AuthAlert className="mt-4" description={formError} />
-        )}
+        {!!formError && <AuthAlert className="mt-4" description={formError} />}
 
         <AnimatePresence mode="wait" initial={false}>
           {success ? (
             <motion.div
               key="success"
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              initial={
+                reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }
+              }
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: reduceMotion ? 0.12 : 0.25 }}

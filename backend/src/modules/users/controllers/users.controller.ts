@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,6 +25,12 @@ import { UsersService } from '../services/users.service.js';
 import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
+import { RateLimit } from '#/common/rate-limit/rate-limit.decorator.js';
+import { RateLimitGuard } from '#/common/rate-limit/rate-limit.guard.js';
+import {
+  AUTHENTICATED_OTP_REQUEST_RATE_LIMITS,
+  AUTHENTICATED_OTP_VERIFY_RATE_LIMITS,
+} from '#/modules/auth/otp-rate-limits.js';
 
 class UpdateMeDto {
   @IsOptional()
@@ -93,6 +100,8 @@ export class UsersController {
     return ApiResponseBuilder.ok(updated);
   }
 
+  @UseGuards(RateLimitGuard)
+  @RateLimit(...AUTHENTICATED_OTP_REQUEST_RATE_LIMITS)
   @Post('me/contacts/phone/otp/request')
   @HttpCode(HttpStatus.OK)
   async requestPhoneVerifyOtp(
@@ -106,6 +115,8 @@ export class UsersController {
     return ApiResponseBuilder.ok(result);
   }
 
+  @UseGuards(RateLimitGuard)
+  @RateLimit(...AUTHENTICATED_OTP_VERIFY_RATE_LIMITS)
   @Post('me/contacts/phone/otp/verify')
   @HttpCode(HttpStatus.OK)
   async verifyPhoneOtp(
@@ -116,6 +127,8 @@ export class UsersController {
     return ApiResponseBuilder.ok(updated);
   }
 
+  @UseGuards(RateLimitGuard)
+  @RateLimit(...AUTHENTICATED_OTP_REQUEST_RATE_LIMITS)
   @Post('me/contacts/email/otp/request')
   @HttpCode(HttpStatus.OK)
   async requestEmailVerifyOtp(
@@ -129,6 +142,8 @@ export class UsersController {
     return ApiResponseBuilder.ok(result);
   }
 
+  @UseGuards(RateLimitGuard)
+  @RateLimit(...AUTHENTICATED_OTP_VERIFY_RATE_LIMITS)
   @Post('me/contacts/email/otp/verify')
   @HttpCode(HttpStatus.OK)
   async verifyEmailOtp(

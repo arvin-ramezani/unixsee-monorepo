@@ -14,7 +14,7 @@ function StatusPanelSkeleton({ className }: { className?: string }) {
         {Array.from({ length: 4 }, (_, index) => (
           <div key={index} className="flex h-10 items-center gap-3">
             <Skeleton className="size-[1.1rem] rounded-sm" />
-            <Skeleton className="h-3.5 flex-1 max-w-40" />
+            <Skeleton className="h-3.5 max-w-40 flex-1" />
             <Skeleton className="h-3.5 w-6" />
             <Skeleton className="ms-2 size-2 rounded-full" />
           </div>
@@ -41,7 +41,8 @@ function WebsiteRowSkeleton() {
       <Skeleton className="h-3.5 w-[19%] max-w-32" />
       <Skeleton className="h-7 w-[11%] max-w-20 rounded-md" />
       <Skeleton className="h-7 w-[13%] max-w-24 rounded-md" />
-      <div className="w-[17%] max-w-28 space-y-1.5">
+      <Skeleton className="h-7 w-[15%] max-w-24 rounded-md" />
+      <div className="w-[13%] max-w-28 space-y-1.5">
         <Skeleton className="h-3.5 w-full" />
         <Skeleton className="h-3 w-2/3" />
       </div>
@@ -156,7 +157,8 @@ export function DashboardLoadingSkeleton() {
                 <Skeleton className="h-3 w-[19%] max-w-28" />
                 <Skeleton className="h-3 w-[11%] max-w-12" />
                 <Skeleton className="h-3 w-[13%] max-w-14" />
-                <Skeleton className="h-3 w-[17%] max-w-20" />
+                <Skeleton className="h-3 w-[15%] max-w-20" />
+                <Skeleton className="h-3 w-[13%] max-w-20" />
                 <Skeleton className="h-3 w-12" />
               </div>
               {Array.from({ length: 4 }, (_, index) => (

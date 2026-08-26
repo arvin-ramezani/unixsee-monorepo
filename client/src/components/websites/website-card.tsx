@@ -2,7 +2,9 @@ import { ExternalLink } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
 import {
+  CoverageBadge,
   StatusBadge,
+  Visitors24hValue,
   monogramStyles,
 } from "@/components/websites/website-badges";
 import { Link } from "@/i18n/navigation";
@@ -18,7 +20,7 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
   const t = useTranslations("Websites");
   const common = useTranslations("Common");
   const format = useFormatter();
-  const isManaged = website.managementCoverage === "UNIXSEE_MANAGED";
+  const isExternal = website.managementCoverage === "EXTERNAL_INFRASTRUCTURE";
 
   return (
     <article className="border-border bg-background hover:bg-muted/30 flex flex-col rounded-xl border p-5 transition-colors">
@@ -39,12 +41,10 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
             {common(`descriptions.${website.description}`)}
           </p>
         </div>
-        {isManaged ? (
+        {website.managementCoverage === "UNIXSEE_MANAGED" ? (
           <StatusBadge status={website.status} />
         ) : (
-          <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-1 text-[11px] font-medium">
-            {common("coverage.EXTERNAL_INFRASTRUCTURE")}
-          </span>
+          <CoverageBadge coverage={website.managementCoverage} />
         )}
       </div>
 
@@ -60,7 +60,7 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
         />
       </Link>
 
-      {!isManaged && (
+      {isExternal && (
         <p className="text-muted-foreground mt-3 text-xs leading-5">
           {t("table.externalNote")}
         </p>
@@ -69,7 +69,11 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
         <div>
           <dt className="text-muted-foreground text-xs">{t("table.plan")}</dt>
           <dd className="mt-1 font-medium">
-            {isManaged ? common(`plans.${website.plan}`) : t("table.complementaryOnly")}
+            {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+              common(`plans.${website.plan}`)
+            ) : (
+              <CoverageBadge coverage={website.managementCoverage} />
+            )}
           </dd>
         </div>
         <div>
@@ -84,7 +88,12 @@ export function WebsiteCard({ website }: { website: WebsiteRecord }) {
         </div>
       </dl>
 
-      <div className="border-border mt-4 flex items-center justify-end border-t pt-4">
+      <div className="border-border mt-4 flex items-center justify-between gap-3 border-t pt-4">
+        {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+          <Visitors24hValue visitors24h={website.visitors24h} />
+        ) : (
+          <CoverageBadge coverage={website.managementCoverage} />
+        )}
         <Link
           href={`/dashboard/websites/${website.id}`}
           className="border-border hover:bg-muted focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium focus-visible:ring-2"

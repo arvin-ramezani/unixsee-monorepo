@@ -5,9 +5,14 @@ export type SubTitleType = {
   as?: React.ElementType;
   // children?: React.ReactNode;
   className?: string;
-} & PropsWithChildren;
+} & React.HTMLAttributes<HTMLParagraphElement>;
 
-export default function SubTitle({ as, className, children }: SubTitleType) {
+export default function SubTitle({
+  as,
+  className,
+  children,
+  ...props
+}: SubTitleType) {
   const Element = as || "p";
 
   return (
@@ -16,6 +21,7 @@ export default function SubTitle({ as, className, children }: SubTitleType) {
         "text-text-secondary text-base md:text-lg lg:text-lg",
         className,
       )}
+      {...props}
     >
       {children}
     </Element>

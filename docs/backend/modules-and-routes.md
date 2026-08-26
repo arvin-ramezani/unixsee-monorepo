@@ -77,6 +77,21 @@ flowchart LR
 
 Module: `auth`. No redesign.
 
+Public OTP request and verify routes use per-IP budgets. The authenticated
+monitoring-access pair and all four contact-verification routes use per-user
+budgets, so one user keeps the same budget across addresses while unrelated users
+behind carrier NAT remain independent. Verify routes also keep an independent,
+normalized phone/email target budget. Any exceeded window answers
+`429 RATE_LIMITED` with `Retry-After`.
+
+Each real verification attempt is atomically reserved in the database before
+bcrypt and cannot exceed the configured challenge ceiling under concurrency.
+Verify failures always answer `401 OTP_VERIFICATION_FAILED` regardless of the
+underlying reason. Successful single-use consumption clears the target's
+issuance cooldown and request-window state so a fresh code can be requested
+immediately. See
+[`../../backend/docs/development/conventions.md`](../../backend/docs/development/conventions.md).
+
 ### Users — extend `user` → `users`
 
 | Method | Path                                          | Audience            |
@@ -97,6 +112,10 @@ Module: `auth`. No redesign.
 | POST   | `/api/v1/admin/users/:id/start-recovery`      | Admin               |
 
 Never return passwords, OTP codes, recovery secrets, refresh hashes, or agent keys.
+OTP codes are stored only as a bcrypt digest (`otps.otp_hash`); the plaintext is
+never persisted. The mocked dev flow still echoes the code in the OTP request
+response outside production — that echo disappears with the mock once real SMS and
+email providers land.
 Admin user payloads may include `hasActiveSession` (boolean) derived from refresh
 state without exposing the hash.
 
@@ -148,12 +167,12 @@ Customer read-model only. Prefer importing exported `websites` / `metrics` /
 
 ### Websites, metrics, ssl-certificates, alerts, uptime, health, event
 
-| Change                | Detail                                                                                    |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| Export services       | So dashboard/realtime consume module exports                                              |
-| Customer reads        | `GET /api/v1/websites`, `GET /api/v1/websites/:id`, `GET /api/v1/alerts`                  |
-| Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires  |
-| Fix stub              | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes |
+| Change                | Detail                                                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Export services       | So dashboard/realtime consume module exports                                                                            |
+| Customer reads        | `GET /api/v1/websites` ([contract](./contracts/websites-customer.md)), `GET /api/v1/websites/:id`, `GET /api/v1/alerts` |
+| Admin reads/mutations | `/api/v1/admin/websites`, `/api/v1/admin/alerts`, assign/ack/resolve as product requires                                |
+| Fix stub              | Replace `GET /api/dashboard/incidents/recent` with versioned, authenticated alerts routes                               |
 
 ### Agent plane — Phase 1 (`agent/`)
 

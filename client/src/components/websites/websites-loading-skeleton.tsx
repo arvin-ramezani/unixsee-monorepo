@@ -79,8 +79,9 @@ export function WebsitesLoadingSkeleton() {
           ))}
         </div>
 
-        <div className="border-border grid gap-4.5 border-b px-5.5 py-4.25 md:grid-cols-2 lg:grid-cols-[minmax(16rem,265px)_minmax(6rem,7rem)_minmax(6rem,7rem)]">
+        <div className="border-border grid gap-4.5 border-b px-5.5 py-4.25 md:grid-cols-2 lg:grid-cols-[minmax(16rem,265px)_minmax(6rem,8rem)_minmax(6rem,8rem)_minmax(9rem,12rem)]">
           <Skeleton className="h-11 w-full rounded-lg md:col-span-2 lg:col-span-1" />
+          <Skeleton className="h-11 w-full rounded-lg" />
           <Skeleton className="h-11 w-full rounded-lg" />
           <Skeleton className="h-11 w-full rounded-lg" />
         </div>

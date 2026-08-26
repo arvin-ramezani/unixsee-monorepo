@@ -9,7 +9,7 @@ type VideoProps = {
   desktopMp4: string;
   mobileWebm: string;
   mobileMp4: string;
-};
+} & React.VideoHTMLAttributes<HTMLVideoElement>;
 
 export function Video({
   className,
@@ -18,6 +18,7 @@ export function Video({
   desktopMp4,
   mobileWebm,
   mobileMp4,
+  ...props
 }: VideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -76,6 +77,7 @@ export function Video({
       playsInline
       preload="none"
       aria-hidden="true"
+      {...props}
     >
       <source src={mobileWebm} type="video/webm" media="(max-width: 767px)" />
 

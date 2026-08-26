@@ -27,11 +27,14 @@ describe('WebsitesService plan assignment', () => {
   const prisma = {
     website: {
       create: vi.fn(),
+      findMany: vi.fn(),
       findUnique: vi.fn(),
       update: vi.fn(),
     },
   };
-  const tenantAccess = {};
+  const tenantAccess = {
+    getAccessibleTenantIds: vi.fn(),
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -111,5 +114,77 @@ describe('WebsitesService plan assignment', () => {
         planActivatedAt: null,
       }),
     });
+  });
+
+  it('exposes a complete agent-provided 24-hour visitor snapshot', async () => {
+    tenantAccess.getAccessibleTenantIds.mockResolvedValue([TENANT_ID]);
+    prisma.website.findMany.mockResolvedValue([
+      {
+        ...website(new Date()),
+        managementCoverage: 'UNIXSEE_MANAGED',
+        trafficSnapshots: [
+          {
+            uniqueVisitors24h: 487,
+            visitors24hWindowSeconds: 86_400,
+            visitors24hCoverageSeconds: 86_400,
+            visitors24hMeasuredAt: new Date('2026-08-25T12:00:00.000Z'),
+            visitors24hStatus: { state: 'ok' },
+          },
+        ],
+      },
+    ]);
+
+    const result = await service.getUserWebsites('user-1');
+
+    expect(result).toEqual([
+      expect.objectContaining({
+        id: WEBSITE_ID,
+        visitors24h: {
+          uniqueVisitors: 487,
+          windowSeconds: 86_400,
+          coverageSeconds: 86_400,
+          measuredAt: new Date('2026-08-25T12:00:00.000Z'),
+          status: 'READY',
+        },
+      }),
+    ]);
+    expect(result[0]).not.toHaveProperty('trafficSnapshots');
+  });
+
+  it('does not present partial or external traffic as a complete 24-hour value', async () => {
+    tenantAccess.getAccessibleTenantIds.mockResolvedValue([TENANT_ID]);
+    const warmingSnapshot = {
+      uniqueVisitors24h: 42,
+      visitors24hWindowSeconds: 86_400,
+      visitors24hCoverageSeconds: 3_600,
+      visitors24hMeasuredAt: new Date('2026-08-25T12:00:00.000Z'),
+      visitors24hStatus: { state: 'unknown', reason: 'warming_up' },
+    };
+    prisma.website.findMany.mockResolvedValue([
+      {
+        ...website(),
+        id: 'managed-warming',
+        managementCoverage: 'UNIXSEE_MANAGED',
+        trafficSnapshots: [warmingSnapshot],
+      },
+      {
+        ...website(),
+        id: 'external-site',
+        managementCoverage: 'EXTERNAL_INFRASTRUCTURE',
+        trafficSnapshots: [
+          { ...warmingSnapshot, visitors24hCoverageSeconds: 86_400 },
+        ],
+      },
+    ]);
+
+    const result = await service.getUserWebsites('user-1');
+
+    expect(result[0]?.visitors24h).toEqual(
+      expect.objectContaining({
+        uniqueVisitors: null,
+        status: 'COLLECTING',
+      }),
+    );
+    expect(result[1]?.visitors24h).toBeNull();
   });
 });

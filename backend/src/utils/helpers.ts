@@ -1,7 +1,9 @@
 export function toEnglishDigits(input: string | undefined) {
   if (typeof input !== 'string') return input;
 
-  return input.replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)));
+  return input
+    .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
   //   return Number(englishDigits);
 }
 
@@ -26,13 +28,17 @@ export function normalizeContactPhoneToE164(phone: string): string {
   return `+98${national}`;
 }
 
-export function normalizeContactEmail(email: string | undefined): string | null {
+export function normalizeContactEmail(
+  email: string | undefined,
+): string | null {
   const normalized = email?.trim().toLowerCase();
   return normalized || null;
 }
 
 /** Hostname only, lowercase, without leading www. */
-export function normalizeWebsiteDomain(input: string | undefined): string | null {
+export function normalizeWebsiteDomain(
+  input: string | undefined,
+): string | null {
   const trimmed = input?.trim().toLowerCase();
   if (!trimmed) return null;
 

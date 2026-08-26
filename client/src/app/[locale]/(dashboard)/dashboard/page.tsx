@@ -17,7 +17,12 @@ import {
   AUTHORIZATION_STATUS,
   type AuthorizationStatus,
 } from "@/lib/data/authorization/authorization-data";
-import { notifications, websites } from "@/lib/dashboard-data";
+import { notifications } from "@/lib/dashboard-data";
+import {
+  mapCustomerWebsite,
+  type CustomerWebsiteDto,
+  type WebsiteRecord,
+} from "@/lib/websites-data";
 import type { SafeAuthUser } from "@/types/auth.types";
 import { DashboardButtonLink } from "./_components/common";
 
@@ -34,6 +39,21 @@ async function loadAuthorizationStatus(): Promise<AuthorizationStatus> {
     // Fall through to not_started when Nest is unavailable.
   }
   return AUTHORIZATION_STATUS.NOT_STARTED;
+}
+
+async function loadWebsites(): Promise<WebsiteRecord[]> {
+  try {
+    const response = await serverFetch<CustomerWebsiteDto[]>("/websites", {
+      method: "GET",
+    });
+    if (response.success && response.data) {
+      return response.data.map(mapCustomerWebsite);
+    }
+  } catch {
+    // Keep the operational inventory empty when Nest is unavailable.
+  }
+
+  return [];
 }
 
 function resolveWelcomeName(user: SafeAuthUser | null, fallback: string) {
@@ -54,9 +74,10 @@ export default async function DashboardPage({
   setRequestLocale(locale);
   const t = await getTranslations("Dashboard");
   const nav = await getTranslations("Navigation");
-  const [user, authorizationStatus] = await Promise.all([
+  const [user, authorizationStatus, websites] = await Promise.all([
     getCurrentUser(),
     loadAuthorizationStatus(),
+    loadWebsites(),
   ]);
   const recentActivities = getRecentActivities();
   const welcomeName = resolveWelcomeName(user, nav("accountFallback"));
@@ -107,7 +128,7 @@ export default async function DashboardPage({
           </div>
         </div>
 
-        <RightRail />
+        <RightRail websites={websites} />
       </div>
     </DashboardShell>
   );

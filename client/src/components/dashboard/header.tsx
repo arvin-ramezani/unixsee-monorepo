@@ -1,15 +1,19 @@
 "use client";
 
+import { useTransition } from "react";
+import { LoaderCircle, LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { AccountMenu } from "@/components/dashboard/account-menu";
+import { logoutAction } from "@/actions/auth/logout";
 import { LocaleSwitcher } from "@/components/dashboard/locale-switcher";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { NotificationCenter } from "@/components/dashboard/notification-center";
 import { GlobalSearch } from "@/components/dashboard/global-search";
+import { useAuthStore } from "@/components/providers/auth-store-provider";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import { Button } from "@/components/ui/button";
 import { useScroll } from "@/hooks/use-scroll";
+import { useRouter } from "@/i18n/navigation";
 import type { NotificationItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 import { GridIcon } from "../common/grid-icon";
@@ -50,15 +54,26 @@ export function Header({
   activeItem = "Dashboard",
   notifications,
   showViewToggle: showViewToggleOverride,
-  userName,
-  avatarUrl,
   hasUnreadUnixseeMessages = false,
 }: HeaderProps) {
   const views = useTranslations("Common.views");
+  const accountMenu = useTranslations("Header.accountMenu");
+  const router = useRouter();
+  const clearClientSession = useAuthStore((state) => state.logout);
+  const [isLoggingOut, startLogoutTransition] = useTransition();
   const { view, toggleView } = useDashboardView();
   const scrolled = useScroll(8);
   const showViewToggle =
     showViewToggleOverride ?? VIEW_TOGGLE_ITEMS.has(activeItem);
+
+  function handleLogout() {
+    startLogoutTransition(async () => {
+      clearClientSession();
+      await logoutAction();
+      router.replace("/auth");
+      router.refresh();
+    });
+  }
 
   return (
     <header
@@ -95,7 +110,26 @@ export function Header({
           <NotificationCenter notifications={notifications} />
           <ModeToggle triggerClassName="size-9" />
           <LocaleSwitcher />
-          {/* <AccountMenu userName={userName} avatarUrl={avatarUrl} /> */}
+          <Button
+            type="button"
+            variant="ghost"
+            size="plain"
+            disabled={isLoggingOut}
+            aria-label={accountMenu("logOut")}
+            aria-busy={isLoggingOut || undefined}
+            title={accountMenu("logOut")}
+            onClick={handleLogout}
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive focus-visible:ring-destructive/30 grid size-11 place-items-center rounded-lg focus-visible:ring-2"
+          >
+            {isLoggingOut ? (
+              <LoaderCircle
+                aria-hidden="true"
+                className="size-5 animate-spin"
+              />
+            ) : (
+              <LogOut aria-hidden="true" className="size-5" />
+            )}
+          </Button>
         </div>
       </div>
     </header>

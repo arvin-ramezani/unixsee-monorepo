@@ -14,10 +14,11 @@ yet exist.
 
 ## Phase 1
 
-| Doc                                                                    | Purpose                                                                                |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [`phase-1-application-features.md`](./phase-1-application-features.md) | Required outcomes, actors, boundaries, feature areas                                   |
-| [`unixsee-messages-prd.md`](./unixsee-messages-prd.md)                 | Unixsee messages / پیام‌های یونیکسی (tenant-targeted one-way inbox); Proposed, Phase 1 |
+| Doc                                                                    | Purpose                                                                                                    |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`phase-1-application-features.md`](./phase-1-application-features.md) | Required outcomes, actors, boundaries, feature areas                                                       |
+| [`unixsee-messages-prd.md`](./unixsee-messages-prd.md)                 | Unixsee messages / پیام‌های یونیکسی (tenant-targeted one-way inbox); Proposed, Phase 1                     |
+| [`about-unixsee-page-prd.md`](./about-unixsee-page-prd.md)             | About Unixsee / درباره یونیکسی public page — content architecture + UX + requirements; Proposed, Phase 1   |
 
 ## Deferred / future product
 
@@ -59,6 +60,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`ux-flows/website-management-coverage.md`](./ux-flows/website-management-coverage.md)                   | Cross-surface distinction between Unixsee-managed and external websites; complementary-service eligibility |
 | [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)                           | Unixsee messages / پیام‌های یونیکسی (popup, unread indicator, inbox)                                       |
 | UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md)                           | Auth shell, tokens, inputs, RTL, motion                                                                    |
+| Public marketing page: [`about-unixsee-page-prd.md`](./about-unixsee-page-prd.md)                        | About Unixsee / درباره یونیکسی — journey, states, accessibility, and analytics live inside that PRD        |
 
 ## Admin UX flows
 

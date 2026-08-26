@@ -126,7 +126,9 @@ export type SSLCertificate = Prisma.SSLCertificateModel
 export type Alert = Prisma.AlertModel
 /**
  * Model Otp
- * 
+ * One outstanding OTP challenge per delivery target. The plaintext code is
+ * never persisted: only its bcrypt digest is stored, so a database read
+ * cannot recover a usable code.
  */
 export type Otp = Prisma.OtpModel
 /**

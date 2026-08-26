@@ -9,8 +9,9 @@ import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
 import { Panel } from "@/components/dashboard/panel";
 import { useDashboardView } from "@/components/dashboard/views/dashboard-view-context";
 import {
-  BackupBadge,
+  CoverageBadge,
   StatusBadge,
+  Visitors24hValue,
   monogramStyles,
 } from "@/components/websites/website-badges";
 import { WebsiteGrid } from "@/components/websites/website-grid";
@@ -41,7 +42,6 @@ import {
 } from "@/components/ui/table";
 import { Link } from "@/i18n/navigation";
 import type {
-  WebsiteBackup,
   WebsitePlan,
   WebsiteRecord,
   WebsiteStatus,
@@ -111,7 +111,6 @@ export function WebsitesManager({
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"all" | WebsiteStatus>("all");
   const [plan, setPlan] = useState<"all" | WebsitePlan>("all");
-  const [backup, setBackup] = useState<"all" | WebsiteBackup>("all");
   const [coverage, setCoverage] = useState<
     "all" | WebsiteRecord["managementCoverage"]
   >("all");
@@ -123,10 +122,12 @@ export function WebsitesManager({
     const normalizedQuery = query.trim().toLowerCase();
 
     const matches = websites.filter((website) => {
-      const tabMatch = activeTab === "all" || website.status === activeTab;
-      const statusMatch = status === "all" || website.status === status;
-      const planMatch = plan === "all" || website.plan === plan;
-      const backupMatch = backup === "all" || website.backup === backup;
+      const isManaged = website.managementCoverage === "UNIXSEE_MANAGED";
+      const tabMatch =
+        activeTab === "all" || (isManaged && website.status === activeTab);
+      const statusMatch =
+        status === "all" || (isManaged && website.status === status);
+      const planMatch = plan === "all" || (isManaged && website.plan === plan);
       const coverageMatch =
         coverage === "all" || website.managementCoverage === coverage;
       const queryMatch =
@@ -135,35 +136,19 @@ export function WebsitesManager({
           .toLowerCase()
           .includes(normalizedQuery);
       return (
-        tabMatch &&
-        statusMatch &&
-        planMatch &&
-        backupMatch &&
-        coverageMatch &&
-        queryMatch
+        tabMatch && statusMatch && planMatch && coverageMatch && queryMatch
       );
     });
     return sort === "name"
       ? [...matches].sort((a, b) => a.name.localeCompare(b.name, locale))
       : matches;
-  }, [
-    activeTab,
-    backup,
-    coverage,
-    locale,
-    plan,
-    query,
-    sort,
-    status,
-    websites,
-  ]);
+  }, [activeTab, coverage, locale, plan, query, sort, status, websites]);
 
   const resetFilters = () => {
     setActiveTab("all");
     setQuery("");
     setStatus("all");
     setPlan("all");
-    setBackup("all");
     setCoverage("all");
     setSort("updated");
   };
@@ -228,7 +213,7 @@ export function WebsitesManager({
         </TabsList>
       </Tabs>
 
-      <div className="border-border grid gap-4.5 border-b px-5.5 py-4.25 md:grid-cols-2 lg:grid-cols-[265px_102px_105px_132px_176px_1fr_44px]">
+      <div className="border-border grid gap-4.5 border-b px-5.5 py-4.25 md:grid-cols-2 lg:grid-cols-[minmax(16rem,265px)_minmax(6rem,8rem)_minmax(6rem,8rem)_minmax(9rem,12rem)]">
         <div className="relative">
           <Label htmlFor="website-search" className="sr-only">
             {t("filters.searchLabel")}
@@ -296,7 +281,7 @@ export function WebsitesManager({
 
       <DashboardFadeIn
         deferUntilKeyChange
-        animationKey={`${view}-${activeTab}-${status}-${plan}-${backup}-${sort}`}
+        animationKey={`${view}-${activeTab}-${status}-${plan}-${coverage}-${sort}`}
       >
         {view === "grid" && visibleWebsites.length > 0 && (
           <WebsiteGrid websites={visibleWebsites} />
@@ -329,7 +314,9 @@ export function WebsitesManager({
                 <TableHead className="text-xs">{t("table.domain")}</TableHead>
                 <TableHead className="text-xs">{t("table.plan")}</TableHead>
                 <TableHead className="text-xs">{t("table.status")}</TableHead>
-                <TableHead className="text-xs">{t("table.backup")}</TableHead>
+                <TableHead className="text-xs">
+                  {t("table.visitors24h")}
+                </TableHead>
                 <TableHead className="text-xs">
                   {t("table.lastUpdated")}
                 </TableHead>
@@ -359,11 +346,6 @@ export function WebsitesManager({
                         <span className="text-foreground block truncate font-semibold">
                           {website.name}
                         </span>
-                        {website.managementCoverage !== "UNIXSEE_MANAGED" && (
-                          <span className="border-border bg-muted text-muted-foreground mt-1 block w-fit rounded-full border px-2 py-0.5 text-[10px] font-medium">
-                            {t("table.externalComplementaryNote")}
-                          </span>
-                        )}
                         <span className="text-muted-foreground mt-1 block truncate text-xs font-normal">
                           {common(`descriptions.${website.description}`)}
                         </span>
@@ -384,26 +366,24 @@ export function WebsitesManager({
                     </Link>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {website.managementCoverage === "UNIXSEE_MANAGED"
-                      ? common(`plans.${website.plan}`)
-                      : t("table.notApplicable")}
+                    {website.managementCoverage === "UNIXSEE_MANAGED" ? (
+                      common(`plans.${website.plan}`)
+                    ) : (
+                      <CoverageBadge coverage={website.managementCoverage} />
+                    )}
                   </TableCell>
                   <TableCell>
                     {website.managementCoverage === "UNIXSEE_MANAGED" ? (
                       <StatusBadge status={website.status} />
                     ) : (
-                      <span className="text-muted-foreground text-xs">
-                        {t("table.notApplicable")}
-                      </span>
+                      <CoverageBadge coverage={website.managementCoverage} />
                     )}
                   </TableCell>
                   <TableCell>
                     {website.managementCoverage === "UNIXSEE_MANAGED" ? (
-                      <BackupBadge backup={website.backup} />
+                      <Visitors24hValue visitors24h={website.visitors24h} />
                     ) : (
-                      <span className="text-muted-foreground text-xs">
-                        {t("table.notApplicable")}
-                      </span>
+                      <CoverageBadge coverage={website.managementCoverage} />
                     )}
                   </TableCell>
                   <TableCell className="leading-5 tabular-nums">
@@ -470,18 +450,14 @@ export function WebsitesManager({
                 {website.managementCoverage === "UNIXSEE_MANAGED" ? (
                   <StatusBadge status={website.status} />
                 ) : (
-                  <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-1 text-[10px]">
-                    {common("coverage.EXTERNAL_INFRASTRUCTURE")}
-                  </span>
+                  <CoverageBadge coverage={website.managementCoverage} />
                 )}
               </div>
               <div className="border-border mt-4 flex items-center justify-between border-t pt-3">
                 {website.managementCoverage === "UNIXSEE_MANAGED" ? (
-                  <BackupBadge backup={website.backup} />
+                  <Visitors24hValue visitors24h={website.visitors24h} />
                 ) : (
-                  <span className="text-muted-foreground text-xs">
-                    {t("table.complementaryOnly")}
-                  </span>
+                  <CoverageBadge coverage={website.managementCoverage} />
                 )}
                 <Link
                   href={`/dashboard/websites/${website.id}`}

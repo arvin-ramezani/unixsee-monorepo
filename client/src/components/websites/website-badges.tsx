@@ -1,11 +1,12 @@
-import { LockKeyhole } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { CircleHelp, ServerOff, UsersRound } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import type {
-  WebsiteBackup,
+  WebsiteManagementCoverage,
   WebsiteRecord,
   WebsiteStatus,
+  WebsiteVisitors24h,
 } from "@/lib/websites-data";
 import { cn } from "@/lib/utils";
 
@@ -27,14 +28,6 @@ export function statusStyles(status: WebsiteStatus) {
   return "border-link/20 bg-popover text-link";
 }
 
-export function backupStyles(backup: WebsiteBackup) {
-  if (backup === "successful")
-    return "border-success/25 bg-success/10 text-success-foreground dark:text-success";
-  if (backup === "needsReview")
-    return "border-warning/40 bg-warning/15 text-warning-foreground dark:text-warning";
-  return "border-link/20 bg-popover text-link";
-}
-
 export function StatusBadge({ status }: { status: WebsiteStatus }) {
   const t = useTranslations("Common.statuses");
 
@@ -52,18 +45,57 @@ export function StatusBadge({ status }: { status: WebsiteStatus }) {
   );
 }
 
-export function BackupBadge({ backup }: { backup: WebsiteBackup }) {
-  const t = useTranslations("Common.backups");
+export function CoverageBadge({
+  coverage,
+}: {
+  coverage: Exclude<WebsiteManagementCoverage, "UNIXSEE_MANAGED">;
+}) {
+  const t = useTranslations("Common.coverage");
+  const Icon = coverage === "EXTERNAL_INFRASTRUCTURE" ? ServerOff : CircleHelp;
+
   return (
     <Badge
       variant="outline"
       className={cn(
         "inline-flex h-8 items-center gap-2 border px-3 text-xs font-medium whitespace-nowrap",
-        backupStyles(backup),
+        coverage === "EXTERNAL_INFRASTRUCTURE"
+          ? "border-border bg-muted text-foreground"
+          : "border-warning/40 bg-warning/15 text-warning-foreground dark:text-warning",
       )}
     >
-      <LockKeyhole aria-hidden="true" className="size-3.5" />
-      {t(backup)}
+      <Icon aria-hidden="true" className="size-3.5" />
+      {t(coverage)}
     </Badge>
+  );
+}
+
+export function Visitors24hValue({
+  visitors24h,
+}: {
+  visitors24h: WebsiteVisitors24h | null;
+}) {
+  const t = useTranslations("Websites.visitors24h");
+  const format = useFormatter();
+  const uniqueVisitors =
+    visitors24h?.status === "READY" ? visitors24h.uniqueVisitors : null;
+
+  return (
+    <span className="inline-flex min-h-8 items-center gap-2 text-xs whitespace-nowrap">
+      <UsersRound aria-hidden="true" className="text-link size-4 shrink-0" />
+      {uniqueVisitors !== null ? (
+        <>
+          <span className="font-semibold tabular-nums">
+            {format.number(uniqueVisitors, "integer")}
+          </span>
+          <span className="text-muted-foreground">{t("unit")}</span>
+        </>
+      ) : (
+        <span className="text-muted-foreground">
+          {visitors24h?.status === "COLLECTING"
+            ? t("collecting")
+            : t("unavailable")}
+        </span>
+      )}
+    </span>
   );
 }

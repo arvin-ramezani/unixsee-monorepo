@@ -4,7 +4,7 @@
 >
 > **Audience:** All browser-facing Nest routes (`/api/v1/public/*`, `/api/v1/*`, `/api/v1/admin/*`)
 >
-> **Last verified:** 2026-08-12
+> **Last verified:** 2026-08-25
 
 Canonical error shape for every Nest HTTP failure. Domain contracts link here
 instead of restating the envelope.
@@ -69,11 +69,24 @@ These may appear on any route:
 | `NOT_FOUND` | 404 | `notFound` |
 | `CONFLICT` | 409 | `conflict` |
 | `TOO_MANY_REQUESTS` | 429 | `rateLimited` |
+| `RATE_LIMITED` | 429 | `rateLimited` (via status fallback) |
 | `INTERNAL_SERVER_ERROR` | 500 | `generic` |
 | `HTTP_EXCEPTION` | varies | `generic` |
 
 Domain-specific codes are documented on their route contract (e.g.
 [`plan-requests-public.md`](./plan-requests-public.md) → `ACCOUNT_EXISTS`).
+
+## Non-enumerating auth codes
+
+Two codes are deliberately coarse and must stay that way (rule 5 above):
+
+| `error.code` | HTTP | Emitted by | Why it is coarse |
+|---|---|---|---|
+| `OTP_VERIFICATION_FAILED` | 401 | every OTP verify route | One code and message for unknown target, wrong code, expired, already consumed, and attempts exhausted, so the response is not an oracle for which condition held |
+| `RATE_LIMITED` | 429 | OTP request + verify routes | Does not name the rule that tripped, so a caller cannot learn whether the address or the target was throttled |
+
+Do not add reason-carrying variants of these, and do not surface a distinct UI
+state per underlying cause — clients cannot tell them apart by design.
 
 ## Frontend handling
 

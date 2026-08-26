@@ -5,6 +5,7 @@ import { Panel } from "@/components/dashboard/panel";
 import { SupportContactDialog } from "@/components/dashboard/support-contact-dialog";
 import { getWebsiteStatusSummary, supportContact } from "@/lib/dashboard-data";
 import { Link } from "@/i18n/navigation";
+import type { WebsiteRecord } from "@/lib/websites-data";
 
 /**
  * Semantic per-tone styles for the Website Status rows.
@@ -29,10 +30,10 @@ const toneStyles = {
   },
 } as const;
 
-export function RightRail() {
+export function RightRail({ websites }: { websites: WebsiteRecord[] }) {
   const t = useTranslations("Dashboard");
   const format = useFormatter();
-  const { total, statusRows } = getWebsiteStatusSummary();
+  const { total, statusRows } = getWebsiteStatusSummary(websites);
 
   return (
     <aside className="sticky top-28 space-y-4.5 lg:grid lg:grid-cols-2 lg:gap-4.5 xl:grid-cols-1">

@@ -534,12 +534,16 @@ export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof Al
 
 export const OtpScalarFieldEnum = {
   id: 'id',
-  otp: 'otp',
+  otpHash: 'otpHash',
   phoneNumber: 'phoneNumber',
   expiredTime: 'expiredTime',
   identifier: 'identifier',
   lastRequestedTime: 'lastRequestedTime',
   context: 'context',
+  attemptCount: 'attemptCount',
+  consumedAt: 'consumedAt',
+  requestCount: 'requestCount',
+  requestWindowStartedAt: 'requestWindowStartedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

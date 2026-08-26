@@ -1,16 +1,16 @@
-# Graph Report - unixsee-monorepo  (2026-08-24)
+# Graph Report - unixsee-monorepo  (2026-08-25)
 
 ## Corpus Check
-- 1429 files · ~5,469,013 words
+- 1453 files · ~5,658,988 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 20346 nodes · 31480 edges · 1227 communities (1051 shown, 176 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 414 edges (avg confidence: 0.81)
+- 20490 nodes · 31865 edges · 1221 communities (1042 shown, 179 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 411 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f8fd4714`
+- Built from commit: `b54eb3e4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,29 +26,29 @@
 - Ticket.ts
 - ComplementaryServiceRequest.ts
 - WebsiteDiscovery.ts
-- guest-plan-request-form.tsx
+- client/src/lib/utils.ts
 - PlanRequest.ts
 - (website)/page.tsx
 - websites-view.tsx
 - UnixseeMessage.ts
 - CurrentUser
 - AgentCommand.ts
-- tickets.service.ts
-- dashboard/sidebar.tsx
-- Architecture Decision Records (ADRs)
+- TicketsService
+- websites/new/page.tsx
+- app.module.ts
 - Server.ts
 - AuthorizationCase.ts
 - Alert.ts
-- activity-history.tsx
+- dashboard-shell.tsx
 - Notification.ts
 - overview-data.ts
 - cn
 - ServiceAssignment.ts
-- app.module.ts
+- CreatePlanDto
 - WebMetric.ts
 - managed-woocommerce-server/page.tsx
-- _components/common/title.tsx
-- UsersService
+- number-of-success-item.tsx
+- .ok
 - WebsiteTrafficSnapshot.ts
 - global-search.tsx
 - create-service-dialog.tsx
@@ -60,10 +60,10 @@
 - TicketMessage.ts
 - UnixseeMessageRead.ts
 - Plan.ts
+- AlertsService
 - users/[id]/page.tsx
-- authorization-details-view.tsx
 - VpsMetric.ts
-- .ok
+- tickets-manager.tsx
 - WebsiteProbeMetric.ts
 - UnixseeMessagesService
 - admin-panel/src/types/auth.types.ts
@@ -84,62 +84,62 @@
 - AuthorizationCasesService
 - carousel.tsx
 - SSLCertificate.ts
-- motion-grow-dialog.tsx
-- help-center/page.tsx
+- authorization-details-view.tsx
+- mapApiError
 - unixsee-message-compose-form.tsx
 - PlanRequestsService
-- prisma/client.ts
+- WebsitesService
 - help-hero.tsx
 - 3. Security & Authentication
-- client/src/lib/utils.ts
+- client/src/components/ui/button.tsx
 - authorization-queue-view.tsx
 - devDependencies
 - prismaNamespaceBrowser.ts
 - IdempotencyRecord.ts
 - Otp.ts
-- routing.ts
+- email-layout.ts
 - PrismaClient
 - dependencies
 - dependencies
 - request-assessment-schema.ts
 - monitoring-agent/src/discovery.ts
-- AdminUnixseeMessagesController
-- docs/backend/modules-and-routes.md
-- plans-api.ts
+- prisma/client.ts
+- docs/architecture/decisions/README.md
+- ServersService
 - browser.ts
-- footer.tsx
-- client/src/components/tickets/ticket-details-view.tsx
+- cn
+- tickets/types.ts
 - RealtimeService
 - useWpStory
-- website-details-information.tsx
+- navigation.ts
 - plan-request-details-view.tsx
 - client/src/proxy.ts
 - bottom-floating-navigation.tsx
 - Flow: FL-[number]
-- complementary-services-api.ts
-- TenantsService
+- complementary-services-manager.tsx
+- unixsee-message-detail-view.tsx
 - DashboardChartsService
 - devDependencies
 - Heuristics 6 to 10
 - WebsiteUptimeProbeService
-- PlansService
-- text.tsx
+- CreateNotificationDto
+- Unixsee admin-panel agent guide
 - backend/docs/users-dashboard-uiux.md
 - monorepo/backend/docs/users-dashboard-uiux.md
 - dependencies
-- light-header-provider.tsx
-- intl.types.ts
-- navigation.ts
+- providers.tsx
+- [locale]/layout.tsx
+- sign-up-form.tsx
 - scripts
 - UX Flow Specification
 - use-request-assessment-form-controller.ts
 - compilerOptions
-- AdminDiscoveriesController
+- Admin domain data fetching (Layer 2)
 - 3. Security & Authentication
-- authorization-wizard.tsx
+- authorization/authorization-data.ts
 - portfolio-logos.tsx
 - client/src/components/providers/auth-store-provider.tsx
-- AgentService
+- agent.service.ts
 - Required edge-case categories
 - monitoring-agent/src/api/client.ts
 - FilesystemPolicy
@@ -153,14 +153,14 @@
 - monorepo/docs/backend/modules-and-routes.md
 - agent/src/engine.ts
 - DashboardService
-- metrics.module.ts
+- OperationalActionsService
 - State: ST-[number]
 - Accessibility Acceptance, Testing and Release Gating
 - traffic.ts
-- ServersService
+- OtpService
 - DesignSystemGenerator
-- docs/product/README.md
-- OperationalActionsService
+- docs/backend/modules-and-routes.md
+- unixsee-home-sections.ts
 - PackedHll
 - User type record
 - ActivityDelegate
@@ -205,8 +205,8 @@
 - WebsiteProbeMetricDelegate
 - WebsiteSslMetricDelegate
 - WebsiteTrafficSnapshotDelegate
-- DashboardOverviewSnapshotService
-- AppConfigType
+- Backend documentation
+- LocalFilesystemProvider
 - compilerOptions
 - DesignSystemGenerator
 - agent/package.json
@@ -215,16 +215,16 @@
 - AppLogger
 - Accessibility issue: AX-[number]
 - monorepo/docs/frontend/README.md
-- cn
+- Phase 1 public entry channels — document sync
 - monorepo/docs/architecture/decisions/README.md
-- route-adapter.tsx
-- unixsee-home-sections.ts
-- CreateNotificationDto
+- unixsee-contracts.ts
+- admin-panel/docs/development/components.md
+- admin-panel/docs/frontend/styling.md
 - compilerOptions
 - agent/src/api/client.ts
 - Prisma__VpsNodeClient
-- AuditService
-- help-topic-articles.tsx
+- toastMappedApiError
+- help-article-related.tsx
 - [articleSlug]/page.tsx
 - search
 - createEngine
@@ -237,7 +237,7 @@
 - agent/src/config/config.ts
 - Prisma__TenantClient
 - Backend modules and routes (Phase 1)
-- dashboard-data.ts
+- server.ts
 - lucide-react
 - contact-info-section.tsx
 - Backend modules and routes (Phase 1)
@@ -251,10 +251,10 @@
 - Required output
 - backend/docs/unixsee-phase-system-architecture.md
 - docs/frontend/client-auth-ui.md
-- unixsee-contracts.ts
+- route-adapter.tsx
 - monitoring-agent/src/config/config.ts
 - monitoring-agent/src/engine.ts
-- PersonalInformationCard
+- 2. Users Module
 - exclude
 - check-docs.mjs
 - docs/quality/audits/2026-08-22-production-readiness-audit.md
@@ -275,7 +275,7 @@
 - BM25
 - agent/src/discovery.ts
 - Prisma__AgentCommandClient
-- CreateUnixseeMessageDto
+- 4. VPS Nodes Module
 - Story
 - package.json
 - Required acceptance-criteria groups
@@ -284,7 +284,7 @@
 - Prisma__NotificationClient
 - Prisma__ServiceAssignmentClient
 - File Name: `agent.md`
-- radial-reveal-link.tsx
+- tickets-api.ts
 - backend/docs/unixsee-phase-1-system-architecture-fa.md
 - admin-panel/.agents/skills/ui-ux-pro-max/scripts/design_system.py
 - monorepo/backend/docs/unixsee-phase-1-system-architecture-fa.md
@@ -302,7 +302,7 @@
 - Prisma__WebMetricClient
 - Prisma__WebsiteTrafficSnapshotClient
 - alert.interface.ts
-- mapApiError
+- create-plan-request.ts
 - accessibility-keyboard-focus.md
 - Review identity
 - backend/ecosystem.config.cjs
@@ -365,7 +365,7 @@
 - Git and GitHub workflow
 - service-scope.md
 - UX Flow Specification
-- [locale]/layout.tsx
+- PersonalInformationCard
 - UX Flow Specification
 - UX Flow Specification
 - UX Flow Specification
@@ -379,7 +379,7 @@
 - UX Flow Specification
 - monorepo/docs/quality/audits/2026-08-22-production-readiness-audit.md
 - Clean Code
-- requestAssessmentSchema
+- 5. Websites Module
 - Next.js App Router 16+
 - Core implementation rules
 - UX Flow Specification — Admin authorization review (احراز هویت)
@@ -458,12 +458,12 @@
 - Agent guide
 - Complete Route Map
 - Acceptance criteria
-- admin-panel/docs/runbooks/deployment.md
+- Admin panel deployment runbook
 - Save-and-resume record
 - backend/docs/modules-apis.md
 - UI Engineering
 - Custom Scrollbar Implementation
-- users.controller.ts
+- authentication.controller.ts
 - Feature Analysis: Admin staff roles and operator capabilities
 - Customer authorization (احراز هویت) and tenant
 - 6. Admin Panel
@@ -481,7 +481,7 @@
 - Completion record
 - 3. Journey boundaries
 - User Needs Register
-- admin-panel/docs/development/components.md
+- backend/package.json
 - backend/README.md
 - Next.js App Router review checklist
 - Compiler-aware performance
@@ -506,13 +506,13 @@
 - Acceptance criteria
 - Problem and desired outcome
 - Unixsee Dashboard Monitoring Test Plan
-- format_ascii_box
+- help-center-hero.tsx
 - React 19 review checklist
 - UI/UX Pro Max
 - Install Docker Engine on Ubuntu
 - نصب Docker Engine روی Ubuntu
-- format_ascii_box
-- global-search-data.ts
+- 6.1 VPS Metrics Module
+- motion-wavy-background.tsx
 - Acceptance criteria
 - Problem and desired outcome
 - Acceptance criteria
@@ -535,9 +535,9 @@
 - Problem and desired outcome
 - Problem and desired outcome
 - Problem and desired outcome
-- lib/constants.ts
+- 6.2 Web Metrics Module
 - graphify reference: extra exports and benchmark
-- backend/package.json
+- article-content.ts
 - Proxy and security boundaries
 - `use`, Suspense, and asynchronous resources
 - Next.js Engineering
@@ -586,7 +586,7 @@
 - Onboarding paths and handoffs
 - Onboarding operating model
 - Acceptance criteria
-- websites/new/page.tsx
+- About Unixsee page — Product Requirements Document (PRD)
 - Errors, metadata, assets, and observability
 - Official sources
 - Routing and navigation
@@ -594,7 +594,7 @@
 - Refs, context, and modern component APIs
 - Server rendering, Server Components, and Server Functions
 - State, Effects, events, and concurrency
-- DashboardController
+- request-assessment-email-service.ts
 - Public plan requests API contract
 - Client domain data fetching (Layer 2)
 - Acceptance criteria
@@ -616,7 +616,7 @@
 - Problem and desired outcome
 - Problem and desired outcome
 - Problem and desired outcome
-- Unixsee admin-panel agent guide
+- docs/README.md
 - Cache Components awareness
 - Server and Client Components
 - Server Functions, Actions, and Route Handlers
@@ -627,7 +627,7 @@
 - Readiness checklist
 - Phase 1 public entry channels — document sync
 - User needs
-- account-contact.ts
+- 6.3 Analytics Module
 - Next.js Monitoring Socket Guide
 - Cache Components awareness
 - Server and Client Components
@@ -636,7 +636,7 @@
 - Migration and testing
 - Official sources
 - Unixsee client agent guide
-- Contributing
+- DashboardController
 - 3. Current implementation findings
 - 7. OpenLiteSpeed domain discovery
 - Monorepo layout and ownership
@@ -645,7 +645,7 @@
 - Admin plan requests API contract
 - Customer plan requests API contract
 - Admin users API contract
-- Admin domain data fetching (Layer 2)
+- 8. Alerts Module
 - Quality and Review
 - Onboarding operating model
 - Ticket lifecycle and auto-close
@@ -655,7 +655,7 @@
 - Acceptance criteria
 - Acceptance criteria
 - 5. Customer Dashboard
-- AdminOverviewController
+- metrics.module.ts
 - Documentation standards
 - missing-parts.md
 - Phase 1 public entry channels — document sync
@@ -703,10 +703,10 @@
 - User needs
 - Loading, empty, error and recovery states
 - graphify reference: query, path, explain
-- Next.js Realtime Monitoring
+- AdminTenantsController
 - Next.js App Router skill
 - Repository Structure
-- floating-nav-eye-mark.tsx
+- ticket-records.ts
 - Onboarding paths and handoffs
 - Unixsee client
 - Unixsee Technical TODO
@@ -717,14 +717,14 @@
 - 18. NestJS storage responsibilities
 - 8. WordPress / PHP / Imagick runtime probe
 - Definition of Done
-- verify-email/page.tsx
+- 9. SSL Certificates Module
 - Phase 1 delivery waves
-- ADR 0014: Web-server-only Phase 1 VPS agent
+- format_ascii_box
 - Unixsee messages API contract
-- 0004. API audience namespaces
+- AdminDiscoveriesController
 - Frontend documentation
-- admin-panel/docs/frontend/styling.md
-- Backend shared contracts
+- locale/locale-switcher.tsx
+- docs/backend/README.md
 - 11. Plans, requests, and onboarding
 - 12. Websites and service assignments
 - 13. Monitoring, alerts, and incidents
@@ -765,10 +765,10 @@
 - 8. WordPress / PHP / Imagick runtime probe
 - Ticket service categories
 - Unixsee messages API contract
-- Backend documentation
+- DashboardOverviewSnapshotService
 - Frontend documentation
 - Phase 1 delivery waves
-- Phase 1 public entry channels — document sync
+- 9. Page content architecture
 - 11. Plans, requests, and onboarding
 - 12. Websites and service assignments
 - 13. Monitoring, alerts, and incidents
@@ -793,7 +793,7 @@
 - Heuristics 1 to 5
 - Review questions
 - Business Rules
-- SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد
+- 0003. UI-only phase boundaries
 - Servers and agent data flow
 - 14. Operational actions
 - 17. Activities and audit records
@@ -802,22 +802,22 @@
 - User needs
 - Final recommendations
 - Final recommendations
-- Unixsee backend agent guide
+- RealtimeGateway
+- requestAssessmentSchema
+- 14. Release Gate نهایی UnixSee.com
+- _generate_intelligent_overrides
 - createUnixseeClient
-- Phase 1 public entry channels — document sync
-- Backend implementation conventions
-- ADR 0014: Web-server-only Phase 1 VPS agent
-- SEC-06 — OTP با `Math.random()` تولید می‌شود
-- SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند
+- Next.js app internal layout
+- Q: don't change code.
 - Validation
 - Phase 1: Architecture Blueprint & Project Setup
 - Deployment and Rollback Runbook
 - Development Runbook
 - 10. Active visitors — current 3-minute window
 - 22. Functional acceptance criteria
-- 0003. UI-only phase boundaries
-- 2. Users Module
-- Locale
+- AdminCreateWebsiteDto
+- Phase 1 agent API contract — web-server-only v0.2
+- Customer complementary-service request
 - Client state
 - 14. Operational actions
 - 17. Activities and audit records
@@ -834,9 +834,9 @@
 - Loading, empty, error and recovery states
 - Final recommendations
 - Loading, empty, error and recovery states
-- 4. VPS Nodes Module
+- Staging Operations
 - SEC-03 — OTP در Response API برگردانده می‌شود
-- Unixsee agent 0.2
+- SEC-06 — OTP با `Math.random()` تولید می‌شود
 - Unixsee shared documentation
 - monorepo/admin-panel/docs/frontend/styling.md
 - Servers and agent data flow
@@ -861,9 +861,9 @@
 - 10. Active visitors — current 3-minute window
 - 22. Functional acceptance criteria
 - 0003. UI-only phase boundaries
-- SEC-11 — Account Enumeration از Endpoint عمومی
+- TicketAutoCloseService
 - Next.js app internal layout
-- Backend API contracts
+- Deployment remotes (monorepo → server repos)
 - Client state
 - 14. Operational actions
 - 17. Activities and audit records
@@ -880,16 +880,16 @@
 - Loading, empty, error and recovery states
 - Final recommendations
 - Loading, empty, error and recovery states
-- 5. Websites Module
-- Admin websites API contract
+- ADR 0014: Web-server-only Phase 1 VPS agent
+- Customer websites contract
 - SEC-02 — احتمال Reflected XSS در صفحه OTP
 - SEC-03 — OTP در Response API برگردانده می‌شود
 - Validation
 - Unixsee documentation
 - Acceptance Criteria
-- SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند
-- @base-ui/react
-- react-leaflet
+- 0013. Customer assistant in Nest with pgvector RAG
+- Backend API contracts
+- Ticket service categories
 - 10. Dashboard overview
 - 18. Notifications
 - 19. Search
@@ -901,12 +901,12 @@
 - Business-rule decision table
 - Business-rule decision table
 - Q: How should Unixsee distinguish websites on managed servers from external websites while allowing complementary-service requests for both?
-- 6.1 VPS Metrics Module
+- Admin websites API contract
 - graphify reference: add a URL and watch a folder
 - graphify reference: commit hook and native CLAUDE.md integration
 - graphify reference: incremental update and cluster-only
-- 6.2 Web Metrics Module
-- 6.3 Analytics Module
+- admin-panel/docs/architecture/project.md
+- Admin-panel documentation
 - 10. Website Request Pressure Test
 - 11. Backend Public Uptime / Response-Time Probe Test
 - 14. Status and Enum Test Cases
@@ -917,9 +917,9 @@
 - 23. Test requirements
 - 5. Runtime filesystem boundary
 - 9. Stack refresh policy
-- 8. Alerts Module
-- 9. SSL Certificates Module
-- Next.js app internal layout
+- Q: How should the websites dashboard replace backup status with last-24-hour visitors while distinguishing Unixsee-managed and externally hosted websites?
+- Phase 1 public entry channels — document sync
+- admin-panel/docs/development/workflow.md
 - 10. Dashboard overview
 - 19. Search
 - 4. Phase boundaries
@@ -936,12 +936,12 @@
 - Business-rule decision table
 - User needs
 - User needs
-- Backend documentation
+- SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است
 - SEC-05 — ارسال واقعی OTP هنوز پیاده‌سازی نشده
-- SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود
+- admin-panel/docs/frontend/state.md
 - SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود
-- SEC-01 — Credential واقعی Hard-code شده در Repository
-- 0013. Customer assistant in Nest with pgvector RAG
+- SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد
+- 0004. API audience namespaces
 - monorepo/admin-panel/docs/architecture/project.md
 - monorepo/admin-panel/docs/development/workflow.md
 - monorepo/admin-panel/docs/frontend/state.md
@@ -967,12 +967,12 @@
 - 23. Test requirements
 - 5. Runtime filesystem boundary
 - 9. Stack refresh policy
-- 0004. API audience namespaces
-- admin-panel/docs/architecture/project.md
+- 7. Realtime Module
+- 11. SEO architecture
 - 0010. Client hybrid auth and data fetching
 - 0011. Client Nest auth integration
 - 0012. Admin Nest auth integration
-- admin-panel/docs/development/workflow.md
+- 12. Implementation contract
 - 10. Dashboard overview
 - 19. Search
 - 4. Phase boundaries
@@ -990,9 +990,9 @@
 - User needs
 - User needs
 - SEC-05 — ارسال واقعی OTP هنوز پیاده‌سازی نشده
-- SEC-06 — OTP با `Math.random()` تولید می‌شود
+- 0005. Domain modules with multi-audience controllers
 - SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود
-- admin-panel/docs/frontend/state.md
+- SEC-02 — احتمال Reflected XSS در صفحه OTP
 - 4. Phase boundaries
 - 5. Actors and access model
 - Business-rule decision table
@@ -1015,10 +1015,10 @@
 - Users, roles and permissions
 - graphify reference: GitHub clone and cross-repo merge
 - graphify reference: transcribe video and audio
-- 0001. Flat monorepo layout
-- 0005. Domain modules with multi-audience controllers
-- 0008. Phase 1 VPS agent language and Nest contract ownership
-- 0009. Nest agent-kind module split (Phase 1 live, monitoring archived)
+- embla-carousel-autoplay
+- Servers and agent data flow
+- SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند
+- Backend API contracts
 - 12. REST Chart API Test
 - 13. Socket.io Live Dashboard Test
 - 19. Implementation Backlog
@@ -1062,10 +1062,10 @@
 - Assumptions and unknowns
 - Risks and dependencies
 - Users, roles and permissions
-- Servers and agent data flow
-- admin-panel/docs/quality/validation.md
-- Admin-panel documentation
-- Unixsee monorepo
+- SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند
+- Why This Separation Matters
+- Client documentation
+- SEC-06 — OTP با `Math.random()` تولید می‌شود
 - 4. Phase boundaries
 - 5. Actors and access model
 - Business-rule decision table
@@ -1134,31 +1134,31 @@
 - Risks and dependencies
 - Users, roles and permissions
 - UrlListFormField
-- 7. Realtime Module
-- Why This Separation Matters
+- 0010. Client hybrid auth and data fetching
+- 10. Content priority and mobile hierarchy
 - admin-panel/.agents/skills/nextjs-app-router/templates/AGENTS.nextjs.md
 - SOURCE-NOTES.md
 - Implementation readiness
-- Client documentation
+- 13. Journeys and entry points
 - next
 - react
 - react-dom
 - react-hook-form
 - sonner
-- .eslint-summarize.cjs
+- 7. Positioning and messaging architecture
 - zustand
 - skills/CLAUDE.md
 - extraction-spec.md
-- 0013. Customer assistant in Nest with pgvector RAG
-- 0002. Stack choices
+- SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود
+- SEC-01 — Credential واقعی Hard-code شده در Repository
 - Customer complementary-service requests contract
 - supertest
-- 0010. Client hybrid auth and data fetching
+- 0011. Client Nest auth integration
 - @vitest/coverage-v8
 - modules/monitoring-agent/README.md
 - CLAUDE.md
 - client/.agents/skills/nextjs-app-router/templates/AGENTS.nextjs.md
-- 0011. Client Nest auth integration
+- SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند
 - copilot-instructions.md
 - 0012. Admin Nest auth integration
 - embla-carousel-react
@@ -1170,7 +1170,7 @@
 - nodemailer
 - @radix-ui/react-icons
 - react-icons
-- 0005. Domain modules with multi-audience controllers
+- @base-ui/react
 - @react-three/fiber
 - shadcn
 - sonner
@@ -1194,39 +1194,33 @@
 - Implementation readiness
 - Implementation readiness
 - Implementation readiness
-- Servers and agent data flow
-- Customer complementary-service request
-- Data sources
+- @eslint/js
+- SEC-11 — Account Enumeration از Endpoint عمومی
+- 14. Rendering states and the omit rule
+- 1. Purpose
+- ts-node
+- SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد
+- SEC-13 — مصرف OTP Atomic نیست
 - 10. Agent Ingestion Module
 - 11. Tenant Module
 - 1. Auth Module
-- 3. Servers Module
-- Agent documentation
-- SEC-13 — مصرف OTP Atomic نیست
-- SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است
 - SEC-23 — Agent Bundle قبل از نصب Verify Cryptographic نمی‌شود
-- @eslint/js
+- class-variance-authority
 - globals
-- ts-node
-- embla-carousel-autoplay
-- clsx
-- 0006. Rename edge deployable to `monitoring-agent/`
-- 0007. Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/`
-- External Website targeting — implementation handoff
-- SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد
-- SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند
-- SEC-13 — مصرف OTP Atomic نیست
-- SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند
 - eslint-plugin-prettier
+- 3. Servers Module
+- SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است
+- External Website targeting — implementation handoff
+- @tanstack/react-virtual
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 479 edges
+1. `cn()` - 478 edges
 2. `cn()` - 163 edges
-3. `PrismaService` - 86 edges
+3. `PrismaService` - 87 edges
 4. `CurrentUser` - 84 edges
-5. `Button()` - 75 edges
-6. `Locale` - 64 edges
-7. `createAppLogger()` - 55 edges
+5. `Button()` - 76 edges
+6. `Locale` - 65 edges
+7. `createAppLogger()` - 56 edges
 8. `PrismaClient` - 52 edges
 9. `ApiResponseBuilder` - 44 edges
 10. `UsersService` - 43 edges
@@ -1245,27 +1239,27 @@
 
 ## Import Cycles
 - 3-file cycle: `client/src/app/[locale]/(website)/_components/sections/testimonial/testimonials-carousel-container.tsx -> client/src/app/[locale]/(website)/_components/sections/testimonial/testimonials-videos-carousel.tsx -> client/src/app/[locale]/(website)/_components/sections/testimonial/testimonials-video-texts-container.tsx -> client/src/app/[locale]/(website)/_components/sections/testimonial/testimonials-carousel-container.tsx`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Activity.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/VpsNetworkInterfaceMetric.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/ServerEnrollmentToken.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/ServiceCatalogItem.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 - 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/AuthorizationCase.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/WebMetric.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/VpsNode.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/VpsMetric.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/WebsiteDiscovery.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/WebsiteSslMetric.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 - 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Website.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/ServiceDeliverable.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/WebsiteDiscovery.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Tenant.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/ServiceAssignment.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/IdempotencyRecord.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Activity.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Plan.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/UnixseeMessage.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/UnixseeMessageRead.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
+- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/TicketMessage.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 - 3-file cycle: `backend/src/generated/prisma/commonInputTypes.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/commonInputTypes.ts`
 - 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/AgentCommand.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 - 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Alert.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 - 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/AuditRecord.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/ComplementaryServiceRequest.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/IdempotencyRecord.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Membership.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Notification.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/NotificationRead.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/OperationalAction.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
-- 3-file cycle: `backend/src/generated/prisma/internal/prismaNamespace.ts -> backend/src/generated/prisma/models.ts -> backend/src/generated/prisma/models/Otp.ts -> backend/src/generated/prisma/internal/prismaNamespace.ts`
 
-## Communities (1227 total, 176 thin omitted)
+## Communities (1221 total, 179 thin omitted)
 
 ### Community 0 - "Website.ts"
 Cohesion: 0.01
@@ -1289,7 +1283,7 @@ Nodes (194): AggregateVpsNode, EnumVpsNodeStatusFieldUpdateOperationsInput, GetV
 
 ### Community 5 - "enums.ts"
 Cohesion: 0.03
-Nodes (88): IdempotencyService, Injectable, AgentRequest, createAppLogger(), ErrorLike, LogFields, RequestContext, RequestContextStore (+80 more)
+Nodes (101): EVENT_NAMES, INTERNAL_EVENTS, WebsiteMetricsEvaluatedEvent, WebsiteProbeEvaluatedEvent, IdempotencyService, Injectable, AgentRequest, createAppLogger() (+93 more)
 
 ### Community 6 - "commonInputTypes.ts"
 Cohesion: 0.01
@@ -1311,9 +1305,9 @@ Nodes (153): AggregateComplementaryServiceRequest, ComplementaryServiceRequest$a
 Cohesion: 0.01
 Nodes (145): AggregateWebsiteDiscovery, EnumDiscoveryStatusFieldUpdateOperationsInput, GetWebsiteDiscoveryAggregateType, GetWebsiteDiscoveryGroupByPayload, WebsiteDiscovery$activeVisitorSamplesArgs, WebsiteDiscovery$agentCommandsArgs, WebsiteDiscovery$trafficSnapshotArgs, WebsiteDiscovery$vpsNodeArgs (+137 more)
 
-### Community 11 - "guest-plan-request-form.tsx"
+### Community 11 - "client/src/lib/utils.ts"
 Cohesion: 0.03
-Nodes (140): subscribeNewsletterAction(), GuestPlanOtpResult, GuestPlanVerifyOtpResult, normalizeEmail(), TODO: later opt should be send to users phone/email and remove from here, requestGuestPlanOtpAction(), toSafeUser(), verifyGuestPlanOtpAction() (+132 more)
+Nodes (160): NewsletterActionMessageKey, NewsletterInput, newsletterSchema, subscribeNewsletterAction(), CheckPublicAccountResult, checkPublicPlanRequestAccountAction(), PublicAccountMatchBy, GuestPlanOtpResult (+152 more)
 
 ### Community 12 - "PlanRequest.ts"
 Cohesion: 0.01
@@ -1321,7 +1315,7 @@ Nodes (138): AggregatePlanRequest, EnumPlanRequestStatusFieldUpdateOperationsInp
 
 ### Community 13 - "(website)/page.tsx"
 Cohesion: 0.02
-Nodes (130): ArrowLinkCircle(), ArrowLinkCircleType, BookConsultation(), BookConsultationType, ConsultationTabsSection(), InfiniteHorizontalScroll(), InfiniteHorizontalScrollProps, InfiniteScrollItem (+122 more)
+Nodes (137): ContactSection(), ContactSectionProps, NameSection(), NameSectionProps, PARTS, NextStepSection(), NextStepSectionProps, OrganizationJsonLd() (+129 more)
 
 ### Community 14 - "websites-view.tsx"
 Cohesion: 0.04
@@ -1332,24 +1326,24 @@ Cohesion: 0.02
 Nodes (131): AggregateUnixseeMessage, EnumUnixseeMessageStatusFieldUpdateOperationsInput, GetUnixseeMessageAggregateType, GetUnixseeMessageGroupByPayload, UnixseeMessage$attachmentsArgs, UnixseeMessage$readsArgs, UnixseeMessage$websiteArgs, UnixseeMessageAggregateArgs (+123 more)
 
 ### Community 16 - "CurrentUser"
-Cohesion: 0.04
-Nodes (71): ApiResponseBuilder, ApiResponse, Role, ActivitiesController, Controller, Get, Query, AdminActivitiesController (+63 more)
+Cohesion: 0.02
+Nodes (105): ApiResponseBuilder, ApiResponse, Controller, Role, TicketServiceCategory, TicketStatus, ActivitiesController, Get (+97 more)
 
 ### Community 17 - "AgentCommand.ts"
 Cohesion: 0.02
 Nodes (127): AgentCommandAggregateArgs, AgentCommandAvgAggregateInputType, AgentCommandAvgAggregateOutputType, AgentCommandAvgOrderByAggregateInput, AgentCommandCountAggregateInputType, AgentCommandCountAggregateOutputType, AgentCommandCountArgs, AgentCommandCountOrderByAggregateInput (+119 more)
 
-### Community 18 - "tickets.service.ts"
-Cohesion: 0.04
-Nodes (58): TicketServiceCategory, TicketStatus, AdminTicketsController, Body, Controller, Get, HttpCode, Param (+50 more)
+### Community 18 - "TicketsService"
+Cohesion: 0.06
+Nodes (21): AdminTicketsController, Body, Get, HttpCode, Param, Post, Query, UploadedFile (+13 more)
 
-### Community 19 - "dashboard/sidebar.tsx"
-Cohesion: 0.09
-Nodes (27): getAuthSessionUser(), AccountMenu(), AccountMenuProps, Brand(), DesktopSidebar(), SidebarContent(), SidebarContentProps, HeaderAuthControl() (+19 more)
+### Community 19 - "websites/new/page.tsx"
+Cohesion: 0.27
+Nodes (9): CreateWebsitePage(), fetchPlans(), fetchUsers(), PlanItem, UserItem, CreateWebsiteForm(), handleSubmit(), validate() (+1 more)
 
-### Community 20 - "Architecture Decision Records (ADRs)"
-Cohesion: 0.33
-Nodes (6): Architecture Decision Records (ADRs), Index, Naming, Status vocabulary, Template, When to write an ADR
+### Community 20 - "app.module.ts"
+Cohesion: 0.02
+Nodes (81): AppController, Get, AppService, Injectable, IdempotencyModule, Global, Module, TenancyModule (+73 more)
 
 ### Community 21 - "Server.ts"
 Cohesion: 0.02
@@ -1363,9 +1357,9 @@ Nodes (111): AggregateAuthorizationCase, AuthorizationCase$decidedByArgs, Author
 Cohesion: 0.02
 Nodes (108): AggregateAlert, Alert$serverArgs, Alert$vpsNodeArgs, Alert$websiteArgs, AlertAggregateArgs, AlertCountAggregateInputType, AlertCountAggregateOutputType, AlertCountArgs (+100 more)
 
-### Community 24 - "activity-history.tsx"
-Cohesion: 0.02
-Nodes (70): markUnixseeMessageReadAction(), MarkUnixseeMessageReadResult, ActivitiesPage(), ActivitiesPageProps, categories, dateRanges, firstValue(), pageStates (+62 more)
+### Community 24 - "dashboard-shell.tsx"
+Cohesion: 0.03
+Nodes (59): ActivitiesPage(), ActivitiesPageProps, categories, dateRanges, firstValue(), pageStates, CheckoutPage(), PlansSuccessPage() (+51 more)
 
 ### Community 25 - "Notification.ts"
 Cohesion: 0.02
@@ -1383,25 +1377,25 @@ Nodes (76): AppSidebar(), data, SearchInput(), SearchInputProps, WebsiteDomainLi
 Cohesion: 0.02
 Nodes (99): AggregateServiceAssignment, GetServiceAssignmentAggregateType, GetServiceAssignmentGroupByPayload, ServiceAssignment$deliverablesArgs, ServiceAssignment$usageRecordsArgs, ServiceAssignmentAggregateArgs, ServiceAssignmentCountAggregateInputType, ServiceAssignmentCountAggregateOutputType (+91 more)
 
-### Community 29 - "app.module.ts"
-Cohesion: 0.03
-Nodes (86): AppController, Controller, Get, AppService, Injectable, EVENT_NAMES, INTERNAL_EVENTS, WebsiteMetricsEvaluatedEvent (+78 more)
+### Community 29 - "CreatePlanDto"
+Cohesion: 0.16
+Nodes (14): IsObject, Body, HttpCode, Param, Patch, Post, CreatePlanDto, IsBoolean (+6 more)
 
 ### Community 30 - "WebMetric.ts"
 Cohesion: 0.02
 Nodes (95): AggregateWebMetric, GetWebMetricAggregateType, GetWebMetricGroupByPayload, WebMetricAggregateArgs, WebMetricAvgAggregateInputType, WebMetricAvgAggregateOutputType, WebMetricAvgOrderByAggregateInput, WebMetricCountAggregateInputType (+87 more)
 
 ### Community 31 - "managed-woocommerce-server/page.tsx"
-Cohesion: 0.13
-Nodes (20): ProtectionList(), ConnectSection(), FaqSection(), HeroSection(), HeroSectionProps, ManageSection(), ManageSectionProps, PerformanceSection() (+12 more)
+Cohesion: 0.04
+Nodes (81): Text, TextProps, AllowedElements, Title, TitleProps, titleStyles, ITEM_KEYS, MigrationFaq() (+73 more)
 
-### Community 32 - "_components/common/title.tsx"
-Cohesion: 0.11
-Nodes (20): AllowedElements, Title, TitleProps, titleStyles, itemKeys, PlansAdditionalNotes(), CommonFeaturesSection(), CommonFeaturesSectionProps (+12 more)
+### Community 32 - "number-of-success-item.tsx"
+Cohesion: 0.29
+Nodes (8): MultipleCounter(), NumberOfSuccessItemProps, SingleCounter(), GlowDot(), GlowDotProps, useAnimatedCounter(), UseAnimatedCounterOptions, parseLocalizedStringToNumber()
 
-### Community 33 - "UsersService"
-Cohesion: 0.03
-Nodes (73): Otp, OtpContext, AuthenticationController, Body, Controller, HttpCode, Post, UseGuards (+65 more)
+### Community 33 - ".ok"
+Cohesion: 0.04
+Nodes (48): isClientFailure(), RateLimit(), OtpContext, AuthenticationController, Body, HttpCode, Post, UseGuards (+40 more)
 
 ### Community 34 - "WebsiteTrafficSnapshot.ts"
 Cohesion: 0.02
@@ -1409,7 +1403,7 @@ Nodes (92): AggregateWebsiteTrafficSnapshot, GetWebsiteTrafficSnapshotAggregateT
 
 ### Community 35 - "global-search.tsx"
 Cohesion: 0.03
-Nodes (90): RequestAssessmentMultiStepForm(), DirectionalImage(), DirectionalImageProps, InlineScript(), MotionGrowDialog(), filterItems(), fixtureTicketStatusKey, getClientShortcut() (+82 more)
+Nodes (107): generateMetadata(), NotificationDetailsPage(), NotificationDetailsPageProps, NotificationsPage(), NotificationsPageProps, DirectionalImage(), DirectionalImageProps, GridIcon() (+99 more)
 
 ### Community 36 - "create-service-dialog.tsx"
 Cohesion: 0.04
@@ -1424,8 +1418,8 @@ Cohesion: 0.02
 Nodes (90): AggregateOperationalAction, EnumOperationalActionStatusFieldUpdateOperationsInput, EnumOperationalActionTypeFieldUpdateOperationsInput, GetOperationalActionAggregateType, GetOperationalActionGroupByPayload, OperationalActionAggregateArgs, OperationalActionCountAggregateInputType, OperationalActionCountAggregateOutputType (+82 more)
 
 ### Community 39 - "help-center-data.ts"
-Cohesion: 0.12
-Nodes (21): generateMetadata(), HelpCenterTopicPage(), Params, HelpTopicBreadcrumb(), flattenTopicArticles(), getCanonicalArticleSlug(), getHelpArticleGroupKey(), getTopicBySlug() (+13 more)
+Cohesion: 0.10
+Nodes (23): generateMetadata(), HelpCenterTopicPage(), Params, HelpTopicBreadcrumb(), flattenTopicArticles(), getCanonicalArticleSlug(), getHelpArticleGroupKey(), getTopicBySlug() (+15 more)
 
 ### Community 40 - "Activity.ts"
 Cohesion: 0.02
@@ -1447,25 +1441,29 @@ Nodes (89): AggregateUnixseeMessageRead, GetUnixseeMessageReadAggregateType, Get
 Cohesion: 0.02
 Nodes (88): AggregatePlan, GetPlanAggregateType, GetPlanGroupByPayload, Plan$planRequestsArgs, Plan$websitesArgs, PlanAggregateArgs, PlanAvgAggregateInputType, PlanAvgAggregateOutputType (+80 more)
 
-### Community 45 - "users/[id]/page.tsx"
+### Community 45 - "AlertsService"
+Cohesion: 0.08
+Nodes (17): AlertsController, Body, Get, HttpCode, Param, Post, Query, UseGuards (+9 more)
+
+### Community 46 - "users/[id]/page.tsx"
 Cohesion: 0.06
 Nodes (65): COMPLEMENTARY_STATUS_FILTER_VALUES, ComplementaryServicesPage(), ComplementaryServicesPageProps, fetchBackendComplementaryData(), PlanRequestDetailsPage(), PlanRequestDetailsPageProps, PLAN_REQUEST_STATUS_FILTER_VALUES, PlanRequestsPage() (+57 more)
-
-### Community 46 - "authorization-details-view.tsx"
-Cohesion: 0.05
-Nodes (87): AdminWebsiteAgentContext, AgentCommandDto, error(), getAgentCommandAction(), requestDiscoveryStackRefreshAction(), requestWebsiteStackRefreshAction(), Result, updateWebsiteAdminUrlAction() (+79 more)
 
 ### Community 47 - "VpsMetric.ts"
 Cohesion: 0.02
 Nodes (84): AggregateVpsMetric, BigIntFieldUpdateOperationsInput, FloatFieldUpdateOperationsInput, GetVpsMetricAggregateType, GetVpsMetricGroupByPayload, NullableBigIntFieldUpdateOperationsInput, NullableFloatFieldUpdateOperationsInput, VpsMetricAggregateArgs (+76 more)
 
-### Community 48 - ".ok"
+### Community 48 - "tickets-manager.tsx"
 Cohesion: 0.04
-Nodes (45): AlertsController, Body, Controller, Get, HttpCode, Param, Post, Query (+37 more)
+Nodes (76): DashboardPage(), loadAuthorizationStatus(), loadWebsites(), resolveWelcomeName(), WebsitesPage(), BookConsultation(), ConsultationTabsSectionType, RequestAssessmentForm() (+68 more)
 
 ### Community 49 - "WebsiteProbeMetric.ts"
 Cohesion: 0.02
 Nodes (81): AggregateWebsiteProbeMetric, EnumWebsiteProbeSourceFieldUpdateOperationsInput, GetWebsiteProbeMetricAggregateType, GetWebsiteProbeMetricGroupByPayload, WebsiteProbeMetricAggregateArgs, WebsiteProbeMetricAvgAggregateInputType, WebsiteProbeMetricAvgAggregateOutputType, WebsiteProbeMetricAvgOrderByAggregateInput (+73 more)
+
+### Community 50 - "UnixseeMessagesService"
+Cohesion: 0.05
+Nodes (47): MembershipRole, UnixseeMessageStatus, CreateMembershipDto, CreateTenantDto, IsEnum, IsOptional, IsString, IsUUID (+39 more)
 
 ### Community 51 - "admin-panel/src/types/auth.types.ts"
 Cohesion: 0.05
@@ -1509,7 +1507,7 @@ Nodes (79): AggregateUnixseeMessageAttachment, GetUnixseeMessageAttachmentAggreg
 
 ### Community 61 - "ComplementaryServicesService"
 Cohesion: 0.05
-Nodes (46): ComplementaryRequestStatus, AdminComplementaryServicesController, Body, Controller, Get, Headers, HttpCode, Param (+38 more)
+Nodes (42): ComplementaryRequestStatus, AdminComplementaryServicesController, Body, Get, Headers, HttpCode, Param, Patch (+34 more)
 
 ### Community 62 - "ServiceCatalogItem.ts"
 Cohesion: 0.03
@@ -1529,23 +1527,23 @@ Nodes (73): AggregateServiceDeliverable, GetServiceDeliverableAggregateType, Get
 
 ### Community 66 - "AuthorizationCasesService"
 Cohesion: 0.04
-Nodes (50): AuthorizationCaseStatus, AdminAuthorizationCasesController, Body, Controller, Get, HttpCode, Param, Post (+42 more)
+Nodes (52): AuthorizationCaseStatus, AuthorizationCasesModule, Module, AdminAuthorizationCasesController, Body, Get, HttpCode, Param (+44 more)
 
 ### Community 67 - "carousel.tsx"
-Cohesion: 0.06
-Nodes (51): itemKeys, ProblemSectionCarouselType, ProcessSectionCard(), ITEM_KEYS, ProcessSectionCarouselType, ActiveSlideContext, useActiveSlide(), CarouselActiveTracker() (+43 more)
+Cohesion: 0.05
+Nodes (52): itemKeys, ProblemSectionCarouselType, ITEM_KEYS, ProcessSectionCarouselType, ActiveSlideContext, useActiveSlide(), CarouselActiveTracker(), getSlideDirection() (+44 more)
 
 ### Community 68 - "SSLCertificate.ts"
 Cohesion: 0.03
 Nodes (67): AggregateSSLCertificate, GetSSLCertificateAggregateType, GetSSLCertificateGroupByPayload, SSLCertificateAggregateArgs, SSLCertificateCountAggregateInputType, SSLCertificateCountAggregateOutputType, SSLCertificateCountArgs, SSLCertificateCountOrderByAggregateInput (+59 more)
 
-### Community 69 - "motion-grow-dialog.tsx"
-Cohesion: 0.10
-Nodes (25): BlockEdge, clamp(), composeEventHandlers(), getOriginOffset(), getViewportSize(), InlineEdge, LogicalGrowSide, MotionGrowDialogClose (+17 more)
+### Community 69 - "authorization-details-view.tsx"
+Cohesion: 0.05
+Nodes (87): AdminWebsiteAgentContext, AgentCommandDto, error(), getAgentCommandAction(), requestDiscoveryStackRefreshAction(), requestWebsiteStackRefreshAction(), Result, updateWebsiteAdminUrlAction() (+79 more)
 
-### Community 70 - "help-center/page.tsx"
-Cohesion: 0.15
-Nodes (17): HelpCenterPage(), HelpAllTopicsSheet(), HelpCenterExplorer(), HelpCenterExplorerProps, guideIcons, GuideRow, HelpPopularGuides(), HelpPopularGuidesProps (+9 more)
+### Community 70 - "mapApiError"
+Cohesion: 0.10
+Nodes (27): AuthorizationCaseActionResult, getMyAuthorizationCaseAction(), packageBody(), saveAuthorizationDraftAction(), submitAuthorizationAction(), toResult(), uploadAuthorizationDocumentAction(), UploadDocumentResult (+19 more)
 
 ### Community 71 - "unixsee-message-compose-form.tsx"
 Cohesion: 0.10
@@ -1553,23 +1551,23 @@ Nodes (45): loadUnixseeComposeContextAction(), createUnixseeMessageAction(), pub
 
 ### Community 72 - "PlanRequestsService"
 Cohesion: 0.06
-Nodes (38): AdminPlanRequestsController, Body, Controller, Get, Headers, HttpCode, Param, Post (+30 more)
+Nodes (35): AdminPlanRequestsController, Body, Get, Headers, HttpCode, Param, Post, Query (+27 more)
 
-### Community 73 - "prisma/client.ts"
-Cohesion: 0.04
-Nodes (63): Activity, AgentCommand, Alert, AuditRecord, AuthorizationCase, ComplementaryServiceRequest, $Enums, IdempotencyRecord (+55 more)
+### Community 73 - "WebsitesService"
+Cohesion: 0.11
+Nodes (9): Body, Get, HttpCode, Param, Patch, Post, Query, Injectable (+1 more)
 
 ### Community 74 - "help-hero.tsx"
-Cohesion: 0.11
-Nodes (20): HelpCenterHero(), HelpCenterHeroProps, HelpCenterIntro(), HelpCenterIntroProps, HelpHero(), HelpHeroProps, TODO: Fetch topics from Help Center API, TODO: Fetch article search results from backend (+12 more)
+Cohesion: 0.16
+Nodes (15): HelpHeroProps, TODO: Fetch topics from Help Center API, TODO: Fetch article search results from backend, HelpSearch(), HelpSearchArticleItem, HelpSearchProps, HelpSearchTopicItem, match() (+7 more)
 
 ### Community 75 - "3. Security & Authentication"
 Cohesion: 0.04
-Nodes (51): 3. Security & Authentication, Definition of Done, Definition of Done, SEC-02 — احتمال Reflected XSS در صفحه OTP, SEC-04 — Frontend خود OTP را به کاربر نمایش می‌دهد, SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد, SEC-10 — Global Rate Limiting برای Public API وجود ندارد, SEC-11 — Account Enumeration از Endpoint عمومی (+43 more)
+Nodes (49): 3. Security & Authentication, Admin, Client, Definition of Done, Definition of Done, SEC-01 — Credential واقعی Hard-code شده در Repository, SEC-04 — Frontend خود OTP را به کاربر نمایش می‌دهد, SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد (+41 more)
 
-### Community 76 - "client/src/lib/utils.ts"
+### Community 76 - "client/src/components/ui/button.tsx"
 Cohesion: 0.03
-Nodes (86): ProfilePage(), ProfilePageProps, PROFILES, StoryProps, useStoryCarouselSync(), StoryCarouselSync(), StoryProps, AuthorizationProfileLinkCard() (+78 more)
+Nodes (102): ProfilePage(), PROFILES, StoryProps, useStoryCarouselSync(), StoryCarouselSync(), StoryProps, AuthorizationProfileLinkCard(), AuthorizationProfileLinkCardProps (+94 more)
 
 ### Community 77 - "authorization-queue-view.tsx"
 Cohesion: 0.06
@@ -1588,88 +1586,84 @@ Cohesion: 0.04
 Nodes (53): AggregateIdempotencyRecord, GetIdempotencyRecordAggregateType, GetIdempotencyRecordGroupByPayload, IdempotencyRecordAggregateArgs, IdempotencyRecordCountAggregateInputType, IdempotencyRecordCountAggregateOutputType, IdempotencyRecordCountArgs, IdempotencyRecordCountOrderByAggregateInput (+45 more)
 
 ### Community 81 - "Otp.ts"
-Cohesion: 0.04
-Nodes (53): AggregateOtp, GetOtpAggregateType, GetOtpGroupByPayload, NullableEnumOtpContextFieldUpdateOperationsInput, OtpAggregateArgs, OtpCountAggregateInputType, OtpCountAggregateOutputType, OtpCountArgs (+45 more)
+Cohesion: 0.03
+Nodes (59): AggregateOtp, GetOtpAggregateType, GetOtpGroupByPayload, NullableEnumOtpContextFieldUpdateOperationsInput, OtpAggregateArgs, OtpAvgAggregateInputType, OtpAvgAggregateOutputType, OtpAvgOrderByAggregateInput (+51 more)
 
-### Community 82 - "routing.ts"
-Cohesion: 0.06
-Nodes (57): NewsletterActionMessageKey, NewsletterInput, newsletterSchema, RequestAssessmentActionMessageKey, requestAssessmentActionSchema, RequestAssessmentInput, AppConfig, next-intl (+49 more)
+### Community 82 - "email-layout.ts"
+Cohesion: 0.14
+Nodes (29): EmailDirection, EmailTextAlign, escapeHtml(), getEmailDirection(), getEmailTextAlign(), renderMultilineText(), sendNewsletterEmail(), SendNewsletterEmailInput (+21 more)
 
 ### Community 84 - "dependencies"
 Cohesion: 0.07
-Nodes (27): dependencies, class-variance-authority, clsx, dotenv, framer-motion, @hookform/resolvers, leaflet, next (+19 more)
+Nodes (27): dependencies, clsx, dotenv, framer-motion, @hookform/resolvers, leaflet, next, overlayscrollbars (+19 more)
 
 ### Community 85 - "dependencies"
 Cohesion: 0.04
 Nodes (53): dependencies, bcryptjs, class-transformer, class-validator, cron, dotenv, multer, @nestjs/common (+45 more)
 
 ### Community 86 - "request-assessment-schema.ts"
-Cohesion: 0.06
-Nodes (40): MultiSelectFormField(), SelectFormField(), TextareaFormField(), TextFormField(), YesNoFormField(), enterEase, renderServiceFields(), RequestAssessmentServiceFields() (+32 more)
+Cohesion: 0.05
+Nodes (41): MultiSelectFormField(), SelectFormField(), ServiceSection(), TextareaFormField(), TextFormField(), YesNoFormField(), enterEase, renderServiceFields() (+33 more)
 
 ### Community 87 - "monitoring-agent/src/discovery.ts"
 Cohesion: 0.12
 Nodes (46): buildDiscoveredDomain(), collectDirectAdminPointers(), collectDirectAdminSubdomains(), collectListenerMappedDomains(), collectOpenLiteSpeedDeclarations(), deduplicateDomains(), defaultDiscoveryRoots, defaultOpenLiteSpeedListenerPaths (+38 more)
 
-### Community 88 - "AdminUnixseeMessagesController"
-Cohesion: 0.14
-Nodes (13): AdminUnixseeMessagesController, Body, Controller, Delete, Get, HttpCode, Param, Patch (+5 more)
+### Community 88 - "prisma/client.ts"
+Cohesion: 0.04
+Nodes (63): Activity, AgentCommand, Alert, AuditRecord, AuthorizationCase, ComplementaryServiceRequest, $Enums, IdempotencyRecord (+55 more)
 
-### Community 89 - "docs/backend/modules-and-routes.md"
-Cohesion: 0.11
-Nodes (9): This is NOT the Next.js you know, Rules, Tailwind, Version, Version-matched documentation, This is NOT the Next.js you know, Feature Documentation, Canonical docs (+1 more)
+### Community 89 - "docs/architecture/decisions/README.md"
+Cohesion: 0.04
+Nodes (56): Collected data, Development, Packaging, Runtime boundary, Schedules, Unixsee agent 0.2, Agent documentation, Canonical references (+48 more)
 
-### Community 90 - "plans-api.ts"
-Cohesion: 0.13
-Nodes (15): PlansPage(), GuestPlanRequestPage(), GuestPlanRequestSuccessView(), GuestPlanRequestSuccessPage(), isMarketingPlanKey(), MARKETING_PLAN_KEYS, MARKETING_TO_NEST_CODE, MarketingPlanKey (+7 more)
+### Community 90 - "ServersService"
+Cohesion: 0.10
+Nodes (22): EnrollmentTokenStatus, AdminServersController, Body, Delete, Get, HttpCode, Param, Patch (+14 more)
 
 ### Community 91 - "browser.ts"
 Cohesion: 0.05
 Nodes (43): Activity, AgentCommand, Alert, AuditRecord, AuthorizationCase, ComplementaryServiceRequest, $Enums, IdempotencyRecord (+35 more)
 
-### Community 92 - "footer.tsx"
-Cohesion: 0.03
-Nodes (88): FaqSection(), FaqSectionProps, itemKeys, ITEM_KEYS, MigrationFaq(), MigrationFaqProps, ITEM_KEYS, PerformanceAccordion() (+80 more)
+### Community 92 - "cn"
+Cohesion: 0.02
+Nodes (163): ArrowLinkCircle(), ArrowLinkCircleType, ProcessSectionCard(), ProcessSectionCardType, FaqSection(), FaqSectionProps, itemKeys, TestimonialVideoItem() (+155 more)
 
-### Community 93 - "client/src/components/tickets/ticket-details-view.tsx"
-Cohesion: 0.06
-Nodes (60): logoutAction(), AvatarUploadResult, uploadAvatarAction(), addTicketMessageAction(), closeTicketAction(), createTicketAction(), downloadTicketAttachmentAction(), TicketAttachmentDownload (+52 more)
-
-### Community 94 - "RealtimeService"
-Cohesion: 0.11
-Nodes (6): RealtimeGateway, OnEvent, RealtimeService, Injectable, WebSocketGateway, WebSocketServer
+### Community 93 - "tickets/types.ts"
+Cohesion: 0.12
+Nodes (29): logoutAction(), AvatarUploadResult, uploadAvatarAction(), addTicketMessageAction(), closeTicketAction(), createTicketAction(), downloadTicketAttachmentAction(), TicketAttachmentDownload (+21 more)
 
 ### Community 95 - "useWpStory"
 Cohesion: 0.10
 Nodes (40): getProfileKey(), getProfileOrder(), getProfileStorySignature(), getStoryOrder(), isVideoStorySource(), normalizeProfiles(), PROFILES, readSeenProfileStorage() (+32 more)
 
-### Community 96 - "website-details-information.tsx"
-Cohesion: 0.09
-Nodes (28): FeedCard(), tones, NotificationPanel(), AlertItem(), WebsiteActiveAlerts(), WebsiteBillingPanelProps, SoftwarePanel(), TrafficPanel() (+20 more)
+### Community 96 - "navigation.ts"
+Cohesion: 0.03
+Nodes (95): DomainsPageProps, PlansPage(), ProfilePageProps, SearchPageProps, TicketsPage(), TicketsPageProps, generateMetadata(), WebsiteDetailsPage() (+87 more)
 
 ### Community 97 - "plan-request-details-view.tsx"
 Cohesion: 0.04
 Nodes (82): AdminWebsiteListItem, AdminWebsiteListResponse, createWebsiteForPlanRequestAction(), declinePlanRequestAction(), enablePlanRequestAction(), linkPlanRequestWebsiteAction(), ListPlanRequestWebsitesResult, listWebsitesForPlanRequestAction() (+74 more)
 
 ### Community 98 - "client/src/proxy.ts"
-Cohesion: 0.07
-Nodes (56): clearPendingLoginPhone(), TODO: later opt should be send to users phone/email and remove from here, RequestLoginOtpResult, resendLoginOtp(), toSafeUser(), verifyLoginOtp(), VerifyLoginOtpResult, CheckPublicAccountResult (+48 more)
+Cohesion: 0.09
+Nodes (42): clearPendingLoginPhone(), TODO: later opt should be send to users phone/email and remove from here, RequestLoginOtpResult, resendLoginOtp(), toSafeUser(), verifyLoginOtp(), VerifyLoginOtpResult, POST() (+34 more)
 
 ### Community 99 - "bottom-floating-navigation.tsx"
-Cohesion: 0.10
-Nodes (27): BottomFloatingNavigation(), BottomFloatingNavigationProps, getDragScrollMultiplier(), getLogicalScrollLeft(), getRtlScrollType(), RtlScrollType, setLogicalScrollLeft(), SPECIAL_LINKS (+19 more)
+Cohesion: 0.09
+Nodes (32): FloatingNavEyeMark(), FloatingNavEyeMarkProps, GAZE_TARGETS, GazeTarget, pickNextGaze(), randomBetween(), BottomFloatingNavigation(), BottomFloatingNavigationProps (+24 more)
 
 ### Community 100 - "Flow: FL-[number]"
 Cohesion: 0.04
 Nodes (47): 1. Required inputs, 1. User and goal, 2.1 One flow must serve one primary goal, 2.2 Describe states, not pages, 2.3 Every state transition needs a cause, 2.4 Design beyond the happy path, 2.5 Preserve user progress, 2.6 Make outcomes explicit (+39 more)
 
-### Community 101 - "complementary-services-api.ts"
-Cohesion: 0.06
-Nodes (45): createComplementaryRequestAction(), CreateComplementaryRequestResult, ENGAGEMENT_TO_API, withdrawComplementaryRequestAction(), WithdrawComplementaryRequestResult, ComplementaryServicesPage(), PageProps, EMPTY_FORM_DATA (+37 more)
+### Community 101 - "complementary-services-manager.tsx"
+Cohesion: 0.03
+Nodes (72): ComplementaryServicesPage(), PageProps, EMPTY_FORM_DATA, PageProps, RequestServicePage(), ComplementaryServiceDetailsPage(), generateMetadata(), PageProps (+64 more)
 
-### Community 102 - "TenantsService"
-Cohesion: 0.09
-Nodes (15): AdminTenantsController, Body, Controller, Get, HttpCode, Param, Patch, Post (+7 more)
+### Community 102 - "unixsee-message-detail-view.tsx"
+Cohesion: 0.10
+Nodes (22): markUnixseeMessageReadAction(), MarkUnixseeMessageReadResult, PageProps, UnixseeMessageDetailPage(), PageProps, UnixseeMessagesPage(), DashboardFadeIn(), formatSizeBytes() (+14 more)
 
 ### Community 104 - "devDependencies"
 Cohesion: 0.07
@@ -1679,13 +1673,13 @@ Nodes (29): devDependencies, babel-plugin-react-compiler, eslint, eslint-config-
 Cohesion: 0.04
 Nodes (47): 11. Heuristic 7 — Flexibility and efficiency of use, 12. Heuristic 8 — Relevant and minimal flow, 13. Heuristic 9 — Help users recognise, diagnose and recover from errors, 14. Heuristic 10 — Help and documentation, Contents, Contextual help, Core question, Core question (+39 more)
 
-### Community 107 - "PlansService"
-Cohesion: 0.06
-Nodes (29): IsObject, AdminPlansController, Body, Controller, Get, HttpCode, Param, Patch (+21 more)
+### Community 107 - "CreateNotificationDto"
+Cohesion: 0.16
+Nodes (14): NotificationStatus, Body, HttpCode, Param, Patch, Post, CreateNotificationDto, IsEnum (+6 more)
 
-### Community 108 - "text.tsx"
-Cohesion: 0.12
-Nodes (13): Text, TextProps, MANAGE_ITEMS_KEYS, ManageItemProps, ManageList(), ManageListProps, PROTECTION_ITEMS_KEYS, ProtectionListProps (+5 more)
+### Community 108 - "Unixsee admin-panel agent guide"
+Cohesion: 0.29
+Nodes (7): App boundaries, High-frequency component rules, Monorepo contracts, Next.js version-matched docs, Read first, Unixsee admin-panel agent guide, Working rules
 
 ### Community 109 - "backend/docs/users-dashboard-uiux.md"
 Cohesion: 0.04
@@ -1697,19 +1691,19 @@ Nodes (47): 1. Last Known Data Cache, 1. Overview, 1. Website Availability, 2. L
 
 ### Community 111 - "dependencies"
 Cohesion: 0.12
-Nodes (17): dependencies, class-variance-authority, @hookform/resolvers, jose, lucide-react, tailwind-merge, @tanstack/react-virtual, tw-animate-css (+9 more)
+Nodes (17): dependencies, class-variance-authority, clsx, @hookform/resolvers, jose, lucide-react, tailwind-merge, tw-animate-css (+9 more)
 
-### Community 112 - "light-header-provider.tsx"
-Cohesion: 0.16
-Nodes (16): AppScrollbar(), AppScrollbarProps, useSyncCssVarFromElementHeight(), LightHeaderStoreApi, LightHeaderStoreContext, LightHeaderStoreProvider(), LightHeaderStoreProviderProps, createLightHeaderStore() (+8 more)
+### Community 112 - "providers.tsx"
+Cohesion: 0.11
+Nodes (23): AppScrollbar(), AppScrollbarProps, useSyncCssVarFromElementHeight(), Toaster(), getServerAccessToken(), getAccessTokenFromCookies(), getServerClockOffsetInSeconds(), LightHeaderStoreApi (+15 more)
 
-### Community 113 - "intl.types.ts"
-Cohesion: 0.10
-Nodes (7): Props, Props, Props, Props, Props, Props, LocaleType
-
-### Community 114 - "navigation.ts"
+### Community 113 - "[locale]/layout.tsx"
 Cohesion: 0.05
-Nodes (81): requestLoginOtp(), OtpPage(), Props, resolveMode(), AuthAlert(), AuthAlertProps, AuthCrossLinks(), AuthCrossLinksProps (+73 more)
+Nodes (22): Props, Props, OtpPage(), Props, resolveMode(), Props, Props, Props (+14 more)
+
+### Community 114 - "sign-up-form.tsx"
+Cohesion: 0.06
+Nodes (72): requestLoginOtp(), AuthAlert(), AuthAlertProps, AuthCrossLinks(), AuthCrossLinksProps, AuthTextLink(), AuthTextLinkProps, AuthDivider() (+64 more)
 
 ### Community 115 - "scripts"
 Cohesion: 0.07
@@ -1720,24 +1714,24 @@ Cohesion: 0.04
 Nodes (46): AC-001, Acceptance criteria, Accessibility review, Analytics events, Assumptions, Assumptions and unknowns, Available evidence, Blockers (+38 more)
 
 ### Community 117 - "use-request-assessment-form-controller.ts"
-Cohesion: 0.14
-Nodes (26): createRequestAssessmentAction(), useRequestAssessmentFormController(), goBack(), goNext(), goToStep(), onSubmit(), uploadPublicFiles(), UseRequestAssessmentFormControllerOptions (+18 more)
+Cohesion: 0.10
+Nodes (36): getAuthSessionUser(), RequestAssessmentMultiStepForm(), useRequestAssessmentFormController(), goBack(), goNext(), goToStep(), onSubmit(), uploadPublicFiles() (+28 more)
 
 ### Community 118 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): compilerOptions, allowSyntheticDefaultImports, declaration, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames, incremental (+18 more)
 
-### Community 119 - "AdminDiscoveriesController"
-Cohesion: 0.11
-Nodes (14): AdminDiscoveriesController, Body, Controller, Get, HttpCode, Param, Post, Query (+6 more)
+### Community 119 - "Admin domain data fetching (Layer 2)"
+Cohesion: 0.29
+Nodes (7): Admin domain data fetching (Layer 2), Boot reseed (Zustand access token), Nest `ApiResponse` and error mapping, Per-feature checklist, Query keys, defaults, dehydrate, Related, Transport decision table
 
 ### Community 120 - "3. Security & Authentication"
 Cohesion: 0.04
-Nodes (47): 3. Security & Authentication, Admin, Client, Definition of Done, Definition of Done, SEC-01 — Credential واقعی Hard-code شده در Repository, SEC-04 — Frontend خود OTP را به کاربر نمایش می‌دهد, SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد (+39 more)
+Nodes (48): 3. Security & Authentication, Bug محتمل/واقعی, Definition of Done, SEC-04 — Frontend خود OTP را به کاربر نمایش می‌دهد, SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد, SEC-10 — Global Rate Limiting برای Public API وجود ندارد, SEC-11 — Account Enumeration از Endpoint عمومی, SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند (+40 more)
 
-### Community 121 - "authorization-wizard.tsx"
-Cohesion: 0.05
-Nodes (83): AuthorizationCaseActionResult, getMyAuthorizationCaseAction(), NestAuthorizationCaseDto, packageBody(), saveAuthorizationDraftAction(), submitAuthorizationAction(), toResult(), AuthorizationPage() (+75 more)
+### Community 121 - "authorization/authorization-data.ts"
+Cohesion: 0.06
+Nodes (61): NestAuthorizationCaseDto, AuthorizationPage(), AuthorizationPageProps, PREVIEW_STATUSES, AuthorizationDashboardBanner(), AuthorizationDashboardBannerProps, BANNER_STATUSES, AuthorizationPageClient() (+53 more)
 
 ### Community 122 - "portfolio-logos.tsx"
 Cohesion: 0.14
@@ -1747,9 +1741,9 @@ Nodes (23): AnimatingCell, BOLD_LOGOS, createInitialVisibleRows(), EMPTY_CELL_IN
 Cohesion: 0.17
 Nodes (18): AuthStoreContext, AuthStoreProvider(), AuthStoreProviderProps, clientFetch(), createAuthenticatedRequestInit(), getPublicCoreApiBaseUrl(), getValidAccessToken(), refreshAccessToken() (+10 more)
 
-### Community 124 - "AgentService"
-Cohesion: 0.07
-Nodes (41): AdminAgentCommandsController, Controller, Get, HttpCode, Param, Post, UseGuards, AgentController (+33 more)
+### Community 124 - "agent.service.ts"
+Cohesion: 0.06
+Nodes (46): AgentCommandStatus, AgentCommandType, AdminAgentCommandsController, Get, HttpCode, Param, Post, UseGuards (+38 more)
 
 ### Community 125 - "Required edge-case categories"
 Cohesion: 0.05
@@ -1787,9 +1781,9 @@ Nodes (19): ArrayMinSize, MonitoringIngestDto, MonitoringMetricPayloadDto, Monit
 Cohesion: 0.18
 Nodes (16): AgentCommand, CommandResult, FieldState, FieldStatus, HeartbeatData, Phase1Ingest, SiteStackSnapshot, CachedResults (+8 more)
 
-### Community 138 - "metrics.module.ts"
-Cohesion: 0.05
-Nodes (20): WebMetric, SystemHealthService, Injectable, SystemHealthInputType, SystemHealthStatusType, Injectable, VpsMetricsRepository, Injectable (+12 more)
+### Community 138 - "OperationalActionsService"
+Cohesion: 0.08
+Nodes (18): OperationalActionStatus, OperationalActionType, Get, Headers, HttpCode, Param, Post, Query (+10 more)
 
 ### Community 139 - "State: ST-[number]"
 Cohesion: 0.05
@@ -1803,21 +1797,21 @@ Nodes (41): 18.10 Timing, 18.11 Session recovery, 18.12 Target size, 18.1 Keyboa
 Cohesion: 0.16
 Nodes (9): AppConfig, ActiveVisitors3m, Visitors24h, writeJson(), Cursor, normalizeIp(), parseApacheTime(), Persisted (+1 more)
 
-### Community 142 - "ServersService"
-Cohesion: 0.08
-Nodes (23): EnrollmentTokenStatus, AdminServersController, Body, Controller, Delete, Get, HttpCode, Param (+15 more)
+### Community 142 - "OtpService"
+Cohesion: 0.17
+Nodes (6): Otp, IssuedOtp, OtpService, FakeOtpTable, OTP_CONFIG, Injectable
 
 ### Community 143 - "DesignSystemGenerator"
 Cohesion: 0.14
 Nodes (11): DesignSystemGenerator, Find matching reasoning rule for a category., Apply reasoning rules to search results., Select best matching result based on priority keywords., Extract results list from search result dict., Generate complete design system recommendation. variance/motion/density are…, Bucket a 1-10 dial value into its tier config. Returns None if value is None., Generates design system recommendations from aggregated searches. (+3 more)
 
-### Community 144 - "docs/product/README.md"
-Cohesion: 0.11
-Nodes (12): Backend API contracts, Index, Layout, Related, Writing rules, Catalog endpoint, Client / fixture aliases, Enum (API / Prisma) (+4 more)
+### Community 144 - "docs/backend/modules-and-routes.md"
+Cohesion: 0.14
+Nodes (4): Data sources, Fixture-backed (not yet wired), Nest-wired (live), Complementary request external-target flow
 
-### Community 145 - "OperationalActionsService"
-Cohesion: 0.07
-Nodes (23): OperationalActionStatus, OperationalActionType, AdminOperationalActionsController, Controller, Get, Headers, HttpCode, Param (+15 more)
+### Community 145 - "unixsee-home-sections.ts"
+Cohesion: 0.12
+Nodes (15): HomeAboutUsSectionProps, HomeConsultationSectionProps, HomeFaqSectionProps, HomeHeroSectionProps, HomeInfrastructureSectionProps, HomeProblemSectionProps, HomeProcessSectionProps, HomeSolutionOverviewSectionProps (+7 more)
 
 ### Community 146 - "PackedHll"
 Cohesion: 0.16
@@ -1827,9 +1821,13 @@ Nodes (5): retryDelayMs(), HLL_PRECISION, HLL_REGISTERS, PackedHll, RollingHll24
 Cohesion: 0.05
 Nodes (38): 1.1 Start with the user’s problem, 1.2 Understand current behaviour, 1.3 Include all relevant user types, 1.4 Separate evidence from assumptions, 1. Core principles, 2. User type discovery, 3. User need format, 4. Rules for writing user needs (+30 more)
 
-### Community 191 - "AppConfigType"
-Cohesion: 0.07
-Nodes (27): LocalStorageController, Controller, Get, Query, LocalFilesystemProvider, Injectable, SupabaseStorageProvider, Injectable (+19 more)
+### Community 190 - "Backend documentation"
+Cohesion: 0.33
+Nodes (6): API style, Backend documentation, Current vs Phase 1 target, Ownership, Related docs, Trust boundary
+
+### Community 191 - "LocalFilesystemProvider"
+Cohesion: 0.14
+Nodes (11): LocalFilesystemProvider, Injectable, SupabaseStorageProvider, Injectable, readStatus(), StorageProviderError, throwStorageException(), StorageProvider (+3 more)
 
 ### Community 192 - "compilerOptions"
 Cohesion: 0.11
@@ -1844,8 +1842,8 @@ Cohesion: 0.08
 Nodes (25): author, description, devDependencies, tsx, @types/node, typescript, vitest, engines (+17 more)
 
 ### Community 195 - "client/.agents/skills/ui-ux-pro-max/scripts/design_system.py"
-Cohesion: 0.17
-Nodes (16): _detect_page_type(), format_markdown(), format_master_md(), format_page_override_md(), generate_design_system(), _generate_intelligent_overrides(), persist_design_system(), Format a page-specific override file with intelligent AI-generated content. (+8 more)
+Cohesion: 0.15
+Nodes (18): ansi_ljust(), format_ascii_box(), format_markdown(), format_master_md(), generate_design_system(), hex_to_ansi(), persist_design_system(), Convert hex color to ANSI True Color swatch (██) with fallback. (+10 more)
 
 ### Community 196 - "9. Cancel, back and undo"
 Cohesion: 0.05
@@ -1859,25 +1857,25 @@ Nodes (37): 14.1 Initial states, 14.2 Input states, 14.3 Focus states, 14.4 Proc
 Cohesion: 0.18
 Nodes (9): This is NOT the Next.js you know, Data sources, Fixture-backed (not yet wired), Nest-wired (live), Rules, Tailwind, Version, Version-matched documentation (+1 more)
 
-### Community 200 - "cn"
-Cohesion: 0.02
-Nodes (130): mapPlan(), mapWebsite(), NestWebsite, WebsitesPage(), ConsultationTabsSectionType, ServiceSection(), RequestAssessmentForm(), RequestAssessmentFormType (+122 more)
+### Community 200 - "Phase 1 public entry channels — document sync"
+Cohesion: 0.33
+Nodes (6): Admin counterparts, Note, Phase 1 customer can, Phase 1 public entry channels — document sync, Related, Rules kept in sync
 
 ### Community 201 - "monorepo/docs/architecture/decisions/README.md"
 Cohesion: 0.04
 Nodes (45): Admin routes, Command results, Heartbeat and commands, Identity and enrollment, Independently optional ingest, Phase 1 agent API contract — web-server-only v0.2, Agent documentation, Canonical references (+37 more)
 
-### Community 202 - "route-adapter.tsx"
-Cohesion: 0.13
-Nodes (15): createHomeRegistry(), createUnixseeRenderPlan(), createUnixseeRouteAdapter(), getSectionKey(), NextjsComponents, renderUnixseeSections(), UnixseeComponentRegistry, UnixseeRenderPlan (+7 more)
+### Community 202 - "unixsee-contracts.ts"
+Cohesion: 0.17
+Nodes (11): UnixseeErrorEnvelope, UnixseeFetchMode, UnixseeLanguage, UnixseeMedia, UnixseeMediaSize, UnixseePage, UnixseePageType, UnixseePreviewMeta (+3 more)
 
-### Community 203 - "unixsee-home-sections.ts"
-Cohesion: 0.12
-Nodes (15): HomeAboutUsSectionProps, HomeConsultationSectionProps, HomeFaqSectionProps, HomeHeroSectionProps, HomeInfrastructureSectionProps, HomeProblemSectionProps, HomeProcessSectionProps, HomeSolutionOverviewSectionProps (+7 more)
+### Community 203 - "admin-panel/docs/development/components.md"
+Cohesion: 0.18
+Nodes (10): Component Reuse, Components, DropdownMenu, Nest API errors (POST mutations), Overlays, Rules, Select, shadcn/ui (+2 more)
 
-### Community 204 - "CreateNotificationDto"
-Cohesion: 0.16
-Nodes (14): NotificationStatus, Body, HttpCode, Param, Patch, Post, CreateNotificationDto, IsEnum (+6 more)
+### Community 204 - "admin-panel/docs/frontend/styling.md"
+Cohesion: 0.40
+Nodes (4): Language, RTL, Styling preference order, Tailwind CSS v4
 
 ### Community 205 - "compilerOptions"
 Cohesion: 0.07
@@ -1887,17 +1885,17 @@ Nodes (28): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 Cohesion: 0.30
 Nodes (12): AgentApiError, enrollAgent(), postJson(), postSignedJson(), record(), sendCommandResult(), sendHeartbeat(), sendPhase1Ingest() (+4 more)
 
-### Community 208 - "AuditService"
-Cohesion: 0.15
-Nodes (9): AuditModule, Module, AdminAuditController, Controller, Get, Query, UseGuards, AuditService (+1 more)
+### Community 208 - "toastMappedApiError"
+Cohesion: 0.20
+Nodes (19): normalizePhone(), ProfileContactActionResult, requestEmailVerifyOtpAction(), requestPhoneVerifyOtpAction(), toResult(), unavailable(), verifyEmailOtpAction(), verifyPhoneOtpAction() (+11 more)
 
-### Community 209 - "help-topic-articles.tsx"
+### Community 209 - "help-article-related.tsx"
 Cohesion: 0.13
 Nodes (14): HelpArticleRecovery(), HelpArticleRecoveryProps, HelpArticleRelated(), HelpArticleRelatedProps, RelatedArticleRow, typeIcons, HelpRecoveryLink(), HelpRecoveryLinkProps (+6 more)
 
 ### Community 210 - "[articleSlug]/page.tsx"
-Cohesion: 0.10
-Nodes (29): generateMetadata(), HelpCenterArticlePage(), Params, buildArticleRow(), HelpArticleBlocks(), HelpArticleBlocksProps, Notice(), NoticeConfig (+21 more)
+Cohesion: 0.22
+Nodes (13): generateMetadata(), HelpCenterArticlePage(), Params, buildArticleRow(), HelpArticleHero(), TopicHeadingFocus(), getArticleBody(), getArticleBodyMessageKey() (+5 more)
 
 ### Community 211 - "search"
 Cohesion: 0.20
@@ -1939,13 +1937,13 @@ Nodes (10): AGENT_VERSION, config, loadConfig(), NodeEnvironment, optional(), po
 Cohesion: 0.06
 Nodes (35): 1. Foundations (keep / extend), 2. Public intake — add, 3. Admin onboarding spine — add, 4. Support and communications — add, 5. Ops hardening, Activities — add `activities`, Admin overview — thin `admin-overview`, Admin website assignment (+27 more)
 
-### Community 222 - "dashboard-data.ts"
-Cohesion: 0.09
-Nodes (23): RequestServiceAside(), ServicesQuickActions(), ServicesQuickActionsProps, HeaderProps, RightRail(), toneStyles, SupportContactDialog(), BackupStatus (+15 more)
+### Community 222 - "server.ts"
+Cohesion: 0.20
+Nodes (8): UnixseeClient, UnixseeFetchError, UnixseeClientConfig, UnixseeEnvelope, UnixseeFetchContext, UnixseeFetchErrorPayload, UnixseeHomeData, UnixseeRouteData
 
 ### Community 224 - "contact-info-section.tsx"
 Cohesion: 0.18
-Nodes (8): ContactFormSection(), onSubmit(), ContactInfoSection(), Map, ContactUsPageProps, DEFAULT_CENTER, MapPositions, MapProps
+Nodes (8): ContactFormSection(), onSubmit(), ContactInfoSection(), Map, ContactUsPageProps, DEFAULT_CENTER, MapPositions, MARKER_ICON
 
 ### Community 225 - "Backend modules and routes (Phase 1)"
 Cohesion: 0.06
@@ -1991,9 +1989,9 @@ Nodes (28): 10. Recommended implementation sequence, 11. Architecture decisions 
 Cohesion: 0.07
 Nodes (28): Auth shell (layout), Button hierarchy, Color tokens, Composition (first viewport), Concept, Derived auth tokens (optional, max two), Design goals, Disabled / submitting states (+20 more)
 
-### Community 236 - "unixsee-contracts.ts"
-Cohesion: 0.12
-Nodes (18): UnixseeClient, UnixseeFetchError, UnixseeClientConfig, UnixseeEnvelope, UnixseeErrorEnvelope, UnixseeFetchContext, UnixseeFetchErrorPayload, UnixseeFetchMode (+10 more)
+### Community 236 - "route-adapter.tsx"
+Cohesion: 0.14
+Nodes (14): createHomeRegistry(), createUnixseeRenderPlan(), createUnixseeRouteAdapter(), getSectionKey(), NextjsComponents, renderUnixseeSections(), UnixseeComponentRegistry, UnixseeRenderPlan (+6 more)
 
 ### Community 237 - "monitoring-agent/src/config/config.ts"
 Cohesion: 0.18
@@ -2003,9 +2001,9 @@ Nodes (7): apiBaseUrl, AppConfig, config, nodeEnv, NodeEnvironment, readOptional
 Cohesion: 0.30
 Nodes (11): HostIdentity, assertSecretReady(), calculateMax(), calculateMean(), flushQueue(), invalidateSecret(), metricBuffer, offlineQueue (+3 more)
 
-### Community 239 - "PersonalInformationCard"
-Cohesion: 0.19
-Nodes (15): PersonalInformationCard(), openVerify(), refreshAvatar(), save(), validate(), validateProfileFields(), ProfileForm(), normalizeMobile() (+7 more)
+### Community 239 - "2. Users Module"
+Cohesion: 0.40
+Nodes (5): 2. Users Module, Admin, Endpoints, Responsibilities, User
 
 ### Community 240 - "exclude"
 Cohesion: 0.17
@@ -2059,9 +2057,9 @@ Nodes (5): BM25, BM25 ranking algorithm for text search, Lowercase, split, remov
 Cohesion: 0.43
 Nodes (5): OlsDiscovery, cleanDomain(), OlsDiscoveryTracker, parseOlsRouting(), scanOlsInventory()
 
-### Community 260 - "CreateUnixseeMessageDto"
-Cohesion: 0.27
-Nodes (15): AdminListUnixseeMessagesQueryDto, CreateUnixseeMessageDto, ArrayMaxSize, IsArray, IsEnum, IsIn, IsOptional, IsString (+7 more)
+### Community 260 - "4. VPS Nodes Module"
+Cohesion: 0.40
+Nodes (5): 4. VPS Nodes Module, Admin, Endpoints, Responsibilities, Tenant/User
 
 ### Community 261 - "Story"
 Cohesion: 0.32
@@ -2079,9 +2077,9 @@ Nodes (27): 19. Questions requiring user research, Acceptance-criteria quality r
 Cohesion: 0.07
 Nodes (27): 1. Executive Summary & Core Mission, 1. Website Owners (Non-Technical WooCommerce Merchants), 2. Company Administrators (Internal Hosting Support Team), 2. Phase 1 Scope & Technical Stack Constraints, 3. Product Requirements & Multi-Tenant Separation, 4. Forward-Compatible Database Schema (`prisma.schema`), 5. Architectural Blueprints (How data flows), 6. Step-by-Step Backend Implementation Guide (+19 more)
 
-### Community 269 - "radial-reveal-link.tsx"
+### Community 269 - "tickets-api.ts"
 Cohesion: 0.18
-Nodes (12): ConnectSectionProps, LinkButton(), LinkButtonProps, RadialRevealLink(), RadialRevealLinkProps, getRevealGeometry(), isPointerInsideElement(), RadialRevealStyle (+4 more)
+Nodes (14): NewTicketPage(), NewTicketPageProps, generateMetadata(), TicketPage(), TicketPageProps, NewTicketForm(), handleSubmit(), validate() (+6 more)
 
 ### Community 270 - "backend/docs/unixsee-phase-1-system-architecture-fa.md"
 Cohesion: 0.07
@@ -2115,9 +2113,9 @@ Nodes (3): config, LogOptions, PrismaClientConstructor
 Cohesion: 0.60
 Nodes (3): AlertSeverity, AlertStatus, Alert
 
-### Community 287 - "mapApiError"
-Cohesion: 0.09
-Nodes (35): uploadAuthorizationDocumentAction(), UploadDocumentResult, createPlanRequestAction(), createPublicPlanRequestAction(), normalizePhone(), ProfileContactActionResult, requestEmailVerifyOtpAction(), requestPhoneVerifyOtpAction() (+27 more)
+### Community 287 - "create-plan-request.ts"
+Cohesion: 0.19
+Nodes (16): createPlanRequestAction(), createPublicPlanRequestAction(), updateProfileAction(), AuthCheckoutForm(), onSubmit(), uploadPublicFiles(), CheckoutForm(), handleSubmit() (+8 more)
 
 ### Community 288 - "accessibility-keyboard-focus.md"
 Cohesion: 0.07
@@ -2211,9 +2209,9 @@ Nodes (21): 10. Need-to-feature traceability, 11. Assumption register, 12. Evide
 Cohesion: 0.09
 Nodes (21): Accessibility review, Analytics events, Appendix A — Relationship to servers/websites and plan-request flows, Appendix B — Minimum inline create information architecture, Available evidence, Blockers, Confidence summary, Cross-flow change required in website assignment (+13 more)
 
-### Community 367 - "[locale]/layout.tsx"
-Cohesion: 0.20
-Nodes (8): Props, RootLayout(), DirectionProvider(), kalamehFont, YekanBakhFont, AppLocale, getDirection(), locales
+### Community 367 - "PersonalInformationCard"
+Cohesion: 0.19
+Nodes (15): PersonalInformationCard(), openVerify(), refreshAvatar(), save(), validate(), validateProfileFields(), ProfileForm(), normalizeMobile() (+7 more)
 
 ### Community 368 - "UX Flow Specification"
 Cohesion: 0.09
@@ -2260,16 +2258,16 @@ Cohesion: 0.10
 Nodes (21): Accessibility review, Analytics events, Appendix A — Relationship to servers/websites and plan-request flows, Appendix B — Minimum inline create information architecture, Available evidence, Blockers, Confidence summary, Cross-flow change required in website assignment (+13 more)
 
 ### Community 379 - "monorepo/docs/quality/audits/2026-08-22-production-readiness-audit.md"
-Cohesion: 0.07
-Nodes (28): 10. Agent Architecture, 13. ترتیب پیشنهادی اجرای اصلاحات, 14. Release Gate نهایی UnixSee.com, 15. مواردی که نباید در جریان اصلاحات خراب شوند, 16. وضعیت فعلی Release, 17. محدودیت این Audit, 18. Definition of Production-Ready برای UnixSee, 1. نتیجه مدیریتی (+20 more)
+Cohesion: 0.09
+Nodes (21): 10. Agent Architecture, 13. ترتیب پیشنهادی اجرای اصلاحات, 15. مواردی که نباید در جریان اصلاحات خراب شوند, 16. وضعیت فعلی Release, 17. محدودیت این Audit, 18. Definition of Production-Ready برای UnixSee, 1. نتیجه مدیریتی, 2. تعریف Severity (+13 more)
 
 ### Community 380 - "Clean Code"
 Cohesion: 0.10
 Nodes (19): Clean Code, Comments, Control flow, Data, objects, and classes, Dependency Inversion Principle, Error handling, Files and structure, Functions and methods (+11 more)
 
-### Community 381 - "requestAssessmentSchema"
-Cohesion: 0.32
-Nodes (12): errorKey(), isValidWebsite(), normalizeWebsite(), requestAssessmentSchema, requireField(), validateContact(), validateGraphicDesign(), validateManagedServer() (+4 more)
+### Community 381 - "5. Websites Module"
+Cohesion: 0.40
+Nodes (5): 5. Websites Module, Admin, Endpoints, Responsibilities, User Dashboard
 
 ### Community 382 - "Next.js App Router 16+"
 Cohesion: 0.10
@@ -2583,9 +2581,9 @@ Nodes (12): Agent Ingestion, Alerts, API Design Principles First, Auth, Complete
 Cohesion: 0.15
 Nodes (13): AC-001 — Sign in phone default, AC-002 — OTP challenge, AC-003 — Sign up minimum path, AC-004 — Google alternate, AC-005 — Email verification, AC-006 — Forgot / reset, AC-007 — Expired reset link, AC-008 — Account already exists (+5 more)
 
-### Community 460 - "admin-panel/docs/runbooks/deployment.md"
-Cohesion: 0.05
-Nodes (37): Admin panel deployment runbook, Agent 0.2 maintenance-window order, Agent assets detail, Deploy checklist, Optional: OpenLiteSpeed static `/agents`, Principles, Related, Required environment (+29 more)
+### Community 460 - "Admin panel deployment runbook"
+Cohesion: 0.22
+Nodes (9): Admin panel deployment runbook, Agent 0.2 maintenance-window order, Agent assets detail, Deploy checklist, Optional: OpenLiteSpeed static `/agents`, Principles, Related, Required environment (+1 more)
 
 ### Community 461 - "Save-and-resume record"
 Cohesion: 0.17
@@ -2603,9 +2601,9 @@ Nodes (12): Accessibility, Component Scope, Customer dashboard loading skeletons
 Cohesion: 0.17
 Nodes (11): Custom Scrollbar Implementation, Customizing an internal scrollbar, Device Capability Detection, Header and Bottom Offsets, Implementation Rules, Initialization State, Overview, Proportional Thumb Size (+3 more)
 
-### Community 465 - "users.controller.ts"
-Cohesion: 0.30
-Nodes (11): RequestEmailVerifyOtpDto, RequestPhoneVerifyOtpDto, IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength (+3 more)
+### Community 465 - "authentication.controller.ts"
+Cohesion: 0.03
+Nodes (79): RATE_LIMIT_METADATA_KEY, RateLimitRule, RateLimitScope, RateLimitValue, RateLimitGuard, BODY_RULE, IP_RULE, USER_RULE (+71 more)
 
 ### Community 466 - "Feature Analysis: Admin staff roles and operator capabilities"
 Cohesion: 0.17
@@ -2675,9 +2673,9 @@ Nodes (11): 3. Journey boundaries, End point, Excluded areas, Included channels,
 Cohesion: 0.18
 Nodes (10): Complete user outcome, In scope, Out of scope, Research questions, Scope, Service problem, Traceability, User need: UN-001 (+2 more)
 
-### Community 483 - "admin-panel/docs/development/components.md"
-Cohesion: 0.18
-Nodes (10): Component Reuse, Components, DropdownMenu, Nest API errors (POST mutations), Overlays, Rules, Select, shadcn/ui (+2 more)
+### Community 483 - "backend/package.json"
+Cohesion: 0.22
+Nodes (8): author, description, imports, license, name, private, type, version
 
 ### Community 484 - "backend/README.md"
 Cohesion: 0.18
@@ -2704,8 +2702,8 @@ Cohesion: 0.18
 Nodes (11): Add message, Admin tickets API contract, Assign, Attachments, Get ticket, List tickets, Mark in progress, Reopen (+3 more)
 
 ### Community 490 - "Users me — contact verification"
-Cohesion: 0.18
-Nodes (10): Email, `GET /api/v1/users/me`, Notes, Persistence, Phone, `POST /api/v1/users/me/contacts/email/otp/request`, `POST /api/v1/users/me/contacts/email/otp/verify`, `POST /api/v1/users/me/contacts/phone/otp/request` (+2 more)
+Cohesion: 0.15
+Nodes (12): Email, `GET /api/v1/users/me`, Notes, Persistence, Phone, `POST /api/v1/users/me/contacts/email/otp/request`, `POST /api/v1/users/me/contacts/email/otp/verify`, `POST /api/v1/users/me/contacts/phone/otp/request` (+4 more)
 
 ### Community 491 - "8. Performance و Core Web Vitals"
 Cohesion: 0.18
@@ -2775,9 +2773,9 @@ Nodes (10): Account origins consumed by this flow, Desired service outcome, Desi
 Cohesion: 0.20
 Nodes (9): 15. WordPress-Specific Rules, 16. Custom App Rules, 17. Full Pipeline Validation, 18. Final Pass/Fail Checklist, 1. Core Testing Principles, 20. Notes for Future Developers, 2. Metric Source Map, 4. Baseline Before Any Test (+1 more)
 
-### Community 508 - "format_ascii_box"
-Cohesion: 0.25
-Nodes (8): ansi_ljust(), format_ascii_box(), hex_to_ansi(), Convert hex color to ANSI True Color swatch (██) with fallback., Like str.ljust but accounts for zero-width ANSI escape sequences., Create a Unicode section separator: ├─── NAME ───...┤, Format design system as Unicode box with ANSI color swatches., section_header()
+### Community 508 - "help-center-hero.tsx"
+Cohesion: 0.33
+Nodes (5): HelpCenterHero(), HelpCenterHeroProps, HelpCenterIntro(), HelpCenterIntroProps, HelpHero()
 
 ### Community 509 - "React 19 review checklist"
 Cohesion: 0.20
@@ -2795,13 +2793,13 @@ Nodes (9): 1. Verify Ubuntu, 2. Remove Conflicting Packages, 3. Configure Docker
 Cohesion: 0.20
 Nodes (9): نصب Docker Engine روی Ubuntu, نکات امنیتی, ۱. بررسی نسخه Ubuntu, ۲. حذف بسته‌های متداخل, ۳. افزودن مخزن رسمی Docker, ۴. نصب Docker, ۵. تست اولیه با sudo, ۶. دسترسی اختیاری از طریق گروه docker (+1 more)
 
-### Community 513 - "format_ascii_box"
-Cohesion: 0.25
-Nodes (8): ansi_ljust(), format_ascii_box(), hex_to_ansi(), Convert hex color to ANSI True Color swatch (██) with fallback., Like str.ljust but accounts for zero-width ANSI escape sequences., Create a Unicode section separator: ├─── NAME ───...┤, Format design system as Unicode box with ANSI color swatches., section_header()
+### Community 513 - "6.1 VPS Metrics Module"
+Cohesion: 0.40
+Nodes (5): 6.1 VPS Metrics Module, Admin Technical Dashboard, Endpoints, Query Examples, Responsibilities
 
-### Community 514 - "global-search-data.ts"
-Cohesion: 0.09
-Nodes (21): defaultRecentSearchIds, GlobalSearchSource, globalSearchSources, helpCenterSources, pageActionSources, quickActionSearchIds, suggestedDestinationSearchIds, ticketSources (+13 more)
+### Community 514 - "motion-wavy-background.tsx"
+Cohesion: 0.47
+Nodes (4): clamp(), ContourLinesBackground(), ContourLinesBackgroundProps, smoothstep()
 
 ### Community 515 - "Acceptance criteria"
 Cohesion: 0.20
@@ -2891,17 +2889,17 @@ Nodes (9): Desired service outcome, Desired user outcome, In scope, Out of scope
 Cohesion: 0.22
 Nodes (9): Desired service outcome, Desired user outcome, In scope, Out of scope, Problem and desired outcome, Problem statement, Scope, Success definition (+1 more)
 
-### Community 537 - "lib/constants.ts"
-Cohesion: 0.27
-Nodes (8): ACCEPTED_FILE_TYPES, ACCEPTED_VIDEO_TYPES, MAX_FILE_UPLOAD_SIZE, MAX_VIDEO_UPLOAD_SIZE, FileSchema, contactUsSchema, ContactUsSchemaType, SERVICE_VALUES
+### Community 537 - "6.2 Web Metrics Module"
+Cohesion: 0.40
+Nodes (5): 6.2 Web Metrics Module, Admin Dashboard, Endpoints, Responsibilities, User Dashboard
 
 ### Community 538 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
 Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
 
-### Community 539 - "backend/package.json"
-Cohesion: 0.22
-Nodes (8): author, description, imports, license, name, private, type, version
+### Community 539 - "article-content.ts"
+Cohesion: 0.16
+Nodes (13): HelpArticleBlocksProps, ArticleBlock, ArticleBodyMessageKey, ArticleBodyTextKey, ArticleStep, defaultHelpArticleUpdatedAt, ExtractArticleBodyTextKey, helpArticleBodies (+5 more)
 
 ### Community 540 - "Proxy and security boundaries"
 Cohesion: 0.22
@@ -3095,9 +3093,9 @@ Nodes (7): Hard separations, Note, Onboarding operating model, Origins, Related,
 Cohesion: 0.25
 Nodes (8): AC-001 — Operable operations overview, AC-002 — Actionable deep links, AC-003 — Capability-scoped totals, AC-004 — Partial failure isolation, AC-005 — Triage-only surface, AC-006 — Accessible triage, AC-007 — Home surface limitation, Acceptance criteria
 
-### Community 588 - "websites/new/page.tsx"
-Cohesion: 0.27
-Nodes (9): CreateWebsitePage(), fetchPlans(), fetchUsers(), PlanItem, UserItem, CreateWebsiteForm(), handleSubmit(), validate() (+1 more)
+### Community 588 - "About Unixsee page — Product Requirements Document (PRD)"
+Cohesion: 0.11
+Nodes (19): 15. Failures and recovery, 16. User control, 17. Accessibility, 18. Heuristic review, 19. Analytics, 20. Acceptance criteria, 21. Dependencies and blockers, 22. Evidence ledger (+11 more)
 
 ### Community 589 - "Errors, metadata, assets, and observability"
 Cohesion: 0.25
@@ -3127,9 +3125,9 @@ Nodes (7): React-level boundary, Server Components, Server Functions, Server ren
 Cohesion: 0.25
 Nodes (7): Activity, Deferred values, Effects, State design, State, Effects, events, and concurrency, Transitions, `useEffectEvent`
 
-### Community 596 - "DashboardController"
-Cohesion: 0.23
-Nodes (8): DashboardController, Controller, Get, Param, Query, UseGuards, DashboardChartsInterval, DashboardChartsRange
+### Community 596 - "request-assessment-email-service.ts"
+Cohesion: 0.16
+Nodes (19): createRequestAssessmentAction(), RequestAssessmentActionMessageKey, requestAssessmentActionSchema, RequestAssessmentInput, getTransporter(), sendEmail(), SendEmailInput, transporterKey() (+11 more)
 
 ### Community 597 - "Public plan requests API contract"
 Cohesion: 0.25
@@ -3215,9 +3213,9 @@ Nodes (8): Desired service outcome, Desired user outcome, In scope, Out of scope
 Cohesion: 0.25
 Nodes (8): Desired service outcome, Desired user outcome, In scope, Out of scope, Problem and desired outcome, Problem statement, Scope, Success definition
 
-### Community 618 - "Unixsee admin-panel agent guide"
-Cohesion: 0.29
-Nodes (7): App boundaries, High-frequency component rules, Monorepo contracts, Next.js version-matched docs, Read first, Unixsee admin-panel agent guide, Working rules
+### Community 618 - "docs/README.md"
+Cohesion: 0.11
+Nodes (18): This is NOT the Next.js you know, Rules, Tailwind, Version, Version-matched documentation, Automated Validation, Dependencies, Manual Validation (+10 more)
 
 ### Community 619 - "Cache Components awareness"
 Cohesion: 0.29
@@ -3259,9 +3257,9 @@ Nodes (6): Admin counterparts, Note, Phase 1 customer can, Phase 1 public entry 
 Cohesion: 0.29
 Nodes (7): UN-001 — Find the correct customer without guessing, UN-002 — Create a missing customer without abandoning website assignment, UN-003 — Keep user, tenant, and website ownership coherent, UN-004 — Manage membership and owner safeguards, UN-005 — Assist security state without exposing secrets, UN-006 — Preserve internal operational context, User needs
 
-### Community 629 - "account-contact.ts"
-Cohesion: 0.43
-Nodes (7): emailsMatch(), getAccountContact(), isPreferredContactVerified(), mergeAccountContactIntoValues(), phonesMatch(), RequestAssessmentContactChannel, toNationalIranPhone()
+### Community 629 - "6.3 Analytics Module"
+Cohesion: 0.40
+Nodes (5): 6.3 Analytics Module, Admin Dashboard, Endpoints, Responsibilities, User Dashboard
 
 ### Community 630 - "Next.js Monitoring Socket Guide"
 Cohesion: 0.29
@@ -3295,9 +3293,9 @@ Nodes (6): Compiler-aware linting, Modern APIs, Official sources, React 19 and 1
 Cohesion: 0.29
 Nodes (7): App boundaries, High-frequency UI rule, Monorepo contracts, Next.js version-matched docs, Read first, Security and validation, Unixsee client agent guide
 
-### Community 638 - "Contributing"
-Cohesion: 0.29
-Nodes (7): Contributing, Current workflow, Dependencies, Documentation quality, Phase boundaries, Validation, Where changes go
+### Community 638 - "DashboardController"
+Cohesion: 0.32
+Nodes (7): DashboardController, Get, Param, Query, UseGuards, DashboardChartsInterval, DashboardChartsRange
 
 ### Community 639 - "3. Current implementation findings"
 Cohesion: 0.29
@@ -3316,8 +3314,8 @@ Cohesion: 0.29
 Nodes (7): Current phase, Language and direction, Product, Related docs, Surfaces, System overview, Trust boundaries
 
 ### Community 643 - "API errors contract (shared envelope)"
-Cohesion: 0.29
-Nodes (7): API errors contract (shared envelope), Contract rules, Examples, Frontend handling, Global codes, Related, Response envelope
+Cohesion: 0.25
+Nodes (8): API errors contract (shared envelope), Contract rules, Examples, Frontend handling, Global codes, Non-enumerating auth codes, Related, Response envelope
 
 ### Community 644 - "Admin plan requests API contract"
 Cohesion: 0.29
@@ -3331,9 +3329,9 @@ Nodes (7): Create plan request, Customer plan requests API contract, Get own pla
 Cohesion: 0.29
 Nodes (7): Admin users API contract, Authorization vocabulary (careful), Get customer, List customers, Mutations (existing), Related, Resources
 
-### Community 647 - "Admin domain data fetching (Layer 2)"
-Cohesion: 0.29
-Nodes (7): Admin domain data fetching (Layer 2), Boot reseed (Zustand access token), Nest `ApiResponse` and error mapping, Per-feature checklist, Query keys, defaults, dehydrate, Related, Transport decision table
+### Community 647 - "8. Alerts Module"
+Cohesion: 0.40
+Nodes (5): 8. Alerts Module, Admin, Endpoints, Responsibilities, User
 
 ### Community 648 - "Quality and Review"
 Cohesion: 0.29
@@ -3371,9 +3369,9 @@ Nodes (7): AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, Acceptance criteria
 Cohesion: 0.29
 Nodes (7): 5. Customer Dashboard, DASH-01 — Dashboard مشتری داده Fake نمایش می‌دهد, DASH-02 — Activities و Notifications نیز Fixture دارند, DASH-03 — Website Details هنوز Fixture UX Spec دارد, قانون, مسیر مهم, مشکل
 
-### Community 657 - "AdminOverviewController"
-Cohesion: 0.18
-Nodes (8): AdminOverviewModule, Module, AdminOverviewController, Controller, Get, UseGuards, AdminOverviewService, Injectable
+### Community 657 - "metrics.module.ts"
+Cohesion: 0.10
+Nodes (12): WebMetric, SystemHealthService, Injectable, SystemHealthInputType, SystemHealthStatusType, Injectable, WebMetricsRepository, MetricsOverviewService (+4 more)
 
 ### Community 658 - "Documentation standards"
 Cohesion: 0.22
@@ -3563,9 +3561,9 @@ Nodes (6): Empty, Loading, Loading, empty, error and recovery states, System fai
 Cohesion: 0.33
 Nodes (5): For /graphify explain, For /graphify path, graphify reference: query, path, explain, Step 0 — Constrained query expansion (REQUIRED before traversal), Step 1 — Traversal
 
-### Community 705 - "Next.js Realtime Monitoring"
-Cohesion: 0.40
-Nodes (5): Cleanup, Connect From a Client Component, Monitoring Events, Next.js Realtime Monitoring, Token Expiration And Reconnection
+### Community 705 - "AdminTenantsController"
+Cohesion: 0.16
+Nodes (9): AdminTenantsController, Body, Get, HttpCode, Param, Patch, Post, Query (+1 more)
 
 ### Community 706 - "Next.js App Router skill"
 Cohesion: 0.33
@@ -3575,9 +3573,9 @@ Nodes (5): Canonical installation, Claude Code, Next.js App Router skill, Projec
 Cohesion: 0.33
 Nodes (6): Application Routes, Data and API Code, Placement Rules, Repository Structure, Shared Source Areas, When to Add Local Instructions
 
-### Community 708 - "floating-nav-eye-mark.tsx"
-Cohesion: 0.38
-Nodes (6): FloatingNavEyeMark(), FloatingNavEyeMarkProps, GAZE_TARGETS, GazeTarget, pickNextGaze(), randomBetween()
+### Community 708 - "ticket-records.ts"
+Cohesion: 0.15
+Nodes (11): checkoutMessages, TicketAttachment, TicketMessage, TicketRecord, ticketRecords, TicketService, ticketServices, TicketStatus (+3 more)
 
 ### Community 709 - "Onboarding paths and handoffs"
 Cohesion: 0.29
@@ -3619,37 +3617,37 @@ Nodes (6): 8.1 Why a local runtime probe is required, 8.2 Protected probe endpoi
 Cohesion: 0.33
 Nodes (5): Definition of Done, Implementation, Requirements and Architecture, Security and Reliability, Validation and Review
 
-### Community 719 - "verify-email/page.tsx"
+### Community 719 - "9. SSL Certificates Module"
 Cohesion: 0.40
-Nodes (4): Props, resolveStatus(), VerifyEmailPage(), VerifyEmailStatus
+Nodes (5): 9. SSL Certificates Module, Admin, Endpoints, Responsibilities, User
 
 ### Community 720 - "Phase 1 delivery waves"
 Cohesion: 0.33
 Nodes (6): First-wave (first implementation), Hard separation, Later Phase 1 (still in Phase 1), Note, Phase 1 delivery waves, Related
 
-### Community 721 - "ADR 0014: Web-server-only Phase 1 VPS agent"
-Cohesion: 0.33
-Nodes (5): ADR 0014: Web-server-only Phase 1 VPS agent, Consequences, Context, Decision, Rollout
+### Community 721 - "format_ascii_box"
+Cohesion: 0.25
+Nodes (8): ansi_ljust(), format_ascii_box(), hex_to_ansi(), Convert hex color to ANSI True Color swatch (██) with fallback., Like str.ljust but accounts for zero-width ANSI escape sequences., Create a Unicode section separator: ├─── NAME ───...┤, Format design system as Unicode box with ANSI color swatches., section_header()
 
 ### Community 722 - "Unixsee messages API contract"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (6): Admin routes, Attachment limits, Content model, Customer routes, Lifecycle, Unixsee messages API contract
 
-### Community 723 - "0004. API audience namespaces"
-Cohesion: 0.50
-Nodes (4): 0004. API audience namespaces, Consequences, Context, Decision
+### Community 723 - "AdminDiscoveriesController"
+Cohesion: 0.11
+Nodes (13): AdminDiscoveriesController, Body, Get, HttpCode, Param, Post, Query, UseGuards (+5 more)
 
 ### Community 724 - "Frontend documentation"
 Cohesion: 0.33
 Nodes (6): App-specific UI notes, Frontend documentation, Phase boundaries, Product entry points, Read order, Stack (summary)
 
-### Community 725 - "admin-panel/docs/frontend/styling.md"
-Cohesion: 0.40
-Nodes (4): Language, RTL, Styling preference order, Tailwind CSS v4
+### Community 725 - "locale/locale-switcher.tsx"
+Cohesion: 0.20
+Nodes (8): HeaderType, Locale, LOCALES, LocaleSwitcher(), LocaleSwitcherProps, Navigation(), NAVIGATION_ITEMS, NavigationType
 
-### Community 726 - "Backend shared contracts"
-Cohesion: 0.29
-Nodes (7): API style, Authority of local backend docs, Backend shared contracts, Current versus Phase 1 target, Ownership, Related, Trust boundary
+### Community 726 - "docs/backend/README.md"
+Cohesion: 0.04
+Nodes (48): Control-plane boundaries, High-frequency backend rules, Monorepo contracts, Read first, Unixsee backend agent guide, Working and validation rules, Abuse prevention, Backend implementation conventions (+40 more)
 
 ### Community 727 - "11. Plans, requests, and onboarding"
 Cohesion: 0.33
@@ -3811,10 +3809,6 @@ Nodes (6): Catalog endpoint, Client / fixture aliases, Enum (API / Prisma), Owne
 Cohesion: 0.33
 Nodes (6): Admin routes, Attachment limits, Content model, Customer routes, Lifecycle, Unixsee messages API contract
 
-### Community 767 - "Backend documentation"
-Cohesion: 0.33
-Nodes (6): API style, Backend documentation, Current vs Phase 1 target, Ownership, Related docs, Trust boundary
-
 ### Community 768 - "Frontend documentation"
 Cohesion: 0.33
 Nodes (6): App-specific UI notes, Frontend documentation, Phase boundaries, Product entry points, Read order, Stack (summary)
@@ -3823,9 +3817,9 @@ Nodes (6): App-specific UI notes, Frontend documentation, Phase boundaries, Prod
 Cohesion: 0.33
 Nodes (6): First-wave (first implementation), Hard separation, Later Phase 1 (still in Phase 1), Note, Phase 1 delivery waves, Related
 
-### Community 770 - "Phase 1 public entry channels — document sync"
-Cohesion: 0.33
-Nodes (6): Admin counterparts, Note, Phase 1 customer can, Phase 1 public entry channels — document sync, Related, Rules kept in sync
+### Community 770 - "9. Page content architecture"
+Cohesion: 0.18
+Nodes (11): 9.10 Existing-copy decomposition map, 9.1 Section summary, 9.2 Section 1 — Positioning hero, 9.3 Section 2 — چرا یونیکسی ساخته شد, 9.4 Section 3 — معنای نام, 9.5 Section 4 — کاری که انجام می‌دهیم, 9.6 Section 5 — نگاه ما به پشتیبانی, 9.7 Section 6/7 — Team and operational metrics (+3 more)
 
 ### Community 771 - "11. Plans, requests, and onboarding"
 Cohesion: 0.33
@@ -3923,9 +3917,9 @@ Nodes (5): Cross-channel consistency, Domain rules, Language, Mental model, Revi
 Cohesion: 0.40
 Nodes (4): BR-001, Business Rules, Decision table, Rule conflicts
 
-### Community 795 - "SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد"
-Cohesion: 0.50
-Nodes (4): Bug محتمل/واقعی, SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد, اصلاح, مسیر
+### Community 795 - "0003. UI-only phase boundaries"
+Cohesion: 0.40
+Nodes (5): 0003. UI-only phase boundaries, Consequences, Context, Decision, Supersession
 
 ### Community 796 - "Servers and agent data flow"
 Cohesion: 0.40
@@ -3959,33 +3953,33 @@ Nodes (5): Can iterate after release, Explicitly rejected or deferred, Final rec
 Cohesion: 0.40
 Nodes (5): Can iterate after release, Explicitly rejected or deferred, Final recommendations, Must resolve before implementation, Must validate during prototyping
 
-### Community 804 - "Unixsee backend agent guide"
-Cohesion: 0.33
-Nodes (6): Control-plane boundaries, High-frequency backend rules, Monorepo contracts, Read first, Unixsee backend agent guide, Working and validation rules
+### Community 804 - "RealtimeGateway"
+Cohesion: 0.17
+Nodes (4): RealtimeGateway, OnEvent, WebSocketGateway, WebSocketServer
 
-### Community 805 - "createUnixseeClient"
+### Community 805 - "requestAssessmentSchema"
+Cohesion: 0.32
+Nodes (12): errorKey(), isValidWebsite(), normalizeWebsite(), requestAssessmentSchema, requireField(), validateContact(), validateGraphicDesign(), validateManagedServer() (+4 more)
+
+### Community 806 - "14. Release Gate نهایی UnixSee.com"
+Cohesion: 0.29
+Nodes (7): 14. Release Gate نهایی UnixSee.com, Functional, Infrastructure, Performance, QA, Security, SEO
+
+### Community 807 - "_generate_intelligent_overrides"
+Cohesion: 0.33
+Nodes (6): _detect_page_type(), format_page_override_md(), _generate_intelligent_overrides(), Format a page-specific override file with intelligent AI-generated content., Generate intelligent overrides based on page type using layered search. Uses…, Detect page type from context and search results.
+
+### Community 808 - "createUnixseeClient"
 Cohesion: 0.40
 Nodes (5): wordpressClient, createUnixseeClient(), getPreviewToken(), request(), normalizeBaseUrl()
 
-### Community 806 - "Phase 1 public entry channels — document sync"
-Cohesion: 0.33
-Nodes (6): Admin counterparts, Note, Phase 1 customer can, Phase 1 public entry channels — document sync, Related, Rules kept in sync
-
-### Community 807 - "Backend implementation conventions"
+### Community 809 - "Next.js app internal layout"
 Cohesion: 0.40
-Nodes (5): Backend implementation conventions, Logging and request tracing, Probe diagnostics, Scheduling and configuration, Uptime and public probes
+Nodes (5): App structure, Boundaries, Feature organization, Next.js app internal layout, Related docs
 
-### Community 808 - "ADR 0014: Web-server-only Phase 1 VPS agent"
+### Community 810 - "Q: don't change code."
 Cohesion: 0.40
-Nodes (5): ADR 0014: Web-server-only Phase 1 VPS agent, Consequences, Context, Decision, Rollout
-
-### Community 809 - "SEC-06 — OTP با `Math.random()` تولید می‌شود"
-Cohesion: 0.50
-Nodes (4): SEC-06 — OTP با `Math.random()` تولید می‌شود, اصلاح, مسیر, مشکل
-
-### Community 810 - "SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند"
-Cohesion: 0.50
-Nodes (4): SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند, اصلاح, ریسک, مسیر
+Nodes (4): Answer, Outcome, Q: don't change code., Source Nodes
 
 ### Community 811 - "Validation"
 Cohesion: 0.40
@@ -4011,17 +4005,17 @@ Nodes (5): 10.1 Definition, 10.2 Collection and send cadence, 10.3 Privacy and m
 Cohesion: 0.40
 Nodes (5): 22. Functional acceptance criteria, Active visitors, Discovery, Latest 24h visitors, Stack
 
-### Community 817 - "0003. UI-only phase boundaries"
-Cohesion: 0.40
-Nodes (5): 0003. UI-only phase boundaries, Consequences, Context, Decision, Supersession
+### Community 817 - "AdminCreateWebsiteDto"
+Cohesion: 0.31
+Nodes (10): AdminCreateWebsiteDto, AssignWebsiteDto, TransferWebsiteDto, IsBoolean, IsOptional, IsString, IsUrl, IsUUID (+2 more)
 
-### Community 818 - "2. Users Module"
-Cohesion: 0.40
-Nodes (5): 2. Users Module, Admin, Endpoints, Responsibilities, User
+### Community 818 - "Phase 1 agent API contract — web-server-only v0.2"
+Cohesion: 0.33
+Nodes (6): Admin routes, Command results, Heartbeat and commands, Identity and enrollment, Independently optional ingest, Phase 1 agent API contract — web-server-only v0.2
 
-### Community 819 - "Locale"
-Cohesion: 0.03
-Nodes (47): ComplementaryServiceDetailsPage(), generateMetadata(), PageProps, DomainsPageProps, generateMetadata(), NotificationDetailsPage(), NotificationDetailsPageProps, NotificationsPage() (+39 more)
+### Community 819 - "Customer complementary-service request"
+Cohesion: 0.33
+Nodes (6): Acceptance criteria, Customer complementary-service request, Customer journey, Entry and target field, Outcome, States and recovery
 
 ### Community 820 - "Client state"
 Cohesion: 0.40
@@ -4087,17 +4081,17 @@ Nodes (5): Can iterate after release, Final recommendations, Must resolve before
 Cohesion: 0.40
 Nodes (5): Empty, Loading, Loading, empty, error and recovery states, System failure, Validation / client rules
 
-### Community 836 - "4. VPS Nodes Module"
-Cohesion: 0.40
-Nodes (5): 4. VPS Nodes Module, Admin, Endpoints, Responsibilities, Tenant/User
+### Community 836 - "Staging Operations"
+Cohesion: 0.22
+Nodes (8): Configuration Checks, Credential Handling, Expected Behavior, HTTP Tests, Mapping, Purpose, Restart and Validate, Staging Operations
 
 ### Community 837 - "SEC-03 — OTP در Response API برگردانده می‌شود"
 Cohesion: 0.40
 Nodes (5): Definition of Done, SEC-03 — OTP در Response API برگردانده می‌شود, اصلاح, ریسک, مسیر
 
-### Community 838 - "Unixsee agent 0.2"
-Cohesion: 0.33
-Nodes (6): Collected data, Development, Packaging, Runtime boundary, Schedules, Unixsee agent 0.2
+### Community 838 - "SEC-06 — OTP با `Math.random()` تولید می‌شود"
+Cohesion: 0.50
+Nodes (4): SEC-06 — OTP با `Math.random()` تولید می‌شود, اصلاح, مسیر, مشکل
 
 ### Community 839 - "Unixsee shared documentation"
 Cohesion: 0.40
@@ -4195,17 +4189,13 @@ Nodes (5): 22. Functional acceptance criteria, Active visitors, Discovery, Lates
 Cohesion: 0.40
 Nodes (5): 0003. UI-only phase boundaries, Consequences, Context, Decision, Supersession
 
-### Community 863 - "SEC-11 — Account Enumeration از Endpoint عمومی"
-Cohesion: 0.50
-Nodes (4): SEC-11 — Account Enumeration از Endpoint عمومی, اصلاح, ریسک, مسیر
-
 ### Community 864 - "Next.js app internal layout"
 Cohesion: 0.40
 Nodes (5): App structure, Boundaries, Feature organization, Next.js app internal layout, Related docs
 
-### Community 865 - "Backend API contracts"
-Cohesion: 0.40
-Nodes (5): Backend API contracts, Index, Layout, Related, Writing rules
+### Community 865 - "Deployment remotes (monorepo → server repos)"
+Cohesion: 0.29
+Nodes (7): AI agent rules, Client → unixsee-web (`staging`), Deployment remotes (monorepo → server repos), Mapping, Not in this table, Operator workflow (typical), Related
 
 ### Community 866 - "Client state"
 Cohesion: 0.40
@@ -4271,13 +4261,13 @@ Nodes (5): Can iterate after release, Final recommendations, Must resolve before
 Cohesion: 0.40
 Nodes (5): Empty, Loading, Loading, empty, error and recovery states, System failure, Validation / client rules
 
-### Community 882 - "5. Websites Module"
-Cohesion: 0.40
-Nodes (5): 5. Websites Module, Admin, Endpoints, Responsibilities, User Dashboard
-
-### Community 883 - "Admin websites API contract"
+### Community 882 - "ADR 0014: Web-server-only Phase 1 VPS agent"
 Cohesion: 0.33
-Nodes (6): Activation, Admin websites API contract, Assign website, Create website, Plan lifecycle, Related
+Nodes (5): ADR 0014: Web-server-only Phase 1 VPS agent, Consequences, Context, Decision, Rollout
+
+### Community 883 - "Customer websites contract"
+Cohesion: 0.40
+Nodes (4): Customer websites contract, List websites, Presentation, Visitor rules
 
 ### Community 884 - "SEC-02 — احتمال Reflected XSS در صفحه OTP"
 Cohesion: 0.40
@@ -4299,9 +4289,17 @@ Nodes (5): Map, Reading order for new contributors, Rules of the docs, Start her
 Cohesion: 0.50
 Nodes (3): AC-001 — [Name], Acceptance Criteria, Coverage
 
-### Community 889 - "SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند"
-Cohesion: 0.67
-Nodes (3): SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند, اصلاح, حوزه‌ها
+### Community 889 - "0013. Customer assistant in Nest with pgvector RAG"
+Cohesion: 0.40
+Nodes (5): 0013. Customer assistant in Nest with pgvector RAG, Alternatives considered, Consequences, Context, Decision
+
+### Community 890 - "Backend API contracts"
+Cohesion: 0.40
+Nodes (5): Backend API contracts, Index, Layout, Related, Writing rules
+
+### Community 891 - "Ticket service categories"
+Cohesion: 0.33
+Nodes (6): Catalog endpoint, Client / fixture aliases, Enum (API / Prisma), Ownership, Ticket service categories, Website association rules
 
 ### Community 892 - "10. Dashboard overview"
 Cohesion: 0.50
@@ -4347,9 +4345,9 @@ Nodes (4): Business-rule decision table, Business-rule register, Inline create d
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: How should Unixsee distinguish websites on managed servers from external websites while allowing complementary-service requests for both?, Source Nodes
 
-### Community 903 - "6.1 VPS Metrics Module"
-Cohesion: 0.40
-Nodes (5): 6.1 VPS Metrics Module, Admin Technical Dashboard, Endpoints, Query Examples, Responsibilities
+### Community 903 - "Admin websites API contract"
+Cohesion: 0.33
+Nodes (6): Activation, Admin websites API contract, Assign website, Create website, Plan lifecycle, Related
 
 ### Community 904 - "graphify reference: add a URL and watch a folder"
 Cohesion: 0.50
@@ -4363,13 +4361,13 @@ Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify refer
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
-### Community 907 - "6.2 Web Metrics Module"
-Cohesion: 0.40
-Nodes (5): 6.2 Web Metrics Module, Admin Dashboard, Endpoints, Responsibilities, User Dashboard
+### Community 907 - "admin-panel/docs/architecture/project.md"
+Cohesion: 0.50
+Nodes (3): Boundaries, Feature Organization, Project Structure
 
-### Community 908 - "6.3 Analytics Module"
-Cohesion: 0.40
-Nodes (5): 6.3 Analytics Module, Admin Dashboard, Endpoints, Responsibilities, User Dashboard
+### Community 908 - "Admin-panel documentation"
+Cohesion: 0.50
+Nodes (4): Admin-panel documentation, Local product copies, Monorepo-only contract routes, Task routes
 
 ### Community 909 - "10. Website Request Pressure Test"
 Cohesion: 0.50
@@ -4411,17 +4409,17 @@ Nodes (4): 5.1 Allowed runtime reads/writes, 5.2 Forbidden runtime access, 5.3 D
 Cohesion: 0.50
 Nodes (4): 9.1 Automatic schedule, 9.2 Scheduling semantics, 9.3 One probe, all fields, 9. Stack refresh policy
 
-### Community 919 - "8. Alerts Module"
+### Community 919 - "Q: How should the websites dashboard replace backup status with last-24-hour visitors while distinguishing Unixsee-managed and externally hosted websites?"
 Cohesion: 0.40
-Nodes (5): 8. Alerts Module, Admin, Endpoints, Responsibilities, User
+Nodes (4): Answer, Outcome, Q: How should the websites dashboard replace backup status with last-24-hour visitors while distinguishing Unixsee-managed and externally hosted websites?, Source Nodes
 
-### Community 920 - "9. SSL Certificates Module"
-Cohesion: 0.40
-Nodes (5): 9. SSL Certificates Module, Admin, Endpoints, Responsibilities, User
+### Community 920 - "Phase 1 public entry channels — document sync"
+Cohesion: 0.33
+Nodes (6): Admin counterparts, Note, Phase 1 customer can, Phase 1 public entry channels — document sync, Related, Rules kept in sync
 
-### Community 921 - "Next.js app internal layout"
-Cohesion: 0.40
-Nodes (5): App structure, Boundaries, Feature organization, Next.js app internal layout, Related docs
+### Community 921 - "admin-panel/docs/development/workflow.md"
+Cohesion: 0.50
+Nodes (3): Before Implementation, Review, Significant Changes
 
 ### Community 922 - "10. Dashboard overview"
 Cohesion: 0.50
@@ -4487,29 +4485,25 @@ Nodes (4): UN-001 — Complete authorization without redoing signup proofs, UN-0
 Cohesion: 0.50
 Nodes (4): UN-001, UN-002, UN-003, User needs
 
-### Community 938 - "Backend documentation"
-Cohesion: 0.50
-Nodes (4): Backend documentation, Current app-local routes, Historical and secondary material, Monorepo-only contract routes
+### Community 938 - "SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است"
+Cohesion: 0.67
+Nodes (3): SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است, اصلاح, مسیر
 
 ### Community 939 - "SEC-05 — ارسال واقعی OTP هنوز پیاده‌سازی نشده"
 Cohesion: 0.50
 Nodes (4): Definition of Done, SEC-05 — ارسال واقعی OTP هنوز پیاده‌سازی نشده, اقدام, مسیر
 
-### Community 940 - "SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود"
-Cohesion: 0.40
-Nodes (5): Admin, Client, SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود, ریسک, پیشنهاد
-
 ### Community 941 - "SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود"
 Cohesion: 0.50
 Nodes (4): SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود, اصلاح پیشنهادی, ریسک, مسیر
 
-### Community 942 - "SEC-01 — Credential واقعی Hard-code شده در Repository"
-Cohesion: 0.40
-Nodes (5): Definition of Done, SEC-01 — Credential واقعی Hard-code شده در Repository, اقدام اجباری, ریسک, مسیر
+### Community 942 - "SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد"
+Cohesion: 0.50
+Nodes (4): Bug محتمل/واقعی, SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد, اصلاح, مسیر
 
-### Community 943 - "0013. Customer assistant in Nest with pgvector RAG"
-Cohesion: 0.40
-Nodes (5): 0013. Customer assistant in Nest with pgvector RAG, Alternatives considered, Consequences, Context, Decision
+### Community 943 - "0004. API audience namespaces"
+Cohesion: 0.50
+Nodes (4): 0004. API audience namespaces, Consequences, Context, Decision
 
 ### Community 944 - "monorepo/admin-panel/docs/architecture/project.md"
 Cohesion: 0.50
@@ -4607,13 +4601,13 @@ Nodes (4): 5.1 Allowed runtime reads/writes, 5.2 Forbidden runtime access, 5.3 D
 Cohesion: 0.50
 Nodes (4): 9.1 Automatic schedule, 9.2 Scheduling semantics, 9.3 One probe, all fields, 9. Stack refresh policy
 
-### Community 969 - "0004. API audience namespaces"
+### Community 969 - "7. Realtime Module"
 Cohesion: 0.50
-Nodes (4): 0004. API audience namespaces, Consequences, Context, Decision
+Nodes (4): 7. Realtime Module, Namespaces, Responsibilities, Room Examples
 
-### Community 970 - "admin-panel/docs/architecture/project.md"
-Cohesion: 0.50
-Nodes (3): Boundaries, Feature Organization, Project Structure
+### Community 970 - "11. SEO architecture"
+Cohesion: 0.40
+Nodes (5): 11.1 Topic ownership, 11.2 Intent and targeting, 11.3 Technical SEO, 11.4 Message-key contract, 11. SEO architecture
 
 ### Community 971 - "0010. Client hybrid auth and data fetching"
 Cohesion: 0.50
@@ -4627,9 +4621,9 @@ Nodes (4): 0011. Client Nest auth integration, Consequences, Context, Decision
 Cohesion: 0.50
 Nodes (4): 0012. Admin Nest auth integration, Consequences, Context, Decision
 
-### Community 974 - "admin-panel/docs/development/workflow.md"
-Cohesion: 0.50
-Nodes (3): Before Implementation, Review, Significant Changes
+### Community 974 - "12. Implementation contract"
+Cohesion: 0.40
+Nodes (5): 12.1 Placement, 12.2 Rendering, 12.3 Reuse, 12.4 Navigation and route-conflict repair, 12. Implementation contract
 
 ### Community 975 - "10. Dashboard overview"
 Cohesion: 0.50
@@ -4699,13 +4693,17 @@ Nodes (4): UN-001, UN-002, UN-003, User needs
 Cohesion: 0.50
 Nodes (4): Definition of Done, SEC-05 — ارسال واقعی OTP هنوز پیاده‌سازی نشده, اقدام, مسیر
 
-### Community 992 - "SEC-06 — OTP با `Math.random()` تولید می‌شود"
+### Community 992 - "0005. Domain modules with multi-audience controllers"
 Cohesion: 0.50
-Nodes (4): SEC-06 — OTP با `Math.random()` تولید می‌شود, اصلاح, مسیر, مشکل
+Nodes (4): 0005. Domain modules with multi-audience controllers, Consequences, Context, Decision
 
 ### Community 993 - "SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود"
 Cohesion: 0.50
 Nodes (4): SEC-07 — OTP به‌صورت Plaintext در Database ذخیره می‌شود, اصلاح پیشنهادی, ریسک, مسیر
+
+### Community 994 - "SEC-02 — احتمال Reflected XSS در صفحه OTP"
+Cohesion: 0.40
+Nodes (5): Definition of Done, SEC-02 — احتمال Reflected XSS در صفحه OTP, اصلاح, ریسک, مسیر
 
 ### Community 995 - "4. Phase boundaries"
 Cohesion: 0.67
@@ -4787,21 +4785,17 @@ Nodes (3): Dependencies, Risks, Risks and dependencies
 Cohesion: 0.67
 Nodes (3): Permissions, Users, Users, roles and permissions
 
-### Community 1017 - "0001. Flat monorepo layout"
+### Community 1018 - "Servers and agent data flow"
 Cohesion: 0.50
-Nodes (4): 0001. Flat monorepo layout, Consequences, Context, Decision
+Nodes (4): Note, Sequence, Servers and agent data flow, Trust boundary
 
-### Community 1018 - "0005. Domain modules with multi-audience controllers"
+### Community 1019 - "SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند"
 Cohesion: 0.50
-Nodes (4): 0005. Domain modules with multi-audience controllers, Consequences, Context, Decision
+Nodes (4): SEC-14 — Public Registration مالکیت Phone را اثبات نمی‌کند, اصلاح, ریسک, مسیر
 
-### Community 1019 - "0008. Phase 1 VPS agent language and Nest contract ownership"
-Cohesion: 0.50
-Nodes (4): 0008. Phase 1 VPS agent language and Nest contract ownership, Consequences, Context, Decision
-
-### Community 1020 - "0009. Nest agent-kind module split (Phase 1 live, monitoring archived)"
-Cohesion: 0.50
-Nodes (4): 0009. Nest agent-kind module split (Phase 1 live, monitoring archived), Consequences, Context, Decision
+### Community 1020 - "Backend API contracts"
+Cohesion: 0.40
+Nodes (5): Backend API contracts, Index, Layout, Related, Writing rules
 
 ### Community 1021 - "12. REST Chart API Test"
 Cohesion: 0.67
@@ -4975,21 +4969,21 @@ Nodes (3): Dependencies, Risks, Risks and dependencies
 Cohesion: 0.67
 Nodes (3): Permissions, Users, Users, roles and permissions
 
-### Community 1064 - "Servers and agent data flow"
-Cohesion: 0.50
-Nodes (4): Note, Sequence, Servers and agent data flow, Trust boundary
+### Community 1064 - "SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند"
+Cohesion: 0.67
+Nodes (3): SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند, ریسک, مسیر
 
-### Community 1065 - "admin-panel/docs/quality/validation.md"
+### Community 1065 - "Why This Separation Matters"
 Cohesion: 0.50
-Nodes (3): Automated Validation, Dependencies, Manual Validation
+Nodes (4): /admin/\*, /dashboard/\*, /internal/\*, Why This Separation Matters
 
-### Community 1066 - "Admin-panel documentation"
+### Community 1066 - "Client documentation"
 Cohesion: 0.50
-Nodes (4): Admin-panel documentation, Local product copies, Monorepo-only contract routes, Task routes
+Nodes (4): App-local scope, Client documentation, Monorepo-only contract routes, Task routes
 
-### Community 1067 - "Unixsee monorepo"
-Cohesion: 0.33
-Nodes (6): Contributing, Current status, Local development (all surfaces), Start here, Surfaces, Unixsee monorepo
+### Community 1067 - "SEC-06 — OTP با `Math.random()` تولید می‌شود"
+Cohesion: 0.50
+Nodes (4): SEC-06 — OTP با `Math.random()` تولید می‌شود, اصلاح, مسیر, مشکل
 
 ### Community 1068 - "4. Phase boundaries"
 Cohesion: 0.67
@@ -5259,138 +5253,102 @@ Nodes (3): Dependencies, Risks, Risks and dependencies
 Cohesion: 0.67
 Nodes (3): Permissions, Users, Users, roles and permissions
 
-### Community 1136 - "7. Realtime Module"
+### Community 1136 - "0010. Client hybrid auth and data fetching"
 Cohesion: 0.50
-Nodes (4): 7. Realtime Module, Namespaces, Responsibilities, Room Examples
+Nodes (4): 0010. Client hybrid auth and data fetching, Consequences, Context, Decision
 
-### Community 1137 - "Why This Separation Matters"
+### Community 1137 - "10. Content priority and mobile hierarchy"
 Cohesion: 0.50
-Nodes (4): /admin/\*, /dashboard/\*, /internal/\*, Why This Separation Matters
+Nodes (4): 10.1 Priority classification, 10.2 Mobile treatment, 10.3 Honesty constraints, 10. Content priority and mobile hierarchy
 
-### Community 1141 - "Client documentation"
+### Community 1141 - "13. Journeys and entry points"
 Cohesion: 0.50
-Nodes (4): App-local scope, Client documentation, Monorepo-only contract routes, Task routes
+Nodes (4): 13.1 Entry points, 13.2 Proposed journey, 13.3 Current journey (for contrast), 13. Journeys and entry points
 
-### Community 1147 - ".eslint-summarize.cjs"
+### Community 1147 - "7. Positioning and messaging architecture"
 Cohesion: 0.50
-Nodes (3): byFile, data, files
+Nodes (4): 7.1 Positioning statement (from approved copy, not invented), 7.2 Messaging pillars, 7.3 Voice, 7. Positioning and messaging architecture
 
-### Community 1151 - "0013. Customer assistant in Nest with pgvector RAG"
+### Community 1151 - "SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود"
 Cohesion: 0.40
-Nodes (5): 0013. Customer assistant in Nest with pgvector RAG, Alternatives considered, Consequences, Context, Decision
+Nodes (5): Admin, Client, SEC-16 — Access Token با وجود HttpOnly Cookie دوباره به JavaScript داده می‌شود, ریسک, پیشنهاد
 
-### Community 1152 - "0002. Stack choices"
-Cohesion: 0.50
-Nodes (4): 0002. Stack choices, Consequences, Context, Decision
+### Community 1152 - "SEC-01 — Credential واقعی Hard-code شده در Repository"
+Cohesion: 0.40
+Nodes (5): Definition of Done, SEC-01 — Credential واقعی Hard-code شده در Repository, اقدام اجباری, ریسک, مسیر
 
 ### Community 1153 - "Customer complementary-service requests contract"
 Cohesion: 0.29
 Nodes (7): Assignment and authorization, Create request, Creation rules, Customer complementary-service requests contract, Ownership, Staff acceptance, Website coverage
 
-### Community 1155 - "0010. Client hybrid auth and data fetching"
-Cohesion: 0.50
-Nodes (4): 0010. Client hybrid auth and data fetching, Consequences, Context, Decision
-
-### Community 1161 - "0011. Client Nest auth integration"
+### Community 1155 - "0011. Client Nest auth integration"
 Cohesion: 0.50
 Nodes (4): 0011. Client Nest auth integration, Consequences, Context, Decision
+
+### Community 1161 - "SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند"
+Cohesion: 0.67
+Nodes (3): SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند, اصلاح, حوزه‌ها
 
 ### Community 1164 - "0012. Admin Nest auth integration"
 Cohesion: 0.50
 Nodes (4): 0012. Admin Nest auth integration, Consequences, Context, Decision
 
-### Community 1174 - "0005. Domain modules with multi-audience controllers"
+### Community 1204 - "SEC-11 — Account Enumeration از Endpoint عمومی"
 Cohesion: 0.50
-Nodes (4): 0005. Domain modules with multi-audience controllers, Consequences, Context, Decision
+Nodes (4): SEC-11 — Account Enumeration از Endpoint عمومی, اصلاح, ریسک, مسیر
 
-### Community 1203 - "Servers and agent data flow"
-Cohesion: 0.50
-Nodes (4): Note, Sequence, Servers and agent data flow, Trust boundary
-
-### Community 1204 - "Customer complementary-service request"
-Cohesion: 0.33
-Nodes (6): Acceptance criteria, Customer complementary-service request, Customer journey, Entry and target field, Outcome, States and recovery
-
-### Community 1205 - "Data sources"
+### Community 1208 - "SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد"
 Cohesion: 0.67
-Nodes (3): Data sources, Fixture-backed (not yet wired), Nest-wired (live)
+Nodes (3): SEC-09 — محدودیت تعداد تلاش Verify OTP وجود ندارد, اصلاح, مسیر
 
-### Community 1206 - "10. Agent Ingestion Module"
-Cohesion: 0.67
-Nodes (3): 10. Agent Ingestion Module, Endpoints, Responsibilities
-
-### Community 1207 - "11. Tenant Module"
-Cohesion: 0.67
-Nodes (3): 11. Tenant Module, Internal Usage, Responsibilities
-
-### Community 1208 - "1. Auth Module"
-Cohesion: 0.67
-Nodes (3): 1. Auth Module, Endpoints, Responsibilities
-
-### Community 1209 - "3. Servers Module"
-Cohesion: 0.67
-Nodes (3): 3. Servers Module, Endpoints, Responsibilities
-
-### Community 1210 - "Agent documentation"
-Cohesion: 0.67
-Nodes (3): Agent documentation, Canonical references, Phase 1 v0.2 boundary
-
-### Community 1211 - "SEC-13 — مصرف OTP Atomic نیست"
+### Community 1209 - "SEC-13 — مصرف OTP Atomic نیست"
 Cohesion: 0.67
 Nodes (3): SEC-13 — مصرف OTP Atomic نیست, اصلاح, ریسک
 
-### Community 1212 - "SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است"
+### Community 1210 - "10. Agent Ingestion Module"
 Cohesion: 0.67
-Nodes (3): SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است, اصلاح, مسیر
+Nodes (3): 10. Agent Ingestion Module, Endpoints, Responsibilities
+
+### Community 1211 - "11. Tenant Module"
+Cohesion: 0.67
+Nodes (3): 11. Tenant Module, Internal Usage, Responsibilities
+
+### Community 1212 - "1. Auth Module"
+Cohesion: 0.67
+Nodes (3): 1. Auth Module, Endpoints, Responsibilities
 
 ### Community 1213 - "SEC-23 — Agent Bundle قبل از نصب Verify Cryptographic نمی‌شود"
 Cohesion: 0.67
 Nodes (3): SEC-23 — Agent Bundle قبل از نصب Verify Cryptographic نمی‌شود, اصلاح, مسیر
 
-### Community 1222 - "0006. Rename edge deployable to `monitoring-agent/`"
-Cohesion: 0.50
-Nodes (4): 0006. Rename edge deployable to `monitoring-agent/`, Consequences, Context, Decision
+### Community 1217 - "3. Servers Module"
+Cohesion: 0.67
+Nodes (3): 3. Servers Module, Endpoints, Responsibilities
 
-### Community 1223 - "0007. Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/`"
-Cohesion: 0.50
-Nodes (4): 0007. Two VPS agents: Phase 1 `agent/` and deferred `monitoring-agent/`, Consequences, Context, Decision
+### Community 1221 - "SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است"
+Cohesion: 0.67
+Nodes (3): SEC-22 — Agent Request در بازه 5 دقیقه قابل Replay است, اصلاح, مسیر
 
 ### Community 1224 - "External Website targeting — implementation handoff"
 Cohesion: 0.50
 Nodes (3): Cross-surface state model, External Website targeting — implementation handoff, UI requirements
 
-### Community 1225 - "SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد"
-Cohesion: 0.50
-Nodes (4): Bug محتمل/واقعی, SEC-08 — Schema فعلی OTP برای Contextهای متعدد مشکل دارد, اصلاح, مسیر
-
-### Community 1233 - "SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند"
-Cohesion: 0.67
-Nodes (3): SEC-12 — Refresh Controller Exception را Return می‌کند، Throw نمی‌کند, ریسک, مسیر
-
-### Community 1234 - "SEC-13 — مصرف OTP Atomic نیست"
-Cohesion: 0.67
-Nodes (3): SEC-13 — مصرف OTP Atomic نیست, اصلاح, ریسک
-
-### Community 1235 - "SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند"
-Cohesion: 0.67
-Nodes (3): SEC-25 — Uploadها به MIME اعلام‌شده مرورگر اعتماد می‌کنند, اصلاح, حوزه‌ها
-
 ## Knowledge Gaps
-- **12079 isolated node(s):** `graphify-mcp`, `eslintConfig`, `nextConfig`, `name`, `version` (+12074 more)
+- **12160 isolated node(s):** `graphify-mcp`, `eslintConfig`, `nextConfig`, `name`, `version` (+12155 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **176 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **179 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `AdminServersController` connect `ServersService` to `CurrentUser`, `app.module.ts`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `dashboard-breadcrumb.tsx`, `guest-plan-request-form.tsx`, `(website)/page.tsx`, `radial-reveal-link.tsx`, `dashboard/sidebar.tsx`, `activity-history.tsx`, `managed-woocommerce-server/page.tsx`, `_components/common/title.tsx`, `global-search.tsx`, `Locale`, `carousel.tsx`, `floating-nav-eye-mark.tsx`, `motion-grow-dialog.tsx`, `help-center/page.tsx`, `client/src/lib/utils.ts`, `help-topic-articles.tsx`, `[articleSlug]/page.tsx`, `footer.tsx`, `client/src/components/tickets/ticket-details-view.tsx`, `dashboard-data.ts`, `useWpStory`, `website-details-information.tsx`, `bottom-floating-navigation.tsx`, `complementary-services-api.ts`, `request-assessment-file-upload.tsx`, `text.tsx`, `PersonalInformationCard`, `navigation.ts`, `authorization-wizard.tsx`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **Why does `CurrentUser` connect `CurrentUser` to `UsersService`, `AuthorizationCasesService`, `TenantsService`, `PlanRequestsService`, `CreateNotificationDto`, `.ok`, `OperationalActionsService`, `tickets.service.ts`, `users.controller.ts`, `DashboardController`, `AdminUnixseeMessagesController`, `AgentService`, `ComplementaryServicesService`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `RealtimeGateway` connect `RealtimeGateway` to `app.module.ts`, `enums.ts`, `RealtimeService`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `dashboard-breadcrumb.tsx`, `client/src/lib/utils.ts`, `(website)/page.tsx`, `tickets-api.ts`, `dashboard-shell.tsx`, `managed-woocommerce-server/page.tsx`, `number-of-success-item.tsx`, `global-search.tsx`, `tickets-manager.tsx`, `carousel.tsx`, `client/src/components/ui/button.tsx`, `help-article-related.tsx`, `locale/locale-switcher.tsx`, `request-assessment-schema.ts`, `useWpStory`, `navigation.ts`, `bottom-floating-navigation.tsx`, `complementary-services-manager.tsx`, `request-assessment-file-upload.tsx`, `unixsee-message-detail-view.tsx`, `PersonalInformationCard`, `sign-up-form.tsx`, `use-request-assessment-form-controller.ts`, `authorization/authorization-data.ts`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **Why does `WebsiteUptimeProbeService` connect `WebsiteUptimeProbeService` to `app.module.ts`, `enums.ts`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **What connects `graphify-mcp`, `eslintConfig`, `nextConfig` to the rest of the system?**
-  _12079 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _12160 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Website.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.007168458781362007 - nodes in this community are weakly interconnected._
 - **Should `User.ts` be split into smaller, more focused modules?**

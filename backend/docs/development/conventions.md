@@ -4,7 +4,7 @@
 >
 > **Scope:** `backend/` only
 >
-> **Last verified:** 2026-08-24
+> **Last verified:** 2026-08-25
 
 ## Uptime and public probes
 
@@ -41,6 +41,70 @@
 - Keep DNS timeout, IP-family preference, and probe debug flags in typed config.
   Enable `UPTIME_PROBE_DEBUG_LOGS=true` only during investigation because it
   also logs successful probes.
+
+## OTP credentials
+
+- Generate every OTP with `crypto.randomInt()` inside `OtpService`. `Math.random`
+  is a predictable PRNG and must never produce a credential.
+- Persist only a bcrypt digest in `otps.otp_hash`. The plaintext code exists in
+  memory for the duration of the request that issues it and nowhere else — no
+  column, no log, no cache.
+- Verify by re-hashing the submitted code with the stored salt and comparing with
+  `crypto.timingSafeEqual`. Never compare a submitted code to a stored code.
+- Every rejection — unknown target, wrong code, expired, already consumed,
+  attempts exhausted — returns the same `401 OTP_VERIFICATION_FAILED` with
+  `"Verification failed."`. Callers learn nothing about which condition failed.
+- Reserve every real verification attempt with one conditional database update
+  before bcrypt. The update is constrained by challenge ID and hash,
+  `consumed_at IS NULL`, unexpired state, and
+  `attempt_count < OTP_MAX_VERIFY_ATTEMPTS`; its affected-row count is the
+  concurrency-safe admission decision. A wrong code needs no later increment.
+- Missing, terminal, or concurrency-exhausted challenges reserve against a nil
+  ID and pay one decoy bcrypt operation before returning the generic rejection.
+  Malformed bcrypt metadata also pays the decoy cost.
+- A correct code is consumed with a conditional update guarded by challenge ID
+  and hash plus `consumed_at IS NULL`, so concurrent replays cannot both
+  succeed. A successful consume also resets `attempt_count`,
+  `last_requested_time`, `request_count`, and
+  `request_window_started_at`, allowing immediate fresh issuance while the
+  consumed row continues to reject replays.
+- Issuing a new code for a target resets `attempt_count` and `consumed_at`; a
+  fresh challenge starts with a full attempt budget. Concurrent first issuance
+  uniqueness conflicts are caller throttling and return `429 RATE_LIMITED`,
+  never a server error.
+
+## Abuse prevention
+
+- Rate limiting uses the native `RateLimitGuard` in `src/common/rate-limit/`,
+  applied per route with `@UseGuards(RateLimitGuard)` and `@RateLimit(...rules)`.
+  There is no global throttler and no third-party throttling dependency; do not
+  add a second mechanism.
+- Declare limits as `{ configPath: 'app.otp.…' }` rather than literals so they
+  stay env-tunable. Decorators evaluate before `ConfigService` exists, so the
+  guard resolves the path at request time.
+- Public OTP routes use `scope: 'ip'`. The deployed path has one trusted
+  OpenLiteSpeed hop, configured with `TRUST_PROXY_HOPS=1`; direct deployments
+  use `0`. Never use `trust proxy: true` or configure more hops than are
+  actually present, because either choice lets clients forge the resolved
+  address through `X-Forwarded-For`.
+- Authenticated contact-verification and monitoring-access OTP routes use
+  `scope: 'user'`, keyed by `request.user.sub` (or the canonical user ID).
+  Missing identity on a user-scoped rule fails closed. Verify routes retain the
+  independent per-target body rule.
+- `scope: 'body'` keys on the first present `bodyFields` entry after trimming,
+  converting Persian and Arabic phone digits to English, and lowercasing email
+  addresses, then hashes the normalized value. Guards run before pipes, so this
+  normalization must happen in the guard rather than relying on DTO transforms.
+- Reuse the public and authenticated presets in
+  `src/modules/auth/otp-rate-limits.ts` instead of redeclaring rules per
+  controller.
+- A rejected request answers `429 RATE_LIMITED` with `Retry-After` and never
+  names the rule that tripped.
+- The process-local store is capped at 10,000 live buckets. It sweeps expired
+  buckets at most once per fixed interval and evicts the oldest bucket in O(1)
+  when still full. Durable per-target issuance and per-challenge attempt limits
+  live on the `otps` row, so controls that must survive a restart or hold across
+  replicas remain database-backed.
 
 ## Logging and request tracing
 

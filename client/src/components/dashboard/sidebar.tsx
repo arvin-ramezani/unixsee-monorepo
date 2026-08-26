@@ -17,16 +17,17 @@ import { useAuthStore } from "../providers/auth-store-provider";
 import Image from "next/image";
 
 interface SidebarContentProps {
-  activeItem?:
-    | "Activities"
-    | "ComplementaryServices"
-    | "Dashboard"
-    | "Domains"
-    | "HelpCenter"
-    | "Profile"
-    | "Tickets"
-    | "UnixseeMessages"
-    | "Websites";
+  // activeItem?:
+  //   | "Activities"
+  //   | "ComplementaryServices"
+  //   | "Dashboard"
+  //   | "Domains"
+  //   | "HelpCenter"
+  //   | "Profile"
+  //   | "Tickets"
+  //   | "UnixseeMessages"
+  //   | "Websites";
+  activeItem?: (typeof navigation)[number]["activeItem"];
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Close overlays (e.g. mobile sheet) as soon as a nav item is activated. */

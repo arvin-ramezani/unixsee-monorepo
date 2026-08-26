@@ -20,6 +20,7 @@ import { OtpContext, UserAccountStatus } from '#/generated/prisma/enums.js';
 import { User } from '#/generated/prisma/client.js';
 import { OtpService } from './otp-service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
+import { isClientFailure } from '#/common/http/client-failure.js';
 import { RequestContext } from '#/common/logging/request-context.js';
 import { MailService } from '#/modules/mail/mail.service.js';
 
@@ -186,7 +187,7 @@ export class AuthenticationService {
     });
 
     try {
-      const otp = await this.otpService.createAndOverwrite({
+      const issued = await this.otpService.createAndOverwrite({
         length: 6,
         phoneNumber,
         context: resolvedContext,
@@ -196,19 +197,27 @@ export class AuthenticationService {
 
       // await this.mailService.sendPhoneOtpMockEmail({
       //   phoneNumber,
-      //   otp: otp.otp,
+      //   otp: issued.code,
       // });
 
       this.logger.log('auth.otp.created', {
         context: resolvedContext,
-        otpId: otp.id,
+        otpId: issued.challenge.id,
       });
-      return { delivered: true as const, otp: otp.otp };
+
+      // The code is echoed only so the mocked delivery flow stays usable
+      // without an SMS provider. Production never returns it, so a leak here
+      // cannot reach real users while the mock remains in place.
+      return this.isDeliveryMocked()
+        ? { delivered: true as const, otp: issued.code }
+        : { delivered: true as const };
     } catch (error) {
-      this.logger.error('auth.otp.create_failed', error as Error, {
-        context: resolvedContext,
-        phoneNumber,
-      });
+      if (!isClientFailure(error)) {
+        this.logger.error('auth.otp.create_failed', error as Error, {
+          context: resolvedContext,
+          phoneNumber,
+        });
+      }
       throw error;
     }
   }
@@ -223,7 +232,7 @@ export class AuthenticationService {
     this.logger.log('auth.otp.email.requested', { context, email });
 
     try {
-      const otp = await this.otpService.createAndOverwriteByIdentifier({
+      const issued = await this.otpService.createAndOverwriteByIdentifier({
         length: 6,
         identifier: email,
         context,
@@ -231,19 +240,21 @@ export class AuthenticationService {
 
       await this.mailService.sendEmailOtpMockEmail({
         email,
-        otp: otp.otp,
+        otp: issued.code,
       });
 
       this.logger.log('auth.otp.email.created', {
         context,
-        otpId: otp.id,
+        otpId: issued.challenge.id,
       });
       return { delivered: true as const };
     } catch (error) {
-      this.logger.error('auth.otp.email.create_failed', error as Error, {
-        context,
-        email,
-      });
+      if (!isClientFailure(error)) {
+        this.logger.error('auth.otp.email.create_failed', error as Error, {
+          context,
+          email,
+        });
+      }
       throw error;
     }
   }
@@ -275,19 +286,14 @@ export class AuthenticationService {
 
     this.logger.log('auth.otp.validation_attempt', { context, phoneNumber });
 
-    const isOtpValid = await this.otpService.validateOtp({
+    // Verification throws a uniform `OTP_VERIFICATION_FAILED` for every failure
+    // — unknown target, wrong code, expired, consumed, attempts exhausted — so
+    // there is no falsy result to branch on here.
+    await this.otpService.validateOtp({
       phoneNumber,
       otp,
       context,
     });
-
-    if (!isOtpValid) {
-      this.logger.warn('auth.otp.validation_rejected', {
-        context,
-        phoneNumber,
-      });
-      throw new UnauthorizedException('wrong credentials.');
-    }
 
     let userToSignIn: Omit<User, 'password' | 'hashedRt'>;
     const userExist = await this.userService.findOneByPhoneNumber(phoneNumber);
@@ -319,8 +325,6 @@ export class AuthenticationService {
       userId: userToSignIn.id,
     });
 
-    await this.otpService.remove(otp);
-
     RequestContext.setUserId(userToSignIn.id);
     this.logger.log('auth.otp.validation_completed', {
       userId: userToSignIn.id,
@@ -343,19 +347,12 @@ export class AuthenticationService {
   }) {
     this.logger.log('auth.otp.email.validation_attempt', { context, email });
 
-    const isOtpValid = await this.otpService.validateOtpByIdentifier({
+    // Rejections surface as a uniform `OTP_VERIFICATION_FAILED` throw.
+    await this.otpService.validateOtpByIdentifier({
       identifier: email,
       otp,
       context,
     });
-
-    if (!isOtpValid) {
-      this.logger.warn('auth.otp.email.validation_rejected', {
-        context,
-        email,
-      });
-      throw new UnauthorizedException('wrong credentials.');
-    }
 
     let userToSignIn: Omit<User, 'password' | 'hashedRt'>;
     const userExist = await this.userService.findOneByEmail(email);
@@ -386,8 +383,6 @@ export class AuthenticationService {
     const tokens = await this.createTokens({
       userId: userToSignIn.id,
     });
-
-    await this.otpService.remove(otp);
 
     RequestContext.setUserId(userToSignIn.id);
     this.logger.log('auth.otp.email.validation_completed', {
@@ -429,10 +424,13 @@ export class AuthenticationService {
 
     await this.mailService.sendPhoneOtpMockEmail({
       phoneNumber,
-      otp: otp.otp,
+      otp: otp.code,
     });
 
-    this.logger.log('auth.monitoring_otp.created', { userId, otpId: otp.id });
+    this.logger.log('auth.monitoring_otp.created', {
+      userId,
+      otpId: otp.challenge.id,
+    });
     return { delivered: true as const };
   }
 
@@ -450,16 +448,12 @@ export class AuthenticationService {
     RequestContext.setUserId(userId);
     this.logger.log('auth.monitoring_otp.verify_attempt', { userId });
 
-    const isOtpValid = await this.otpService.validateOtp({
+    // Rejections surface as a uniform `OTP_VERIFICATION_FAILED` throw.
+    await this.otpService.validateOtp({
       phoneNumber,
       otp,
       context: 'MONITORING_ACCESS',
     });
-
-    if (!isOtpValid) {
-      this.logger.warn('auth.monitoring_otp.rejected_invalid_code', { userId });
-      throw new UnauthorizedException('wrong credentials.');
-    }
 
     const userExist = await this.userService.findOneByPhoneNumber(phoneNumber);
 
@@ -473,8 +467,6 @@ export class AuthenticationService {
     const monitoringAccessToken = await this.createMonitoringAccessToken(
       userExist.id,
     );
-
-    await this.otpService.remove(otp);
 
     this.logger.log('auth.monitoring_access.created', {
       userId: userExist.id,
@@ -540,6 +532,15 @@ export class AuthenticationService {
     const serverTimeInSeconds = Math.floor(Date.now() / 1000);
 
     return { accessToken, refreshToken, serverTimeInSeconds };
+  }
+
+  /**
+   * True while OTP delivery is mocked, i.e. outside production. Gates the
+   * development-only echo of the code in the request response; once real SMS and
+   * email providers land this helper and the echo go away together.
+   */
+  private isDeliveryMocked(): boolean {
+    return this.config.get('app', { infer: true }).appEnv !== 'production';
   }
 
   private hashData(data: string) {

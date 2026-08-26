@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 
@@ -13,56 +12,37 @@ export type MapPositions = {
   lng: number;
 };
 
-interface MapProps {}
-
 const DEFAULT_CENTER: MapPositions = {
   lat: 36.69737309552491,
   lng: 52.63486879330327,
 };
 
-const Map = ({}: MapProps) => {
-  const [marketIcon, setMarketIcon] = useState<L.Icon | undefined>(undefined);
-  const [shouldRenderMap, setShouldRenderMap] = useState<boolean>(true);
+// `L.Icon` only stores options, so it is safe to build once at module scope —
+// this module is already client-only (Leaflet reads `window` on import, which is
+// why every consumer must load it through `dynamic(..., { ssr: false })`).
+const MARKER_ICON = new L.Icon({
+  iconUrl: "/icons/location-icon.png",
+  iconSize: [70, 70],
+  iconAnchor: [35, 60],
+  popupAnchor: [0, 0],
+});
 
-  useEffect(() => {
-    // 1. Instantiation of custom map assets
-    const platformIcon = new L.Icon({
-      iconUrl: "/icons/location-icon.png",
-      iconSize: [70, 70],
-      iconAnchor: [35, 60],
-      popupAnchor: [0, 0],
-    });
-    setMarketIcon(platformIcon);
-
-    // 2. Clear out lingering instances attached to the target map DOM container ID node on HMR saves
-    return () => {
-      // Find the element Leaflet targets and force a complete wipeout of its inner node structure
-      const mapContainerNode = L.DomUtil.get("unixsee-leaflet-map-wrapper");
-      if (mapContainerNode) {
-        // @ts-ignore - Wipe the structural framework pointer identifier internal property
-        mapContainerNode._leaflet_id = null;
-      }
-    };
-  }, []);
-
-  // 3. Fast-Refresh Safety: Resets the entire sub-tree container on HMR events
-  useEffect(() => {
-    setShouldRenderMap(true);
-    return () => {
-      setShouldRenderMap(false);
-    };
-  }, []);
-
-  if (!shouldRenderMap) {
-    return (
-      <div className="h-full w-full animate-pulse rounded bg-slate-100 dark:bg-zinc-950/40" />
-    );
-  }
-
+/**
+ * Read-only office location map.
+ *
+ * Leaflet owns its container node's lifecycle: `Map._initContainer` stamps the
+ * node with `_leaflet_id`, and `map.remove()` is the only thing permitted to
+ * clear that stamp — it throws `Map container is being reused by another
+ * instance` when the stamp changed underneath it. So never touch `_leaflet_id`
+ * from React, and never gate `<MapContainer>` behind extra state: react-leaflet
+ * already calls `map.remove()` in its own unmount cleanup, and React runs a
+ * parent's cleanup *before* its children's, so anything this component does to
+ * the node on unmount lands before that call and breaks it.
+ */
+export default function Map() {
   return (
     <div className="h-full w-full overflow-hidden rounded">
       <MapContainer
-        id="unixsee-leaflet-map-wrapper" // Named structural fallback binding element
         center={DEFAULT_CENTER}
         zoom={16}
         className="z-1 h-full w-full"
@@ -76,19 +56,11 @@ const Map = ({}: MapProps) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {marketIcon && (
-          <Marker
-            position={DEFAULT_CENTER}
-            draggable={false}
-            icon={marketIcon}
-          />
-        )}
+        <Marker position={DEFAULT_CENTER} draggable={false} icon={MARKER_ICON} />
       </MapContainer>
     </div>
   );
-};
-
-export default Map;
+}
 
 // "use client";
 

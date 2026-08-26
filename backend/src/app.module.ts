@@ -24,6 +24,7 @@ import { HealthModule } from './modules/health/health.module.js';
 import { UptimeModule } from './modules/uptime/uptime.module.js';
 import { TenancyModule } from './common/tenancy/tenancy.module.js';
 import { IdempotencyModule } from './common/idempotency/idempotency.module.js';
+import { RateLimitModule } from './common/rate-limit/rate-limit.module.js';
 import { PlansModule } from './modules/plans/plans.module.js';
 import { PlanRequestsModule } from './modules/plan-requests/plan-requests.module.js';
 import { ComplementaryServicesModule } from './modules/complementary-services/complementary-services.module.js';
@@ -45,7 +46,12 @@ import { UploadsModule } from './modules/uploads/uploads.module.js';
       isGlobal: true,
       // dotenv-cli injects .env.development for start:dev; also load it here so
       // watch restarts and plain `nest start` still see mail/OTP SMTP settings.
-      envFilePath: ['.env.development', '.env.staging', '.env.production', '.env'],
+      envFilePath: [
+        '.env.development',
+        '.env.staging',
+        '.env.production',
+        '.env',
+      ],
       load: [appConfig],
       validate: validateEnv,
       expandVariables: true, // Supports ${VAR} interpolation in .env
@@ -54,6 +60,7 @@ import { UploadsModule } from './modules/uploads/uploads.module.js';
     PrismaModule,
     TenancyModule,
     IdempotencyModule,
+    RateLimitModule,
     AuthModule,
     UsersModule,
     TenantsModule,

@@ -874,14 +874,26 @@ model Alert {
   @@map("alerts")
 }
 
+/// One outstanding OTP challenge per delivery target. The plaintext code is
+/// never persisted: only its bcrypt digest is stored, so a database read
+/// cannot recover a usable code.
 model Otp {
   id                String      @id @default(uuid()) @db.Uuid
-  otp               String      @unique
+  otpHash           String      @map("otp_hash")
   phoneNumber       String?     @unique @map("phone_number")
   expiredTime       DateTime    @map("expired_time") @db.Timestamptz(6)
   identifier        String?     @unique
   lastRequestedTime DateTime?   @map("last_requested_time") @db.Timestamptz(6)
   context           OtpContext? @default(LOGIN)
+
+  /// Failed verification attempts against the current code. Reset on reissue.
+  attemptCount Int       @default(0) @map("attempt_count")
+  /// Set once the code verifies successfully; blocks replay of the same code.
+  consumedAt   DateTime? @map("consumed_at") @db.Timestamptz(6)
+
+  /// Issue requests inside the current per-target window, for abuse limiting.
+  requestCount           Int       @default(0) @map("request_count")
+  requestWindowStartedAt DateTime? @map("request_window_started_at") @db.Timestamptz(6)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
