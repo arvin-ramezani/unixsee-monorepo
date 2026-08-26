@@ -6,8 +6,7 @@ import SubTitle from "@/components/common/subtitle";
 import Title from "@/components/common/title";
 import RevealOnScroll from "@/components/common/motion/reveal-on-scroll";
 import { RequestAssessmentDialog } from "@/components/layout/request-assessment-dialog";
-import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { RadialRevealLink } from "@/components/common/radial-reveal/radial-reveal-link";
 
 export type NextStepSectionProps = { id?: string };
 
@@ -43,13 +42,13 @@ export default function NextStepSection({ id }: NextStepSectionProps) {
             <RequestAssessmentDialog triggerClassName="sm:w-auto sm:px-8" />
           </div>
 
-          <Button
-            asChild
+          <RadialRevealLink
             variant="outline"
+            href="/contact-us"
             className="h-12 w-full sm:w-auto sm:px-8"
           >
-            <Link href="/contact-us">{t("contactLabel")}</Link>
-          </Button>
+            {t("contactLabel")}
+          </RadialRevealLink>
 
           <a
             // Persian digits next to RTL copy need their own direction so the

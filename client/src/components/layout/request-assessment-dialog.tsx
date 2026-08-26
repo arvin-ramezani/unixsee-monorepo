@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { RadialRevealButton } from "@/components/common/radial-reveal/radial-reveal-button";
 import {
   Field,
   FieldContent,
@@ -106,9 +107,9 @@ export function RequestAssessmentDialog({
       scrollLockKey="request-assessment-dialog-mobile"
     >
       <MotionGrowDialogTrigger asChild>
-        <Button className={cn("h-12 w-full", triggerClassName)}>
+        <RadialRevealButton className={cn("h-12 w-full", triggerClassName)}>
           {tNavigation("label")}
-        </Button>
+        </RadialRevealButton>
       </MotionGrowDialogTrigger>
 
       <MotionGrowDialogContent>
