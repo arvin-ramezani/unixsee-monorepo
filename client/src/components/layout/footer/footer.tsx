@@ -248,7 +248,7 @@ export function FooterNavigation({
       )}
     >
       <nav aria-label="Footer navigation">
-        <div className="grid grid-cols-2 flex-col justify-items-center gap-4 text-center md:flex md:flex-row md:items-start md:justify-between lg:flex lg:grid-cols-5 lg:text-start xl:grid-cols-5 2xl:grid-cols-5">
+        <div className="grid grid-cols-2 flex-col justify-items-center gap-4 text-center md:flex md:flex-row md:items-start md:justify-between lg:flex lg:grid-cols-5 lg:text-start xl:grid-cols-5 2xl:grid 2xl:grid-cols-5">
           {visibleItems.map((column, index) => (
             <ul key={index} className="flex min-w-0 flex-1 flex-col gap-4">
               <FooterNavigationItem

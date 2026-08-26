@@ -6,8 +6,7 @@ import { useTranslations } from "next-intl";
 import { getAuthSessionUser } from "@/actions/auth/get-auth-session-user";
 import { AccountMenu } from "@/components/dashboard/account-menu";
 import { useAuthStore } from "@/components/providers/auth-store-provider";
-import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { RadialRevealLink } from "@/components/common/radial-reveal/radial-reveal-link";
 import { cn } from "@/lib/utils";
 
 type HeaderAuthControlProps = {
@@ -71,13 +70,12 @@ export function HeaderAuthControl({
   const isStacked = layout === "stacked";
 
   return (
-    <Button
-      asChild
+    <RadialRevealLink
+      href="/auth"
+      onClick={onNavigate}
       className={cn(isStacked ? "h-12 w-full" : "h-10", className)}
     >
-      <Link href="/auth" onClick={onNavigate}>
-        {t("authEntry")}
-      </Link>
-    </Button>
+      {t("authEntry")}
+    </RadialRevealLink>
   );
 }

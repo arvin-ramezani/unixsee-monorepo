@@ -426,7 +426,7 @@ export function RequestAssessmentMultiStepForm({
                       "h-auto min-h-11 flex-2 py-3 text-base",
                       submitButtonClassName,
                     )}
-                    disabled={isSubmitting || (step === 1 && !verifiedChannel)}
+                    disabled={isSubmitting}
                     onClick={() => {
                       void goNext();
                     }}
@@ -441,7 +441,7 @@ export function RequestAssessmentMultiStepForm({
                       "h-auto min-h-11 flex-2 py-3 text-base",
                       submitButtonClassName,
                     )}
-                    disabled={isSubmitting || !verifiedChannel}
+                    disabled={isSubmitting}
                     loading={isSubmitting}
                     loadingLabel={t("actions.submitting")}
                     onClick={() => {
