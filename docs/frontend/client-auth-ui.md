@@ -253,7 +253,10 @@ Primary submit should be reachable without the keyboard covering the CTA (scroll
 ## Disabled / submitting states
 
 - On submit: primary `disabled` + pending spinner; prevent Enter from double-firing.
-- Resend OTP: disabled until cooldown; show remaining seconds in accessible text.
+- Resend OTP: disabled until Nest-driven cooldown; show remaining seconds in
+  accessible text. Seed from `retryAfterSeconds` on OTP request success / 429
+  (client stores absolute end time in an HTTP-only cookie so refresh keeps the
+  remaining wait — never hardcode a local 30s timer).
 - Google button: disabled while primary submit pending or when feature is coming-soon.
 - Entire form `aria-busy="true"` during consequential submits when helpful.
 

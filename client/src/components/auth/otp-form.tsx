@@ -31,14 +31,18 @@ import {
   type OtpSchemaType,
 } from "@/lib/zod-schemas/auth-schemas";
 
-const RESEND_COOLDOWN_SECONDS = 30;
-
 export type OtpFormProps = {
   display: string;
   returnTo?: string;
+  /** Remaining Nest OTP cooldown seconds (from cookie / last request). */
+  initialCooldownSeconds?: number;
 };
 
-export function OtpForm({ display, returnTo }: OtpFormProps) {
+export function OtpForm({
+  display,
+  returnTo,
+  initialCooldownSeconds = 0,
+}: OtpFormProps) {
   const t = useTranslations("Auth.otp");
   const tCommon = useTranslations("Auth.common");
   const tErrors = useTranslations("FormErrors");
@@ -47,7 +51,9 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
   const reduceMotion = useReducedMotion();
   const autoSubmitCodeRef = useRef<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
+  const [cooldown, setCooldown] = useState(() =>
+    Math.max(0, Math.ceil(initialCooldownSeconds)),
+  );
   const [success, setSuccess] = useState(false);
   const login = useAuthStore((state) => state.login);
 
@@ -129,11 +135,14 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
 
     const result = await resendLoginOtp();
     if (!result.ok) {
+      if (result.retryAfterSeconds != null && result.retryAfterSeconds > 0) {
+        setCooldown(result.retryAfterSeconds);
+      }
       setFormError(tAuthErrors(result.errorKey));
       return;
     }
 
-    setCooldown(RESEND_COOLDOWN_SECONDS);
+    setCooldown(Math.max(0, result.retryAfterSeconds));
   }
 
   const maskedMessage = tCommon("maskedPhone", { identifier: display });
@@ -175,7 +184,7 @@ export function OtpForm({ display, returnTo }: OtpFormProps) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: reduceMotion ? 0.12 : 0.25 }}
-              className="border-success/40 bg-success/10 text-success-foreground mt-6 flex h-11 min-h-11 items-center justify-center gap-2 rounded-lg border text-sm font-medium"
+              className="border-success/40 bg-success/10 text-success mt-6 flex h-11 min-h-11 items-center justify-center gap-2 rounded-lg border text-sm font-medium"
             >
               <CheckIcon aria-hidden="true" className="size-4" />
               {t("success")}

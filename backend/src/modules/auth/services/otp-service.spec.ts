@@ -623,6 +623,36 @@ describe('OtpService', () => {
       );
     });
 
+    it('includes remaining cooldown seconds on a rejected reissue', async () => {
+      await service.createAndOverwrite({ length: 6, phoneNumber: PHONE });
+
+      const outcome = await service
+        .createAndOverwrite({ length: 6, phoneNumber: PHONE })
+        .then(
+          () => undefined,
+          (error: unknown) => error,
+        );
+
+      expect(outcome).toBeInstanceOf(HttpException);
+      expect((outcome as HttpException).getStatus()).toBe(
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+      expect((outcome as HttpException).getResponse()).toEqual({
+        code: 'RATE_LIMITED',
+        message: expect.stringContaining('Please wait'),
+        details: {
+          retryAfterSeconds: expect.any(Number),
+        },
+      });
+      expect(
+        (
+          (outcome as HttpException).getResponse() as {
+            details: { retryAfterSeconds: number };
+          }
+        ).details.retryAfterSeconds,
+      ).toBeGreaterThan(0);
+    });
+
     it('rejects issuing more codes than the per-target window allows', async () => {
       await service.createAndOverwrite({ length: 6, phoneNumber: PHONE });
 

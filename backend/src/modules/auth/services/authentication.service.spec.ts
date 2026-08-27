@@ -32,6 +32,7 @@ describe('AuthenticationService', () => {
     createAndOverwriteByIdentifier: ReturnType<typeof vi.fn>;
     validateOtp: ReturnType<typeof vi.fn>;
     validateOtpByIdentifier: ReturnType<typeof vi.fn>;
+    getConfiguredRetryAfterSeconds: ReturnType<typeof vi.fn>;
   };
   let mailService: {
     sendPhoneOtpMockEmail: ReturnType<typeof vi.fn>;
@@ -64,6 +65,7 @@ describe('AuthenticationService', () => {
       }),
       validateOtp: vi.fn().mockResolvedValue(true),
       validateOtpByIdentifier: vi.fn().mockResolvedValue(true),
+      getConfiguredRetryAfterSeconds: vi.fn().mockReturnValue(120),
     };
     mailService = {
       sendPhoneOtpMockEmail: vi.fn(),
@@ -149,7 +151,11 @@ describe('AuthenticationService', () => {
     it('echoes the code while delivery is mocked, keeping the dev flow usable', async () => {
       const response = await service.sendOtp({ phoneNumber: '+989120000000' });
 
-      expect(response).toEqual({ delivered: true, otp: '123456' });
+      expect(response).toEqual({
+        delivered: true,
+        otp: '123456',
+        retryAfterSeconds: 120,
+      });
     });
 
     it('withholds the code in production', async () => {
@@ -157,7 +163,7 @@ describe('AuthenticationService', () => {
 
       const response = await service.sendOtp({ phoneNumber: '+989120000000' });
 
-      expect(response).toEqual({ delivered: true });
+      expect(response).toEqual({ delivered: true, retryAfterSeconds: 120 });
       expect(response).not.toHaveProperty('otp');
     });
 
@@ -168,7 +174,7 @@ describe('AuthenticationService', () => {
         email: 'user@example.com',
         otp: '654321',
       });
-      expect(response).toEqual({ delivered: true });
+      expect(response).toEqual({ delivered: true, retryAfterSeconds: 120 });
     });
   });
 });

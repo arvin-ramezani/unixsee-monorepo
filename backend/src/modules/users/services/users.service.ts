@@ -252,7 +252,10 @@ export class UsersService {
       userId,
       otpId: otp.challenge.id,
     });
-    return { delivered: true as const };
+    return {
+      delivered: true as const,
+      retryAfterSeconds: this.otpService.getConfiguredRetryAfterSeconds(),
+    };
   }
 
   async verifyPhoneOtp(
@@ -355,7 +358,10 @@ export class UsersService {
       userId,
       otpId: otp.challenge.id,
     });
-    return { delivered: true as const };
+    return {
+      delivered: true as const,
+      retryAfterSeconds: this.otpService.getConfiguredRetryAfterSeconds(),
+    };
   }
 
   async verifyEmailOtp(userId: string, input: { email: string; otp: string }) {

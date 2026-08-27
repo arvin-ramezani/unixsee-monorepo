@@ -72,6 +72,9 @@
   fresh challenge starts with a full attempt budget. Concurrent first issuance
   uniqueness conflicts are caller throttling and return `429 RATE_LIMITED`,
   never a server error.
+- Successful request responses expose `retryAfterSeconds` from `OTP_RETRY_TIME`
+  so frontends do not invent a client-only resend timer. Cooldown rejections
+  expose the remaining seconds the same way.
 
 ## Abuse prevention
 
@@ -99,7 +102,10 @@
   `src/modules/auth/otp-rate-limits.ts` instead of redeclaring rules per
   controller.
 - A rejected request answers `429 RATE_LIMITED` with `Retry-After` and never
-  names the rule that tripped.
+  names the rule that tripped. Per-target OTP issuance cooldown rejections also
+  put remaining wait in `error.details.retryAfterSeconds`; successful OTP
+  request bodies include `data.retryAfterSeconds` (= `OTP_RETRY_TIME` × 60)
+  so callers seed resend UIs from Nest.
 - The process-local store is capped at 10,000 live buckets. It sweeps expired
   buckets at most once per fixed interval and evicts the oldest bucket in O(1)
   when still full. Durable per-target issuance and per-challenge attempt limits

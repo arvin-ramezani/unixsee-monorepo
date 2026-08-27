@@ -57,7 +57,7 @@ Typed in [`../../client/src/types/auth.types.ts`](../../client/src/types/auth.ty
 | HTTP 401 after refresh retry | Treat as signed out; redirect to sign-in |
 | HTTP 403 | Permission-denied UI; do not leak tenant existence |
 | HTTP 404 | Not-found / empty state for that resource |
-| HTTP 429 | Rate-limit message; disable retry until cooldown |
+| HTTP 429 | Rate-limit message; disable retry until Nest `retryAfterSeconds` cooldown |
 | Network / parse failure | `ApiErrors.unavailable` |
 
 Rules:

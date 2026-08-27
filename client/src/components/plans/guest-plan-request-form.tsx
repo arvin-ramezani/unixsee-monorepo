@@ -62,7 +62,6 @@ import {
 } from "@/lib/zod-schemas/guest-plan-request-schema";
 
 const ACCOUNT_CHECK_DEBOUNCE_MS = 450;
-const RESEND_COOLDOWN_SECONDS = 30;
 
 function isLikelyEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -223,6 +222,13 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
     setOtpPending(false);
 
     if (!result.ok) {
+      if (
+        result.errorKey === "rateLimited" &&
+        result.retryAfterSeconds != null &&
+        result.retryAfterSeconds > 0
+      ) {
+        setCooldown(result.retryAfterSeconds);
+      }
       if (result.errorKey === "rateLimited") {
         toast.error(t("otpRateLimited"));
       } else if (result.errorKey === "unavailable") {
@@ -235,7 +241,7 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
 
     setOtpChannel(channel);
     setOtpCode("");
-    setCooldown(RESEND_COOLDOWN_SECONDS);
+    setCooldown(Math.max(0, result.retryAfterSeconds));
     // toast.success(t("otpSent"));
     toast.success(`OTP: ${result.otp}`, {
       duration: Infinity,
@@ -276,7 +282,9 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
     toast.success(t("otpVerified"));
   }
 
-  async function uploadPublicFiles(files: File[]): Promise<{ fileName: string; downloadUrl: string }[]> {
+  async function uploadPublicFiles(
+    files: File[],
+  ): Promise<{ fileName: string; downloadUrl: string }[]> {
     const results: { fileName: string; downloadUrl: string }[] = [];
     for (const file of files) {
       const formData = new FormData();
@@ -289,7 +297,10 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
         if (res.ok) {
           const result = await res.json();
           if (result.data) {
-            results.push({ fileName: result.data.fileName, downloadUrl: result.data.downloadUrl });
+            results.push({
+              fileName: result.data.fileName,
+              downloadUrl: result.data.downloadUrl,
+            });
           }
         }
       } catch (err) {
@@ -320,7 +331,9 @@ export function GuestPlanRequestForm({ plan }: { plan: DashboardPlan }) {
     const result = await createPlanRequestAction({
       planId: plan.id,
       ...payload,
-      ...(uploadedAttachments.length > 0 ? { attachmentUrls: uploadedAttachments } : {}),
+      ...(uploadedAttachments.length > 0
+        ? { attachmentUrls: uploadedAttachments }
+        : {}),
     });
 
     if (!result.ok) {

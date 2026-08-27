@@ -34,6 +34,7 @@ export async function clearAuthSessionCookies() {
   cookieStore.delete(AUTH_COOKIE_NAMES.refreshToken);
   cookieStore.delete(AUTH_COOKIE_NAMES.serverClockOffset);
   cookieStore.delete(AUTH_COOKIE_NAMES.pendingLoginPhone);
+  cookieStore.delete(AUTH_COOKIE_NAMES.otpCooldownEndsAt);
 }
 
 export async function setPendingLoginPhoneCookie(phoneNumber: string) {
@@ -48,4 +49,27 @@ export async function setPendingLoginPhoneCookie(phoneNumber: string) {
 export async function clearPendingLoginPhoneCookie() {
   const cookieStore = await cookies();
   cookieStore.delete(AUTH_COOKIE_NAMES.pendingLoginPhone);
+  cookieStore.delete(AUTH_COOKIE_NAMES.otpCooldownEndsAt);
+}
+
+/** Persists Nest OTP cooldown as an absolute end time so refresh keeps remaining wait. */
+export async function setOtpCooldownEndsAtCookie(retryAfterSeconds: number) {
+  if (!Number.isFinite(retryAfterSeconds) || retryAfterSeconds <= 0) {
+    return;
+  }
+
+  const seconds = Math.ceil(retryAfterSeconds);
+  const endsAt = Math.floor(Date.now() / 1000) + seconds;
+  const cookieStore = await cookies();
+  cookieStore.set({
+    name: AUTH_COOKIE_NAMES.otpCooldownEndsAt,
+    value: String(endsAt),
+    ...AUTH_COOKIE_OPTIONS,
+    maxAge: seconds,
+  });
+}
+
+export async function clearOtpCooldownEndsAtCookie() {
+  const cookieStore = await cookies();
+  cookieStore.delete(AUTH_COOKIE_NAMES.otpCooldownEndsAt);
 }

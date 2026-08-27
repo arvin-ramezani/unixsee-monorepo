@@ -43,8 +43,6 @@ type RequestAssessmentContactTabsProps = {
   onVerifiedChannelChange: (channel: ContactOtpChannel | null) => void;
 };
 
-const RESEND_COOLDOWN_SECONDS = 30;
-
 function isLikelyEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -121,6 +119,13 @@ export function RequestAssessmentContactTabs({
     setOtpPending(false);
 
     if (!result.ok) {
+      if (
+        result.errorKey === "rateLimited" &&
+        result.retryAfterSeconds != null &&
+        result.retryAfterSeconds > 0
+      ) {
+        setCooldown(result.retryAfterSeconds);
+      }
       if (result.errorKey === "rateLimited") {
         setOtpError(t("otpRateLimited"));
       } else if (result.errorKey === "unavailable") {
@@ -133,7 +138,7 @@ export function RequestAssessmentContactTabs({
 
     setOtpChannel(channel);
     setOtpCode("");
-    setCooldown(RESEND_COOLDOWN_SECONDS);
+    setCooldown(Math.max(0, result.retryAfterSeconds));
     toast.success(`OTP: ${result.otp}`, {
       duration: Infinity,
       closeButton: true,

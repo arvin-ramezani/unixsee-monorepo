@@ -6,15 +6,17 @@ import {
   isCompleteIranNationalMobile,
   toE164IranFromNational,
 } from "@/lib/auth/iran-phone";
+import { readRetryAfterSeconds } from "@/lib/auth/otp-retry-after";
 import { setAuthSessionCookies } from "@/lib/auth/session-cookies";
 import type { AuthSessionPayload, SafeAuthUser } from "@/types/auth.types";
 
 // TODO: later opt should be send to users phone/email and remove from here
 export type GuestPlanOtpResult =
-  | { ok: true; otp?: string }
+  | { ok: true; otp?: string; retryAfterSeconds: number }
   | {
       ok: false;
       errorKey: "generic" | "unavailable" | "rateLimited" | "validation";
+      retryAfterSeconds?: number;
     };
 
 export type GuestPlanVerifyOtpResult =
@@ -29,6 +31,12 @@ export type GuestPlanVerifyOtpResult =
       ok: false;
       errorKey: "generic" | "unavailable" | "wrongCode" | "validation";
     };
+
+type OtpRequestData = {
+  delivered: boolean;
+  otp?: string;
+  retryAfterSeconds?: number;
+};
 
 function toSafeUser(payload: AuthSessionPayload): SafeAuthUser {
   return {
@@ -45,6 +53,16 @@ function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
+function mapRateLimited(
+  details: unknown,
+): Extract<GuestPlanOtpResult, { ok: false }> {
+  return {
+    ok: false,
+    errorKey: "rateLimited",
+    retryAfterSeconds: readRetryAfterSeconds(details),
+  };
+}
+
 export async function requestGuestPlanOtpAction(input: {
   phone?: string;
   email?: string;
@@ -55,20 +73,17 @@ export async function requestGuestPlanOtpAction(input: {
   if (phone && isCompleteIranNationalMobile(phone)) {
     const phoneNumber = toE164IranFromNational(phone);
     try {
-      const response = await publicFetch<{ delivered: boolean; otp?: string }>(
-        "/auth/otp/request",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            phoneNumber,
-            context: "LOGIN",
-          }),
-        },
-      );
+      const response = await publicFetch<OtpRequestData>("/auth/otp/request", {
+        method: "POST",
+        body: JSON.stringify({
+          phoneNumber,
+          context: "LOGIN",
+        }),
+      });
 
       if (!response.success) {
         if (response.statusCode === 429) {
-          return { ok: false, errorKey: "rateLimited" };
+          return mapRateLimited(response.error?.details);
         }
         if (response.statusCode === 503) {
           return { ok: false, errorKey: "unavailable" };
@@ -76,7 +91,12 @@ export async function requestGuestPlanOtpAction(input: {
         return { ok: false, errorKey: "generic" };
       }
 
-      return { ok: true, otp: response.data?.otp };
+      return {
+        ok: true,
+        otp: response.data?.otp,
+        retryAfterSeconds:
+          readRetryAfterSeconds(response.data?.retryAfterSeconds) ?? 0,
+      };
     } catch {
       return { ok: false, errorKey: "unavailable" };
     }
@@ -84,20 +104,17 @@ export async function requestGuestPlanOtpAction(input: {
 
   if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     try {
-      const response = await publicFetch<{ delivered: boolean; otp?: string }>(
-        "/auth/otp/request",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: normalizeEmail(email),
-            context: "LOGIN",
-          }),
-        },
-      );
+      const response = await publicFetch<OtpRequestData>("/auth/otp/request", {
+        method: "POST",
+        body: JSON.stringify({
+          email: normalizeEmail(email),
+          context: "LOGIN",
+        }),
+      });
 
       if (!response.success) {
         if (response.statusCode === 429) {
-          return { ok: false, errorKey: "rateLimited" };
+          return mapRateLimited(response.error?.details);
         }
         if (response.statusCode === 503) {
           return { ok: false, errorKey: "unavailable" };
@@ -105,7 +122,12 @@ export async function requestGuestPlanOtpAction(input: {
         return { ok: false, errorKey: "generic" };
       }
 
-      return { ok: true, otp: response.data?.otp };
+      return {
+        ok: true,
+        otp: response.data?.otp,
+        retryAfterSeconds:
+          readRetryAfterSeconds(response.data?.retryAfterSeconds) ?? 0,
+      };
     } catch {
       return { ok: false, errorKey: "unavailable" };
     }

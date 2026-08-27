@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { OtpForm } from "@/components/auth/otp-form";
 import { redirect } from "@/i18n/navigation";
+import { getOtpCooldownRemainingSeconds } from "@/lib/auth/server-cookie";
 import type { IdentifierMode } from "@/lib/zod-schemas/auth-schemas";
 import type { LocaleType } from "@/types/intl.types";
 
@@ -37,11 +38,14 @@ export default async function OtpPage({ params, searchParams }: Props) {
   }
 
   const display =
-    query.display?.trim() ||
-    query.identifier?.trim() ||
-    "+98 ***";
+    query.display?.trim() || query.identifier?.trim() || "+98 ***";
+  const initialCooldownSeconds = await getOtpCooldownRemainingSeconds();
 
   return (
-    <OtpForm display={display} returnTo={query.returnTo} />
+    <OtpForm
+      display={display}
+      returnTo={query.returnTo}
+      initialCooldownSeconds={initialCooldownSeconds}
+    />
   );
 }

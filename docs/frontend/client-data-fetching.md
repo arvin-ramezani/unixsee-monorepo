@@ -38,6 +38,8 @@ redesign OTP, refresh, or invent DTOs here.
 | Access | Zustand (memory, per-request store) | Browser → Nest Bearer via `client-fetch` | Yes (in-memory only) |
 | Refresh | HTTP-only cookie | Session continuity; refresh BFF / server refresh | No |
 | Server clock offset | HTTP-only cookie (or equivalent) | Expiry buffer vs Nest time | No |
+| Pending login phone | HTTP-only cookie | OTP verify / resend target | No |
+| OTP cooldown end | HTTP-only cookie | Absolute end of Nest resend wait (`retryAfterSeconds`) so `/otp` refresh keeps remaining seconds | No |
 
 Never persist access or refresh in `localStorage` / `sessionStorage`. Refresh
 must never appear in browser JSON responses from the refresh Route Handler.
@@ -152,9 +154,11 @@ privileged data helper. Do not claim Proxy “protects” Server Actions.
 ## Implementation status
 
 **Layer 1 (session):** phone OTP request/verify (sign-in and phone sign-up);
-Nest owns OTP delivery (email mock today / SMS later); hybrid cookies + Zustand
-access seed, refresh Route Handler, proxy dashboard gate, `GET /users/me` via
-`server-fetch`, boot reseed of memory access token via `/api/auth/refresh`.
+Nest owns OTP delivery (email mock today / SMS later) and resend cooldown
+(`data.retryAfterSeconds` / `429` `error.details.retryAfterSeconds`); hybrid
+cookies + Zustand access seed, refresh Route Handler, proxy dashboard gate,
+`GET /users/me` via `server-fetch`, boot reseed of memory access token via
+`/api/auth/refresh`.
 
 **Layer 2 (domain):** conventions in
 [`client-domain-data-fetching.md`](./client-domain-data-fetching.md) — transport

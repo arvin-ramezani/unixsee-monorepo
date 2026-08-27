@@ -78,9 +78,11 @@ Body:
 |---|---|
 | `phoneNumber` | E.164 (`+` + country + national) |
 
-Response `data`: `{ delivered: true }`.
+Response `data`: `{ delivered: true, retryAfterSeconds }` where
+`retryAfterSeconds` is `OTP_RETRY_TIME` minutes × 60.
 
-Errors: `429` retry window; `503` delivery unavailable; `409 ACCOUNT_EXISTS` if
+Errors: `429` retry window (`error.details.retryAfterSeconds` + `Retry-After`);
+`503` delivery unavailable; `409 ACCOUNT_EXISTS` if
 another account owns the number.
 
 ### `POST /api/v1/users/me/contacts/phone/otp/verify`
@@ -99,7 +101,8 @@ Body: `{ email }`.
 
 OTP stored on `Otp.identifier` with context `EMAIL_VERIFY`.
 
-Response `data`: `{ delivered: true }`.
+Response `data`: `{ delivered: true, retryAfterSeconds }` (same cooldown field as
+phone OTP request).
 
 ### `POST /api/v1/users/me/contacts/email/otp/verify`
 

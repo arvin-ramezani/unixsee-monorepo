@@ -99,6 +99,15 @@ export class OtpService {
   ) {}
 
   /**
+   * Full per-target reissue cooldown in seconds (`OTP_RETRY_TIME` minutes).
+   * Returned on successful OTP request so UIs can seed resend timers without
+   * inventing a client-side default.
+   */
+  getConfiguredRetryAfterSeconds(): number {
+    return this.config.get('app', { infer: true }).otp.retryTimeMinutes * 60;
+  }
+
+  /**
    * Issues a code for a phone number, replacing any outstanding challenge.
    *
    * Returns the challenge and the plaintext code; only the digest is stored.
@@ -494,9 +503,12 @@ export class OtpService {
     });
   }
 
-  private rateLimited(message: string): HttpException {
+  private rateLimited(
+    message: string,
+    details?: { retryAfterSeconds: number },
+  ): HttpException {
     return new HttpException(
-      { code: 'RATE_LIMITED', message },
+      { code: 'RATE_LIMITED', message, details },
       HttpStatus.TOO_MANY_REQUESTS,
     );
   }
@@ -586,9 +598,12 @@ export class OtpService {
     this.logger.warn('otp.retry.rejected', {
       otpId: existing.id,
       wait,
+      retryAfterSeconds: retryAllowed.retryAfterSeconds,
     });
 
-    throw this.rateLimited(`Please wait ${wait}`);
+    throw this.rateLimited(`Please wait ${wait}`, {
+      retryAfterSeconds: retryAllowed.retryAfterSeconds,
+    });
   }
 
   /**
@@ -634,7 +649,7 @@ export class OtpService {
   private isRetryAllowed(
     lastRequestedTime: Date,
     retryTime: number,
-  ): true | { minutes: number; seconds: number } {
+  ): true | { minutes: number; seconds: number; retryAfterSeconds: number } {
     const now = new Date();
     const retryDate = new Date(lastRequestedTime);
     retryDate.setMinutes(retryDate.getMinutes() + retryTime);
@@ -643,11 +658,11 @@ export class OtpService {
       return true;
     }
 
-    // remaining time
     const diffMs = retryDate.getTime() - now.getTime();
-    const minutes = Math.floor(diffMs / 1000 / 60);
-    const seconds = Math.floor((diffMs / 1000) % 60);
+    const retryAfterSeconds = Math.max(1, Math.ceil(diffMs / 1000));
+    const minutes = Math.floor(retryAfterSeconds / 60);
+    const seconds = retryAfterSeconds % 60;
 
-    return { minutes, seconds };
+    return { minutes, seconds, retryAfterSeconds };
   }
 }

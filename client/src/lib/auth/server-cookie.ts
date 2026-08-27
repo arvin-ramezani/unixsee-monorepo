@@ -17,6 +17,18 @@ export async function getPendingLoginPhoneFromCookies() {
   return cookieStore.get(AUTH_COOKIE_NAMES.pendingLoginPhone)?.value ?? null;
 }
 
+export async function getOtpCooldownRemainingSeconds(): Promise<number> {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(AUTH_COOKIE_NAMES.otpCooldownEndsAt)?.value;
+  const endsAt = Number(raw);
+
+  if (!Number.isFinite(endsAt) || endsAt <= 0) {
+    return 0;
+  }
+
+  return Math.max(0, endsAt - Math.floor(Date.now() / 1000));
+}
+
 export async function getServerClockOffsetInSeconds(): Promise<number> {
   const cookieStore = await cookies();
   const value = cookieStore.get(AUTH_COOKIE_NAMES.serverClockOffset)?.value;

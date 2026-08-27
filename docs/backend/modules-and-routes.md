@@ -84,6 +84,13 @@ behind carrier NAT remain independent. Verify routes also keep an independent,
 normalized phone/email target budget. Any exceeded window answers
 `429 RATE_LIMITED` with `Retry-After`.
 
+Successful OTP **request** responses include
+`data.retryAfterSeconds` (= `OTP_RETRY_TIME` minutes × 60) so UIs seed the
+resend cooldown from Nest rather than a hardcoded client timer. A per-target
+issuance cooldown rejection also returns
+`error.details.retryAfterSeconds` (remaining wait) and sets `Retry-After` when
+the header is not already present.
+
 Each real verification attempt is atomically reserved in the database before
 bcrypt and cannot exceed the configured challenge ceiling under concurrency.
 Verify failures always answer `401 OTP_VERIFICATION_FAILED` regardless of the

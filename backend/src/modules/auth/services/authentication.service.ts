@@ -208,9 +208,11 @@ export class AuthenticationService {
       // The code is echoed only so the mocked delivery flow stays usable
       // without an SMS provider. Production never returns it, so a leak here
       // cannot reach real users while the mock remains in place.
+      const retryAfterSeconds =
+        this.otpService.getConfiguredRetryAfterSeconds();
       return this.isDeliveryMocked()
-        ? { delivered: true as const, otp: issued.code }
-        : { delivered: true as const };
+        ? { delivered: true as const, otp: issued.code, retryAfterSeconds }
+        : { delivered: true as const, retryAfterSeconds };
     } catch (error) {
       if (!isClientFailure(error)) {
         this.logger.error('auth.otp.create_failed', error as Error, {
@@ -247,7 +249,10 @@ export class AuthenticationService {
         context,
         otpId: issued.challenge.id,
       });
-      return { delivered: true as const };
+      return {
+        delivered: true as const,
+        retryAfterSeconds: this.otpService.getConfiguredRetryAfterSeconds(),
+      };
     } catch (error) {
       if (!isClientFailure(error)) {
         this.logger.error('auth.otp.email.create_failed', error as Error, {
@@ -431,7 +436,10 @@ export class AuthenticationService {
       userId,
       otpId: otp.challenge.id,
     });
-    return { delivered: true as const };
+    return {
+      delivered: true as const,
+      retryAfterSeconds: this.otpService.getConfiguredRetryAfterSeconds(),
+    };
   }
 
   async verifyMonitoringAccessOtp({

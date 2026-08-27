@@ -9,6 +9,9 @@ export const AUTH_COOKIE_NAMES = {
   pendingLoginPhone:
     process.env.PHONE_NUMBER_TO_LOGIN_KEY?.trim() ||
     "unixsee_pending_login_phone",
+  otpCooldownEndsAt:
+    process.env.OTP_COOLDOWN_ENDS_AT_COOKIE_NAME?.trim() ||
+    "unixsee_otp_cooldown_ends_at",
 } as const;
 
 export const AUTH_COOKIE_OPTIONS = {
