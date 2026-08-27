@@ -378,25 +378,25 @@
         "label": "Plans",
         "href": "plans"
       },
-      "monitoring": {
-        "label": "Monitoring",
-        "href": "monitoring"
+      "features": {
+        "label": "Features",
+        "href": "features"
       },
-      "protection": {
-        "label": "Protection",
-        "href": "protection"
+      "management": {
+        "label": "Management",
+        "href": "management"
       },
-      "managedServer": {
-        "label": "Managed Server",
-        "href": "managed-hosting"
+      "assessment": {
+        "label": "Assessment",
+        "href": "assessment"
       },
-      "connect": {
-        "label": "Connect",
-        "href": "connect"
+      "comparison": {
+        "label": "Comparison",
+        "href": "comparison"
       },
-      "performance": {
-        "label": "Performance",
-        "href": "performance"
+      "transfer": {
+        "label": "Transfer",
+        "href": "transfer"
       },
       "faq": {
         "label": "FAQ",

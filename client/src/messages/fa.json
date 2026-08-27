@@ -378,25 +378,25 @@
         "label": "پلن‌ها",
         "href": "plans"
       },
-      "monitoring": {
-        "label": "مانیتورینگ",
-        "href": "monitoring"
+      "features": {
+        "label": "امکانات",
+        "href": "features"
       },
-      "protection": {
-        "label": "محافظت",
-        "href": "protection"
+      "management": {
+        "label": "مدیریت",
+        "href": "management"
       },
-      "managedServer": {
-        "label": "سرور مدیریت‌ شده",
-        "href": "managed-hosting"
+      "assessment": {
+        "label": "بررسی",
+        "href": "assessment"
       },
-      "connect": {
-        "label": "ارتباط",
-        "href": "connect"
+      "comparison": {
+        "label": "مقایسه",
+        "href": "comparison"
       },
-      "performance": {
-        "label": "عملکرد",
-        "href": "performance"
+      "transfer": {
+        "label": "انتقال",
+        "href": "transfer"
       },
       "faq": {
         "label": "سوالات متداول",

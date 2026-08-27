@@ -15,6 +15,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
   HOME_PAGE_SECTION_IDS,
+  MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS,
   MIGRATION_PAGE_NAV_ITEMS_KEYS,
 } from "@/lib/constants";
 import { useActiveSectionHash } from "@/hooks/use-active-section-hash";
@@ -25,6 +26,7 @@ import { FloatingNavEyeMark } from "@/components/common/animated-icons/floating-
 export type BottomFloatingNavigationProps = object;
 
 const MIGRATION_PAGE_PATH = "migration-optimization";
+const MANAGED_SERVER_PAGE_PATH = "managed-woocommerce-server";
 const ITEM_REVEAL_INTERVAL_SECONDS = 0.07;
 const SPECIALS_ITEM_REVEAL_INTERVAL_SECONDS = 0.15;
 const WHEEL_DELTA_LINE = 1;
@@ -49,6 +51,9 @@ const SPECIAL_LINKS = [
 
 export default function BottomFloatingNavigation({}: BottomFloatingNavigationProps) {
   const tMigrationNav = useTranslations("Layout.MigrationSecondaryNavigation");
+  const tManagedServerNav = useTranslations(
+    "Layout.ManagedServerSecondaryNavigation",
+  );
   const tNavigation = useTranslations("Layout.HomeSecondaryNavigation");
   const tSpecialNavigation = useTranslations("Layout.SpecialNavigation");
 
@@ -64,11 +69,18 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
       }));
     }
 
+    if (pathname.includes(MANAGED_SERVER_PAGE_PATH)) {
+      return MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS.map((key) => ({
+        label: tManagedServerNav(`${key}.label`),
+        href: tManagedServerNav(`${key}.href`),
+      }));
+    }
+
     return HOME_PAGE_SECTION_IDS.map((key) => ({
       label: tNavigation(`${key}.label`),
       href: tNavigation(`${key}.href`),
     }));
-  }, [tMigrationNav, tNavigation, pathname]);
+  }, [tMigrationNav, tManagedServerNav, tNavigation, pathname]);
 
   const { activeHref, scrollToSection } = useActiveSectionHash(navItems, {});
 

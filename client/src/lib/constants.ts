@@ -20,11 +20,11 @@ export const WOOCOMMERCE_DESIGN_PAGE_NAV_ITEMS_KEYS = [
 
 export const MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS = [
   "plans",
-  "monitoring",
-  "protection",
-  "managedServer",
-  "connect",
-  "performance",
+  "features",
+  "management",
+  "assessment",
+  "comparison",
+  "transfer",
   "faq",
 ] as const;
 
