@@ -289,3 +289,65 @@ export const AgentCommandStatus = {
 } as const
 
 export type AgentCommandStatus = (typeof AgentCommandStatus)[keyof typeof AgentCommandStatus]
+
+
+export const BillingItemKind = {
+  MANAGED_PLAN: 'MANAGED_PLAN',
+  COMPLEMENTARY_SERVICE: 'COMPLEMENTARY_SERVICE'
+} as const
+
+export type BillingItemKind = (typeof BillingItemKind)[keyof typeof BillingItemKind]
+
+
+export const BillingInterval = {
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY',
+  YEARLY: 'YEARLY',
+  NONE: 'NONE'
+} as const
+
+export type BillingInterval = (typeof BillingInterval)[keyof typeof BillingInterval]
+
+
+export const BillingItemStatus = {
+  SCHEDULED: 'SCHEDULED',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type BillingItemStatus = (typeof BillingItemStatus)[keyof typeof BillingItemStatus]
+
+
+export const BillingCommercialState = {
+  ESTIMATED: 'ESTIMATED',
+  QUOTED: 'QUOTED',
+  AGREED: 'AGREED',
+  INVOICED_EXTERNALLY: 'INVOICED_EXTERNALLY',
+  SETTLED: 'SETTLED'
+} as const
+
+export type BillingCommercialState = (typeof BillingCommercialState)[keyof typeof BillingCommercialState]
+
+
+export const BillingCommercialModel = {
+  FIXED_SCOPE: 'FIXED_SCOPE',
+  RECURRING_RETAINER: 'RECURRING_RETAINER',
+  QUOTA_PACKAGE: 'QUOTA_PACKAGE',
+  MILESTONE_PROJECT: 'MILESTONE_PROJECT',
+  CUSTOM_QUOTE: 'CUSTOM_QUOTE'
+} as const
+
+export type BillingCommercialModel = (typeof BillingCommercialModel)[keyof typeof BillingCommercialModel]
+
+
+export const BillingPeriodReason = {
+  ACTIVATION: 'ACTIVATION',
+  RENEWAL: 'RENEWAL',
+  PLAN_REPLACEMENT: 'PLAN_REPLACEMENT',
+  ADJUSTMENT: 'ADJUSTMENT'
+} as const
+
+export type BillingPeriodReason = (typeof BillingPeriodReason)[keyof typeof BillingPeriodReason]

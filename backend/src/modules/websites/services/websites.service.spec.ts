@@ -2,7 +2,10 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
+import { BillingInterval } from '#/generated/prisma/enums.js';
+import { BillingService } from '#/modules/billing/services/billing.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 
 import { WebsitesService } from './websites.service.js';
@@ -31,19 +34,41 @@ describe('WebsitesService plan assignment', () => {
       findUnique: vi.fn(),
       update: vi.fn(),
     },
+    plan: {
+      findUnique: vi.fn(),
+    },
+    $transaction: vi.fn(),
   };
   const tenantAccess = {
     getAccessibleTenantIds: vi.fn(),
   };
+  const billing = {
+    createManagedPlanItem: vi.fn(),
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    prisma.$transaction.mockImplementation(
+      async (callback: (tx: typeof prisma) => Promise<unknown>) =>
+        callback(prisma),
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WebsitesService,
         { provide: PrismaService, useValue: prisma },
         { provide: TenantAccessService, useValue: tenantAccess },
+        {
+          provide: CommercialAuthorizationService,
+          useValue: {
+            assertAuthorizedOrConfirmed: vi.fn().mockResolvedValue({
+              principalUserId: 'user-1',
+              authorized: true,
+              overridden: false,
+            }),
+          },
+        },
+        { provide: BillingService, useValue: billing },
       ],
     }).compile();
 
@@ -65,16 +90,25 @@ describe('WebsitesService plan assignment', () => {
         planActivatedAt: null,
       }),
     });
+    expect(billing.createManagedPlanItem).not.toHaveBeenCalled();
   });
 
   it('activates a selected plan only when explicitly requested', async () => {
     prisma.website.create.mockResolvedValue(website(new Date()));
+    prisma.plan.findUnique.mockResolvedValue({
+      id: PLAN_ID,
+      nameFa: 'پلن',
+      nameEn: 'Plan',
+      code: 'CORE',
+    });
 
     await service.createAdmin({
       tenantId: TENANT_ID,
       domain: 'example.com',
       planId: PLAN_ID,
       activatePlan: true,
+      amount: 1_000_000,
+      interval: BillingInterval.YEARLY,
     });
 
     expect(prisma.website.create).toHaveBeenCalledWith({
@@ -83,6 +117,7 @@ describe('WebsitesService plan assignment', () => {
         planActivatedAt: expect.any(Date),
       }),
     });
+    expect(billing.createManagedPlanItem).toHaveBeenCalledOnce();
   });
 
   it('rejects activation when no plan is selected', async () => {
@@ -90,6 +125,19 @@ describe('WebsitesService plan assignment', () => {
       service.createAdmin({
         tenantId: TENANT_ID,
         domain: 'example.com',
+        activatePlan: true,
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+
+    expect(prisma.website.create).not.toHaveBeenCalled();
+  });
+
+  it('rejects activation without commercial terms', async () => {
+    await expect(
+      service.createAdmin({
+        tenantId: TENANT_ID,
+        domain: 'example.com',
+        planId: PLAN_ID,
         activatePlan: true,
       }),
     ).rejects.toBeInstanceOf(BadRequestException);

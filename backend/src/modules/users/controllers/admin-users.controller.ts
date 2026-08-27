@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsOptional,
@@ -50,6 +51,10 @@ class AdminCreateUserDto {
   @IsOptional()
   @IsString()
   locale?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  authorized?: boolean;
 }
 
 class AdminUpdateUserDto {
@@ -73,6 +78,10 @@ class AdminUpdateUserDto {
   @IsOptional()
   @IsString()
   locale?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  authorized?: boolean;
 }
 
 class AccountSecurityActionDto {
@@ -86,7 +95,10 @@ class AccountSecurityActionDto {
 @UseGuards(RolesGuard)
 @Roles(Role.ADMIN, Role.OPERATOR)
 export class AdminUsersController {
-  constructor(private readonly usersService: UsersService, private readonly tenantsService: TenantsService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly tenantsService: TenantsService,
+  ) {}
 
   @Get()
   async list(
@@ -118,7 +130,12 @@ export class AdminUsersController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: AdminCreateUserDto) {
     const data = await this.usersService.createAdmin(body);
-    return ApiResponseBuilder.created(data);
+    await this.tenantsService.ensurePersonalTenantForUser(
+      data.id,
+      data.fullName ?? data.phoneNumber ?? undefined,
+    );
+    const withMemberships = await this.usersService.getAdmin(data.id);
+    return ApiResponseBuilder.created(withMemberships);
   }
 
   @Patch(':id')

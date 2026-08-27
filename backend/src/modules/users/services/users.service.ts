@@ -127,6 +127,7 @@ export class UsersService {
     locale?: string;
     phoneVerifiedAt?: Date | null;
     emailVerifiedAt?: Date | null;
+    authorized?: boolean;
   }) {
     const phoneNumber = input.phoneNumber?.trim() || null;
     const email = input.email?.trim().toLowerCase() || null;
@@ -139,10 +140,11 @@ export class UsersService {
       data: {
         phoneNumber,
         email,
+        role: input.role ?? Role.TENANT,
+        authorized: input.authorized ?? false,
         ...(input.password && { password: input.password }),
         ...(input.fullName && { fullName: input.fullName }),
         ...(input.username && { username: input.username }),
-        ...(input.role && { role: input.role }),
         ...(input.locale && { locale: input.locale }),
         ...(input.phoneVerifiedAt !== undefined && {
           phoneVerifiedAt: input.phoneVerifiedAt,
@@ -160,6 +162,7 @@ export class UsersService {
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
+      authorized: user.authorized,
     });
 
     return user;
@@ -492,10 +495,12 @@ export class UsersService {
     username?: string;
     role?: Role;
     locale?: string;
+    authorized?: boolean;
   }) {
     return this.create({
       ...input,
-      role: input.role ?? Role.USER,
+      role: input.role ?? Role.TENANT,
+      authorized: input.authorized ?? false,
     });
   }
 
@@ -507,9 +512,14 @@ export class UsersService {
       username?: string | null;
       role?: Role;
       locale?: string;
+      authorized?: boolean;
     },
   ) {
     await this.getAdmin(userId);
+    const previous = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { authorized: true },
+    });
     const updated = await this.prisma.user.update({
       where: { id: userId },
       data,
@@ -518,6 +528,17 @@ export class UsersService {
         memberships: { include: { tenant: true } },
       },
     });
+    if (
+      data.authorized !== undefined &&
+      previous &&
+      previous.authorized !== data.authorized
+    ) {
+      this.logger.log('user.authorized_toggled', {
+        userId,
+        previous: previous.authorized,
+        next: data.authorized,
+      });
+    }
     return this.toAdminUserView(updated);
   }
 

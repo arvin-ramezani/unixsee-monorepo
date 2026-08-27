@@ -2464,6 +2464,10 @@
       "title": "Tickets | Unixsee",
       "description": "Create and track requests across Unixsee services."
     },
+    "billing": {
+      "title": "Billing | Unixsee",
+      "description": "Review agreed plan and service terms, amounts, and renewal dates."
+    },
     "unixseeMessages": {
       "title": "Unixsee messages | Unixsee",
       "description": "View Unixsee messages sent to your account."
@@ -5433,6 +5437,7 @@
       "dueDate": "Due date",
       "cycleLabel": "Billing cycle",
       "plan": "Plan",
+      "amount": "Agreed amount",
       "cycle": {
         "monthly": "Monthly",
         "quarterly": "Quarterly",
@@ -5441,6 +5446,7 @@
       "renew": "Renew service",
       "renewing": "Renewing service...",
       "unavailable": "Online renewal is currently unavailable for this service.",
+      "viewAll": "View all billing",
       "dialog": {
         "title": "Renew {name}",
         "description": "Renew this service for {amount} ({cycle}). The new due date will be {date}.",
@@ -5454,6 +5460,65 @@
       "title": "Need help recovering this website?",
       "description": "Open a support ticket when the issue cannot be resolved safely with the actions above.",
       "unavailableDescription": "The website is currently unavailable. Open a ticket to preserve the website context and request help."
+    }
+  },
+  "Billing": {
+    "title": "Billing",
+    "description": "Agreed plan and service terms across your websites. Online payment and renewal are not available yet.",
+    "searchHeader": "Search billing, websites, and tickets...",
+    "listTitle": "Commercial terms",
+    "filteredByWebsite": "Showing billing for one website. Clear filters from the browser address bar to see all.",
+    "kinds": {
+      "plan": "Managed plan",
+      "service": "Complementary service"
+    },
+    "tabs": {
+      "label": "Billing kind",
+      "all": "All",
+      "MANAGED_PLAN": "Managed plans",
+      "COMPLEMENTARY_SERVICE": "Complementary"
+    },
+    "summary": {
+      "activePlans": "Active plans",
+      "complementary": "Complementary services",
+      "expired": "Expired"
+    },
+    "fields": {
+      "website": "Website",
+      "amount": "Agreed amount",
+      "interval": "Billing cycle",
+      "renews": "Renews / due",
+      "periodEnd": "Period end",
+      "notApplicable": "Not applicable"
+    },
+    "intervals": {
+      "MONTHLY": "Monthly",
+      "QUARTERLY": "Quarterly",
+      "YEARLY": "Yearly",
+      "NONE": "One-time"
+    },
+    "statuses": {
+      "ACTIVE": "Active",
+      "SCHEDULED": "Scheduled",
+      "PAUSED": "Paused",
+      "EXPIRED": "Expired"
+    },
+    "states": {
+      "loading": "Loading billing",
+      "emptyTitle": "No billing terms yet",
+      "emptyDescription": "When Unixsee activates a managed plan or complementary service, agreed amounts and renewal dates appear here.",
+      "emptyFilteredTitle": "No matching billing items",
+      "emptyFilteredDescription": "Try another filter, or open all billing to see every commercial term on your account.",
+      "viewWebsites": "View websites",
+      "requestPlan": "Request a plan",
+      "errorTitle": "Billing could not be loaded",
+      "errorDescription": "We could not load your commercial terms. Please try again.",
+      "retry": "Try again",
+      "clearFilters": "Show all billing"
+    },
+    "help": {
+      "renewalNote": "Online renewal and payment are not available yet. Contact Unixsee support if you have a commercial question.",
+      "openTicket": "Open a ticket"
     }
   }
 }

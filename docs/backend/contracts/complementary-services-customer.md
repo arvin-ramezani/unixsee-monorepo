@@ -61,8 +61,11 @@ optional `Idempotency-Key` header.
 `POST /api/v1/admin/service-assignments` requires an accepted request.
 
 - Assignment is separate from request acceptance.
+- **Proposed (1A):** when the commercial principal has `authorized === false`,
+  body must include `confirmUnauthorized: true` or Nest rejects. Soft stamp
+  `NOT_AUTHORIZED_AT_ACTIVATION` may still be recorded for history.
 - A domain-only request may activate with
-  `NOT_AUTHORIZED_AT_ACTIVATION`.
+  `NOT_AUTHORIZED_AT_ACTIVATION` (legacy soft signal; prefer explicit override).
 - Tenant authorization later reconciles deferred requests, reusing or creating
   one planless external Website and linking the request.
 - Acceptance, reconciliation, and assignment never set `planId` or

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import {
   DiscoveryStatus,
   WebsiteManagementCoverage,
@@ -16,7 +17,10 @@ import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 export class DiscoveriesService {
   private readonly logger = createAppLogger(DiscoveriesService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly commercialAuth: CommercialAuthorizationService,
+  ) {}
 
   async list(params?: {
     status?: DiscoveryStatus;
@@ -50,7 +54,13 @@ export class DiscoveriesService {
 
   async assign(
     id: string,
-    input: { tenantId: string; userId?: string; planId?: string },
+    input: {
+      tenantId: string;
+      userId?: string;
+      planId?: string;
+      confirmUnauthorized?: boolean;
+      actorId: string;
+    },
   ) {
     const discovery = await this.get(id);
     if (!input.tenantId) {
@@ -63,6 +73,16 @@ export class DiscoveriesService {
     if (!tenant) {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
+
+    await this.commercialAuth.assertAuthorizedOrConfirmed({
+      tenantId: input.tenantId,
+      preferredUserId: input.userId,
+      confirmUnauthorized: input.confirmUnauthorized,
+      actorId: input.actorId,
+      action: 'discovery.assign.unauthorized_override',
+      entityType: 'WebsiteDiscovery',
+      entityId: id,
+    });
 
     let vpsNodeId = discovery.vpsNodeId;
     if (!vpsNodeId) {

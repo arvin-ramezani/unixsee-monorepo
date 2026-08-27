@@ -7,9 +7,9 @@ import { WebsiteDetailsView } from "@/components/websites/website-details-view";
 import type { Locale } from "@/i18n/routing";
 import { serverFetch } from "@/lib/api/server-fetch";
 import {
-  getWebsiteServiceDetails,
   mapBackendWebsiteToServiceDetails,
-  WebsiteServiceDetails,
+  mapCustomerBillingToPanel,
+  type CustomerWebsiteBillingResponse,
   websiteServiceDetailsIds,
 } from "@/lib/data/websites/website-service-details";
 
@@ -19,23 +19,6 @@ interface WebsiteDetailsPageProps {
 
 export function generateStaticParams() {
   return websiteServiceDetailsIds.map((id) => ({ id }));
-}
-
-async function resolveWebsite(id: string) {
-  let website;
-  try {
-    const response = await serverFetch<BackendWebsiteDetail>(
-      `/websites/${id}`,
-      { method: "GET" },
-    );
-    if (response.success && response.data) {
-      // website = mapBackendWebsiteToServiceDetails(response.data);
-      website = response.data;
-    }
-  } catch {
-    // Backend unavailable
-  }
-  return website;
 }
 
 /** Shape returned by the backend GET /websites/:id endpoint. */
@@ -55,6 +38,33 @@ type BackendWebsiteDetail = {
   vpsNode?: { server?: { controlPanelUrl?: string | null } | null } | null;
   ssl?: unknown;
 };
+
+async function resolveWebsite(id: string) {
+  try {
+    const [websiteResponse, billingResponse] = await Promise.all([
+      serverFetch<BackendWebsiteDetail>(`/websites/${id}`, { method: "GET" }),
+      serverFetch<CustomerWebsiteBillingResponse>(`/websites/${id}/billing`, {
+        method: "GET",
+      }),
+    ]);
+
+    if (!websiteResponse.success || !websiteResponse.data) {
+      return null;
+    }
+
+    const mapped = mapBackendWebsiteToServiceDetails(websiteResponse.data);
+    const billing = billingResponse.success
+      ? mapCustomerBillingToPanel(billingResponse.data)
+      : null;
+
+    return {
+      ...mapped,
+      billing,
+    };
+  } catch {
+    return null;
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -78,7 +88,6 @@ export default async function WebsiteDetailsPage({
   setRequestLocale(locale);
 
   const website = await resolveWebsite(id);
-  console.log(website);
   if (!website) notFound();
 
   const t = await getTranslations("WebsiteServiceDetails");

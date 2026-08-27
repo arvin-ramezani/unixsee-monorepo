@@ -250,11 +250,20 @@ export function WebsiteDetailsView({
       return;
     }
 
-    setWebsite(result.website);
+    if ("website" in result) {
+      setWebsite(result.website);
+      toast.success(
+        `پلن ${result.website.service.plan} تا ${formatWebsiteRenewalDate(result.website.service.renewalAt)} تمدید شد.`,
+      );
+    } else {
+      const renewsAt = result.data.renewsAt ?? result.data.periodEndsAt;
+      toast.success(
+        renewsAt
+          ? `پلن تا ${formatWebsiteRenewalDate(renewsAt.slice(0, 10))} تمدید شد.`
+          : "دوره تجاری تمدید شد.",
+      );
+    }
     setRenewOpen(false);
-    toast.success(
-      `پلن ${result.website.service.plan} تا ${formatWebsiteRenewalDate(result.website.service.renewalAt)} تمدید شد.`,
-    );
     router.refresh();
   };
 
@@ -276,11 +285,15 @@ export function WebsiteDetailsView({
       return;
     }
 
-    setWebsite(result.website);
+    if ("website" in result) {
+      setWebsite(result.website);
+      toast.success(
+        `پلن فعال وب‌سایت به ${result.website.service.plan} تغییر کرد.`,
+      );
+    } else {
+      toast.success("پلن فعال جایگزین شد.");
+    }
     setChangeOpen(false);
-    toast.success(
-      `پلن فعال وب‌سایت به ${result.website.service.plan} تغییر کرد.`,
-    );
     router.refresh();
   };
 
@@ -585,14 +598,21 @@ export function WebsiteDetailsView({
               <div className="mt-1 flex items-center gap-2">
                 <Select
                   value={managementCoverage}
-                  onValueChange={(value) => { if (value) setManagementCoverage(value as typeof managementCoverage); }}
+                  onValueChange={(value) => {
+                    if (value)
+                      setManagementCoverage(value as typeof managementCoverage);
+                  }}
                 >
                   <SelectTrigger className="w-full" aria-label="پوشش مدیریتی">
                     <SelectValue>{selectedCoverageLabel}</SelectValue>
                   </SelectTrigger>
                   <SelectContent alignItemWithTrigger={false}>
-                    <SelectItem value="UNIXSEE_MANAGED">مدیریت شده توسط یونیکسی</SelectItem>
-                    <SelectItem value="EXTERNAL_INFRASTRUCTURE">زیرساخت خارجی</SelectItem>
+                    <SelectItem value="UNIXSEE_MANAGED">
+                      مدیریت شده توسط یونیکسی
+                    </SelectItem>
+                    <SelectItem value="EXTERNAL_INFRASTRUCTURE">
+                      زیرساخت خارجی
+                    </SelectItem>
                     <SelectItem value="UNCLASSIFIED">نامشخص</SelectItem>
                   </SelectContent>
                 </Select>
@@ -601,7 +621,10 @@ export function WebsiteDetailsView({
                   size="sm"
                   variant="outline"
                   className="shrink-0"
-                  disabled={managementCoverage === (initialWebsite.managementCoverage ?? "UNCLASSIFIED")}
+                  disabled={
+                    managementCoverage ===
+                    (initialWebsite.managementCoverage ?? "UNCLASSIFIED")
+                  }
                   onClick={handleSaveManagementCoverage}
                 >
                   ذخیره

@@ -9,6 +9,7 @@ import {
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { IdempotencyService } from '#/common/idempotency/idempotency.service.js';
 import { createAppLogger } from '#/common/logging/app-logger.js';
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import type { Prisma } from '#/generated/prisma/client.js';
 import {
@@ -17,10 +18,14 @@ import {
   ComplementaryRequestStatus,
   ComplementaryWebsiteResolutionState,
   ComplementaryWebsiteTargetType,
+  BillingCommercialModel,
+  BillingCommercialState,
+  BillingInterval,
   MembershipRole,
   WebsiteLifecycleStatus,
   WebsiteManagementCoverage,
 } from '#/generated/prisma/enums.js';
+import { BillingService } from '#/modules/billing/services/billing.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 import { normalizeWebsiteDomain } from '#/utils/helpers.js';
@@ -42,7 +47,9 @@ export class ComplementaryServicesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
+    private readonly commercialAuth: CommercialAuthorizationService,
     private readonly idempotency: IdempotencyService,
+    private readonly billing: BillingService,
   ) {}
 
   async listPublishedCatalog() {
@@ -164,7 +171,9 @@ export class ComplementaryServicesService {
       targetType = ComplementaryWebsiteTargetType.EXISTING_WEBSITE;
       coverage = website.managementCoverage;
       resolution = ComplementaryWebsiteResolutionState.LINKED;
-      authorizationState = ComplementaryAuthorizationState.AUTHORIZED;
+      authorizationState = user.authorized
+        ? ComplementaryAuthorizationState.AUTHORIZED
+        : ComplementaryAuthorizationState.NOT_AUTHORIZED;
     } else {
       websiteDomain = this.requireExternalDomain(input.websiteDomain);
       if (memberships.length > 0 && writableMemberships.length === 0) {
@@ -190,15 +199,18 @@ export class ComplementaryServicesService {
         targetType = ComplementaryWebsiteTargetType.EXISTING_WEBSITE;
         coverage = existing.managementCoverage;
         resolution = ComplementaryWebsiteResolutionState.LINKED;
-        authorizationState = ComplementaryAuthorizationState.AUTHORIZED;
+        authorizationState = user.authorized
+          ? ComplementaryAuthorizationState.AUTHORIZED
+          : ComplementaryAuthorizationState.NOT_AUTHORIZED;
       } else {
         tenantId = writableMemberships[0]?.tenantId ?? null;
         targetType = ComplementaryWebsiteTargetType.TYPED_DOMAIN;
         coverage = WebsiteManagementCoverage.EXTERNAL_INFRASTRUCTURE;
         resolution = ComplementaryWebsiteResolutionState.PENDING_ACCEPTANCE;
-        authorizationState = tenantId
-          ? ComplementaryAuthorizationState.AUTHORIZED
-          : ComplementaryAuthorizationState.NOT_AUTHORIZED;
+        authorizationState =
+          tenantId && user.authorized
+            ? ComplementaryAuthorizationState.AUTHORIZED
+            : ComplementaryAuthorizationState.NOT_AUTHORIZED;
       }
     }
 
@@ -554,6 +566,14 @@ export class ComplementaryServicesService {
     requestId: string;
     assigneeNote?: string;
     startedAt?: string;
+    amount: number;
+    currency?: string;
+    interval: BillingInterval;
+    periodStartsAt?: string;
+    commercialModel?: BillingCommercialModel;
+    commercialState?: BillingCommercialState;
+    confirmUnauthorized?: boolean;
+    actorId?: string;
   }) {
     const request = await this.getAdmin(input.requestId);
     if (request.assignments.length > 0) {
@@ -562,13 +582,45 @@ export class ComplementaryServicesService {
     if (request.status !== ComplementaryRequestStatus.ACCEPTED) {
       throw new ConflictException(ERROR_MESSAGES.fa.conflict);
     }
+    if (!request.websiteId || !request.tenantId) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+    }
+
+    if (input.actorId) {
+      await this.commercialAuth.assertAuthorizedOrConfirmed({
+        tenantId: request.tenantId,
+        preferredUserId: request.createdByUserId,
+        confirmUnauthorized: input.confirmUnauthorized,
+        actorId: input.actorId,
+        action: 'complementary.assignment.unauthorized_override',
+        entityType: 'ComplementaryServiceRequest',
+        entityId: input.requestId,
+      });
+    }
+
+    const labelSnapshot =
+      request.title ||
+      request.catalogItem?.nameFa ||
+      request.catalogItem?.nameEn ||
+      request.catalogItem?.code ||
+      'Complementary service';
+    const latestQuotation = request.quotations?.[0];
 
     const assignment = await this.prisma.$transaction(async (tx) => {
+      const startedAt = input.startedAt
+        ? new Date(input.startedAt)
+        : input.periodStartsAt
+          ? new Date(input.periodStartsAt)
+          : new Date();
+      if (Number.isNaN(startedAt.getTime())) {
+        throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+      }
+
       const created = await tx.serviceAssignment.create({
         data: {
           requestId: input.requestId,
           assigneeNote: input.assigneeNote,
-          startedAt: input.startedAt ? new Date(input.startedAt) : new Date(),
+          startedAt,
           authorizationState:
             request.authorizationState ===
             ComplementaryAuthorizationState.AUTHORIZED
@@ -580,6 +632,24 @@ export class ComplementaryServicesService {
         where: { id: input.requestId },
         data: { status: ComplementaryRequestStatus.ASSIGNED },
       });
+
+      await this.billing.createComplementaryItem(tx, {
+        tenantId: request.tenantId!,
+        websiteId: request.websiteId!,
+        serviceAssignmentId: created.id,
+        sourceQuotationId: latestQuotation?.id ?? null,
+        labelSnapshot,
+        actorId: input.actorId,
+        terms: {
+          amount: input.amount,
+          currency: input.currency,
+          interval: input.interval,
+          periodStartsAt: startedAt,
+          commercialModel: input.commercialModel,
+          commercialState: input.commercialState,
+        },
+      });
+
       return created;
     });
 

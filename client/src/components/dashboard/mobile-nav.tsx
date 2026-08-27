@@ -15,21 +15,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import type { DashboardActiveItem } from "@/lib/dashboard-data";
 
 export function MobileNav({
   activeItem = "Dashboard",
   hasUnreadUnixseeMessages = false,
 }: {
-  activeItem?:
-    | "Activities"
-    | "ComplementaryServices"
-    | "Dashboard"
-    | "Domains"
-    | "HelpCenter"
-    | "Profile"
-    | "Tickets"
-    | "UnixseeMessages"
-    | "Websites";
+  activeItem?: DashboardActiveItem;
   hasUnreadUnixseeMessages?: boolean;
 }) {
   const locale = useLocale();

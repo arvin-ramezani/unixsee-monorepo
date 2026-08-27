@@ -19,6 +19,7 @@ yet exist.
 | [`phase-1-application-features.md`](./phase-1-application-features.md) | Required outcomes, actors, boundaries, feature areas                                                       |
 | [`unixsee-messages-prd.md`](./unixsee-messages-prd.md)                 | Unixsee messages / پیام‌های یونیکسی (tenant-targeted one-way inbox); Proposed, Phase 1                     |
 | [`about-unixsee-page-prd.md`](./about-unixsee-page-prd.md)             | About Unixsee / درباره یونیکسی public page — content architecture + UX + requirements; Proposed, Phase 1   |
+| [`customer-dashboard-billing-prd.md`](./customer-dashboard-billing-prd.md) | Customer dashboard Billing / صورتحساب hub (commercial projection, no payment); Proposed, Phase 1        |
 
 ## Deferred / future product
 
@@ -34,13 +35,14 @@ Operational clarifications that support Phase 1 and UX flows:
 | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | [`notes/customer-assistant.md`](./notes/customer-assistant.md)                                     | Thin pointer to customer assistant PRD / ADR (deferred)             |
 | [`notes/servers-agent-data-flow.md`](./notes/servers-agent-data-flow.md)                           | Server → enrollment → agent → NestJS → admin assignment             |
-| [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md)       | احراز هویت: signup ≠ tenant; certifications → staff approve tenant  |
+| [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md)       | احراز هویت: Role.TENANT + shell; `authorized` toggle/KYC; commercial confirm override (1A/2A) |
 | [`notes/onboarding-paths-and-handoffs.md`](./notes/onboarding-paths-and-handoffs.md)               | Onboarding path handoffs                                            |
 | [`notes/onboarding-plan-request-user-website.md`](./notes/onboarding-plan-request-user-website.md) | Plan request ↔ user ↔ website linking                               |
 | [`notes/phase-1-public-entry-channels.md`](./notes/phase-1-public-entry-channels.md)               | Public entry channels                                               |
 | [`notes/phase-1-delivery-waves.md`](./notes/phase-1-delivery-waves.md)                             | First-wave vs later Phase 1 delivery                                |
 | [`notes/ticket-lifecycle-and-auto-close.md`](./notes/ticket-lifecycle-and-auto-close.md)           | Submitted default, reopen/close, auto-close grace                   |
 | [`notes/admin-staff-roles-and-capabilities.md`](./notes/admin-staff-roles-and-capabilities.md)     | Main ADMIN → sub-admin → specialty OPERATORs (Phase 1 last step FA) |
+| [`notes/commercial-records.md`](./notes/commercial-records.md)                                     | Agreed plan/service billing projection; Nest-owned; no Phase 1 payment |
 
 ## Diagrams
 
@@ -59,6 +61,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | [`ux-flows/client-complementary-service-request.md`](./ux-flows/client-complementary-service-request.md) | Customer existing/typed domain request flow; no Website creation at submission                             |
 | [`ux-flows/website-management-coverage.md`](./ux-flows/website-management-coverage.md)                   | Cross-surface distinction between Unixsee-managed and external websites; complementary-service eligibility |
 | [`ux-flows/client-unixsee-messages.md`](./ux-flows/client-unixsee-messages.md)                           | Unixsee messages / پیام‌های یونیکسی (popup, unread indicator, inbox)                                       |
+| Customer billing hub: [`customer-dashboard-billing-prd.md`](./customer-dashboard-billing-prd.md)         | Dashboard `/dashboard/billing` — tenant commercial projection IA, states, non-goals (PRD embeds UX)      |
 | UI companion: [`../frontend/client-auth-ui.md`](../frontend/client-auth-ui.md)                           | Auth shell, tokens, inputs, RTL, motion                                                                    |
 | Public marketing page: [`about-unixsee-page-prd.md`](./about-unixsee-page-prd.md)                        | About Unixsee / درباره یونیکسی — journey, states, accessibility, and analytics live inside that PRD        |
 
@@ -68,6 +71,7 @@ Operational clarifications that support Phase 1 and UX flows:
 | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | [`ux-flows/admin-overview.md`](./ux-flows/admin-overview.md)                                                               | Administrator home / triage (`نمای‌کلی`)                              |
 | [`ux-flows/admin-users.md`](./ux-flows/admin-users.md)                                                                     | Users / tenants                                                       |
+| [`ux-flows/admin-user-website-visibility.md`](./ux-flows/admin-user-website-visibility.md)                                 | Website owner (tenant/user) + user→websites list + commercial summary |
 | [`ux-flows/admin-authorization.md`](./ux-flows/admin-authorization.md)                                                     | Staff احراز هویت review → approve tenant                              |
 | [`ux-flows/admin-plan-requests.md`](./ux-flows/admin-plan-requests.md)                                                     | Plan requests (`درخواست‌های پلن`)                                     |
 | [`ux-flows/admin-servers-websites-agents.md`](./ux-flows/admin-servers-websites-agents.md)                                 | Servers, websites, agents                                             |

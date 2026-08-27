@@ -162,6 +162,16 @@ export type ServiceQuotation = Prisma.ServiceQuotationModel
  */
 export type ServiceAssignment = Prisma.ServiceAssignmentModel
 /**
+ * Model BillingItem
+ * 
+ */
+export type BillingItem = Prisma.BillingItemModel
+/**
+ * Model BillingPeriodRow
+ * 
+ */
+export type BillingPeriodRow = Prisma.BillingPeriodRowModel
+/**
  * Model ServiceUsage
  * 
  */

@@ -52,15 +52,19 @@ contract is defined in
 
 Phase 1 must enable these complete outcomes across its delivery waves:
 
-- An authorized customer (a usable **tenant**) can access only that tenant's
-  account and resources.
-- Sign up / sign in create or authenticate a **user account**; becoming a
-  **tenant** requires a separate **احراز هویت** step (customer certifications
-  reviewed and approved in the admin panel, or staff create/approve tenant).
-  See [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
-- Staff can receive a plan request before the customer is a tenant, but must
-  not **enable** (sell/apply) the plan until a tenant exists; customers must
-  see that certifications are required before managed services can be delivered.
+- An **`authorized`** customer (commercial flag after KYC approve **or** staff
+  toggle; Tenant shell may already exist) can access only that tenant's account
+  and resources.
+- Sign up / sign in create or authenticate a **user** with default
+  **`role = TENANT`**, a **Tenant shell**, and OWNER membership, with
+  **`authorized = false`** until staff set the flag (direct toggle **or** KYC
+  case approve). See
+  [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md)
+  and Proposed ADR
+  [`0016`](../architecture/decisions/0016-customer-tenant-role-authorized-flag.md).
+- Staff can receive a plan request before the customer is `authorized`, and may
+  **enable** (sell/apply) while unauthorized only after AlertDialog confirm +
+  Nest `confirmUnauthorized` (**1A**).
 - Staff can enroll agents from servers administration; agents discover websites
   and keep admin inventory (and assigned owner dashboards) up to date.
 - Customers created by admin remain contact-unverified until they sign in with
@@ -101,12 +105,15 @@ Phase 1 is delivered in waves. Everything in §4.1 and §4.2 remains in Phase 1.
   stored), or admin create. Admin-created
   accounts start **contact-unverified** until the customer signs in with the
   admin-entered phone or email and passes OTP, after which the contact is
-  marked verified. Public signup alone does **not** create a tenant.
-- احراز هویت: customers submit certifications; staff review in admin and
-  approve a tenant before commercial applyments. Details:
+  marked verified. Public signup creates a **Tenant shell** with
+  `role=TENANT` and `authorized=false` (Proposed ADR 0016); it does **not**
+  grant commercial authorization.
+- احراز هویت: customers **may** submit certifications; staff may approve cases
+  **or** toggle **`authorized`** on the user without opening files. Commercial
+  applyments use confirm override when unauthorized. Details:
   [`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
-- Plan catalog visibility, plan requests (allowed without a tenant), and staff
-  plan enablement (requires a tenant).
+- Plan catalog visibility, plan requests (allowed while unauthorized), and staff
+  plan enablement (confirm if unauthorized).
 - Website administration in the admin panel.
 - Server administration in the admin panel, including agent enrollment and
   registration. Running agents discover websites and update website inventory
@@ -325,38 +332,43 @@ or email and successfully pass OTP validation. Phase 1 does not require a
 separate invite token for this contact-verification path.
 
 Public signup, plan-request OTP verify, and successful sign-in create an
-authenticatable **user**. They do not by themselves mean the customer is
-commercially **authorized**.
+authenticatable **user** with customer **`role = TENANT`** (Proposed ADR
+[`0016`](../architecture/decisions/0016-customer-tenant-role-authorized-flag.md)),
+a **Tenant shell**, and **OWNER membership**. They do **not** set
+**`authorized = true`**. Commercial authorization is a separate flag.
 
 ### 8.1.2 Organizational authorization (احراز هویت)
 
 Unixsee separates:
 
-| Step                               | Outcome                                                      |
-| ---------------------------------- | ------------------------------------------------------------ |
-| Sign up / sign in                  | Customer **user** account and session                        |
-| Contact verification (OTP / email) | Proven contact on that user                                  |
-| احراز هویت                         | Staff-approved **tenant** (authorized customer organization) |
+| Step                               | Outcome                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------- |
+| Sign up / sign in                  | Customer **user** (`role=TENANT`), Tenant shell, OWNER membership       |
+| Contact verification (OTP / email) | Proven contact on that user                                             |
+| احراز هویت                         | Case approve **or** direct staff toggle sets **`User.authorized = true`** |
 
-Customers submit required certifications for احراز هویت. Staff review those
-materials in the admin panel and approve or reject. **Authorized**, in this
-product sense, means the customer **became a tenant** (usable tenant with the
-required owner membership).
+Customers **may** submit certifications for احراز هویت. Staff may review those
+materials in the admin panel and approve or reject, **or** set `authorized`
+directly without opening files (**2A**). **Authorized**, in this product sense,
+means **`authorized === true`**—not merely “has a tenant membership” and not
+“OTP-verified contact.”
 
 Rules for this phase:
 
-- Unixsee does **not sell** or commercially apply managed services until a
-  tenant exists.
+- Staff commercial applyments **warn** when the customer is not `authorized`,
+  then proceed after AlertDialog confirm + Nest `confirmUnauthorized` (**1A**).
 - Customers **may still send plan requests** (and consultant / complementary
   intake) before authorization. Do not block those submissions only because
   certifications are missing.
-- Customer-facing messaging must state that certifications are **necessary**
-  before Unixsee can deliver managed/paid services for that request.
-- Admin must **block important applyments**—especially plan enablement and
-  other sell/activate actions—when the linked customer is not yet a tenant.
+- Case reject / needs-info must **not** clear an existing `authorized === true`.
+- Admin must **not hard-block** plan enablement solely because
+  `authorized === false`; use confirm override instead.
+- **Later:** each tenant may add its own users (`Role.USER` + membership);
+  invite UX is out of Phase 1 detail.
 
 Canonical detail:
-[`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md).
+[`notes/customer-authorization-and-tenant.md`](./notes/customer-authorization-and-tenant.md)
+(ADR 0016 Proposed).
 UX flows: [`ux-flows/client-authorization.md`](./ux-flows/client-authorization.md),
 [`ux-flows/admin-authorization.md`](./ux-flows/admin-authorization.md).
 
@@ -370,11 +382,12 @@ Authorized staff need to:
 
 - Find an account by safe customer identifiers.
 - See whether an account is active, suspended, locked, contact-verified, has a
-  tenant (authorized), or is protected by two-factor authentication.
+  tenant shell, is **`authorized`**, or is protected by two-factor authentication.
 - Create a customer with contact details that remain contact-unverified until
-  OTP succeeds.
-- Review احراز هویت certification submissions and approve or reject tenant
-  authorization.
+  OTP succeeds; optionally set `authorized` at create.
+- Toggle `authorized` on user detail without requiring KYC files.
+- Review احراز هویت certification submissions and approve or reject (optional
+  path; reject does not clear a prior `authorized=true`).
 - Suspend or restore access with a required reason.
 - Revoke sessions after a security event.
 - Start a controlled contact-verification or two-factor recovery process.
@@ -391,9 +404,10 @@ separate audited security design is approved.
 - Expired and reused verification challenges are rejected.
 - Admin create leaves the account contact-unverified until OTP succeeds for
   the recorded phone or email.
-- Public signup alone does not create a tenant or mark the customer authorized.
-- Staff cannot complete commercial applyments (including plan enablement) for a
-  customer who is not yet a tenant.
+- Public signup alone does not set `authorized = true` (customer may have a
+  Tenant shell and OWNER membership while still unauthorized).
+- Staff commercial applyments for an unauthorized customer require confirm
+  override + Nest acknowledgment (**1A**); they are not silently allowed.
 - Password change revokes the sessions required by the approved security
   policy.
 - Customer and staff security events create audit records.
@@ -411,26 +425,29 @@ security-sensitive fields.
 
 ### 9.2 Tenant
 
-A tenant represents one **approved** Unixsee customer organization or account—
-the commercial outcome of **احراز هویت**. A signed-in user without an approved
-tenant is not yet authorized to receive sold managed services. A tenant
-contains:
+A tenant is the **organization container** for a Unixsee customer account
+(websites, memberships, services). Under Proposed ADR 0016, a **Tenant shell**
+is created at customer signup together with OWNER membership, while
+**commercial readiness** is the separate **`User.authorized`** flag set by
+احراز هویت case approve **or** direct staff toggle.
 
 - Display and legal names where required.
 - Primary contacts.
-- Memberships and tenant roles.
+- Memberships and tenant roles (`OWNER` / `ADMIN` / `VIEWER`); later, tenants
+  may add invited users (`Role.USER`).
 - Owned websites and active services.
-- Commercial and lifecycle state.
+- Commercial applyments prefer the signup OWNER (or agreed principal) to be
+  **`authorized`**; otherwise staff use confirm override (**1A**).
 - Notes that are explicitly internal or customer-visible.
 
 ### 9.3 Administrator workflows
 
 Staff need to:
 
-- Review customer certification submissions for احراز هویت.
-- Create or approve a tenant during onboarding (after certification review, or
-  via staff-mediated create when identity was already checked).
-- Add, invite, change, or remove members.
+- Review customer certification submissions for احراز هویت (optional path).
+- Set **`authorized = true`** via user toggle (**2A**) and/or case approve
+  (ensure Tenant + OWNER); may set `authorized` at create without KYC files.
+- Add, invite, change, or remove members (later: invited `Role.USER` users).
 - Assign the tenant owner with safeguards against leaving the tenant ownerless.
 - Review the tenant's websites, plan requests, tickets, complementary services,
   News notifications, website notices, and activities from one context.
@@ -447,8 +464,8 @@ Staff need to:
   the tenant through an approved process.
 - Internal notes never appear in customer responses or search.
 - Tenant state changes create an audit record and explain their customer impact.
-- Plan enablement and other commercial applyments are blocked when no usable
-  tenant exists for the linked customer.
+- Plan enablement and other commercial applyments use confirm override when the
+  linked principal is unauthorized; they still require a usable tenant shell.
 
 ## 10. Dashboard overview
 
@@ -526,15 +543,15 @@ admin-panel workflow in this phase.
 email** (at least one), complete **OTP verification** for that contact, and Nest
 must **create a customer user account immediately on successful verify**—before
 the plan request is submitted. The request is then created for that
-authenticated user. Contact verification creates a **user**, not a **tenant**.
+authenticated user. Contact verification creates a **user**; under ADR 0016
+signup/OTP also creates a **Tenant shell** + OWNER with `authorized=false`. It
+does **not** set `authorized = true`.
 UX: [`ux-flows/customer-public-plan-request.md`](./ux-flows/customer-public-plan-request.md).
 
-Customers **may submit** a plan request before احراز هویت / tenant approval.
-The request surface must make clear that they need to send certifications so
-Unixsee can authorize them as a tenant and deliver managed services. Do not
-block submission only because certifications are missing. The same
+Customers **may submit** a plan request before احراز هویت / `authorized`.
+Do not block submission only because certifications are missing. The same
 non-blocking stance applies to consultant-oriented intake; commercial
-**applyment** still waits on a tenant.
+**applyment** uses confirm override when unauthorized.
 
 The customer supplies at least:
 
@@ -557,10 +574,12 @@ Terminal alternatives:
 
 `declined` or `cancelled`
 
-`ready_to_enable` means an existing **tenant** (authorized customer) is linked
-and a target website is selected with no unresolved one-plan conflict. Linking
-only a user account without a tenant is not enough to enable. Every
-consequential transition records the actor, time, and reason when required.
+`ready_to_enable` means an existing **tenant** is linked and a target website
+is selected with no unresolved one-plan conflict. Prefer
+**`authorized === true`** on the customer principal; when `authorized === false`,
+enablement remains available after confirm override (**1A**). Every
+consequential transition records the actor, time, reason when required, and
+override acknowledgment when used.
 
 ### 11.4 Administrator plan enablement
 
@@ -572,8 +591,9 @@ Authorized staff need to:
 - Select the target website.
 - Enforce one active plan per website.
 - Enable the requested plan on that website, or decline/cancel with a reason.
-- Block enablement when احراز هویت is incomplete (no tenant yet), while still
-  allowing the request to remain in the queue.
+- When `authorized === false`, require AlertDialog confirm + Nest
+  `confirmUnauthorized` before enablement (**1A**). Missing tenant shell still
+  blocks; unauthorized alone does not hard-block.
 
 User/tenant creation, احراز هویت review, server/agent enrollment, and discovery
 assignment remain in their own admin flows. Plan enablement consumes those
@@ -587,7 +607,8 @@ records; it does not replace them.
   delivered.
 - Unsigned public intake verifies phone or email with OTP and creates the
   customer **user** on successful verify **before** the plan request row is
-  created; this does not create a tenant or enable a plan.
+  created; this creates Tenant shell + OWNER with `authorized=false` but does
+  not set `authorized=true` or enable a plan.
 - Staff cannot enable a plan request without a linked existing **tenant**.
 - Staff cannot leave two active plans on the same website.
 - Enabling a request makes that request’s chosen plan the website’s active plan.
@@ -1325,7 +1346,14 @@ contact information.
 ## 21. Commercial and renewal projection
 
 Phase 1 needs enough commercial data to operate active plans and complementary
-services without presenting a complete accounting system.
+services without presenting a complete accounting system. NestJS owns commercial
+billing records; see
+[`notes/commercial-records.md`](./notes/commercial-records.md) and ADR
+[`0015`](../architecture/decisions/0015-nest-commercial-billing-records.md).
+
+A billing item is created when a managed plan is activated or a complementary
+assignment is created—not on inactive plan links or request/quotation alone.
+Renewal appends period history and advances dates without payment.
 
 Customer-visible commercial information may include:
 
@@ -1338,15 +1366,17 @@ Customer-visible commercial information may include:
 
 Administrator behavior includes:
 
-- Record the agreed amount, currency, period, and effective dates.
+- Record the agreed amount, currency, period, and effective dates at activation
+  (or via backfill record-terms for already-active plans).
 - Mark whether a record is estimated, quoted, agreed, invoiced externally, or
   settled when reliable.
-- Start a renewal review.
+- Renew the commercial period (staff; no payment).
 - Update the next period without overwriting prior terms.
+- Replace the active managed plan as an explicit staff action.
 - Record cancellation or non-renewal reason.
 
-The UI must not offer a payment or renewal action unless a real end-to-end
-transaction exists.
+The UI must not offer a customer payment or customer renew action unless a real
+end-to-end payment transaction exists. Phase 1 has **no** payment checkout.
 
 ## 22. Help and support guidance
 
@@ -1490,8 +1520,8 @@ The following choices must be approved in feature follow-ups or ADRs:
 - Definitive plan names, scope, availability, and pricing presentation.
 - Plan-request acceptance and customer agreement method.
 - Complementary-service quotation acceptance and commercial-record policy.
-- Billing and payment integration, including whether any Phase 1 payment action
-  exists.
+- Payment provider / checkout integration (deferred beyond Phase 1 commercial
+  records; Phase 1 payment action: **none** — see ADR 0015).
 - Notification audience rules and read-receipt requirements for News.
 - Website-notice (اعلان‌ها) severity, dismissibility, and acknowledgement
   policy.

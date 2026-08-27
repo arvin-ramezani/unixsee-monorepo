@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import SearchInput from "@/components/common/search-input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
@@ -37,21 +37,14 @@ import {
   ACCOUNT_ORIGIN_LABELS,
   ACCOUNT_STATE,
   ACCOUNT_STATE_LABELS,
-  MEMBERSHIP_ROLE,
-  MEMBERSHIP_ROLE_LABELS,
   STAFF_CAPABILITY,
 } from "@/lib/data/users-data";
 import {
-  listRuntimeMemberships,
-  listRuntimeTenants,
-  listRuntimeUsers,
-} from "@/lib/data/users-runtime";
-import {
   ACCOUNT_ORIGIN_FILTER_ALL,
   ACCOUNT_STATE_FILTER,
-  buildCustomerQueueRows,
   filterCustomerQueueRows,
   formatContactSummary,
+  formatCustomerDisplayName,
   getCustomerInitials,
   getCustomerQueueSummary,
   hasCapability,
@@ -101,56 +94,6 @@ const ACCOUNT_ORIGIN_FILTER_OPTIONS = [
   },
 ] as const;
 
-function loadQueueRows() {
-  return buildCustomerQueueRows(
-    listRuntimeUsers(),
-    listRuntimeTenants(),
-    listRuntimeMemberships(),
-  );
-}
-
-function DataSourceBadge({ source }: { source?: "nest" | "fixture" }) {
-  if (!source) return null;
-  if (source === "nest") {
-    return (
-      <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
-        Nest
-      </span>
-    );
-  }
-  return (
-    <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-      نمونه
-    </span>
-  );
-}
-
-function TenantChips({ row }: { row: CustomerQueueRowType }) {
-  if (row.tenantMemberships.length === 0) {
-    return (
-      <span className="text-sm text-muted-foreground">بدون عضویت مستأجر</span>
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {row.tenantMemberships.map(({ tenant, membership }) => (
-        <span
-          key={membership.id}
-          className="inline-flex max-w-52 items-center gap-1 rounded-full bg-muted px-2 py-1 text-xs"
-        >
-          <span className="truncate">{tenant.name}</span>
-          {membership.role === MEMBERSHIP_ROLE.OWNER && (
-            <span className="text-muted-foreground">
-              ({MEMBERSHIP_ROLE_LABELS[MEMBERSHIP_ROLE.OWNER]})
-            </span>
-          )}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 function resolveAuthorization(row: CustomerQueueRowType) {
   return row.authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
 }
@@ -159,6 +102,7 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
   const router = useRouter();
   const userHref = `/users/${row.user.id}`;
   const authorization = resolveAuthorization(row);
+  const displayName = formatCustomerDisplayName(row.user.displayName);
 
   const navigateToUser = () => {
     router.push(userHref);
@@ -187,36 +131,25 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
       onKeyDown={handleRowKeyDown}
       tabIndex={0}
       role="link"
-      aria-label={`مشاهده حساب ${row.user.displayName}`}
+      aria-label={`مشاهده حساب ${displayName}`}
     >
       <TableCell className="px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <Avatar size="sm">
             <AvatarFallback>
-              {getCustomerInitials(row.user.displayName)}
+              {getCustomerInitials(displayName === "--" ? "" : displayName)}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-1.5">
-              <Link href={userHref} className="truncate hover:underline">
-                {row.user.displayName}
-              </Link>
-              <DataSourceBadge source={row.source} />
-            </div>
-            <p
-              className="truncate text-xs text-muted-foreground w-fit"
-              dir="ltr"
-            >
-              {row.user.id}
-            </p>
-          </div>
+          <Link
+            href={userHref}
+            className="truncate font-medium hover:underline"
+          >
+            {displayName}
+          </Link>
         </div>
       </TableCell>
       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
         <span dir="ltr">{formatContactSummary(row.user)}</span>
-      </TableCell>
-      <TableCell className="px-4 py-3">
-        <TenantChips row={row} />
       </TableCell>
       <TableCell className="px-4 py-3">
         <AuthorizationStatusBadge status={authorization} />
@@ -233,6 +166,7 @@ function CustomerTableRow({ row }: { row: CustomerQueueRowType }) {
 
 function CustomerCard({ row }: { row: CustomerQueueRowType }) {
   const authorization = resolveAuthorization(row);
+  const displayName = formatCustomerDisplayName(row.user.displayName);
 
   return (
     <Link
@@ -243,14 +177,11 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
         <div className="flex min-w-0 items-center gap-2">
           <Avatar size="sm">
             <AvatarFallback>
-              {getCustomerInitials(row.user.displayName)}
+              {getCustomerInitials(displayName === "--" ? "" : displayName)}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-1.5">
-              <p className="truncate font-medium">{row.user.displayName}</p>
-              <DataSourceBadge source={row.source} />
-            </div>
+            <p className="truncate font-medium">{displayName}</p>
             <p
               className="truncate text-xs text-muted-foreground w-fit"
               dir="ltr"
@@ -264,7 +195,6 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
 
       <div className="mt-3 space-y-2">
         <AuthorizationStatusBadge status={authorization} />
-        <TenantChips row={row} />
       </div>
 
       <div className="mt-3 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
@@ -281,24 +211,17 @@ function CustomerCard({ row }: { row: CustomerQueueRowType }) {
 
 export type UsersViewProps = {
   initialRows?: CustomerQueueRowType[];
-  /** Hard failure that blanks the list (legacy). Prefer nestWarning for hybrid. */
+  /** Nest failure — list is empty; do not substitute fixtures. */
   loadError?: string | null;
-  /** Nest fetch failed but fixtures (and any Nest rows) still show. */
-  nestWarning?: string | null;
   totalCount?: number | null;
-  nestCount?: number | null;
-  fixtureCount?: number | null;
 };
 
 export function UsersView({
   initialRows,
   loadError = null,
-  nestWarning = null,
   totalCount = null,
-  nestCount = null,
-  fixtureCount = null,
 }: UsersViewProps) {
-  const [rows] = useState(() => initialRows ?? loadQueueRows());
+  const [rows] = useState(() => initialRows ?? []);
   const [query, setQuery] = useState("");
   const [accountState, setAccountState] = useState<AccountStateFilterType>(
     ACCOUNT_STATE_FILTER.ALL,
@@ -307,21 +230,9 @@ export function UsersView({
     ACCOUNT_ORIGIN_FILTER_ALL,
   );
   const [showFilters, setShowFilters] = useState(false);
-  const hybrid =
-    nestCount !== null ||
-    fixtureCount !== null ||
-    rows.some((row) => row.source !== undefined);
-  const nestBacked = hybrid || initialRows !== undefined;
 
   const canCreateCustomer = hasCapability(STAFF_CAPABILITY.CREATE_CUSTOMER);
   const summary = useMemo(() => getCustomerQueueSummary(rows), [rows]);
-  const notSubmittedCount = useMemo(
-    () =>
-      rows.filter(
-        (row) => resolveAuthorization(row) === USER_KYC_STATUS.NOT_SUBMITTED,
-      ).length,
-    [rows],
-  );
   const filteredRows = useMemo(
     () => filterCustomerQueueRows(rows, { query, accountState, origin }),
     [accountState, origin, query, rows],
@@ -366,11 +277,7 @@ export function UsersView({
       key: "total",
       label: "همه مشتریان",
       value: totalCount ?? summary.total,
-      hint: hybrid
-        ? `Nest ${(nestCount ?? 0).toLocaleString("fa-IR")} + نمونه ${(fixtureCount ?? 0).toLocaleString("fa-IR")}`
-        : nestBacked
-          ? "از NestJS — بدون نمایش مدارک هویتی"
-          : "در محدوده دسترسی شما",
+      hint: "از NestJS — بدون نمایش مدارک هویتی",
       icon: Users,
       emphasis: false,
       filter: ACCOUNT_STATE_FILTER.ALL as AccountStateFilterType,
@@ -393,18 +300,6 @@ export function UsersView({
 
   return (
     <div className="flex flex-col gap-4">
-      {!!nestWarning && (
-        <div
-          className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
-          role="status"
-        >
-          <p className="font-medium">Nest در دسترس نبود</p>
-          <p className="mt-1 text-muted-foreground">
-            {nestWarning} — نمونه‌های محلی همچنان نمایش داده می‌شوند.
-          </p>
-        </div>
-      )}
-
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {summaryItems.map((item) => {
           const Icon = item.icon;
@@ -469,7 +364,7 @@ export function UsersView({
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-lg font-semibold">مشتریان و مستأجرها</h2>
+            <h2 className="text-lg font-semibold">مشتریان</h2>
           </div>
 
           <div className="flex items-center gap-2">
@@ -502,7 +397,7 @@ export function UsersView({
           <SearchInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="جستجو در نام، ایمیل، موبایل یا مستأجر..."
+            placeholder="جستجو در نام، ایمیل یا موبایل..."
             aria-label="جستجوی مشتری"
           />
 
@@ -633,7 +528,6 @@ export function UsersView({
                 <TableRow className="bg-muted/40 hover:bg-muted/40">
                   <TableHead className="px-4 py-3">مشتری</TableHead>
                   <TableHead className="px-4 py-3">شناسه تماس</TableHead>
-                  <TableHead className="px-4 py-3">مستأجرها</TableHead>
                   <TableHead className="px-4 py-3">احراز هویت</TableHead>
                   <TableHead className="px-4 py-3">وضعیت حساب</TableHead>
                   <TableHead className="px-4 py-3">وب‌سایت‌ها</TableHead>

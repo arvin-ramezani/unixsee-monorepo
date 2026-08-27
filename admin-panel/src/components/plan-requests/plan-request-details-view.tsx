@@ -24,6 +24,16 @@ import {
 } from "@/actions/plan-requests/plan-request-actions";
 import { AdminBackLink } from "@/components/common/admin-back-link";
 import SearchInput from "@/components/common/search-input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -270,8 +280,13 @@ function PlanRequestDetailsBody({
   const [refuseError, setRefuseError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmEnable, setConfirmEnable] = useState(false);
+  const [unauthorizedConfirmOpen, setUnauthorizedConfirmOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [creatingWebsite, setCreatingWebsite] = useState(false);
+  const [enableAmount, setEnableAmount] = useState("");
+  const [enableInterval, setEnableInterval] = useState<
+    "MONTHLY" | "QUARTERLY" | "YEARLY"
+  >("YEARLY");
   const websiteListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -395,12 +410,40 @@ function PlanRequestDetailsBody({
       return;
     }
 
+    const amount = Number(enableAmount.replace(/[^\d.]/g, ""));
+    if (!Number.isFinite(amount) || amount < 0) {
+      setFormError("مبلغ توافق‌شده معتبر نیست.");
+      return;
+    }
+
+    const principalUnauthorized =
+      Boolean(request.linkedUserId) && request.linkedUserAuthorized !== true;
+    if (principalUnauthorized) {
+      setUnauthorizedConfirmOpen(true);
+      return;
+    }
+
+    await runEnable({
+      websiteId,
+      amount,
+      confirmUnauthorized: false,
+    });
+  };
+
+  const runEnable = async (input: {
+    websiteId: string;
+    amount: number;
+    confirmUnauthorized: boolean;
+  }) => {
     setSubmitting(true);
     try {
       const result = await enablePlanRequestAction({
         requestId: request.id,
-        websiteId,
+        websiteId: input.websiteId,
         tenantId: request.linkedTenantId ?? selectedWebsite?.tenantId,
+        amount: input.amount,
+        interval: enableInterval,
+        confirmUnauthorized: input.confirmUnauthorized,
       });
 
       if (!result.ok) {
@@ -410,12 +453,34 @@ function PlanRequestDetailsBody({
       }
 
       syncRequest(result.request);
+      setUnauthorizedConfirmOpen(false);
       toast.success(
         `پلن ${result.request.chosenPlanName} روی وب‌سایت فعال شد.`,
       );
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleUnauthorizedEnableConfirm = async () => {
+    const websiteId =
+      pendingWebsiteId ?? request.targetWebsiteId ?? selectedWebsite?.id;
+    if (!websiteId) {
+      setUnauthorizedConfirmOpen(false);
+      setFormError("وب‌سایت هدف مشخص نیست.");
+      return;
+    }
+    const amount = Number(enableAmount.replace(/[^\d.]/g, ""));
+    if (!Number.isFinite(amount) || amount < 0) {
+      setUnauthorizedConfirmOpen(false);
+      setFormError("مبلغ توافق‌شده معتبر نیست.");
+      return;
+    }
+    await runEnable({
+      websiteId,
+      amount,
+      confirmUnauthorized: true,
+    });
   };
 
   const handleRefuse = async () => {
@@ -525,7 +590,8 @@ function PlanRequestDetailsBody({
               )}
               {blockers.includes(PLAN_REQUEST_BLOCKER.MISSING_TENANT) && (
                 <p className="text-xs text-destructive/90">
-                  فعال‌سازی تا تأیید احراز هویت و ایجاد مستأجر مسدود است.{" "}
+                  برای فعال‌سازی باید مستأجر لینک شود. مجوز تجاری (authorized)
+                  جدا است و در صورت غیرمجاز بودن با تأیید هشدار قابل انجام است.{" "}
                   {(() => {
                     const authCase = request.linkedUserId
                       ? findAuthorizationCaseByUserId(request.linkedUserId)
@@ -833,11 +899,70 @@ function PlanRequestDetailsBody({
           </p>
         ) : null}
         {confirmEnable && canActivate ? (
-          <p className="w-full text-xs text-muted-foreground" role="status">
-            با تأیید، پلن {request.chosenPlanName} پلن فعال وب‌سایت می‌شود.
-          </p>
+          <div className="w-full space-y-3 rounded-xl border border-border bg-muted/20 p-3">
+            <p className="text-xs text-muted-foreground" role="status">
+              با تأیید، پلن {request.chosenPlanName} پلن فعال وب‌سایت می‌شود و
+              رکورد تجاری در Nest ثبت می‌گردد.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-1 text-xs">
+                <span className="text-muted-foreground">
+                  مبلغ توافق‌شده (ریال)
+                </span>
+                <input
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  dir="ltr"
+                  inputMode="decimal"
+                  value={enableAmount}
+                  onChange={(event) => setEnableAmount(event.target.value)}
+                  placeholder="12000000"
+                />
+              </label>
+              <label className="space-y-1 text-xs">
+                <span className="text-muted-foreground">دوره صورتحساب</span>
+                <select
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  value={enableInterval}
+                  onChange={(event) =>
+                    setEnableInterval(
+                      event.target.value as "MONTHLY" | "QUARTERLY" | "YEARLY",
+                    )
+                  }
+                >
+                  <option value="MONTHLY">ماهانه</option>
+                  <option value="QUARTERLY">سه‌ماهه</option>
+                  <option value="YEARLY">سالانه</option>
+                </select>
+              </label>
+            </div>
+          </div>
         ) : null}
       </div>
+
+      <AlertDialog
+        open={unauthorizedConfirmOpen}
+        onOpenChange={setUnauthorizedConfirmOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>کاربر هنوز مجاز تجاری نیست</AlertDialogTitle>
+            <AlertDialogDescription>
+              مشتری لینک‌شده هنوز <span dir="ltr">authorized=false</span> است.
+              فعال‌سازی پلن بدون احراز هویت کامل فقط با تأیید صریح شما انجام
+              می‌شود و در سابقه ثبت می‌گردد.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>انصراف</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={submitting}
+              onClick={() => void handleUnauthorizedEnableConfirm()}
+            >
+              {submitting ? "در حال فعال‌سازی…" : "تأیید و فعال‌سازی"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -174,6 +174,10 @@ export async function enablePlanRequestAction(input: {
   requestId: string;
   websiteId: string;
   tenantId?: string | null;
+  amount: number;
+  interval: "MONTHLY" | "QUARTERLY" | "YEARLY" | "NONE";
+  currency?: string;
+  confirmUnauthorized?: boolean;
 }): Promise<PlanRequestMutationResult> {
   return mutatePlanRequest(
     input.requestId,
@@ -186,6 +190,10 @@ export async function enablePlanRequestAction(input: {
       body: JSON.stringify({
         websiteId: input.websiteId,
         ...(input.tenantId ? { tenantId: input.tenantId } : {}),
+        amount: input.amount,
+        interval: input.interval,
+        currency: input.currency ?? "IRR",
+        ...(input.confirmUnauthorized ? { confirmUnauthorized: true } : {}),
       }),
     },
   );

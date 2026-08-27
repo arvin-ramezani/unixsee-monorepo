@@ -39,3 +39,10 @@ Customer UIs must visibly distinguish `UNIXSEE_MANAGED` from
 `EXTERNAL_INFRASTRUCTURE`. An external website is labeled as external hosting;
 individual managed fields may then use a concise not-applicable value. Unknown,
 collecting, unavailable, and zero remain distinct states.
+
+## Website billing
+
+`GET /api/v1/websites/:id/billing` returns tenant-scoped commercial projection
+`{ plan, complementaryServices }`. Tenant hub: `GET /api/v1/billing` returns
+`{ items }` across the caller’s tenants. See [`billing.md`](./billing.md).
+Phase 1 has no customer renew/payment mutation.

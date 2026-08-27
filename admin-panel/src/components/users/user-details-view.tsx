@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { applyNestUserSecurityAction } from "@/actions/users/user-security-actions";
+import { updateUserAuthorizedAction } from "@/actions/users/update-user-authorized-action";
 import { AdminBackLink } from "@/components/common/admin-back-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -58,6 +59,7 @@ import {
   getTenantWebsites,
   getUserTenantMemberships,
   hasCapability,
+  type UserRelatedWebsiteSummary,
 } from "@/lib/users-utils";
 import {
   USER_KYC_STATUS,
@@ -198,7 +200,11 @@ type UserDetailsViewProps = {
   initialTenants?: TenantType[];
   initialMemberships?: MembershipType[];
   authorization?: UserKycStatusType;
+  authorized?: boolean;
   nestBacked?: boolean;
+  /** Nest list for nestBacked; ignored when fixtures drive the page. */
+  relatedWebsites?: UserRelatedWebsiteSummary[];
+  websitesLoadError?: string | null;
 };
 
 export function UserDetailsView({
@@ -206,9 +212,14 @@ export function UserDetailsView({
   initialTenants,
   initialMemberships,
   authorization,
+  authorized: initialAuthorized = false,
   nestBacked = false,
+  relatedWebsites: nestRelatedWebsites,
+  websitesLoadError = null,
 }: UserDetailsViewProps) {
   const [user, setUser] = useState(initialUser);
+  const [authorized, setAuthorized] = useState(initialAuthorized);
+  const [authorizedBusy, setAuthorizedBusy] = useState(false);
   const [users, setUsers] = useState(() => {
     const runtimeUsers = listRuntimeUsers();
     if (!nestBacked) return runtimeUsers;
@@ -219,9 +230,7 @@ export function UserDetailsView({
     }
     return [initialUser, ...runtimeUsers];
   });
-  const [tenants] = useState(
-    () => initialTenants ?? listRuntimeTenants(),
-  );
+  const [tenants] = useState(() => initialTenants ?? listRuntimeTenants());
   const [memberships, setMemberships] = useState(
     () => initialMemberships ?? listRuntimeMemberships(),
   );
@@ -241,17 +250,23 @@ export function UserDetailsView({
     !nestBacked && hasCapability(STAFF_CAPABILITY.MANAGE_MEMBERSHIP);
   const canViewNotes =
     !nestBacked && hasCapability(STAFF_CAPABILITY.VIEW_INTERNAL_NOTES);
-  const resolvedAuthorization =
-    authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
+  const resolvedAuthorization = authorization ?? USER_KYC_STATUS.NOT_SUBMITTED;
 
   const tenantMemberships = getUserTenantMemberships(
     user.id,
     tenants,
     memberships,
   );
-  const relatedWebsites = tenantMemberships.flatMap(({ tenant }) =>
-    getTenantWebsites(tenant.id),
-  );
+  const relatedWebsites: UserRelatedWebsiteSummary[] = nestBacked
+    ? (nestRelatedWebsites ?? [])
+    : tenantMemberships.flatMap(({ tenant }) =>
+        getTenantWebsites(tenant.id).map((website) => ({
+          id: website.id,
+          domain: website.domain,
+          tenantId: website.tenantId,
+          tenantName: website.tenantName,
+        })),
+      );
   const ticketCount = countUserTickets(user.id);
   const serviceRequestCount = countUserServiceRequests(user.id);
 
@@ -348,10 +363,69 @@ export function UserDetailsView({
     setSecurityAction(null);
   };
 
+  const handleAuthorizedToggle = async () => {
+    if (!nestBacked || authorizedBusy) return;
+    const next = !authorized;
+    setAuthorizedBusy(true);
+    setStatusMessage(null);
+    const result = await updateUserAuthorizedAction({
+      userId: user.id,
+      authorized: next,
+    });
+    setAuthorizedBusy(false);
+    if (!result.ok) {
+      setStatusMessage({ text: result.message, isBlocked: true });
+      return;
+    }
+    setAuthorized(result.authorized);
+    setStatusMessage({ text: result.message, isBlocked: false });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <AdminBackLink href="/users">بازگشت به کاربران</AdminBackLink>
+      </div>
+
+      <div
+        className={cn(
+          "rounded-xl border px-4 py-3 text-sm",
+          authorized
+            ? "border-emerald-500/30 bg-emerald-500/5"
+            : "border-amber-500/30 bg-amber-500/5",
+        )}
+        role="status"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-medium">
+              وضعیت تجاری: {authorized ? "مجاز (authorized)" : "غیرمجاز"}
+            </p>
+            <p className="text-muted-foreground mt-1 text-xs">
+              مستقل از بسته احراز هویت است. بدون باز کردن مدارک می‌توانید تغییر
+              دهید.
+            </p>
+          </div>
+          {nestBacked ? (
+            <Button
+              type="button"
+              size="sm"
+              variant={authorized ? "outline" : "default"}
+              disabled={authorizedBusy}
+              onClick={() => void handleAuthorizedToggle()}
+            >
+              {authorizedBusy
+                ? "در حال ذخیره…"
+                : authorized
+                  ? "لغو مجوز تجاری"
+                  : "مجاز کردن"}
+            </Button>
+          ) : (
+            <p className="text-muted-foreground text-xs">
+              فقط روی داده Nest قابل تغییر است.
+            </p>
+          )}
+        </div>
       </div>
 
       <div
@@ -390,7 +464,10 @@ export function UserDetailsView({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex items-start gap-3">
             <Avatar size="lg">
-              <AvatarImage src={user.avatarUrl || undefined} alt={user.displayName} />
+              <AvatarImage
+                src={user.avatarUrl || undefined}
+                alt={user.displayName}
+              />
               <AvatarFallback>
                 {getCustomerInitials(user.displayName)}
               </AvatarFallback>
@@ -466,6 +543,8 @@ export function UserDetailsView({
         users={users}
         memberships={memberships}
         canManageMembership={canManageMembership}
+        relatedWebsites={relatedWebsites}
+        nestBacked={nestBacked}
         onChangeRole={handleChangeRole}
         onRemoveMembership={handleRemoveMembership}
         onAddMemberRequest={setMemberTenant}
@@ -530,7 +609,11 @@ export function UserDetailsView({
             <p className="text-sm text-muted-foreground">
               وب‌سایت‌های مستأجرها
             </p>
-            {relatedWebsites.length === 0 ? (
+            {websitesLoadError ? (
+              <p className="mt-3 text-sm text-destructive" role="alert">
+                {websitesLoadError}
+              </p>
+            ) : relatedWebsites.length === 0 ? (
               <p className="mt-3 text-sm">
                 وب‌سایتی به مستأجرهای این مشتری تخصیص نیافته است.
               </p>

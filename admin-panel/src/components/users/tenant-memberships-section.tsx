@@ -27,6 +27,7 @@ import {
   isLastOwnerMembership,
   looksLikePhoneLabel,
   type TenantMembershipType,
+  type UserRelatedWebsiteSummary,
 } from "@/lib/users-utils";
 import { cn } from "@/lib/utils";
 import { TenantStateBadge } from "./account-status-badge";
@@ -71,6 +72,8 @@ type TenantMembershipsSectionProps = {
   users: CustomerUserType[];
   memberships: MembershipType[];
   canManageMembership: boolean;
+  relatedWebsites?: UserRelatedWebsiteSummary[];
+  nestBacked?: boolean;
   onChangeRole: (membershipId: string, role: MembershipRoleType) => void;
   onRemoveMembership: (membershipId: string) => void;
   onAddMemberRequest: (tenant: TenantType) => void;
@@ -82,6 +85,8 @@ export function TenantMembershipsSection({
   users,
   memberships,
   canManageMembership,
+  relatedWebsites,
+  nestBacked = false,
   onChangeRole,
   onRemoveMembership,
   onAddMemberRequest,
@@ -101,7 +106,11 @@ export function TenantMembershipsSection({
         <div className="mt-4 space-y-4">
           {tenantMemberships.map(({ tenant, membership }) => {
             const members = getTenantMembers(tenant.id, users, memberships);
-            const websites = getTenantWebsites(tenant.id);
+            const websites = nestBacked
+              ? (relatedWebsites ?? []).filter(
+                  (website) => website.tenantId === tenant.id,
+                )
+              : getTenantWebsites(tenant.id);
             const eligibility = getTenantAssignmentEligibility(
               tenant,
               memberships,

@@ -43,6 +43,7 @@ export type AdminPlanRequestDto = {
     fullName: string | null;
     phoneNumber: string | null;
     email: string | null;
+    authorized?: boolean;
   } | null;
 };
 
@@ -119,6 +120,7 @@ export function mapAdminPlanRequestToUi(
       (item.linkedUserId ? item.contactName.trim() : null),
     linkedUserMobile: item.linkedUser?.phoneNumber ?? null,
     linkedUserEmail: item.linkedUser?.email ?? null,
+    linkedUserAuthorized: Boolean(item.linkedUser?.authorized),
     linkedTenantId: item.tenantId,
     linkedTenantName: item.tenant?.name?.trim() || null,
     targetWebsiteId: item.websiteId,

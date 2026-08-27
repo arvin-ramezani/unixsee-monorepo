@@ -55,7 +55,12 @@ Includes `plan`, `tenant`, `website`, `linkedUser`.
 | Method | Path                                      | Notes                                                              |
 | ------ | ----------------------------------------- | ------------------------------------------------------------------ |
 | `POST` | `/api/v1/admin/plan-requests/:id/link`    | Body: `tenantId`, optional `linkedUserId`, `websiteId` → `LINKED`  |
-| `POST` | `/api/v1/admin/plan-requests/:id/enable`  | Body: `websiteId`, optional `tenantId`; optional `Idempotency-Key` |
+| `POST` | `/api/v1/admin/plan-requests/:id/enable`  | Body: `websiteId`, optional `tenantId`, **commercial terms** (`amount`, `interval`, …), optional **`confirmUnauthorized`** (required `true` when linked principal has `authorized === false`); optional `Idempotency-Key`. Creates a `MANAGED_PLAN` billing item. See [`billing.md`](./billing.md). |
+
+**Proposed unauthorized override (1A):** If the commercial principal’s
+`authorized !== true` and `confirmUnauthorized` is missing/false, Nest returns
+`403` (or agreed conflict code) without enabling. Audit records override when
+accepted. See [`../../product/notes/customer-authorization-and-tenant.md`](../../product/notes/customer-authorization-and-tenant.md).
 | `POST` | `/api/v1/admin/plan-requests/:id/decline` | Body: optional `reason` → `DECLINED` (UI cancel also maps here)    |
 
 Website picker for a linked user uses `GET /api/v1/admin/websites?userId=…`

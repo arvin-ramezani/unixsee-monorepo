@@ -13,21 +13,12 @@ import {
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { navigation } from "@/lib/dashboard-data";
+import type { DashboardActiveItem } from "@/lib/dashboard-data";
 import { useAuthStore } from "../providers/auth-store-provider";
 import Image from "next/image";
 
 interface SidebarContentProps {
-  // activeItem?:
-  //   | "Activities"
-  //   | "ComplementaryServices"
-  //   | "Dashboard"
-  //   | "Domains"
-  //   | "HelpCenter"
-  //   | "Profile"
-  //   | "Tickets"
-  //   | "UnixseeMessages"
-  //   | "Websites";
-  activeItem?: (typeof navigation)[number]["activeItem"];
+  activeItem?: DashboardActiveItem;
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Close overlays (e.g. mobile sheet) as soon as a nav item is activated. */
@@ -45,7 +36,7 @@ export function SidebarContent({
   const t = useTranslations("Navigation");
 
   const userAvatarUrl = useAuthStore((state) => state.user?.avatarUrl);
-
+  console.log(userAvatarUrl);
   return (
     <div className="bg-background flex h-full min-h-0 flex-col">
       <div className="flex h-22 items-center px-7">
@@ -129,13 +120,14 @@ export function SidebarContent({
                           : undefined
                       }
                     >
-                      <span className="relative shrink-0">
+                      <span className="relative size-5 shrink-0">
                         {item.key === "profile" && userAvatarUrl ? (
                           <Image
                             src={userAvatarUrl ?? ""}
                             alt="User Avatar"
                             className="absolute shrink-0 rounded-full"
                             fill
+                            unoptimized
                           />
                         ) : (
                           <item.icon

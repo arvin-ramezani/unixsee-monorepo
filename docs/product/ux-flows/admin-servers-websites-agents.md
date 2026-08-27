@@ -36,7 +36,7 @@
 - **Goal:** Register a VPS once, enroll its agent safely, see discovered websites, and assign them to the correct tenant without handling secrets or talking to agents from the browser.
 - **Current problem:** `/servers` is a placeholder; websites UI shows monitoring status but has no enrollment, token, or assignment workflow. Agents are started manually per VPS by developers.
 - **Proposed change:** Keep NestJS as the only control plane for agents. Use the admin panel only to create server records, issue one-time enrollment tokens, monitor agent health, and assign discovered websites. Plan entitlement comes from درخواست‌های پلن (or explicit staff plan selection); missing customers use the users-flow create-and-continue path.
-- **Main decisions:** Do not run or host agents from this Next.js project. Tokens are created by NestJS, shown once in admin, never re-readable. Agents push to NestJS; the browser never receives agent credentials or agent addresses. Discovery assignment may consume a linked plan request’s chosen plan as default plan source but never treats discovery as plan enablement. Website details may **renew the commercial period** (advance renewal date by billing period, no payment) and **replace the active plan** as staff fixture actions; Nest persistence is deferred. First-time plan enablement stays in درخواست‌های پلن.
+- **Main decisions:** Do not run or host agents from this Next.js project. Tokens are created by NestJS, shown once in admin, never re-readable. Agents push to NestJS; the browser never receives agent credentials or agent addresses. Discovery assignment may consume a linked plan request’s chosen plan as default plan source but never treats discovery as plan enablement. Discovery **assign** and website **renew/replace** require unauthorized confirm override when the commercial principal has `authorized === false` (**1A**). Website details may **renew the commercial period** (advance renewal date by billing period, no payment) and **replace the active plan** via Nest commercial billing records (ADR 0015). First-time plan enablement stays in درخواست‌های پلن.
 - **Completion state:** Agent is healthy, websites are discovered and assigned, telemetry is fresh, and enrollment secrets are no longer visible.
 - **Highest-risk failure:** Enrollment token leakage, reused install credentials, or browser exposure of agent secrets.
 - **Accessibility risk:** One-time secret display and copy actions may be inaccessible or lost without announced state.
@@ -379,7 +379,8 @@ flowchart LR
 | ------------------------------------------------- | ---------------: | -----: | ------------------------------------------: | -------------------------: |
 | Actor has assignment capability                   |              Yes |     No |                                         Yes |                        Yes |
 | Discovery linked to healthy or known server/agent |              Yes |    Yes |                                          No |                        Yes |
-| Tenant selected and authorized                    |              Yes |    Yes |                                         Yes |                         No |
+| Tenant selected                                   |              Yes |    Yes |                                         Yes |                         No |
+| Principal `authorized` (else confirm override)    |              Yes |    Yes |                                    Override |                         No |
 | Website already assigned to another tenant        |               No |     No |                                          No |                         No |
 | Result                                            | Assign and audit |   Deny | Block; require reconciling discovery source | Reject; preserve discovery |
 
@@ -635,7 +636,9 @@ Sufficient to build static Persian RTL admin flows for:
 - **REC-004:** Standardize connected/stale/disconnected/never-enrolled across `/servers` and `/websites`. Traces to UN-002, BR-010, AC-005.
 - **REC-005:** Require revoke-before-reissue after compromise or credential loss. Traces to UN-004, BR-009, AC-008.
 - **REC-006:** Consume linked plan requests’ chosen plans as default plan source during assignment handoff; keep plan enablement in درخواست‌های پلن. Traces to AC-006b and `admin-plan-requests.md` v0.2.
-- **REC-006b:** On website details, staff may renew the commercial period (advance renewal date by billing period, no payment) or explicitly replace the active plan; fixture prototype only until Nest commercial records exist. Traces to Phase 1 §21.
+- **REC-006b:** On website details, staff may renew the commercial period (advance renewal date by billing period, no payment) or explicitly replace the active plan through Nest billing APIs. Traces to Phase 1 §21 and ADR 0015.
+- **REC-006c:** Website details must surface owning tenant/contact user with navigation; user details must list Nest websites for that user (not fixtures). See [`admin-user-website-visibility.md`](./admin-user-website-visibility.md).
+- **REC-006d:** Discovery assign, renew, replace, and transfer require AlertDialog + Nest `confirmUnauthorized` when the target commercial principal has `authorized === false`. See [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
 - **REC-007:** Follow the shared onboarding operating model for request-led enablement vs discovery-led assignment. Traces to `docs/product/notes/onboarding-plan-request-user-website.md` and `docs/product/notes/onboarding-paths-and-handoffs.md`.
 
 ### Must validate during prototyping

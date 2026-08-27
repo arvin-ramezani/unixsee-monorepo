@@ -15,22 +15,23 @@ Public plan choice
   → Authenticated plan request submit (linked user)
   → External validation (out of this app)
   → درخواست‌های پلن: review chosen plan
-  → Link existing user if needed; require tenant (احراز هویت approved or staff-created)
+  → Link existing user if needed; see `authorized` (toggle and/or KYC approve)
   → Select target website
-  → Enable plan (one active plan per website)
+  → Enable plan (confirm override if unauthorized; one active plan per website)
 ```
 
 Guest intake **must** create or authenticate the user on OTP verify **before**
-the plan request is stored. If staff later see a request without a linked user,
+the plan request is stored (**Proposed:** `role=TENANT`, Tenant shell,
+`authorized=false`). If staff later see a request without a linked user,
 treat that as legacy/conflict data until Nest sync completes—not as the
 intended path.
 
-If the user exists but is **not yet a tenant**, complete احراز هویت (or staff
-approve tenant) before enablement. Do not create the user from the **admin**
-plan-request surface. Do not enable without a tenant.
+If the user exists but is **not yet `authorized`**, staff may toggle
+`authorized` or approve a KYC case, **or** enable after AlertDialog confirm +
+`confirmUnauthorized` (**1A**). Do not create the user from the **admin**
+plan-request surface.
 
-Plan / consultant **request submission** may happen before tenant approval;
-customer messaging must state that certifications are required for delivery.
+Plan / consultant **request submission** may happen before authorization.
 Canonical rule:
 [`customer-authorization-and-tenant.md`](./customer-authorization-and-tenant.md).
 
@@ -54,9 +55,9 @@ that context. Assignment that activates managed ownership still requires a
 ```text
 Plan request for a known user / website context
   → Link existing user if needed
-  → Confirm tenant exists (احراز هویت complete)
+  → Confirm tenant shell exists; see `authorized` (confirm if false)
   → Select the website
-  → Enable (block or replace per one-plan policy)
+  → Enable (block or replace per one-plan policy; unauthorized confirm if needed)
   → Keep request and website plan history
 ```
 
@@ -77,4 +78,6 @@ Identity and احراز هویت stay in `/users` (admin) and Nest auth (public 
 Enrollment, discovery, and website inventory stay in servers/websites.
 **Admin** user create is never owned by the plan-request surface in this phase.
 Public guest plan-request **OTP verify** may create the user before submit.
-Commercial enablement waits on a tenant.
+Commercial enablement prefers **`authorized === true`**; otherwise staff use
+confirm override (**1A**). See
+[`customer-authorization-and-tenant.md`](./customer-authorization-and-tenant.md).

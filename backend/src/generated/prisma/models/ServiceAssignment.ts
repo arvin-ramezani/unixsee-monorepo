@@ -209,6 +209,7 @@ export type ServiceAssignmentWhereInput = {
   request?: Prisma.XOR<Prisma.ComplementaryServiceRequestScalarRelationFilter, Prisma.ComplementaryServiceRequestWhereInput>
   usageRecords?: Prisma.ServiceUsageListRelationFilter
   deliverables?: Prisma.ServiceDeliverableListRelationFilter
+  billingItem?: Prisma.XOR<Prisma.BillingItemNullableScalarRelationFilter, Prisma.BillingItemWhereInput> | null
 }
 
 export type ServiceAssignmentOrderByWithRelationInput = {
@@ -223,6 +224,7 @@ export type ServiceAssignmentOrderByWithRelationInput = {
   request?: Prisma.ComplementaryServiceRequestOrderByWithRelationInput
   usageRecords?: Prisma.ServiceUsageOrderByRelationAggregateInput
   deliverables?: Prisma.ServiceDeliverableOrderByRelationAggregateInput
+  billingItem?: Prisma.BillingItemOrderByWithRelationInput
 }
 
 export type ServiceAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -240,6 +242,7 @@ export type ServiceAssignmentWhereUniqueInput = Prisma.AtLeast<{
   request?: Prisma.XOR<Prisma.ComplementaryServiceRequestScalarRelationFilter, Prisma.ComplementaryServiceRequestWhereInput>
   usageRecords?: Prisma.ServiceUsageListRelationFilter
   deliverables?: Prisma.ServiceDeliverableListRelationFilter
+  billingItem?: Prisma.XOR<Prisma.BillingItemNullableScalarRelationFilter, Prisma.BillingItemWhereInput> | null
 }, "id">
 
 export type ServiceAssignmentOrderByWithAggregationInput = {
@@ -281,6 +284,7 @@ export type ServiceAssignmentCreateInput = {
   request: Prisma.ComplementaryServiceRequestCreateNestedOneWithoutAssignmentsInput
   usageRecords?: Prisma.ServiceUsageCreateNestedManyWithoutAssignmentInput
   deliverables?: Prisma.ServiceDeliverableCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentUncheckedCreateInput = {
@@ -294,6 +298,7 @@ export type ServiceAssignmentUncheckedCreateInput = {
   updatedAt?: Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedCreateNestedManyWithoutAssignmentInput
   deliverables?: Prisma.ServiceDeliverableUncheckedCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemUncheckedCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentUpdateInput = {
@@ -307,6 +312,7 @@ export type ServiceAssignmentUpdateInput = {
   request?: Prisma.ComplementaryServiceRequestUpdateOneRequiredWithoutAssignmentsNestedInput
   usageRecords?: Prisma.ServiceUsageUpdateManyWithoutAssignmentNestedInput
   deliverables?: Prisma.ServiceDeliverableUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentUncheckedUpdateInput = {
@@ -320,6 +326,7 @@ export type ServiceAssignmentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedUpdateManyWithoutAssignmentNestedInput
   deliverables?: Prisma.ServiceDeliverableUncheckedUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUncheckedUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentCreateManyInput = {
@@ -397,6 +404,11 @@ export type ServiceAssignmentMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ServiceAssignmentNullableScalarRelationFilter = {
+  is?: Prisma.ServiceAssignmentWhereInput | null
+  isNot?: Prisma.ServiceAssignmentWhereInput | null
+}
+
 export type ServiceAssignmentScalarRelationFilter = {
   is?: Prisma.ServiceAssignmentWhereInput
   isNot?: Prisma.ServiceAssignmentWhereInput
@@ -444,6 +456,22 @@ export type ServiceAssignmentUncheckedUpdateManyWithoutRequestNestedInput = {
   deleteMany?: Prisma.ServiceAssignmentScalarWhereInput | Prisma.ServiceAssignmentScalarWhereInput[]
 }
 
+export type ServiceAssignmentCreateNestedOneWithoutBillingItemInput = {
+  create?: Prisma.XOR<Prisma.ServiceAssignmentCreateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedCreateWithoutBillingItemInput>
+  connectOrCreate?: Prisma.ServiceAssignmentCreateOrConnectWithoutBillingItemInput
+  connect?: Prisma.ServiceAssignmentWhereUniqueInput
+}
+
+export type ServiceAssignmentUpdateOneWithoutBillingItemNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceAssignmentCreateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedCreateWithoutBillingItemInput>
+  connectOrCreate?: Prisma.ServiceAssignmentCreateOrConnectWithoutBillingItemInput
+  upsert?: Prisma.ServiceAssignmentUpsertWithoutBillingItemInput
+  disconnect?: Prisma.ServiceAssignmentWhereInput | boolean
+  delete?: Prisma.ServiceAssignmentWhereInput | boolean
+  connect?: Prisma.ServiceAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceAssignmentUpdateToOneWithWhereWithoutBillingItemInput, Prisma.ServiceAssignmentUpdateWithoutBillingItemInput>, Prisma.ServiceAssignmentUncheckedUpdateWithoutBillingItemInput>
+}
+
 export type ServiceAssignmentCreateNestedOneWithoutUsageRecordsInput = {
   create?: Prisma.XOR<Prisma.ServiceAssignmentCreateWithoutUsageRecordsInput, Prisma.ServiceAssignmentUncheckedCreateWithoutUsageRecordsInput>
   connectOrCreate?: Prisma.ServiceAssignmentCreateOrConnectWithoutUsageRecordsInput
@@ -482,6 +510,7 @@ export type ServiceAssignmentCreateWithoutRequestInput = {
   updatedAt?: Date | string
   usageRecords?: Prisma.ServiceUsageCreateNestedManyWithoutAssignmentInput
   deliverables?: Prisma.ServiceDeliverableCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentUncheckedCreateWithoutRequestInput = {
@@ -494,6 +523,7 @@ export type ServiceAssignmentUncheckedCreateWithoutRequestInput = {
   updatedAt?: Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedCreateNestedManyWithoutAssignmentInput
   deliverables?: Prisma.ServiceDeliverableUncheckedCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemUncheckedCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentCreateOrConnectWithoutRequestInput = {
@@ -536,6 +566,74 @@ export type ServiceAssignmentScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ServiceAssignment"> | Date | string
 }
 
+export type ServiceAssignmentCreateWithoutBillingItemInput = {
+  id?: string
+  assigneeNote?: string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  authorizationState?: $Enums.ComplementaryAuthorizationState | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  request: Prisma.ComplementaryServiceRequestCreateNestedOneWithoutAssignmentsInput
+  usageRecords?: Prisma.ServiceUsageCreateNestedManyWithoutAssignmentInput
+  deliverables?: Prisma.ServiceDeliverableCreateNestedManyWithoutAssignmentInput
+}
+
+export type ServiceAssignmentUncheckedCreateWithoutBillingItemInput = {
+  id?: string
+  requestId: string
+  assigneeNote?: string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  authorizationState?: $Enums.ComplementaryAuthorizationState | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  usageRecords?: Prisma.ServiceUsageUncheckedCreateNestedManyWithoutAssignmentInput
+  deliverables?: Prisma.ServiceDeliverableUncheckedCreateNestedManyWithoutAssignmentInput
+}
+
+export type ServiceAssignmentCreateOrConnectWithoutBillingItemInput = {
+  where: Prisma.ServiceAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceAssignmentCreateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedCreateWithoutBillingItemInput>
+}
+
+export type ServiceAssignmentUpsertWithoutBillingItemInput = {
+  update: Prisma.XOR<Prisma.ServiceAssignmentUpdateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedUpdateWithoutBillingItemInput>
+  create: Prisma.XOR<Prisma.ServiceAssignmentCreateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedCreateWithoutBillingItemInput>
+  where?: Prisma.ServiceAssignmentWhereInput
+}
+
+export type ServiceAssignmentUpdateToOneWithWhereWithoutBillingItemInput = {
+  where?: Prisma.ServiceAssignmentWhereInput
+  data: Prisma.XOR<Prisma.ServiceAssignmentUpdateWithoutBillingItemInput, Prisma.ServiceAssignmentUncheckedUpdateWithoutBillingItemInput>
+}
+
+export type ServiceAssignmentUpdateWithoutBillingItemInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorizationState?: Prisma.NullableEnumComplementaryAuthorizationStateFieldUpdateOperationsInput | $Enums.ComplementaryAuthorizationState | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  request?: Prisma.ComplementaryServiceRequestUpdateOneRequiredWithoutAssignmentsNestedInput
+  usageRecords?: Prisma.ServiceUsageUpdateManyWithoutAssignmentNestedInput
+  deliverables?: Prisma.ServiceDeliverableUpdateManyWithoutAssignmentNestedInput
+}
+
+export type ServiceAssignmentUncheckedUpdateWithoutBillingItemInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  requestId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  authorizationState?: Prisma.NullableEnumComplementaryAuthorizationStateFieldUpdateOperationsInput | $Enums.ComplementaryAuthorizationState | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usageRecords?: Prisma.ServiceUsageUncheckedUpdateManyWithoutAssignmentNestedInput
+  deliverables?: Prisma.ServiceDeliverableUncheckedUpdateManyWithoutAssignmentNestedInput
+}
+
 export type ServiceAssignmentCreateWithoutUsageRecordsInput = {
   id?: string
   assigneeNote?: string | null
@@ -546,6 +644,7 @@ export type ServiceAssignmentCreateWithoutUsageRecordsInput = {
   updatedAt?: Date | string
   request: Prisma.ComplementaryServiceRequestCreateNestedOneWithoutAssignmentsInput
   deliverables?: Prisma.ServiceDeliverableCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentUncheckedCreateWithoutUsageRecordsInput = {
@@ -558,6 +657,7 @@ export type ServiceAssignmentUncheckedCreateWithoutUsageRecordsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deliverables?: Prisma.ServiceDeliverableUncheckedCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemUncheckedCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentCreateOrConnectWithoutUsageRecordsInput = {
@@ -586,6 +686,7 @@ export type ServiceAssignmentUpdateWithoutUsageRecordsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request?: Prisma.ComplementaryServiceRequestUpdateOneRequiredWithoutAssignmentsNestedInput
   deliverables?: Prisma.ServiceDeliverableUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentUncheckedUpdateWithoutUsageRecordsInput = {
@@ -598,6 +699,7 @@ export type ServiceAssignmentUncheckedUpdateWithoutUsageRecordsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deliverables?: Prisma.ServiceDeliverableUncheckedUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUncheckedUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentCreateWithoutDeliverablesInput = {
@@ -610,6 +712,7 @@ export type ServiceAssignmentCreateWithoutDeliverablesInput = {
   updatedAt?: Date | string
   request: Prisma.ComplementaryServiceRequestCreateNestedOneWithoutAssignmentsInput
   usageRecords?: Prisma.ServiceUsageCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentUncheckedCreateWithoutDeliverablesInput = {
@@ -622,6 +725,7 @@ export type ServiceAssignmentUncheckedCreateWithoutDeliverablesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedCreateNestedManyWithoutAssignmentInput
+  billingItem?: Prisma.BillingItemUncheckedCreateNestedOneWithoutServiceAssignmentInput
 }
 
 export type ServiceAssignmentCreateOrConnectWithoutDeliverablesInput = {
@@ -650,6 +754,7 @@ export type ServiceAssignmentUpdateWithoutDeliverablesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   request?: Prisma.ComplementaryServiceRequestUpdateOneRequiredWithoutAssignmentsNestedInput
   usageRecords?: Prisma.ServiceUsageUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentUncheckedUpdateWithoutDeliverablesInput = {
@@ -662,6 +767,7 @@ export type ServiceAssignmentUncheckedUpdateWithoutDeliverablesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUncheckedUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentCreateManyRequestInput = {
@@ -684,6 +790,7 @@ export type ServiceAssignmentUpdateWithoutRequestInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageRecords?: Prisma.ServiceUsageUpdateManyWithoutAssignmentNestedInput
   deliverables?: Prisma.ServiceDeliverableUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentUncheckedUpdateWithoutRequestInput = {
@@ -696,6 +803,7 @@ export type ServiceAssignmentUncheckedUpdateWithoutRequestInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usageRecords?: Prisma.ServiceUsageUncheckedUpdateManyWithoutAssignmentNestedInput
   deliverables?: Prisma.ServiceDeliverableUncheckedUpdateManyWithoutAssignmentNestedInput
+  billingItem?: Prisma.BillingItemUncheckedUpdateOneWithoutServiceAssignmentNestedInput
 }
 
 export type ServiceAssignmentUncheckedUpdateManyWithoutRequestInput = {
@@ -760,6 +868,7 @@ export type ServiceAssignmentSelect<ExtArgs extends runtime.Types.Extensions.Int
   request?: boolean | Prisma.ComplementaryServiceRequestDefaultArgs<ExtArgs>
   usageRecords?: boolean | Prisma.ServiceAssignment$usageRecordsArgs<ExtArgs>
   deliverables?: boolean | Prisma.ServiceAssignment$deliverablesArgs<ExtArgs>
+  billingItem?: boolean | Prisma.ServiceAssignment$billingItemArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["serviceAssignment"]>
 
@@ -803,6 +912,7 @@ export type ServiceAssignmentInclude<ExtArgs extends runtime.Types.Extensions.In
   request?: boolean | Prisma.ComplementaryServiceRequestDefaultArgs<ExtArgs>
   usageRecords?: boolean | Prisma.ServiceAssignment$usageRecordsArgs<ExtArgs>
   deliverables?: boolean | Prisma.ServiceAssignment$deliverablesArgs<ExtArgs>
+  billingItem?: boolean | Prisma.ServiceAssignment$billingItemArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceAssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -818,6 +928,7 @@ export type $ServiceAssignmentPayload<ExtArgs extends runtime.Types.Extensions.I
     request: Prisma.$ComplementaryServiceRequestPayload<ExtArgs>
     usageRecords: Prisma.$ServiceUsagePayload<ExtArgs>[]
     deliverables: Prisma.$ServiceDeliverablePayload<ExtArgs>[]
+    billingItem: Prisma.$BillingItemPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1225,6 +1336,7 @@ export interface Prisma__ServiceAssignmentClient<T, Null = never, ExtArgs extend
   request<T extends Prisma.ComplementaryServiceRequestDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ComplementaryServiceRequestDefaultArgs<ExtArgs>>): Prisma.Prisma__ComplementaryServiceRequestClient<runtime.Types.Result.GetResult<Prisma.$ComplementaryServiceRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   usageRecords<T extends Prisma.ServiceAssignment$usageRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceAssignment$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deliverables<T extends Prisma.ServiceAssignment$deliverablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceAssignment$deliverablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceDeliverablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billingItem<T extends Prisma.ServiceAssignment$billingItemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceAssignment$billingItemArgs<ExtArgs>>): Prisma.Prisma__BillingItemClient<runtime.Types.Result.GetResult<Prisma.$BillingItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1708,6 +1820,25 @@ export type ServiceAssignment$deliverablesArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.ServiceDeliverableScalarFieldEnum | Prisma.ServiceDeliverableScalarFieldEnum[]
+}
+
+/**
+ * ServiceAssignment.billingItem
+ */
+export type ServiceAssignment$billingItemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BillingItem
+   */
+  select?: Prisma.BillingItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BillingItem
+   */
+  omit?: Prisma.BillingItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillingItemInclude<ExtArgs> | null
+  where?: Prisma.BillingItemWhereInput
 }
 
 /**

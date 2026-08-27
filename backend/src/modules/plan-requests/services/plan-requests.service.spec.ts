@@ -3,8 +3,13 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { IdempotencyService } from '#/common/idempotency/idempotency.service.js';
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
-import { PlanRequestStatus } from '#/generated/prisma/enums.js';
+import {
+  BillingInterval,
+  PlanRequestStatus,
+} from '#/generated/prisma/enums.js';
+import { BillingService } from '#/modules/billing/services/billing.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { UsersService } from '#/modules/users/services/users.service.js';
 
@@ -17,6 +22,11 @@ const ACTOR_ID = 'staff-1';
 const REQUESTED_PLAN_ID = 'plan-core';
 const OTHER_PLAN_ID = 'plan-peak';
 
+const commercialTerms = {
+  amount: 12_000_000,
+  interval: BillingInterval.YEARLY,
+};
+
 function baseRequest(overrides: Record<string, unknown> = {}) {
   return {
     id: REQUEST_ID,
@@ -26,7 +36,12 @@ function baseRequest(overrides: Record<string, unknown> = {}) {
     linkedUserId: 'user-1',
     websiteId: null,
     enabledAt: null,
-    plan: { id: REQUESTED_PLAN_ID },
+    plan: {
+      id: REQUESTED_PLAN_ID,
+      nameFa: 'پلن',
+      nameEn: 'Plan',
+      code: 'CORE',
+    },
     tenant: { id: TENANT_ID },
     linkedUser: { id: 'user-1' },
     website: null,
@@ -65,6 +80,9 @@ describe('PlanRequestsService.enable', () => {
     beginOrReplay: vi.fn(),
   };
   const usersService = {};
+  const billing = {
+    createManagedPlanItem: vi.fn(),
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -78,8 +96,19 @@ describe('PlanRequestsService.enable', () => {
         PlanRequestsService,
         { provide: PrismaService, useValue: prisma },
         { provide: TenantAccessService, useValue: tenantAccess },
+        {
+          provide: CommercialAuthorizationService,
+          useValue: {
+            assertAuthorizedOrConfirmed: vi.fn().mockResolvedValue({
+              principalUserId: 'user-1',
+              authorized: true,
+              overridden: false,
+            }),
+          },
+        },
         { provide: IdempotencyService, useValue: idempotency },
         { provide: UsersService, useValue: usersService },
+        { provide: BillingService, useValue: billing },
       ],
     }).compile();
 
@@ -96,6 +125,7 @@ describe('PlanRequestsService.enable', () => {
       service.enable(REQUEST_ID, ACTOR_ID, {
         websiteId: WEBSITE_ID,
         tenantId: TENANT_ID,
+        ...commercialTerms,
       }),
     ).rejects.toBeInstanceOf(ConflictException);
 
@@ -119,6 +149,7 @@ describe('PlanRequestsService.enable', () => {
     const result = await service.enable(REQUEST_ID, ACTOR_ID, {
       websiteId: WEBSITE_ID,
       tenantId: TENANT_ID,
+      ...commercialTerms,
     });
 
     expect(prisma.$transaction).toHaveBeenCalledOnce();
@@ -129,6 +160,7 @@ describe('PlanRequestsService.enable', () => {
         planActivatedAt: expect.any(Date),
       },
     });
+    expect(billing.createManagedPlanItem).toHaveBeenCalledOnce();
     expect(prisma.planRequest.update).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: REQUEST_ID },
@@ -163,6 +195,7 @@ describe('PlanRequestsService.enable', () => {
     const result = await service.enable(REQUEST_ID, ACTOR_ID, {
       websiteId: WEBSITE_ID,
       tenantId: TENANT_ID,
+      ...commercialTerms,
     });
 
     expect(prisma.website.update).toHaveBeenCalledWith({
@@ -172,6 +205,7 @@ describe('PlanRequestsService.enable', () => {
         planActivatedAt: expect.any(Date),
       },
     });
+    expect(billing.createManagedPlanItem).toHaveBeenCalledOnce();
     expect(result.status).toBe(PlanRequestStatus.ENABLED);
   });
 
@@ -194,10 +228,12 @@ describe('PlanRequestsService.enable', () => {
     const result = await service.enable(REQUEST_ID, ACTOR_ID, {
       websiteId: WEBSITE_ID,
       tenantId: TENANT_ID,
+      ...commercialTerms,
     });
 
     expect(prisma.$transaction).toHaveBeenCalledOnce();
     expect(prisma.website.update).not.toHaveBeenCalled();
+    expect(billing.createManagedPlanItem).not.toHaveBeenCalled();
     expect(result.status).toBe(PlanRequestStatus.ENABLED);
   });
 });

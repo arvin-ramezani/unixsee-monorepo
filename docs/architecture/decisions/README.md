@@ -74,3 +74,6 @@ What becomes easier, harder, or forbidden?
 | [0011](./0011-client-nest-auth-integration.md) | Client Nest auth integration | Accepted |
 | [0012](./0012-admin-nest-auth-integration.md) | Admin Nest auth integration | Accepted |
 | [0013](./0013-customer-assistant-nest-pgvector-rag.md) | Customer assistant in Nest with pgvector RAG | Proposed |
+| [0014](./0014-web-server-only-agent.md) | Web-server-only Phase 1 VPS agent | Accepted |
+| [0015](./0015-nest-commercial-billing-records.md) | Nest-owned commercial billing records | Accepted |
+| [0016](./0016-customer-tenant-role-authorized-flag.md) | Customer role `TENANT` + `authorized` flag (confirm override + independent toggle) | Accepted |

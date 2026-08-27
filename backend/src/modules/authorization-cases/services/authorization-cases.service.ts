@@ -241,6 +241,11 @@ export class AuthorizationCasesService {
       tenantName,
     );
 
+    await this.prisma.user.update({
+      where: { id: authCase.userId },
+      data: { authorized: true },
+    });
+
     const updated = await this.prisma.authorizationCase.update({
       where: { id },
       data: {
@@ -263,6 +268,7 @@ export class AuthorizationCasesService {
       userId: authCase.userId,
       tenantId: tenant.id,
       staffUserId,
+      authorized: true,
     });
     return updated;
   }

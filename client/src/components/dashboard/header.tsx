@@ -15,23 +15,13 @@ import { Button } from "@/components/ui/button";
 import { useScroll } from "@/hooks/use-scroll";
 import { useRouter } from "@/i18n/navigation";
 import type { NotificationItem } from "@/lib/dashboard-data";
+import type { DashboardActiveItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 import { GridIcon } from "../common/grid-icon";
 import { ModeToggle } from "../ui/theme-toggle";
 
-type ActiveItem =
-  | "Activities"
-  | "ComplementaryServices"
-  | "Dashboard"
-  | "Domains"
-  | "HelpCenter"
-  | "Profile"
-  | "Tickets"
-  | "UnixseeMessages"
-  | "Websites";
-
 interface HeaderProps {
-  activeItem?: ActiveItem;
+  activeItem?: DashboardActiveItem;
   notifications: readonly NotificationItem[];
   showViewToggle?: boolean;
   userName?: string;
@@ -44,7 +34,7 @@ interface HeaderProps {
  * preference. The header toggle is hidden elsewhere (e.g. ComplementaryServices,
  * HelpCenter, Profile), where flipping the view would have no visible effect.
  */
-const VIEW_TOGGLE_ITEMS: ReadonlySet<ActiveItem> = new Set([
+const VIEW_TOGGLE_ITEMS: ReadonlySet<DashboardActiveItem> = new Set([
   "Dashboard",
   "Tickets",
   "Websites",

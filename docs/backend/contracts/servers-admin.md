@@ -223,8 +223,17 @@ a new enrollment token.
 }
 ```
 
+## Discovery assign (unauthorized override)
+
+`POST /api/v1/admin/discoveries/:id/assign` creates managed website ownership.
+**Proposed (1A):** when the target tenant’s commercial principal has
+`authorized === false`, body must include `confirmUnauthorized: true`. See
+[`../../product/notes/customer-authorization-and-tenant.md`](../../product/notes/customer-authorization-and-tenant.md)
+and [`websites-admin.md`](./websites-admin.md).
+
 ## Related
 
 - Routes: [`../modules-and-routes.md`](../modules-and-routes.md)
 - Agent enroll/HMAC: [`../../agent/phase1-api-contract.md`](../../agent/phase1-api-contract.md)
 - Errors: [`api-errors.md`](./api-errors.md)
+- Websites: [`websites-admin.md`](./websites-admin.md)

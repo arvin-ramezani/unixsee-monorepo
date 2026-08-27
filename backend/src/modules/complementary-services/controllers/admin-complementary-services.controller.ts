@@ -91,8 +91,14 @@ export class AdminComplementaryServicesController {
 
   @Post('service-assignments')
   @HttpCode(HttpStatus.CREATED)
-  async createAssignment(@Body() body: CreateServiceAssignmentDto) {
-    const data = await this.complementaryServices.createAssignment(body);
+  async createAssignment(
+    @Body() body: CreateServiceAssignmentDto,
+    @CurrentUser() user: CurrentUserType,
+  ) {
+    const data = await this.complementaryServices.createAssignment({
+      ...body,
+      actorId: user.id,
+    });
     return ApiResponseBuilder.created(data);
   }
 

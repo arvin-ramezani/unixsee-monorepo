@@ -3,6 +3,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { IdempotencyService } from '#/common/idempotency/idempotency.service.js';
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import {
   ComplementaryAuthorizationState,
@@ -10,8 +11,10 @@ import {
   ComplementaryRequestStatus,
   ComplementaryWebsiteResolutionState,
   ComplementaryWebsiteTargetType,
+  BillingInterval,
   WebsiteManagementCoverage,
 } from '#/generated/prisma/enums.js';
+import { BillingService } from '#/modules/billing/services/billing.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 
 import { ComplementaryServicesService } from './complementary-services.service.js';
@@ -111,6 +114,9 @@ describe('ComplementaryServicesService website target lifecycle', () => {
   const idempotency = {
     beginOrReplay: vi.fn(),
   };
+  const billing = {
+    createComplementaryItem: vi.fn(),
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -125,7 +131,18 @@ describe('ComplementaryServicesService website target lifecycle', () => {
         ComplementaryServicesService,
         { provide: PrismaService, useValue: prisma },
         { provide: TenantAccessService, useValue: tenantAccess },
+        {
+          provide: CommercialAuthorizationService,
+          useValue: {
+            assertAuthorizedOrConfirmed: vi.fn().mockResolvedValue({
+              principalUserId: 'user-1',
+              authorized: true,
+              overridden: false,
+            }),
+          },
+        },
         { provide: IdempotencyService, useValue: idempotency },
+        { provide: BillingService, useValue: billing },
       ],
     }).compile();
 
@@ -318,11 +335,17 @@ describe('ComplementaryServicesService website target lifecycle', () => {
   it('activates a domain-only assignment without changing Website plans', async () => {
     prisma.complementaryServiceRequest.findUnique.mockResolvedValue(
       baseRequest({
-        tenantId: null,
+        tenantId: TENANT_ID,
+        websiteId: WEBSITE_ID,
         status: ComplementaryRequestStatus.ACCEPTED,
-        websiteResolutionState:
-          ComplementaryWebsiteResolutionState.DEFERRED_NO_TENANT,
+        websiteResolutionState: ComplementaryWebsiteResolutionState.LINKED,
         authorizationState: ComplementaryAuthorizationState.NOT_AUTHORIZED,
+        catalogItem: {
+          id: 'catalog-1',
+          code: 'SEO',
+          nameFa: 'سئو',
+          nameEn: 'SEO',
+        },
       }),
     );
     prisma.serviceAssignment.create.mockResolvedValue({
@@ -333,11 +356,16 @@ describe('ComplementaryServicesService website target lifecycle', () => {
     });
     prisma.complementaryServiceRequest.update.mockResolvedValue({});
 
-    const result = await service.createAssignment({ requestId: REQUEST_ID });
+    const result = await service.createAssignment({
+      requestId: REQUEST_ID,
+      amount: 5_000_000,
+      interval: BillingInterval.NONE,
+    });
 
     expect(result.authorizationState).toBe(
       ComplementaryAuthorizationState.NOT_AUTHORIZED_AT_ACTIVATION,
     );
     expect(prisma.website.update).not.toHaveBeenCalled();
+    expect(billing.createComplementaryItem).toHaveBeenCalledOnce();
   });
 });

@@ -404,6 +404,7 @@ export type WebsiteWhereInput = {
   activities?: Prisma.ActivityListRelationFilter
   unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
+  billingItems?: Prisma.BillingItemListRelationFilter
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotListRelationFilter
 }
 
@@ -450,6 +451,7 @@ export type WebsiteOrderByWithRelationInput = {
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   unixseeMessages?: Prisma.UnixseeMessageOrderByRelationAggregateInput
   operationalActions?: Prisma.OperationalActionOrderByRelationAggregateInput
+  billingItems?: Prisma.BillingItemOrderByRelationAggregateInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotOrderByRelationAggregateInput
 }
 
@@ -499,6 +501,7 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.ActivityListRelationFilter
   unixseeMessages?: Prisma.UnixseeMessageListRelationFilter
   operationalActions?: Prisma.OperationalActionListRelationFilter
+  billingItems?: Prisma.BillingItemListRelationFilter
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotListRelationFilter
 }, "id" | "domain">
 
@@ -607,6 +610,7 @@ export type WebsiteCreateInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -649,6 +653,7 @@ export type WebsiteUncheckedCreateInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -691,6 +696,7 @@ export type WebsiteUpdateInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -733,6 +739,7 @@ export type WebsiteUncheckedUpdateInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1260,6 +1267,20 @@ export type WebsiteUpdateOneWithoutComplementaryRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WebsiteUpdateToOneWithWhereWithoutComplementaryRequestsInput, Prisma.WebsiteUpdateWithoutComplementaryRequestsInput>, Prisma.WebsiteUncheckedUpdateWithoutComplementaryRequestsInput>
 }
 
+export type WebsiteCreateNestedOneWithoutBillingItemsInput = {
+  create?: Prisma.XOR<Prisma.WebsiteCreateWithoutBillingItemsInput, Prisma.WebsiteUncheckedCreateWithoutBillingItemsInput>
+  connectOrCreate?: Prisma.WebsiteCreateOrConnectWithoutBillingItemsInput
+  connect?: Prisma.WebsiteWhereUniqueInput
+}
+
+export type WebsiteUpdateOneRequiredWithoutBillingItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.WebsiteCreateWithoutBillingItemsInput, Prisma.WebsiteUncheckedCreateWithoutBillingItemsInput>
+  connectOrCreate?: Prisma.WebsiteCreateOrConnectWithoutBillingItemsInput
+  upsert?: Prisma.WebsiteUpsertWithoutBillingItemsInput
+  connect?: Prisma.WebsiteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WebsiteUpdateToOneWithWhereWithoutBillingItemsInput, Prisma.WebsiteUpdateWithoutBillingItemsInput>, Prisma.WebsiteUncheckedUpdateWithoutBillingItemsInput>
+}
+
 export type WebsiteCreateNestedOneWithoutTicketsInput = {
   create?: Prisma.XOR<Prisma.WebsiteCreateWithoutTicketsInput, Prisma.WebsiteUncheckedCreateWithoutTicketsInput>
   connectOrCreate?: Prisma.WebsiteCreateOrConnectWithoutTicketsInput
@@ -1360,6 +1381,7 @@ export type WebsiteCreateWithoutUserInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1401,6 +1423,7 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1500,6 +1523,7 @@ export type WebsiteCreateWithoutTenantInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1541,6 +1565,7 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1608,6 +1633,7 @@ export type WebsiteCreateWithoutVpsNodeInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1649,6 +1675,7 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1716,6 +1743,7 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1757,6 +1785,7 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -1814,6 +1843,7 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1855,6 +1885,7 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -1897,6 +1928,7 @@ export type WebsiteCreateWithoutTrafficSnapshotsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
 }
 
 export type WebsiteUncheckedCreateWithoutTrafficSnapshotsInput = {
@@ -1938,6 +1970,7 @@ export type WebsiteUncheckedCreateWithoutTrafficSnapshotsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
 export type WebsiteCreateOrConnectWithoutTrafficSnapshotsInput = {
@@ -1995,6 +2028,7 @@ export type WebsiteUpdateWithoutTrafficSnapshotsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
 }
 
 export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
@@ -2036,6 +2070,7 @@ export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
 export type WebsiteCreateWithoutMetricsInput = {
@@ -2076,6 +2111,7 @@ export type WebsiteCreateWithoutMetricsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2117,6 +2153,7 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2174,6 +2211,7 @@ export type WebsiteUpdateWithoutMetricsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2215,6 +2253,7 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2256,6 +2295,7 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2297,6 +2337,7 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2354,6 +2395,7 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2395,6 +2437,7 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2436,6 +2479,7 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2477,6 +2521,7 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2534,6 +2579,7 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2575,6 +2621,7 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2616,6 +2663,7 @@ export type WebsiteCreateWithoutSslInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2657,6 +2705,7 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2714,6 +2763,7 @@ export type WebsiteUpdateWithoutSslInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2755,6 +2805,7 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2796,6 +2847,7 @@ export type WebsiteCreateWithoutAlertsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2837,6 +2889,7 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -2894,6 +2947,7 @@ export type WebsiteUpdateWithoutAlertsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2935,6 +2989,7 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -2976,6 +3031,7 @@ export type WebsiteCreateWithoutPlanInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3017,6 +3073,7 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3084,6 +3141,7 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3125,6 +3183,7 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3182,6 +3241,7 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3223,6 +3283,7 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3264,6 +3325,7 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3305,6 +3367,7 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3362,6 +3425,7 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3399,6 +3463,191 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutWebsiteNestedInput
   discoveries?: Prisma.WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteNestedInput
   planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
+  operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
+  trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
+}
+
+export type WebsiteCreateWithoutBillingItemsInput = {
+  id?: string
+  planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
+  domain: string
+  displayName?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
+  isActive?: boolean
+  status?: $Enums.WebsiteLifecycleStatus
+  lastIsUp?: boolean | null
+  lastStatusCode?: number | null
+  lastResponseTimeMs?: number | null
+  lastProbeAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutWebsitesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWebsitesInput
+  vpsNode?: Prisma.VpsNodeCreateNestedOneWithoutWebsitesInput
+  plan?: Prisma.PlanCreateNestedOneWithoutWebsitesInput
+  metrics?: Prisma.WebMetricCreateNestedManyWithoutWebsiteInput
+  probeMetrics?: Prisma.WebsiteProbeMetricCreateNestedManyWithoutWebsiteInput
+  sslMetrics?: Prisma.WebsiteSslMetricCreateNestedManyWithoutWebsiteInput
+  ssl?: Prisma.SSLCertificateCreateNestedOneWithoutWebsiteInput
+  alerts?: Prisma.AlertCreateNestedManyWithoutWebsiteInput
+  discoveries?: Prisma.WebsiteDiscoveryCreateNestedManyWithoutWebsiteInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWebsiteInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestCreateNestedManyWithoutWebsiteInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
+  operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
+}
+
+export type WebsiteUncheckedCreateWithoutBillingItemsInput = {
+  id?: string
+  userId?: string | null
+  tenantId: string
+  vpsNodeId?: string | null
+  planId?: string | null
+  planActivatedAt?: Date | string | null
+  managementCoverage?: $Enums.WebsiteManagementCoverage
+  domain: string
+  displayName?: string | null
+  directAdminUser?: string | null
+  homeDirectory?: string | null
+  documentRoot?: string | null
+  wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
+  isActive?: boolean
+  status?: $Enums.WebsiteLifecycleStatus
+  lastIsUp?: boolean | null
+  lastStatusCode?: number | null
+  lastResponseTimeMs?: number | null
+  lastProbeAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  metrics?: Prisma.WebMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  sslMetrics?: Prisma.WebsiteSslMetricUncheckedCreateNestedManyWithoutWebsiteInput
+  ssl?: Prisma.SSLCertificateUncheckedCreateNestedOneWithoutWebsiteInput
+  alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutWebsiteInput
+  discoveries?: Prisma.WebsiteDiscoveryUncheckedCreateNestedManyWithoutWebsiteInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWebsiteInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedCreateNestedManyWithoutWebsiteInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
+  unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
+  operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
+}
+
+export type WebsiteCreateOrConnectWithoutBillingItemsInput = {
+  where: Prisma.WebsiteWhereUniqueInput
+  create: Prisma.XOR<Prisma.WebsiteCreateWithoutBillingItemsInput, Prisma.WebsiteUncheckedCreateWithoutBillingItemsInput>
+}
+
+export type WebsiteUpsertWithoutBillingItemsInput = {
+  update: Prisma.XOR<Prisma.WebsiteUpdateWithoutBillingItemsInput, Prisma.WebsiteUncheckedUpdateWithoutBillingItemsInput>
+  create: Prisma.XOR<Prisma.WebsiteCreateWithoutBillingItemsInput, Prisma.WebsiteUncheckedCreateWithoutBillingItemsInput>
+  where?: Prisma.WebsiteWhereInput
+}
+
+export type WebsiteUpdateToOneWithWhereWithoutBillingItemsInput = {
+  where?: Prisma.WebsiteWhereInput
+  data: Prisma.XOR<Prisma.WebsiteUpdateWithoutBillingItemsInput, Prisma.WebsiteUncheckedUpdateWithoutBillingItemsInput>
+}
+
+export type WebsiteUpdateWithoutBillingItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
+  lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  lastStatusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastResponseTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastProbeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutWebsitesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWebsitesNestedInput
+  vpsNode?: Prisma.VpsNodeUpdateOneWithoutWebsitesNestedInput
+  plan?: Prisma.PlanUpdateOneWithoutWebsitesNestedInput
+  metrics?: Prisma.WebMetricUpdateManyWithoutWebsiteNestedInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUpdateManyWithoutWebsiteNestedInput
+  sslMetrics?: Prisma.WebsiteSslMetricUpdateManyWithoutWebsiteNestedInput
+  ssl?: Prisma.SSLCertificateUpdateOneWithoutWebsiteNestedInput
+  alerts?: Prisma.AlertUpdateManyWithoutWebsiteNestedInput
+  discoveries?: Prisma.WebsiteDiscoveryUpdateManyWithoutWebsiteNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWebsiteNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUpdateManyWithoutWebsiteNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
+  unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
+  operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
+}
+
+export type WebsiteUncheckedUpdateWithoutBillingItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  vpsNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  managementCoverage?: Prisma.EnumWebsiteManagementCoverageFieldUpdateOperationsInput | $Enums.WebsiteManagementCoverage
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
+  lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  lastStatusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastResponseTimeMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastProbeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metrics?: Prisma.WebMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  probeMetrics?: Prisma.WebsiteProbeMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  sslMetrics?: Prisma.WebsiteSslMetricUncheckedUpdateManyWithoutWebsiteNestedInput
+  ssl?: Prisma.SSLCertificateUncheckedUpdateOneWithoutWebsiteNestedInput
+  alerts?: Prisma.AlertUncheckedUpdateManyWithoutWebsiteNestedInput
+  discoveries?: Prisma.WebsiteDiscoveryUncheckedUpdateManyWithoutWebsiteNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWebsiteNestedInput
+  complementaryRequests?: Prisma.ComplementaryServiceRequestUncheckedUpdateManyWithoutWebsiteNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
@@ -3444,6 +3693,7 @@ export type WebsiteCreateWithoutTicketsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3485,6 +3735,7 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3542,6 +3793,7 @@ export type WebsiteUpdateWithoutTicketsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3583,6 +3835,7 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3624,6 +3877,7 @@ export type WebsiteCreateWithoutActivitiesInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3665,6 +3919,7 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3722,6 +3977,7 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3763,6 +4019,7 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3804,6 +4061,7 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3845,6 +4103,7 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -3902,6 +4161,7 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3943,6 +4203,7 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -3984,6 +4245,7 @@ export type WebsiteCreateWithoutUnixseeMessagesInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotCreateNestedManyWithoutWebsiteInput
 }
 
@@ -4025,6 +4287,7 @@ export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutWebsiteInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutWebsiteInput
   operationalActions?: Prisma.OperationalActionUncheckedCreateNestedManyWithoutWebsiteInput
+  billingItems?: Prisma.BillingItemUncheckedCreateNestedManyWithoutWebsiteInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedCreateNestedManyWithoutWebsiteInput
 }
 
@@ -4082,6 +4345,7 @@ export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   tickets?: Prisma.TicketUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4123,6 +4387,7 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutWebsiteNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4192,6 +4457,7 @@ export type WebsiteUpdateWithoutUserInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4233,6 +4499,7 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4330,6 +4597,7 @@ export type WebsiteUpdateWithoutTenantInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4371,6 +4639,7 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4468,6 +4737,7 @@ export type WebsiteUpdateWithoutVpsNodeInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4509,6 +4779,7 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4606,6 +4877,7 @@ export type WebsiteUpdateWithoutPlanInput = {
   activities?: Prisma.ActivityUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4647,6 +4919,7 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutWebsiteNestedInput
   unixseeMessages?: Prisma.UnixseeMessageUncheckedUpdateManyWithoutWebsiteNestedInput
   operationalActions?: Prisma.OperationalActionUncheckedUpdateManyWithoutWebsiteNestedInput
+  billingItems?: Prisma.BillingItemUncheckedUpdateManyWithoutWebsiteNestedInput
   trafficSnapshots?: Prisma.WebsiteTrafficSnapshotUncheckedUpdateManyWithoutWebsiteNestedInput
 }
 
@@ -4695,6 +4968,7 @@ export type WebsiteCountOutputType = {
   activities: number
   unixseeMessages: number
   operationalActions: number
+  billingItems: number
   trafficSnapshots: number
 }
 
@@ -4710,6 +4984,7 @@ export type WebsiteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   activities?: boolean | WebsiteCountOutputTypeCountActivitiesArgs
   unixseeMessages?: boolean | WebsiteCountOutputTypeCountUnixseeMessagesArgs
   operationalActions?: boolean | WebsiteCountOutputTypeCountOperationalActionsArgs
+  billingItems?: boolean | WebsiteCountOutputTypeCountBillingItemsArgs
   trafficSnapshots?: boolean | WebsiteCountOutputTypeCountTrafficSnapshotsArgs
 }
 
@@ -4803,6 +5078,13 @@ export type WebsiteCountOutputTypeCountOperationalActionsArgs<ExtArgs extends ru
 /**
  * WebsiteCountOutputType without action
  */
+export type WebsiteCountOutputTypeCountBillingItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillingItemWhereInput
+}
+
+/**
+ * WebsiteCountOutputType without action
+ */
 export type WebsiteCountOutputTypeCountTrafficSnapshotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WebsiteTrafficSnapshotWhereInput
 }
@@ -4851,6 +5133,7 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   activities?: boolean | Prisma.Website$activitiesArgs<ExtArgs>
   unixseeMessages?: boolean | Prisma.Website$unixseeMessagesArgs<ExtArgs>
   operationalActions?: boolean | Prisma.Website$operationalActionsArgs<ExtArgs>
+  billingItems?: boolean | Prisma.Website$billingItemsArgs<ExtArgs>
   trafficSnapshots?: boolean | Prisma.Website$trafficSnapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.WebsiteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["website"]>
@@ -4968,6 +5251,7 @@ export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   activities?: boolean | Prisma.Website$activitiesArgs<ExtArgs>
   unixseeMessages?: boolean | Prisma.Website$unixseeMessagesArgs<ExtArgs>
   operationalActions?: boolean | Prisma.Website$operationalActionsArgs<ExtArgs>
+  billingItems?: boolean | Prisma.Website$billingItemsArgs<ExtArgs>
   trafficSnapshots?: boolean | Prisma.Website$trafficSnapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.WebsiteCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -5003,6 +5287,7 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     unixseeMessages: Prisma.$UnixseeMessagePayload<ExtArgs>[]
     operationalActions: Prisma.$OperationalActionPayload<ExtArgs>[]
+    billingItems: Prisma.$BillingItemPayload<ExtArgs>[]
     trafficSnapshots: Prisma.$WebsiteTrafficSnapshotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -5442,6 +5727,7 @@ export interface Prisma__WebsiteClient<T, Null = never, ExtArgs extends runtime.
   activities<T extends Prisma.Website$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   unixseeMessages<T extends Prisma.Website$unixseeMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$unixseeMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnixseeMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operationalActions<T extends Prisma.Website$operationalActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$operationalActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperationalActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billingItems<T extends Prisma.Website$billingItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$billingItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   trafficSnapshots<T extends Prisma.Website$trafficSnapshotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Website$trafficSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteTrafficSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6236,6 +6522,30 @@ export type Website$operationalActionsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.OperationalActionScalarFieldEnum | Prisma.OperationalActionScalarFieldEnum[]
+}
+
+/**
+ * Website.billingItems
+ */
+export type Website$billingItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BillingItem
+   */
+  select?: Prisma.BillingItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BillingItem
+   */
+  omit?: Prisma.BillingItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillingItemInclude<ExtArgs> | null
+  where?: Prisma.BillingItemWhereInput
+  orderBy?: Prisma.BillingItemOrderByWithRelationInput | Prisma.BillingItemOrderByWithRelationInput[]
+  cursor?: Prisma.BillingItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillingItemScalarFieldEnum | Prisma.BillingItemScalarFieldEnum[]
 }
 
 /**

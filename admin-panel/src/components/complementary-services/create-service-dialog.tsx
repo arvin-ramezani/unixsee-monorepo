@@ -265,10 +265,27 @@ function CreateServiceForm({
     setSubmitError("");
 
     if (mode === "request" && request) {
+      const parsedAmount = Number(agreedAmount.replace(/[^\d.]/g, ""));
+      if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+        setSubmitError("مبلغ توافق‌شده معتبر نیست.");
+        setSubmitting(false);
+        setStep("edit");
+        return;
+      }
+
+      const interval =
+        commercialModel === SERVICE_COMMERCIAL_MODEL.FIXED_SCOPE ||
+        commercialModel === SERVICE_COMMERCIAL_MODEL.MILESTONE_PROJECT
+          ? ("NONE" as const)
+          : ("MONTHLY" as const);
+
       const result = await activateComplementaryRequestAction({
         requestId: request.apiId ?? request.id,
         assigneeNote: ownerName,
         startedAt: startDate,
+        amount: parsedAmount,
+        interval,
+        commercialModel,
       });
 
       setSubmitting(false);

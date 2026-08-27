@@ -39,6 +39,7 @@ import { AdminOverviewModule } from './modules/admin-overview/admin-overview.mod
 import { OperationalActionsModule } from './modules/operational-actions/operational-actions.module.js';
 import { AuthorizationCasesModule } from './modules/authorization-cases/authorization-cases.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
+import { BillingModule } from './modules/billing/billing.module.js';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { UploadsModule } from './modules/uploads/uploads.module.js';
     PlansModule,
     PlanRequestsModule,
     ComplementaryServicesModule,
+    BillingModule,
     ServersModule,
     DiscoveriesModule,
     TicketsModule,

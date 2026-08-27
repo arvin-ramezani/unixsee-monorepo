@@ -28,14 +28,14 @@
 
 - **Primary user:** Authorized staff reviewing customer identity packages.
 - **Goal:** Review submitted fields and کارت ملی photo, then approve (create/activate tenant), request more information, or reject—with reasons the customer can act on.
-- **Current problem:** Admin can create customers/tenants in fixtures, but cannot review a customer-submitted احراز هویت package; plan enablement must wait on a tenant.
-- **Proposed change:** An authorization review queue and detail surface (under users/tenants domain) that shows the required package, contact verification evidence, document preview, and consequential approve/reject actions.
-- **Main decisions:** Approve = customer becomes tenant (authorized). Staff-mediated create/approve without upload remains allowed for ops exceptions. Plan enablement and other commercial applyments stay blocked until tenant exists.
-- **Completion state:** Case `approved` with tenant + owner membership, or terminal `rejected`, or returned `needs_more_info`.
-- **Highest-risk failure:** Approving incomplete/fraudulent identity, or enabling services for non-tenant users.
+- **Current problem:** Admin can create customers/tenants in fixtures, but cannot review a customer-submitted احراز هویت package; staff also need a direct `authorized` control without this queue.
+- **Proposed change:** An authorization review queue and detail surface (under users/tenants domain) that shows the required package, contact verification evidence, document preview, and consequential approve/reject actions—alongside the independent user `authorized` toggle.
+- **Main decisions:** Approve = set `authorized=true` (ensure Tenant + OWNER; Proposed ADR 0016). Staff may also set `authorized` on the user record without opening this queue (**2A**); cases are not auto-closed. Commercial applyments use confirm override when unauthorized (**1A**)—they are not hard-blocked solely by this queue.
+- **Completion state:** Case `approved` with `authorized=true` and tenant + owner membership, or terminal `rejected`, or returned `needs_more_info` (reject does **not** clear an existing `authorized=true`).
+- **Highest-risk failure:** Approving incomplete/fraudulent identity, or silent commercial applyment without unauthorized confirm.
 - **Accessibility risk:** Document preview, reason fields, and irreversible approve confirmation.
 - **Evidence gap:** Shahkar automation; document retention; exact queue IA.
-- **Next validation:** Prototype queue → open case → approve creates tenant → plan-request enablement unblocks.
+- **Next validation:** Prototype queue → open case → approve sets `authorized` → plan-request enablement no longer needs unauthorized confirm.
 
 ## Problem and desired outcome
 
@@ -49,7 +49,9 @@ Staff can find pending packages, verify required fields and کارت ملی, con
 
 ### Desired service outcome
 
-Every sold/enabled service is attached to a staff-approved tenant created from a complete authorization package (or an explicit staff-mediated exception path), with audit history.
+Commercial readiness (`authorized`) can be set via this queue **or** the user
+toggle. Sold/enabled services may proceed for unauthorized principals only after
+confirm override + audit. Every KYC approve still ensures Tenant + OWNER.
 
 ### Scope
 
@@ -58,9 +60,9 @@ Every sold/enabled service is attached to a staff-approved tenant created from a
 - Queue of authorization cases filtered by status (pending, needs info, rejected, approved).
 - Detail view of all required customer fields + کارت ملی image (authorized staff only).
 - Show whether mobile/email challenges were completed or skipped because already verified at signup.
-- Actions: approve → tenant; request more information (reason + fields); reject (reason).
+- Actions: approve → `authorized=true` (+ ensure tenant); request more information (reason + fields); reject (reason; does not clear `authorized`).
 - Cross-links to user record, related plan requests, and return paths for enablement.
-- Blockers visible on plan-request enablement when tenant missing (consume this outcome).
+- Plan-request surfaces show unauthorized confirm when `authorized === false` (tenant shell may already exist).
 - Audit of decisions; no secret OTP/password display.
 - Persian RTL staff UI.
 
@@ -75,18 +77,18 @@ Every sold/enabled service is attached to a staff-approved tenant created from a
 ### Success definition
 
 - Pending cases are discoverable and reviewable end-to-end.
-- Approve creates/activates a tenant and owner membership under existing tenant rules.
-- Reject / needs-info returns actionable reasons to the customer flow.
-- Staff cannot “enable plan” as a substitute for approve-tenant.
+- Approve sets `authorized=true` and ensures tenant + owner membership.
+- Reject / needs-info returns actionable reasons and does not clear `authorized=true`.
+- Staff cannot “enable plan” from this surface; commercial enablement lives on plan-requests with confirm override when unauthorized.
 
 ## Available evidence
 
 | ID | Type | Source | Finding | Strength | Date |
 |---|---|---|---|---|---|
 | E-001 | Stakeholder | Field list + skip-reverify | Required package contents | Strong | 2026-08-13 |
-| E-002 | Product note | `customer-authorization-and-tenant.md` | Approve → tenant; enablement blocked without tenant | Strong | 2026-08-13 |
+| E-002 | Product note | `customer-authorization-and-tenant.md` | Approve → `authorized`; commercial confirm override (1A); independent toggle (2A) | Strong | 2026-08-27 |
 | E-003 | Implementation | `admin-panel` users views | Queue/detail/create exist; no review queue | Strong | 2026-08-13 |
-| E-004 | UX flow | `admin-plan-requests.md` | Enablement requires tenant | Strong | 2026-08-13 |
+| E-004 | UX flow | `admin-plan-requests.md` | Enablement requires tenant shell; unauthorized uses confirm | Strong | 2026-08-27 |
 | E-005 | UX flow | `client-authorization.md` | Customer states pending/needs_info/rejected/approved | Strong | 2026-08-13 |
 
 ## Assumptions and unknowns
@@ -271,20 +273,23 @@ flowchart TD
 ### AC-002 — Package visibility
 **Given** a pending case, **when** staff open detail, **then** all required fields and کارت ملی are visible (per capability), **and** skip-reverify contacts are explicitly marked.
 
-### AC-003 — Approve creates tenant
-**Given** a complete acceptable package, **when** staff confirm approve, **then** the case becomes `approved`, a tenant exists with owner membership, **and** the customer can see approved status.
+### AC-003 — Approve sets authorized
+**Given** a complete acceptable package, **when** staff confirm approve, **then** the case becomes `approved`, `authorized=true`, a tenant exists with owner membership, **and** the customer can see approved status.
 
 ### AC-004 — Needs info / reject require reason
-**Given** staff choose needs info or reject, **when** they submit without a reason, **then** the action is blocked; **when** reason is provided, **then** the customer case moves to the matching state.
+**Given** staff choose needs info or reject, **when** they submit without a reason, **then** the action is blocked; **when** reason is provided, **then** the customer case moves to the matching state **without** clearing an existing `authorized=true`.
 
-### AC-005 — Enablement still gated
-**Given** a user is not yet a tenant, **when** staff attempt plan enablement, **then** enablement is blocked regardless of a pending authorization case.
+### AC-005 — Enablement uses confirm override
+**Given** a user has `authorized === false`, **when** staff attempt plan enablement, **then** enablement requires AlertDialog confirm + Nest `confirmUnauthorized` (see plan-requests flow); a pending authorization case alone neither blocks nor auto-approves.
 
 ### AC-006 — No secrets
 **Given** any authorization screen, **when** staff view the case, **then** OTPs, passwords, and raw tokens are never shown.
 
 ### AC-007 — Narrow-viewport queue (no horizontal table scroll)
 **Given** authorized staff open the authorization queue on a narrow viewport, **when** filtered cases exist, **then** each case is presented as a single navigable card (not a horizontally scrolling multi-column table), **and** the card shows customer identity, package status, contact identifiers, contact-challenge summary, and submitted time, **and** activating the card opens the same case detail as desktop.
+
+### AC-008 — Direct toggle is independent
+**Given** staff set `authorized=true` on the user detail without opening a case, **when** a draft/pending case still exists, **then** the case status is unchanged and commercial applyments no longer require the unauthorized confirm.
 
 **Given** the same queue on a wide viewport, **when** cases exist, **then** the multi-column table remains available for scan-and-compare.
 
@@ -365,7 +370,7 @@ Focused change only — does not alter approve/reject/needs-info business rules.
 ### Must resolve before implementation
 - REC-001: Approve is the only customer-upload path that creates the tenant from this queue.
 - REC-002: Keep staff `/users` create as explicit exception, audited.
-- REC-003: Never enable plans from this surface; only unblock enablement by creating tenant.
+- REC-003: Never enable plans from this surface; set `authorized` (and ensure tenant). Enablement confirm override lives on plan-requests / commercial flows.
 
 ### Must validate during prototyping
 - Approve confirmation copy and focus restore.

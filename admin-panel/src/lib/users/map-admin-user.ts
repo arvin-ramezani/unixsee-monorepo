@@ -52,6 +52,8 @@ export type AdminUserDto = {
   role: NestUserRole;
   status: NestUserAccountStatus;
   locale: string;
+  /** Commercial readiness (ADR 0016). Distinct from KYC case status. */
+  authorized?: boolean;
   suspendedAt: string | null;
   suspendedReason: string | null;
   phoneVerifiedAt?: string | null;
@@ -102,6 +104,8 @@ export type MappedAdminUserBundle = {
   memberships: MembershipType[];
   websiteCount: number;
   authorization: UserKycStatusType;
+  /** Commercial flag from Nest; default false when absent. */
+  authorized: boolean;
 };
 
 export function mapAuthorizationCaseStatusToUserKyc(
@@ -195,10 +199,7 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
 
   const user: CustomerUserType = {
     id: dto.id,
-    displayName:
-      dto.fullName?.trim() ||
-      dto.username?.trim() ||
-      dto.phoneNumber,
+    displayName: dto.fullName?.trim() || "",
     avatarUrl: dto.avatarUrl ?? null,
     email: dto.email,
     emailVerification: dto.email
@@ -228,6 +229,7 @@ export function mapAdminUserToBundle(dto: AdminUserDto): MappedAdminUserBundle {
     websiteCount: dto._count?.websites ?? 0,
     // KYC list status is filled from authorization-cases on the users page.
     authorization: USER_KYC_STATUS.NOT_SUBMITTED,
+    authorized: Boolean(dto.authorized),
   };
 }
 
@@ -248,6 +250,7 @@ export function mapAdminUserListToQueueRows(
       tenantMemberships,
       websiteCount: mapped.websiteCount,
       authorization: mapped.authorization,
+      authorized: mapped.authorized,
     };
   });
 }

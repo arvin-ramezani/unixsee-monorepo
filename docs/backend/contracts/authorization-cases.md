@@ -1,6 +1,6 @@
 # Authorization cases API contract
 
-> **Status:** Accepted
+> **Status:** Accepted — **approve semantics amendment Proposed** (ADR 0016, 2026-08-27)
 >
 > **Audience:** `/api/v1/authorization-cases/*` (customer JWT) and
 > `/api/v1/admin/authorization-cases/*` (staff JWT + ADMIN/OPERATOR)
@@ -8,11 +8,24 @@
 > **Product:** [`../../product/notes/customer-authorization-and-tenant.md`](../../product/notes/customer-authorization-and-tenant.md)
 > · UX [`../../product/ux-flows/client-authorization.md`](../../product/ux-flows/client-authorization.md)
 > · [`../../product/ux-flows/admin-authorization.md`](../../product/ux-flows/admin-authorization.md)
+> · ADR [`../../architecture/decisions/0016-customer-tenant-role-authorized-flag.md`](../../architecture/decisions/0016-customer-tenant-role-authorized-flag.md)
 >
-> **Last verified:** 2026-08-13
+> **Last verified:** 2026-08-27
 
-Staff review of customer احراز هویت packages. **Approve → create tenant + OWNER
-membership.** Contact OTP on `/users/me` is separate from this case.
+Staff review of customer احراز هویت packages.
+
+**Approve (Proposed ADR 0016):** set `User.authorized = true` and
+**idempotently ensure** Tenant + OWNER membership exist (often already created
+at signup). Contact OTP on `/users/me` is separate from this case and must not
+set `authorized`.
+
+**Independent of user toggle (2A):** Staff may set `authorized` via
+[`users-admin.md`](./users-admin.md) without opening a case. Case approve still
+sets `authorized=true` when used. Case reject / needs-info **must not** clear
+`authorized === true` set by toggle or a prior approve.
+
+**Legacy Accepted wording:** “Approve → create tenant + OWNER membership” as
+the sole commercial signal. Prefer the `authorized` flag once implemented.
 
 ## Status values (API snake_case)
 
@@ -72,9 +85,9 @@ Each item includes user summary + package (no OTP secrets).
 | Method | Path | Effect |
 |---|---|---|
 | GET | `/:id` | Full case |
-| POST | `/:id/approve` | Tenant + OWNER; status `approved` |
-| POST | `/:id/needs-info` | `{ reason, fieldsToFix[] }` → `needs_more_info` |
-| POST | `/:id/reject` | `{ reason }` → `rejected` |
+| POST | `/:id/approve` | **Proposed:** set `authorized=true`; ensure Tenant + OWNER; status `approved` |
+| POST | `/:id/needs-info` | `{ reason, fieldsToFix[] }` → `needs_more_info` (does **not** clear `authorized`) |
+| POST | `/:id/reject` | `{ reason }` → `rejected` (does **not** clear `authorized`) |
 
 Decisions only allowed from `pending_review`.
 

@@ -258,6 +258,26 @@ user/tenant and at most one active plan per website.
 | POST      | `/api/v1/admin/service-assignments`                           | Admin                                       |
 | GET/PATCH | `/api/v1/admin/usage`, `/api/v1/admin/deliverables`           | Admin                                       |
 
+### Billing (commercial records) — add `billing`
+
+| Method | Path                                                              | Audience |
+| ------ | ----------------------------------------------------------------- | -------- |
+| GET    | `/api/v1/admin/websites/:websiteId/billing-items`                 | Admin    |
+| GET    | `/api/v1/admin/billing-items/:id`                                 | Admin    |
+| POST   | `/api/v1/admin/websites/:websiteId/billing-items/record-plan-terms` | Admin  |
+| POST   | `/api/v1/admin/billing-items/:id/renew`                           | Admin    |
+| POST   | `/api/v1/admin/websites/:websiteId/billing-items/replace-plan`    | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/cancel`                          | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/complete`                        | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/pause`                           | Admin    |
+| GET    | `/api/v1/billing`                                                 | Customer |
+| GET    | `/api/v1/websites/:id/billing`                                    | Customer |
+
+Contract: [`contracts/billing.md`](./contracts/billing.md). Product:
+[`../product/notes/commercial-records.md`](../product/notes/commercial-records.md).
+Plan enablement and assignment create require commercial terms and create a
+billing item in the same transaction.
+
 ---
 
 ## 3. Admin onboarding spine — add
@@ -302,7 +322,8 @@ Owned with `websites` + `discoveries` services:
 
 Plan assignment and activation are distinct: `planId` is the linked plan and
 `planActivatedAt` records when it started. See
-[`contracts/websites-admin.md`](./contracts/websites-admin.md).
+[`contracts/websites-admin.md`](./contracts/websites-admin.md). Commercial terms
+and billing items: [`contracts/billing.md`](./contracts/billing.md).
 
 ---
 

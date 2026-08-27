@@ -27,15 +27,15 @@
 ## Executive flow summary
 
 - **Primary user:** Authorized staff working درخواست‌های پلن.
-- **Goal:** Enable a customer-requested plan on exactly one website that already has a usable existing **tenant** (authorized customer).
-- **Current problem:** `/plan-requests` historically lacked an in-product enablement path; enablement also must respect احراز هویت.
-- **Proposed change:** Provide a thin queue and detail flow: review the requested plan on an already user-linked request, confirm **tenant**, choose the target website, and enable the plan. Do **not** surface guest vs logged-in intake badges — public visitors get an account on OTP verify before submit (see `customer-public-plan-request.md`).
-- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time; **request submission is allowed before tenant approval**, but **enablement is not**; admin treats all requests as account-linked (no “درخواست مهمان” queue distinction).
+- **Goal:** Enable a customer-requested plan on exactly one website that already has a usable existing **tenant shell**. Prefer `authorized === true`; when false, require unauthorized confirm override (**1A**).
+- **Current problem:** `/plan-requests` historically lacked an in-product enablement path; enablement also must surface `authorized` distinctly from tenant membership.
+- **Proposed change:** Provide a thin queue and detail flow: review the requested plan on an already user-linked request, confirm **tenant** + **`authorized`**, choose the target website, and enable the plan (with AlertDialog when unauthorized). Do **not** surface guest vs logged-in intake badges — public visitors get an account on OTP verify before submit (see `customer-public-plan-request.md`).
+- **Main decisions:** Public catalog choice and external validation are out of this app; admin does not create users here; admin does not run sales communication or quotation workflows here; each website has at most one active plan at a time; **request submission is allowed before authorization**; **enablement is allowed while unauthorized only after confirm + Nest `confirmUnauthorized`**; enablement records Nest commercial terms (amount, interval, dates) and creates a billing item; admin treats all requests as account-linked (no “درخواست مهمان” queue distinction).
 - **Completion state:** Request is `enabled` (plan active on the target website) or a simple terminal alternative (`declined` / `cancelled`) with history retained.
-- **Highest-risk failure:** Enabling a plan without a tenant, or putting a second active plan on a website that already has one.
+- **Highest-risk failure:** Enabling a plan without a tenant shell, silent enable without unauthorized confirm, or putting a second active plan on a website that already has one.
 - **Accessibility risk:** Enable confirmation and blocking reasons may be silent for keyboard or screen-reader users.
 - **Evidence gap:** Exact public-intake payload fields and decline reasons are not finalized.
-- **Next validation:** Prototype queue → link customer with tenant → select website → enable, and confirm the one-plan-per-website block plus non-tenant enablement block.
+- **Next validation:** Prototype queue → link customer with tenant → select website → enable, including unauthorized confirm path and one-plan-per-website block.
 
 ## Problem and desired outcome
 
@@ -64,12 +64,13 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 - Admin queue at `/plan-requests` and request detail at `/plan-requests/[id]`.
 - Display of the plan the customer already chose on the public web app.
 - Confirming and linking an **existing** customer; enablement requires a usable
-  **tenant** (authorized via احراز هویت or staff approve).
+  **tenant shell**. Prefer `authorized === true`; when false, require AlertDialog
+  confirm + Nest `confirmUnauthorized` (**1A**).
 - Selecting the target website for enablement.
 - Enforcing **one active plan per website**.
 - Enabling the requested plan on that website.
-- Blocking enablement when the linked customer is not yet a tenant, while
-  keeping the request in queue.
+- Blocking enablement when no tenant shell is linked; unauthorized alone uses
+  confirm override (not hard-block).
 - Simple decline / cancel with reason.
 - Loading, empty, permission, validation, conflict, failure, and recovery states needed for the thin path.
 - Persian RTL and equivalent English LTR behaviour.
@@ -89,7 +90,8 @@ Unixsee can turn a validated public plan choice into one active plan on one webs
 ### Success definition
 
 - Staff can enable an eligible request without an offline spreadsheet.
-- Enablement is blocked when no usable existing **tenant** is linked.
+- Enablement is blocked when no usable existing **tenant shell** is linked.
+- Enablement while `authorized === false` requires confirm override (not silent).
 - Enablement is blocked when the target website already has another active plan.
 - Enabling a request results in exactly one active plan on the chosen website.
 - Keyboard and screen-reader users can complete queue review and enablement.
@@ -279,9 +281,10 @@ flowchart LR
 ### Business-rule register
 
 - **BR-001 — Capability scope:** Queue and enablement actions are authorized capabilities. Source: E-001, project access model. Status: Confirmed principle.
-- **BR-002 — Existing tenant required for enablement:** A plan request can be enabled only when linked to an existing usable **tenant** (authorized customer). A user account without a tenant is not enough. Source: E-001; [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md). Status: Confirmed for this phase.
-- **BR-002a — Request before tenant allowed:** Customers may submit plan requests before احراز هویت completes; admin must not treat submission as a sale, and customer copy must state certifications are required for delivery. Source: product clarification 2026-08-13. Status: Confirmed for this phase.
-- **BR-003 — No create-from-request:** This flow must not create users or tenants; missing identity or incomplete احراز هویت is resolved in `/users`, then linked here. Source: E-001. Status: Confirmed for this phase.
+- **BR-002 — Existing tenant required for enablement:** A plan request can be enabled only when linked to an existing usable **tenant shell**. Source: E-001; [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md). Status: Confirmed for this phase.
+- **BR-002a — Request before authorization allowed:** Customers may submit plan requests before `authorized === true`; admin must not treat submission as a sale. Source: product clarification 2026-08-13. Status: Confirmed for this phase.
+- **BR-002b — Unauthorized confirm override (1A):** When the linked principal has `authorized === false`, enablement requires AlertDialog confirm and Nest `confirmUnauthorized: true`. Source: ADR 0016 amended 2026-08-27. Status: Confirmed for this phase.
+- **BR-003 — No create-from-request:** This flow must not create users or tenants; missing identity is resolved in `/users` (including direct `authorized` toggle), then linked here. Source: E-001. Status: Confirmed for this phase.
 - **BR-004 — One active plan per website:** A website may have at most one active plan at a time. Source: E-001. Status: Confirmed; replacement vs hard-block mode is U-003.
 - **BR-005 — Enablement assigns the chosen plan:** Enabling a request makes that request’s chosen plan the website’s active plan. Source: E-001, A-004. Status: Confirmed for this phase.
 - **BR-006 — Reasoned refusal:** Decline and cancel require a reason and retain history. Source: operational completeness. Status: Proposed.
@@ -334,7 +337,8 @@ flowchart LR
 
 | ID | Scenario | Expected behaviour | Rule | Recovery | Criteria |
 |---|---|---|---|---|---|
-| EC-001 | Request has contacts but no existing user or no tenant | Block enablement; explain that a tenant must already exist | BR-002, BR-003 | Create/approve tenant in `/users` (احراز هویت), then link | AC-003 |
+| EC-001 | Request has contacts but no existing user or no tenant shell | Block enablement; explain that a tenant must already exist | BR-002, BR-003 | Create/ensure tenant in `/users`, then link | AC-003 |
+| EC-001b | Tenant linked but `authorized === false` | Show unauthorized warning; require confirm override before enable | BR-002b | Toggle authorize in `/users` or confirm override | — |
 | EC-002 | Website already has an active plan | Block enablement (or follow approved replacement policy from U-003) | BR-004 | Resolve current plan, then retry | AC-005 |
 | EC-003 | User linked but no eligible website | Keep request pending with website blocker | BR-008 | Finish website readiness elsewhere | AC-004 |
 | EC-004 | Two staff enable the same request | One success; the other sees already-enabled state | BR-009 | No duplicate active plan | AC-007 |

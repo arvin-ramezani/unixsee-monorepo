@@ -85,6 +85,10 @@ export async function activateComplementaryRequestAction(input: {
   requestId: string;
   assigneeNote?: string;
   startedAt?: string;
+  amount: number;
+  interval: "MONTHLY" | "QUARTERLY" | "YEARLY" | "NONE";
+  currency?: string;
+  commercialModel?: string;
 }): Promise<ActivateComplementaryRequestResult> {
   try {
     const response = await serverActionFetch<{
@@ -101,6 +105,12 @@ export async function activateComplementaryRequestAction(input: {
         requestId: input.requestId,
         ...(input.assigneeNote ? { assigneeNote: input.assigneeNote } : {}),
         ...(input.startedAt ? { startedAt: input.startedAt } : {}),
+        amount: input.amount,
+        interval: input.interval,
+        currency: input.currency ?? "IRR",
+        ...(input.commercialModel
+          ? { commercialModel: input.commercialModel }
+          : {}),
       }),
     });
 

@@ -5,11 +5,17 @@ import {
 } from '@nestjs/common';
 
 import { createAppLogger } from '#/common/logging/app-logger.js';
+import { CommercialAuthorizationService } from '#/common/tenancy/commercial-authorization.service.js';
 import { TenantAccessService } from '#/common/tenancy/tenant-access.service.js';
 import {
+  BillingCommercialModel,
+  BillingCommercialState,
+  BillingInterval,
+  MembershipRole,
   WebsiteLifecycleStatus,
   WebsiteManagementCoverage,
 } from '#/generated/prisma/enums.js';
+import { BillingService } from '#/modules/billing/services/billing.service.js';
 import { PrismaService } from '#/modules/prisma/services/prisma.service.js';
 import { ERROR_MESSAGES } from '#/utils/error-messages.js';
 
@@ -28,6 +34,8 @@ export class WebsitesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tenantAccess: TenantAccessService,
+    private readonly commercialAuth: CommercialAuthorizationService,
+    private readonly billing: BillingService,
   ) {}
 
   async getUserWebsites(userId: string) {
@@ -176,6 +184,14 @@ export class WebsitesService {
       where: { id: websiteId },
       include: {
         tenant: { select: { id: true, name: true } },
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+            email: true,
+          },
+        },
         plan: { select: { id: true, code: true, nameEn: true } },
         vpsNode: {
           select: {
@@ -198,7 +214,33 @@ export class WebsitesService {
     if (!website) {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
-    return website;
+    if (website.user) {
+      return website;
+    }
+
+    const ownerMembership = await this.prisma.membership.findFirst({
+      where: {
+        tenantId: website.tenantId,
+        role: MembershipRole.OWNER,
+      },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            phoneNumber: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ...website,
+      user: ownerMembership?.user ?? null,
+      userId: ownerMembership?.user?.id ?? website.userId,
+    };
   }
 
   async updateAdmin(
@@ -220,31 +262,41 @@ export class WebsitesService {
     if (!exists) {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
-    const effectiveCoverage = input.managementCoverage ?? exists.managementCoverage;
-    const isManaged = effectiveCoverage === WebsiteManagementCoverage.UNIXSEE_MANAGED;
+    const effectiveCoverage =
+      input.managementCoverage ?? exists.managementCoverage;
+    const isManaged =
+      effectiveCoverage === WebsiteManagementCoverage.UNIXSEE_MANAGED;
     return this.prisma.website.update({
       where: { id: websiteId },
       data: {
-        ...(isManaged ? {
-          ...(input.wordpressAdminUrl !== undefined
-            ? { wordpressAdminUrl: input.wordpressAdminUrl || null }
-            : {}),
-          ...(input.wordpressAdminUsername !== undefined
-            ? { wordpressAdminUsername: input.wordpressAdminUsername || null }
-            : {}),
-          ...(input.wordpressAdminPassword !== undefined
-            ? { wordpressAdminPassword: input.wordpressAdminPassword || null }
-            : {}),
-          ...(input.directAdminUrl !== undefined
-            ? { directAdminUrl: input.directAdminUrl || null }
-            : {}),
-          ...(input.directAdminUsername !== undefined
-            ? { directAdminUsername: input.directAdminUsername || null }
-            : {}),
-          ...(input.directAdminPassword !== undefined
-            ? { directAdminPassword: input.directAdminPassword || null }
-            : {}),
-        } : {}),
+        ...(isManaged
+          ? {
+              ...(input.wordpressAdminUrl !== undefined
+                ? { wordpressAdminUrl: input.wordpressAdminUrl || null }
+                : {}),
+              ...(input.wordpressAdminUsername !== undefined
+                ? {
+                    wordpressAdminUsername:
+                      input.wordpressAdminUsername || null,
+                  }
+                : {}),
+              ...(input.wordpressAdminPassword !== undefined
+                ? {
+                    wordpressAdminPassword:
+                      input.wordpressAdminPassword || null,
+                  }
+                : {}),
+              ...(input.directAdminUrl !== undefined
+                ? { directAdminUrl: input.directAdminUrl || null }
+                : {}),
+              ...(input.directAdminUsername !== undefined
+                ? { directAdminUsername: input.directAdminUsername || null }
+                : {}),
+              ...(input.directAdminPassword !== undefined
+                ? { directAdminPassword: input.directAdminPassword || null }
+                : {}),
+            }
+          : {}),
         ...(input.managementCoverage !== undefined
           ? { managementCoverage: input.managementCoverage }
           : {}),
@@ -266,32 +318,102 @@ export class WebsitesService {
     directAdminUrl?: string;
     directAdminUsername?: string;
     directAdminPassword?: string;
+    amount?: number;
+    currency?: string;
+    interval?: BillingInterval;
+    periodStartsAt?: string;
+    commercialModel?: BillingCommercialModel;
+    commercialState?: BillingCommercialState;
+    confirmUnauthorized?: boolean;
+    actorId?: string;
   }) {
     if (input.activatePlan && !input.planId) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
+    if (
+      input.activatePlan &&
+      (input.amount === undefined || input.interval === undefined)
+    ) {
+      throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+    }
 
-    const website = await this.prisma.website.create({
-      data: {
+    if (input.activatePlan && input.actorId) {
+      await this.commercialAuth.assertAuthorizedOrConfirmed({
         tenantId: input.tenantId,
-        vpsNodeId: input.vpsNodeId,
-        managementCoverage: input.managementCoverage ?? WebsiteManagementCoverage.UNIXSEE_MANAGED,
-        domain: input.domain,
-        displayName: input.displayName,
-        ...(isManaged ? {
-          wordpressAdminUrl: input.wordpressAdminUrl || null,
-          wordpressAdminUsername: input.wordpressAdminUsername || null,
-          wordpressAdminPassword: input.wordpressAdminPassword || null,
-          directAdminUrl: input.directAdminUrl || null,
-          directAdminUsername: input.directAdminUsername || null,
-          directAdminPassword: input.directAdminPassword || null,
-        } : {}),
-        planId: input.planId,
-        planActivatedAt: input.planId && input.activatePlan ? new Date() : null,
-        userId: input.userId,
-        isActive: true,
-        status: WebsiteLifecycleStatus.ACTIVE,
-      },
+        preferredUserId: input.userId,
+        confirmUnauthorized: input.confirmUnauthorized,
+        actorId: input.actorId,
+        action: 'website.create.activate.unauthorized_override',
+        entityType: 'Website',
+        entityId: null,
+      });
+    }
+
+    const managementCoverage =
+      input.managementCoverage ?? WebsiteManagementCoverage.UNIXSEE_MANAGED;
+    const isManaged =
+      managementCoverage === WebsiteManagementCoverage.UNIXSEE_MANAGED;
+
+    const website = await this.prisma.$transaction(async (tx) => {
+      const activatedAt =
+        input.planId && input.activatePlan
+          ? input.periodStartsAt
+            ? new Date(input.periodStartsAt)
+            : new Date()
+          : null;
+      if (activatedAt && Number.isNaN(activatedAt.getTime())) {
+        throw new BadRequestException(ERROR_MESSAGES.fa.validation);
+      }
+
+      const created = await tx.website.create({
+        data: {
+          tenantId: input.tenantId,
+          vpsNodeId: input.vpsNodeId,
+          managementCoverage,
+          domain: input.domain,
+          displayName: input.displayName,
+          ...(isManaged
+            ? {
+                wordpressAdminUrl: input.wordpressAdminUrl || null,
+                wordpressAdminUsername: input.wordpressAdminUsername || null,
+                wordpressAdminPassword: input.wordpressAdminPassword || null,
+                directAdminUrl: input.directAdminUrl || null,
+                directAdminUsername: input.directAdminUsername || null,
+                directAdminPassword: input.directAdminPassword || null,
+              }
+            : {}),
+          planId: input.planId,
+          planActivatedAt: activatedAt,
+          userId: input.userId,
+          isActive: true,
+          status: WebsiteLifecycleStatus.ACTIVE,
+        },
+      });
+
+      if (input.activatePlan && input.planId && activatedAt) {
+        const plan = await tx.plan.findUnique({ where: { id: input.planId } });
+        if (!plan) {
+          throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
+        }
+
+        await this.billing.createManagedPlanItem(tx, {
+          tenantId: input.tenantId,
+          websiteId: created.id,
+          planId: input.planId,
+          labelSnapshot: plan.nameFa || plan.nameEn || plan.code,
+          actorId: input.actorId,
+          terms: {
+            amount: input.amount!,
+            currency: input.currency,
+            interval: input.interval!,
+            periodStartsAt: activatedAt,
+            commercialModel: input.commercialModel,
+            commercialState: input.commercialState,
+          },
+        });
+      }
+
+      return created;
     });
 
     this.logger.log('website.created', {
@@ -336,11 +458,25 @@ export class WebsitesService {
 
   async transfer(
     websiteId: string,
-    input: { tenantId: string; reason?: string },
+    input: {
+      tenantId: string;
+      reason?: string;
+      confirmUnauthorized?: boolean;
+      actorId: string;
+    },
   ) {
     if (!input.tenantId) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
     }
+
+    await this.commercialAuth.assertAuthorizedOrConfirmed({
+      tenantId: input.tenantId,
+      confirmUnauthorized: input.confirmUnauthorized,
+      actorId: input.actorId,
+      action: 'website.transfer.unauthorized_override',
+      entityType: 'Website',
+      entityId: websiteId,
+    });
 
     const updated = await this.prisma.website.update({
       where: { id: websiteId },

@@ -13,19 +13,11 @@ import {
 import { DashboardViewProvider } from "@/components/dashboard/views/dashboard-view-context";
 import { UnixseeMessagesPresence } from "@/components/unixsee-messages/unixsee-messages-presence";
 import { notifications } from "@/lib/dashboard-data";
+import type { DashboardActiveItem } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
 
 interface DashboardShellProps {
-  activeItem:
-    | "Activities"
-    | "ComplementaryServices"
-    | "Dashboard"
-    | "Domains"
-    | "HelpCenter"
-    | "Profile"
-    | "Tickets"
-    | "UnixseeMessages"
-    | "Websites";
+  activeItem: DashboardActiveItem;
   children: ReactNode;
   breadcrumbs?: readonly DashboardBreadcrumbItem[];
   searchPlaceholder?: string;

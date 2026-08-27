@@ -7,10 +7,19 @@ import {
 } from "@/lib/api/map-api-error";
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
 
+export type AdminWebsiteContactUser = {
+  id: string;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+};
+
 export type AdminWebsiteAgentContext = {
   id: string;
   domain: string;
   displayName?: string | null;
+  tenantId?: string;
+  userId?: string | null;
   managementCoverage?:
     "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
   wordpressAdminUrl?: string | null;
@@ -21,7 +30,8 @@ export type AdminWebsiteAgentContext = {
   directAdminPassword?: string | null;
   status?: string;
   planActivatedAt?: string | null;
-  tenant?: { id: string; name: string };
+  tenant?: { id: string; name: string } | null;
+  user?: AdminWebsiteContactUser | null;
   plan?: { id: string; code: string; nameEn: string } | null;
   vpsNode?: {
     id: string;
@@ -88,7 +98,8 @@ export async function updateWebsiteAdminUrlAction(input: {
 
 export async function updateWebsiteManagementCoverageAction(input: {
   websiteId: string;
-  managementCoverage: "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
+  managementCoverage:
+    "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
 }): Promise<Result<AdminWebsiteAgentContext>> {
   try {
     const response = await serverActionFetch<AdminWebsiteAgentContext>(
@@ -118,12 +129,18 @@ export async function updateWebsiteCredentialsAction(input: {
 }): Promise<Result<AdminWebsiteAgentContext>> {
   try {
     const body: Record<string, unknown> = {};
-    if (input.wordpressAdminUrl !== undefined) body.wordpressAdminUrl = input.wordpressAdminUrl || null;
-    if (input.wordpressAdminUsername !== undefined) body.wordpressAdminUsername = input.wordpressAdminUsername || null;
-    if (input.wordpressAdminPassword !== undefined) body.wordpressAdminPassword = input.wordpressAdminPassword || null;
-    if (input.directAdminUrl !== undefined) body.directAdminUrl = input.directAdminUrl || null;
-    if (input.directAdminUsername !== undefined) body.directAdminUsername = input.directAdminUsername || null;
-    if (input.directAdminPassword !== undefined) body.directAdminPassword = input.directAdminPassword || null;
+    if (input.wordpressAdminUrl !== undefined)
+      body.wordpressAdminUrl = input.wordpressAdminUrl || null;
+    if (input.wordpressAdminUsername !== undefined)
+      body.wordpressAdminUsername = input.wordpressAdminUsername || null;
+    if (input.wordpressAdminPassword !== undefined)
+      body.wordpressAdminPassword = input.wordpressAdminPassword || null;
+    if (input.directAdminUrl !== undefined)
+      body.directAdminUrl = input.directAdminUrl || null;
+    if (input.directAdminUsername !== undefined)
+      body.directAdminUsername = input.directAdminUsername || null;
+    if (input.directAdminPassword !== undefined)
+      body.directAdminPassword = input.directAdminPassword || null;
 
     const response = await serverActionFetch<AdminWebsiteAgentContext>(
       "/admin/websites/" + input.websiteId,

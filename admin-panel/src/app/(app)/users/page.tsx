@@ -5,19 +5,13 @@ import { buttonVariants } from "@/components/ui/button";
 import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
 import { serverFetch } from "@/lib/api/server-fetch";
 import { type AdminAuthorizationListResponse } from "@/lib/authorization/map-admin-authorization-case";
-import { getAuthorizationQueueSummary } from "@/lib/data/authorization-runtime";
 import {
   mapAuthorizationCaseStatusToUserKyc,
   mapAdminUserListToQueueRows,
   USER_KYC_STATUS,
   type AdminUserListResponse,
 } from "@/lib/users/map-admin-user";
-import {
-  getFixtureCustomerQueueRows,
-  mergeNestOverFixtureQueueRows,
-  type HybridCustomerQueueRowType,
-} from "@/lib/users/merge-nest-over-fixture";
-import { findAuthorizationCaseByUserId } from "@/lib/data/authorization-runtime";
+import { type HybridCustomerQueueRowType } from "@/lib/users/merge-nest-over-fixture";
 
 const PAGE_SIZE = 50;
 
@@ -33,15 +27,6 @@ function applyKycStatusToRows(
         authorization: mapAuthorizationCaseStatusToUserKyc(nestStatus),
       };
     }
-    if (row.source === "fixture") {
-      const fixtureCase = findAuthorizationCaseByUserId(row.user.id);
-      return {
-        ...row,
-        authorization: fixtureCase
-          ? mapAuthorizationCaseStatusToUserKyc(fixtureCase.status)
-          : USER_KYC_STATUS.NOT_SUBMITTED,
-      };
-    }
     return {
       ...row,
       authorization: row.authorization ?? USER_KYC_STATUS.NOT_SUBMITTED,
@@ -50,12 +35,10 @@ function applyKycStatusToRows(
 }
 
 export default async function UsersPage() {
-  const fixtureRows = getFixtureCustomerQueueRows();
-
-  let nestRows: ReturnType<typeof mapAdminUserListToQueueRows> = [];
-  let nestTotal: number | null = null;
-  let nestWarning: string | null = null;
-  let pendingAuthCount = getAuthorizationQueueSummary().pending;
+  let nestRows: HybridCustomerQueueRowType[] = [];
+  let nestTotal = 0;
+  let loadError: string | null = null;
+  let pendingAuthCount = 0;
   const kycStatusByUserId = new Map<string, string>();
 
   try {
@@ -70,15 +53,18 @@ export default async function UsersPage() {
 
     if (!response.success || !response.data) {
       const mapped = mapApiError(response);
-      nestWarning = mapped
+      loadError = mapped
         ? STAFF_API_ERROR_MESSAGES[mapped.key]
         : STAFF_API_ERROR_MESSAGES.generic;
     } else {
-      nestRows = mapAdminUserListToQueueRows(response.data);
+      nestRows = mapAdminUserListToQueueRows(response.data).map((row) => ({
+        ...row,
+        source: "nest" as const,
+      }));
       nestTotal = response.data.total;
     }
   } catch {
-    nestWarning = STAFF_API_ERROR_MESSAGES.unavailable;
+    loadError = STAFF_API_ERROR_MESSAGES.unavailable;
   }
 
   try {
@@ -103,16 +89,10 @@ export default async function UsersPage() {
       }
     }
   } catch {
-    // keep fixture summary
+    // KYC badges fall back to NOT_SUBMITTED; list still Nest-only.
   }
 
-  const merged = mergeNestOverFixtureQueueRows(nestRows, fixtureRows);
-  const rows: HybridCustomerQueueRowType[] = applyKycStatusToRows(
-    merged.rows,
-    kycStatusByUserId,
-  );
-  const totalCount =
-    nestTotal === null ? rows.length : nestTotal + merged.fixtureCount;
+  const rows = applyKycStatusToRows(nestRows, kycStatusByUserId);
 
   return (
     <div className="flex flex-1 flex-col gap-6 pt-4">
@@ -133,10 +113,8 @@ export default async function UsersPage() {
 
       <UsersView
         initialRows={rows}
-        nestWarning={nestWarning}
-        totalCount={totalCount}
-        nestCount={merged.nestCount}
-        fixtureCount={merged.fixtureCount}
+        loadError={loadError}
+        totalCount={loadError ? null : nestTotal}
       />
     </div>
   );

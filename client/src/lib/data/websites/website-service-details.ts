@@ -1,8 +1,5 @@
 export type WebsiteAvailability =
-  | "online"
-  | "needsAttention"
-  | "unavailable"
-  | "unknown";
+  "online" | "needsAttention" | "unavailable" | "unknown";
 
 export type WebsiteAlertSeverity = "critical" | "warning" | "info";
 export type WebsiteAlertKind =
@@ -14,12 +11,7 @@ export type WebsiteAlertKind =
   | "statusUnknown";
 
 export type WebsitePlanKey =
-  | "starter"
-  | "business"
-  | "pro"
-  | "premium"
-  | "dedicatedPlan"
-  | "none";
+  "starter" | "business" | "pro" | "premium" | "dedicatedPlan" | "none";
 
 export interface RelativeCheckTime {
   value: number;
@@ -72,7 +64,7 @@ export interface WebsiteServiceDetails {
     cycle: "monthly" | "quarterly" | "yearly";
     renewable: boolean;
     renewalAmount: number;
-    renewalCurrency: "USD";
+    renewalCurrency: string;
   } | null;
   software?: {
     wordpressVersion: string;
@@ -122,7 +114,7 @@ const commonDetails = {
     cycle: "yearly" as const,
     renewable: true,
     renewalAmount: 199,
-    renewalCurrency: "USD" as const,
+    renewalCurrency: "USD",
   },
   software: {
     wordpressVersion: "6.8.2",
@@ -330,7 +322,6 @@ export const websiteServiceDetailsIds = websiteServiceDetailsFixtures.map(
   ({ id }) => id,
 );
 
-
 /** Map a backend website entity to the client WebsiteServiceDetails shape. */
 export function mapBackendWebsiteToServiceDetails(backend: {
   id: string;
@@ -383,7 +374,10 @@ export function mapBackendWebsiteToServiceDetails(backend: {
       wordPressAdmin: backend.wordpressAdminUrl || undefined,
       wordPressAdminUsername: backend.wordpressAdminUsername || undefined,
       wordPressAdminPassword: backend.wordpressAdminPassword || undefined,
-      directAdmin: backend.directAdminUrl || backend.vpsNode?.server?.controlPanelUrl || undefined,
+      directAdmin:
+        backend.directAdminUrl ||
+        backend.vpsNode?.server?.controlPanelUrl ||
+        undefined,
       directAdminUsername: backend.directAdminUsername || undefined,
       directAdminPassword: backend.directAdminPassword || undefined,
     },
@@ -391,14 +385,7 @@ export function mapBackendWebsiteToServiceDetails(backend: {
       serverLocation: "frankfurtGermany",
       controlPanel: "DirectAdmin",
     },
-    billing: plan !== "none" ? {
-      startDate: new Date().toISOString(),
-      dueDate: new Date(Date.now() + 365 * 86_400_000).toISOString(),
-      cycle: "yearly",
-      renewable: false,
-      renewalAmount: 0,
-      renewalCurrency: "USD",
-    } : null,
+    billing: null,
     software: {
       wordpressVersion: "—",
       phpVersion: "—",
@@ -421,6 +408,71 @@ export function mapBackendWebsiteToServiceDetails(backend: {
       usedGb: 0,
       quotaGb: 0,
     },
+  };
+}
+
+export type CustomerBillingItemDto = {
+  id: string;
+  labelSnapshot: string;
+  amount: string | number;
+  currency: string;
+  interval: "MONTHLY" | "QUARTERLY" | "YEARLY" | "NONE" | string;
+  status: string;
+  periodStartsAt: string;
+  periodEndsAt: string | null;
+  renewsAt: string | null;
+};
+
+export type CustomerWebsiteBillingResponse = {
+  plan: CustomerBillingItemDto | null;
+  complementaryServices: CustomerBillingItemDto[];
+};
+
+function mapIntervalToCycle(
+  interval: string,
+): "monthly" | "quarterly" | "yearly" | null {
+  switch (interval) {
+    case "MONTHLY":
+      return "monthly";
+    case "QUARTERLY":
+      return "quarterly";
+    case "YEARLY":
+      return "yearly";
+    default:
+      return null;
+  }
+}
+
+/** Map Nest customer billing payload onto the website billing panel shape. */
+export function mapCustomerBillingToPanel(
+  payload: CustomerWebsiteBillingResponse | null | undefined,
+): WebsiteServiceDetails["billing"] {
+  const plan = payload?.plan;
+  if (!plan) {
+    return null;
+  }
+
+  const cycle = mapIntervalToCycle(plan.interval);
+  const dueDate = plan.renewsAt ?? plan.periodEndsAt;
+  if (!cycle || !dueDate) {
+    return {
+      startDate: plan.periodStartsAt,
+      dueDate: plan.periodEndsAt ?? plan.periodStartsAt,
+      cycle: "yearly",
+      renewable: false,
+      renewalAmount: Number(plan.amount) || 0,
+      renewalCurrency: plan.currency || "IRR",
+    };
+  }
+
+  return {
+    startDate: plan.periodStartsAt,
+    dueDate,
+    cycle,
+    // Phase 1: no customer payment renew path.
+    renewable: false,
+    renewalAmount: Number(plan.amount) || 0,
+    renewalCurrency: plan.currency || "IRR",
   };
 }
 

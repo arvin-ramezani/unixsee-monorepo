@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Plus } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
 import { DashboardFadeIn } from "@/components/dashboard/dashboard-fade-in";
@@ -31,6 +31,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import type { WebsiteRecord, WebsiteStatus } from "@/lib/websites-data";
+import { EmptyWebsitesTable } from "../websites/empty-websites-table";
+import { DashboardButtonLink } from "./dashboard-button-link";
 
 const accentStyles = {
   green: "bg-success text-success-foreground",
@@ -58,7 +60,7 @@ export function WebsiteTable({ websites }: { websites: WebsiteRecord[] }) {
 
   return (
     <>
-      <Panel className="h-74.25 p-4.75 lg:hidden">
+      <Panel className="h-74.25 p-4.75 xl:hidden">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold tracking-tight">
             {dashboard("status.title")}
@@ -219,145 +221,158 @@ export function WebsiteTable({ websites }: { websites: WebsiteRecord[] }) {
               view === "grid" ? "hidden" : "hidden lg:block",
             )}
           >
-            <Table className="w-full min-w-197.5 table-fixed text-xs">
-              <caption className="sr-only">{t("caption")}</caption>
-              <colgroup>
-                <col className="w-[21%]" />
-                <col className="w-[18%]" />
-                <col className="w-[11%]" />
-                <col className="w-[13%]" />
-                <col className="w-[15%]" />
-                <col className="w-[13%]" />
-                <col className="w-[9%]" />
-              </colgroup>
-              <TableHeader className="text-muted-foreground">
-                <TableRow className="border-border h-10 border-b">
-                  <TableHead className="ps-4.75 text-start font-medium">
-                    {t("website")}
-                  </TableHead>
-                  <TableHead className="text-start font-medium">
-                    {t("domain")}
-                  </TableHead>
-                  <TableHead className="text-start font-medium">
-                    {t("plan")}
-                  </TableHead>
-                  <TableHead className="text-start font-medium">
-                    {t("status")}
-                  </TableHead>
-                  <TableHead className="text-start font-medium">
-                    {t("visitors24h")}
-                  </TableHead>
-                  <TableHead className="text-start font-medium">
-                    {t("lastUpdated")}
-                  </TableHead>
-                  <TableHead>
-                    <span className="">{common("actions")}</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {websites.map((site) => (
-                  <TableRow
-                    key={site.domain}
-                    className="border-border hover:bg-muted/30 h-18.25 border-b last:border-b-0"
-                  >
-                    <th scope="row" className="ps-4.75 text-start">
-                      <span className="flex items-center gap-4">
-                        <span
-                          className={cn(
-                            "grid size-9 shrink-0 place-items-center rounded-lg text-sm font-semibold",
-                            accentStyles[site.tone],
-                            // monogramStyles[website.tone],
-                          )}
-                        >
-                          {site.monogram}
-                        </span>
-                        <span className="min-w-0">
-                          <span className="text-foreground block truncate font-semibold">
-                            {site.name}
-                          </span>
-                          <span className="text-muted-foreground mt-1 block truncate font-normal">
-                            {common(`descriptions.${site.description}`)}
-                          </span>
-                        </span>
-                      </span>
-                    </th>
-                    <td>
-                      <Link
-                        href={`https://${site.domain}`}
-                        dir="ltr"
-                        className="hover:text-link inline-flex items-center gap-1.5"
-                      >
-                        {site.domain}
-                        <ExternalLink
-                          aria-hidden="true"
-                          className="text-muted-foreground size-3.5"
-                        />
-                      </Link>
-                    </td>
-                    <td>
-                      {site.managementCoverage === "UNIXSEE_MANAGED" ? (
-                        <Badge
-                          variant="outline"
-                          className="border-border bg-muted px-2 py-1 text-[0.7rem] font-normal"
-                        >
-                          {common(`plans.${site.plan}`)}
-                        </Badge>
-                      ) : (
-                        <CoverageBadge coverage={site.managementCoverage} />
-                      )}
-                    </td>
-                    <td>
-                      {site.managementCoverage === "UNIXSEE_MANAGED" ? (
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[0.7rem] font-normal",
-                            statusClasses(site.status),
-                          )}
-                        >
-                          <span className="size-1.5 rounded-full bg-current" />
-                          {common(`statuses.${site.status}`)}
-                        </Badge>
-                      ) : (
-                        <CoverageBadge coverage={site.managementCoverage} />
-                      )}
-                    </td>
-                    <td>
-                      {site.managementCoverage === "UNIXSEE_MANAGED" ? (
-                        <Visitors24hValue visitors24h={site.visitors24h} />
-                      ) : (
-                        <CoverageBadge coverage={site.managementCoverage} />
-                      )}
-                    </td>
-                    <td className="leading-5 tabular-nums">
-                      <time dateTime={site.updatedAt}>
-                        <span className="block">
-                          {format.dateTime(
-                            new Date(site.updatedAt),
-                            "shortDate",
-                          )}
-                        </span>
-                        <span className="text-muted-foreground block">
-                          {format.dateTime(
-                            new Date(site.updatedAt),
-                            "shortTime",
-                          )}
-                        </span>
-                      </time>
-                    </td>
-                    <td className="leading-5 tabular-nums">
-                      <Link
-                        href={`/dashboard/websites/${site.id}`}
-                        className="border-border dark:hover:bg-accent dark:hover:border-link/12 dark:hover:text-accent-foreground hover:bg-muted focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium transition-colors focus-visible:ring-2"
-                      >
-                        {common("view")}
-                      </Link>
-                    </td>
+            {websites.length > 0 ? (
+              <Table className="w-full min-w-197.5 table-fixed text-xs">
+                <caption className="sr-only">{t("caption")}</caption>
+                <colgroup>
+                  <col className="w-[21%]" />
+                  <col className="w-[18%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[13%]" />
+                  <col className="w-[15%]" />
+                  <col className="w-[13%]" />
+                  <col className="w-[9%]" />
+                </colgroup>
+                <TableHeader className="text-muted-foreground">
+                  <TableRow className="border-border h-10 border-b">
+                    <TableHead className="ps-4.75 text-start font-medium">
+                      {t("website")}
+                    </TableHead>
+                    <TableHead className="text-start font-medium">
+                      {t("domain")}
+                    </TableHead>
+                    <TableHead className="text-start font-medium">
+                      {t("plan")}
+                    </TableHead>
+                    <TableHead className="text-start font-medium">
+                      {t("status")}
+                    </TableHead>
+                    <TableHead className="text-start font-medium">
+                      {t("visitors24h")}
+                    </TableHead>
+                    <TableHead className="text-start font-medium">
+                      {t("lastUpdated")}
+                    </TableHead>
+                    <TableHead>
+                      <span className="">{common("actions")}</span>
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {websites.map((site) => (
+                    <TableRow
+                      key={site.domain}
+                      className="border-border hover:bg-muted/30 h-18.25 border-b last:border-b-0"
+                    >
+                      <th scope="row" className="ps-4.75 text-start">
+                        <span className="flex items-center gap-4">
+                          <span
+                            className={cn(
+                              "grid size-9 shrink-0 place-items-center rounded-lg text-sm font-semibold",
+                              accentStyles[site.tone],
+                              // monogramStyles[website.tone],
+                            )}
+                          >
+                            {site.monogram}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="text-foreground block truncate font-semibold">
+                              {site.name}
+                            </span>
+                            <span className="text-muted-foreground mt-1 block truncate font-normal">
+                              {common(`descriptions.${site.description}`)}
+                            </span>
+                          </span>
+                        </span>
+                      </th>
+                      <td>
+                        <Link
+                          href={`https://${site.domain}`}
+                          dir="ltr"
+                          className="hover:text-link inline-flex items-center gap-1.5"
+                        >
+                          {site.domain}
+                          <ExternalLink
+                            aria-hidden="true"
+                            className="text-muted-foreground size-3.5"
+                          />
+                        </Link>
+                      </td>
+                      <td>
+                        {site.managementCoverage === "UNIXSEE_MANAGED" ? (
+                          <Badge
+                            variant="outline"
+                            className="border-border bg-muted px-2 py-1 text-[0.7rem] font-normal"
+                          >
+                            {common(`plans.${site.plan}`)}
+                          </Badge>
+                        ) : (
+                          <CoverageBadge coverage={site.managementCoverage} />
+                        )}
+                      </td>
+                      <td>
+                        {site.managementCoverage === "UNIXSEE_MANAGED" ? (
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[0.7rem] font-normal",
+                              statusClasses(site.status),
+                            )}
+                          >
+                            <span className="size-1.5 rounded-full bg-current" />
+                            {common(`statuses.${site.status}`)}
+                          </Badge>
+                        ) : (
+                          <CoverageBadge coverage={site.managementCoverage} />
+                        )}
+                      </td>
+                      <td>
+                        {site.managementCoverage === "UNIXSEE_MANAGED" ? (
+                          <Visitors24hValue visitors24h={site.visitors24h} />
+                        ) : (
+                          <CoverageBadge coverage={site.managementCoverage} />
+                        )}
+                      </td>
+                      <td className="leading-5 tabular-nums">
+                        <time dateTime={site.updatedAt}>
+                          <span className="block">
+                            {format.dateTime(
+                              new Date(site.updatedAt),
+                              "shortDate",
+                            )}
+                          </span>
+                          <span className="text-muted-foreground block">
+                            {format.dateTime(
+                              new Date(site.updatedAt),
+                              "shortTime",
+                            )}
+                          </span>
+                        </time>
+                      </td>
+                      <td className="leading-5 tabular-nums">
+                        <Link
+                          href={`/dashboard/websites/${site.id}`}
+                          className="border-border dark:hover:bg-accent dark:hover:border-link/12 dark:hover:text-accent-foreground hover:bg-muted focus-visible:ring-ring inline-flex h-9 items-center rounded-lg border px-4 text-xs font-medium transition-colors focus-visible:ring-2"
+                        >
+                          {common("view")}
+                        </Link>
+                      </td>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="my-10 flex flex-col items-center justify-center">
+                <DashboardButtonLink
+                  href="/dashboard/websites/new"
+                  size="xl"
+                  className="h-12 px-8"
+                >
+                  <Plus aria-hidden="true" className="size-4" />{" "}
+                  {dashboard("hero.addSite")}
+                </DashboardButtonLink>
+              </div>
+            )}
           </div>
 
           <div

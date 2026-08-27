@@ -10,12 +10,14 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
 ## Phase 1 customer can
 
 1. **Sign up / sign in** on the public / customer surface (auth mechanics still
-   open). This creates a user account, not a tenant.
-2. **Submit certifications** for احراز هویت so staff can approve a tenant
+   open). Creates `role=TENANT`, Tenant shell + OWNER, `authorized=false`
+   (Proposed ADR 0016)—not commercial authorization.
+2. **Optionally submit certifications** for احراز هویت; staff may also set
+   `authorized=true` via user toggle without opening files
    ([`customer-authorization-and-tenant.md`](./customer-authorization-and-tenant.md)).
 3. **Send a plan request** by choosing a plan from the public list — allowed
-   before tenant approval, with clear messaging that certifications are
-   required before managed services can be delivered. Signed-out visitors must
+   before `authorized`, with messaging that certifications support delivery
+   readiness. Signed-out visitors must
    verify phone **or** email with OTP; Nest creates the **user account on
    successful verify before** the request is submitted
    ([`../ux-flows/customer-public-plan-request.md`](../ux-flows/customer-public-plan-request.md)).
@@ -31,21 +33,22 @@ admin enablement is out of this admin application.
 
 | Public / customer action | Admin handling | Spec |
 |---|---|---|
-| Signup / sign-in | Find, support; contact verification | `ux-flows/admin-users.md`, `ux-flows/client-auth.md` |
-| احراز هویت certifications | Review and approve/reject tenant | `ux-flows/admin-users.md` + authorization note |
-| Plan request | Review chosen plan, link customer, enable only when tenant exists (one plan per website) | `ux-flows/admin-plan-requests.md` |
-| Consultant / complementary request | Intake through delivery; commercial activation still needs a tenant | `ux-flows/admin-complementary-services.md` |
+| Signup / sign-in | Find, support; contact verification; toggle `authorized` | `ux-flows/admin-users.md`, `ux-flows/client-auth.md` |
+| احراز هویت certifications | Optional review/approve/reject → may set `authorized` | `ux-flows/admin-users.md` + authorization note |
+| Plan request | Review chosen plan, link customer, enable (confirm if unauthorized; one plan per website) | `ux-flows/admin-plan-requests.md` |
+| Consultant / complementary request | Intake through delivery; activation confirm if unauthorized | `ux-flows/admin-complementary-services.md` |
 
 ## Rules kept in sync
 
-- Signup alone does not create a tenant, enable a plan, or activate a website.
-- Public plan-request OTP verify creates a **user** (and session) before the
-  request is stored; it still does not create a tenant or enable a plan.
+- Signup alone does not set `authorized`, enable a plan, or activate a website
+  (it may create a Tenant shell).
+- Public plan-request OTP verify creates a **TENANT user** (and session) before the
+  request is stored; it still does not set `authorized` or enable a plan.
 - Plan request alone is not payment success and is not enablement.
-- Plan enablement requires an existing **tenant**; create/approve happens in
-  `/users` (or discovery assignment return), not from `/plan-requests`.
-- Request submission is not blocked solely for missing certifications;
-  customer copy must state certifications are necessary for delivery.
+- Plan enablement prefers **`authorized === true`**; when false, staff confirm
+  override (**1A**). Setting `authorized` happens in `/users` (direct toggle
+  and/or authorization cases), not from `/plan-requests`.
+- Request submission is not blocked solely for missing certifications.
 - A website has at most **one active plan** at a time.
 - Consultant request is separate from plan-request and ticket lifecycles.
 - Website visibility still requires tenant assignment and activation rules

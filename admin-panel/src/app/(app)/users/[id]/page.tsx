@@ -1,3 +1,4 @@
+import type { AdminWebsiteAgentContext } from "@/actions/websites/website-agent-actions";
 import { UserDetailsView } from "@/components/users/user-details-view";
 import { AdminBackLink } from "@/components/common/admin-back-link";
 import { mapApiError, STAFF_API_ERROR_MESSAGES } from "@/lib/api/map-api-error";
@@ -16,11 +17,57 @@ import {
   type AdminUserDto,
   type MappedAdminUserBundle,
 } from "@/lib/users/map-admin-user";
-import { getUserTenantMemberships } from "@/lib/users-utils";
+import {
+  getUserTenantMemberships,
+  type UserRelatedWebsiteSummary,
+} from "@/lib/users-utils";
 
 export type UserDetailsPageProps = {
   params: Promise<{ id: string }>;
 };
+
+function mapRelatedWebsite(
+  item: AdminWebsiteAgentContext,
+): UserRelatedWebsiteSummary {
+  return {
+    id: item.id,
+    domain: item.domain,
+    tenantId: item.tenant?.id ?? "",
+    tenantName: item.tenant?.name ?? "بدون مستأجر",
+  };
+}
+
+async function loadUserRelatedWebsites(userId: string): Promise<{
+  websites: UserRelatedWebsiteSummary[];
+  error: string | null;
+}> {
+  try {
+    const response = await serverFetch<{
+      items: AdminWebsiteAgentContext[];
+      total: number;
+    }>(`/admin/websites?userId=${encodeURIComponent(userId)}&take=100`, {
+      method: "GET",
+    });
+    if (response.success && response.data) {
+      return {
+        websites: response.data.items.map(mapRelatedWebsite),
+        error: null,
+      };
+    }
+    const mappedError = mapApiError(response);
+    return {
+      websites: [],
+      error: mappedError
+        ? STAFF_API_ERROR_MESSAGES[mappedError.key]
+        : STAFF_API_ERROR_MESSAGES.generic,
+    };
+  } catch {
+    return {
+      websites: [],
+      error: STAFF_API_ERROR_MESSAGES.unavailable,
+    };
+  }
+}
 
 function mapFixtureUserDetail(id: string): MappedAdminUserBundle | null {
   const user = getRuntimeUser(id);
@@ -46,6 +93,7 @@ function mapFixtureUserDetail(id: string): MappedAdminUserBundle | null {
     authorization: fixtureCase
       ? mapAuthorizationCaseStatusToUserKyc(fixtureCase.status)
       : USER_KYC_STATUS.NOT_SUBMITTED,
+    authorized: false,
   };
 }
 
@@ -99,6 +147,7 @@ export default async function UserDetailsPage({
   }
 
   if (nestBundle) {
+    const relatedWebsitesResult = await loadUserRelatedWebsites(id);
     return (
       <div className="flex flex-1 flex-col gap-6 pt-4">
         <UserDetailsView
@@ -107,7 +156,10 @@ export default async function UserDetailsPage({
           initialTenants={nestBundle.tenants}
           initialMemberships={nestBundle.memberships}
           authorization={nestBundle.authorization}
+          authorized={nestBundle.authorized}
           nestBacked
+          relatedWebsites={relatedWebsitesResult.websites}
+          websitesLoadError={relatedWebsitesResult.error}
         />
       </div>
     );
@@ -132,6 +184,7 @@ export default async function UserDetailsPage({
           initialTenants={fixtureBundle.tenants}
           initialMemberships={fixtureBundle.memberships}
           authorization={fixtureBundle.authorization}
+          authorized={fixtureBundle.authorized}
           nestBacked={false}
         />
       </div>

@@ -27,6 +27,7 @@ docs/backend/contracts/
 ├── plan-requests-public.md        # anonymous public plan-request intake
 ├── plan-requests-admin.md         # staff plan-request queue
 ├── websites-admin.md              # website assignment vs plan activation
+├── billing.md                     # commercial billing items + renew/replace
 ├── servers-admin.md               # staff servers + enrollment tokens
 ├── users-admin.md                 # staff customer users + membership summary
 └── users-me-contacts.md           # customer phone/email OTP verification
@@ -45,6 +46,7 @@ docs/backend/contracts/
 | [`plan-requests-public.md`](./plan-requests-public.md)                       | `/api/v1/public/plan-requests`  | Anonymous create; account guard                                                   |
 | [`plan-requests-admin.md`](./plan-requests-admin.md)                         | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline                                         |
 | [`websites-admin.md`](./websites-admin.md)                                   | `/api/v1/admin/websites/*`      | Staff website creation, assignment, and plan activation state                     |
+| [`billing.md`](./billing.md)                                                 | Admin + customer website        | Nest commercial billing items, renew, replace-plan, record-terms                  |
 | [`servers-admin.md`](./servers-admin.md)                                     | `/api/v1/admin/servers/*`       | Staff servers, enrollment, agent revoke, server delete                            |
 | [`users-admin.md`](./users-admin.md)                                         | `/api/v1/admin/users/*`         | Staff customer directory + tenant membership summary                              |
 | [`users-me-contacts.md`](./users-me-contacts.md)                             | `/api/v1/users/me/contacts/*`   | Customer phone/email OTP verification                                             |

@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNumber,
@@ -7,10 +8,14 @@ import {
   IsString,
   IsUUID,
   MaxLength,
+  Min,
   MinLength,
 } from 'class-validator';
 
 import {
+  BillingCommercialModel,
+  BillingCommercialState,
+  BillingInterval,
   ComplementaryEngagementPreference,
   ComplementaryRequestStatus,
 } from '#/generated/prisma/enums.js';
@@ -120,6 +125,34 @@ export class CreateServiceAssignmentDto {
   @IsOptional()
   @IsString()
   startedAt?: string;
+
+  @IsNumber()
+  @Min(0)
+  amount!: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(8)
+  currency?: string;
+
+  @IsEnum(BillingInterval)
+  interval!: BillingInterval;
+
+  @IsOptional()
+  @IsString()
+  periodStartsAt?: string;
+
+  @IsOptional()
+  @IsEnum(BillingCommercialModel)
+  commercialModel?: BillingCommercialModel;
+
+  @IsOptional()
+  @IsEnum(BillingCommercialState)
+  commercialState?: BillingCommercialState;
+
+  @IsOptional()
+  @IsBoolean()
+  confirmUnauthorized?: boolean;
 }
 
 export class PatchUsageDto {

@@ -68,10 +68,18 @@ export function hasCapability(capability: StaffCapabilityType): boolean {
 }
 
 export function getCustomerInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "—";
   if (parts.length === 1) return parts[0].slice(0, 1);
 
   return `${parts[0].slice(0, 1)}${parts[1].slice(0, 1)}`;
+}
+
+/** List/detail title: real full name only; never phone/id fallbacks. */
+export function formatCustomerDisplayName(displayName: string): string {
+  const trimmed = displayName.trim();
+  if (!trimmed || looksLikePhoneLabel(trimmed)) return "--";
+  return trimmed;
 }
 
 /** True when a label is essentially a phone number (e.g. OTP personal tenant). */
@@ -186,6 +194,14 @@ export function getTenantWebsites(tenantId: string) {
   );
 }
 
+/** Nest-backed summary row for user ↔ website visibility (not fixture WebsiteType). */
+export type UserRelatedWebsiteSummary = {
+  id: string;
+  domain: string;
+  tenantId: string;
+  tenantName: string;
+};
+
 export function countUserTickets(userId: string): number {
   return TICKETS.filter((ticket) => ticket.userId === userId).length;
 }
@@ -232,8 +248,10 @@ export type CustomerQueueRowType = {
   user: CustomerUserType;
   tenantMemberships: TenantMembershipType[];
   websiteCount: number;
-  /** Nest-derived: tenant membership means organizationally authorized. */
+  /** Nest-derived: KYC package status (not commercial authorized). */
   authorization?: UserKycStatusType;
+  /** Commercial readiness flag (ADR 0016). */
+  authorized?: boolean;
   /** Present when list is Nest-over-fixture hybrid. */
   source?: "nest" | "fixture";
 };
@@ -271,8 +289,7 @@ export type AccountStateFilterType =
 export const ACCOUNT_ORIGIN_FILTER_ALL = "ALL";
 
 export type AccountOriginFilterType =
-  | AccountOriginType
-  | typeof ACCOUNT_ORIGIN_FILTER_ALL;
+  AccountOriginType | typeof ACCOUNT_ORIGIN_FILTER_ALL;
 
 const ACTIONABLE_ACCOUNT_STATES: ReadonlySet<AccountStateType> = new Set([
   ACCOUNT_STATE.PENDING_VERIFICATION,

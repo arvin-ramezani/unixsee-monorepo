@@ -12,15 +12,26 @@ import {
 } from '@nestjs/common';
 import {
   IsBoolean,
+  IsEnum,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
   IsUUID,
   MaxLength,
+  Min,
 } from 'class-validator';
 
+import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
-import { Role, WebsiteManagementCoverage } from '#/generated/prisma/enums.js';
+import {
+  BillingCommercialModel,
+  BillingCommercialState,
+  BillingInterval,
+  Role,
+  WebsiteManagementCoverage,
+} from '#/generated/prisma/enums.js';
+import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
 import { Roles } from '#/modules/auth/decorators/roles.decorator.js';
 import { RolesGuard } from '#/modules/auth/guards/roles.guard.js';
 import { WebsitesService } from '../services/websites.service.js';
@@ -87,6 +98,36 @@ class AdminCreateWebsiteDto {
   @IsString()
   @MaxLength(255)
   directAdminPassword?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  amount?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(8)
+  currency?: string;
+
+  @IsOptional()
+  @IsEnum(BillingInterval)
+  interval?: BillingInterval;
+
+  @IsOptional()
+  @IsString()
+  periodStartsAt?: string;
+
+  @IsOptional()
+  @IsEnum(BillingCommercialModel)
+  commercialModel?: BillingCommercialModel;
+
+  @IsOptional()
+  @IsEnum(BillingCommercialState)
+  commercialState?: BillingCommercialState;
+
+  @IsOptional()
+  @IsBoolean()
+  confirmUnauthorized?: boolean;
 }
 
 class AssignWebsiteDto {
@@ -106,6 +147,10 @@ class TransferWebsiteDto {
   @IsString()
   @MaxLength(500)
   reason?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  confirmUnauthorized?: boolean;
 }
 
 class UpdateWebsiteDto {
@@ -152,8 +197,14 @@ export class AdminWebsitesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: AdminCreateWebsiteDto) {
-    const data = await this.websitesService.createAdmin(body);
+  async create(
+    @Body() body: AdminCreateWebsiteDto,
+    @CurrentUser() user: CurrentUserType,
+  ) {
+    const data = await this.websitesService.createAdmin({
+      ...body,
+      actorId: user.id,
+    });
     return ApiResponseBuilder.created(data);
   }
 
@@ -178,8 +229,15 @@ export class AdminWebsitesController {
 
   @Post(':id/transfer')
   @HttpCode(HttpStatus.OK)
-  async transfer(@Param('id') id: string, @Body() body: TransferWebsiteDto) {
-    const data = await this.websitesService.transfer(id, body);
+  async transfer(
+    @Param('id') id: string,
+    @Body() body: TransferWebsiteDto,
+    @CurrentUser() user: CurrentUserType,
+  ) {
+    const data = await this.websitesService.transfer(id, {
+      ...body,
+      actorId: user.id,
+    });
     return ApiResponseBuilder.ok(data);
   }
 

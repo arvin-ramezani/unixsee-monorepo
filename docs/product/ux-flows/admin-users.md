@@ -30,7 +30,7 @@
 - **Goal:** Find or create the correct customer user and tenant, manage membership and account state, and complete website ownership assignment without leaving the provisioning context.
 - **Current problem:** `/users` is a dead end. Discovery assignment (`تخصیص وب‌سایت کشف‌شده`) can only choose from a fixed tenant list and cannot create a missing customer/user while continuing.
 - **Proposed change:** Provide a first-class users-and-tenants admin flow, plus an inline **create-customer-and-continue** path inside تخصیص وب‌سایت کشف‌شده.
-- **Main decisions:** Distinguish **user account**, **contact verification**, **احراز هویت**, **tenant**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Public signup creates a user, not a tenant. **Authorized** means staff approved احراز هویت and the customer **became a tenant** (or staff created/approved the tenant). Plan requests may be submitted before tenant approval but may only be **enabled** after a tenant exists. Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. This admin flow does **not** design public auth/signup UX.
+- **Main decisions:** Distinguish **user account**, **contact verification**, **احراز هویت / `authorized`**, **tenant shell**, and **membership**. Valid account origins include **public signup** (if enabled) and **admin create**. Public signup creates `role=TENANT` + Tenant shell + OWNER with **`authorized=false`** (Proposed ADR 0016). **Authorized** means `authorized === true` after staff KYC approve **or** direct toggle on this surface (**2A**)—not merely membership. Staff may flip `authorized` without opening KYC files/cases. Plan requests may be submitted before authorization; enablement uses confirm override when unauthorized (**1A**). Website ownership attaches to a tenant. Creating a missing owner during discovery assignment must preserve discovery context and return with the new tenant preselected. Later each tenant may add its own users. This admin flow does **not** design public auth/signup UX.
 - **Completion state:** The intended customer/tenant exists, membership and owner are valid, and related website assignment or plan-request linking can complete without offline workaround.
 - **Highest-risk failure:** Creating a duplicate of a public-signup or previously admin-created customer, enabling a plan for a non-tenant user, or assigning a website while create/link result is uncertain.
 - **Accessibility risk:** Nested create-inside-assign surfaces can trap focus, lose context, or fail to announce create/assign status.
@@ -169,7 +169,7 @@ before Staff access UI ships.
 | Customer user | Person identity/contact account that can authenticate and hold memberships | Tenant organization record |
 | Contact verification | OTP / email proof that a contact works | احراز هویت / tenant approval |
 | احراز هویت | Staff review of certifications that authorizes the customer | Sign-in success |
-| Tenant | Approved customer organization that owns websites and can receive sold services (**authorized**) | A single login by itself |
+| Tenant | Organization container (shell may exist before `authorized`) | A single login by itself; commercial readiness (`authorized`) |
 | Membership | Link of a user to a tenant with a tenant role | Website-level permission override |
 | Tenant owner | Membership role that controls the tenant with owner-safeguard rules | Staff administrator role |
 | Managed website ownership | Website belongs to exactly one tenant after assignment | Raw agent discovery |
@@ -367,7 +367,7 @@ flowchart TD
 
 | Step | State | Goal | Entry condition | Information | Actions | System behaviour | Exit |
 |---|---|---|---|---|---|---|---|
-| S-01 | Users queue | Find customer admin work | Authorized `/users` | Name, contact masks, tenant(s), account state, website count | Search, filter, create, open | Scope by capability | Record selected/created |
+| S-01 | Users queue | Find customer admin work | Authorized `/users` | Name, contact, احراز هویت / `authorized`, account state, website count | Search, filter, create, open | Scope by capability | Record selected/created |
 | S-02 | Find results | Prevent duplicates | Search submitted | Ranked authorized matches and “no match” empty state | Open match, start create | Avoid leaking existence beyond policy | Detail or create |
 | S-03 | Create user/tenant | Establish customer | Create from `/users/new` or assign returnTo | Display name, contact identifiers, locale, tenant name, owner default, internal note optional | Save, cancel | Validates uniqueness; creates user+tenant+owner as configured | Detail or resume parent flow |
 | S-04 | User/tenant detail | Understand customer context | Record opened | Identity, verification/security state, memberships, related websites/requests/tickets, internal notes | Edit permitted fields, manage members, security actions | Separates internal vs customer-visible | Related workflow |
@@ -417,6 +417,7 @@ flowchart TD
 
 - **BR-001 — Capability and scope:** Every user/tenant read and mutation is authorized by NestJS capability and scope. Source: Phase 1 access model. Status: Confirmed principle; bundles in U-001.
 - **BR-002 — Distinguish user and tenant:** Admin must not treat login identity and owning organization as the same object, even if Phase 1 often creates them together. Source: E-003, A-006. Status: Proposed correction to current fixtures.
+- **BR-002a — Users queue shows customers, not tenant chips:** `/users` list identity is the **customer user** (مشتری). Do not show a parallel مستأجرها column on the queue—ADR 0016 creates a 1:1 tenant shell at signup so tenant labels usually duplicate name/phone. Tenant membership stays on `/users/[id]`. Website count remains the list commercial footprint signal. Source: ADR 0016; staff duplication report 2026-08-27. Status: Accepted for list surface.
 - **BR-003 — Minimum create completeness:** Create requires the approved minimum identity and tenant/owner fields before the record can be used for website ownership. Source: A-003, E-004. Status: Proposed.
 - **BR-004 — Duplicate prevention:** Create must check approved unique identifiers and surface authorized existing matches before a second customer is created. Source: U-003. Status: Proposed.
 - **BR-005 — Verification honesty:** Staff create does not mark contacts verified merely because the admin form saved. Verification happens when the customer signs in with that phone/email and passes OTP. Source: Phase 1 §8.1.1 / §20. Status: Confirmed.
@@ -710,6 +711,8 @@ This flow supports:
 | Managed website active/provisioning | Still requires explicit assignment/activation prerequisites |
 
 Recommended follow-up: consume public auth/signup only as account-origin outcomes here; customer journey lives in [`client-auth.md`](./client-auth.md).
+
+**Related visibility flow:** Nest-backed website list on user details and owner links on website details — [`admin-user-website-visibility.md`](./admin-user-website-visibility.md).
 
 ## Appendix B — Minimum inline create information architecture
 

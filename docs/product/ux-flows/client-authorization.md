@@ -30,8 +30,8 @@
 - **Goal:** Submit identity, address, contact proofs, and national-ID card photo so staff can approve احراز هویت.
 - **Current problem:** Signup/sign-in and profile contact badges exist, but there is no path to submit tenant-authorization materials; plan requests cannot be enabled until a tenant exists.
 - **Proposed change:** A dedicated customer authorization flow (dashboard) that collects the required fields, verifies new contacts only when needed, uploads کارت ملی, and shows pending / rejected / approved status.
-- **Main decisions:** Signup ≠ tenant. Required field set is fixed (below). Reuse already-verified signup mobile/email without re-OTP. Submission is allowed anytime after sign-in; selling still waits on admin approval.
-- **Completion state:** Submission accepted → `pending_review`; later `approved` (tenant exists) or `rejected` / `needs_more_info` with clear next action.
+- **Main decisions:** Signup creates `role=TENANT` + Tenant shell + OWNER with `authorized=false` (Proposed ADR 0016). Required field set is fixed (below). Reuse already-verified signup mobile/email without re-OTP. Submission is optional and allowed anytime after sign-in; `authorized=true` comes from staff case approve **or** direct admin toggle (customer may never use this flow).
+- **Completion state:** Submission accepted → `pending_review`; later `approved` (`authorized=true`) or `rejected` / `needs_more_info` with clear next action. Reject does not clear an admin toggle.
 - **Highest-risk failure:** Customer believes they are authorized after submit; or re-verifying already-verified contacts creates friction/drop-off.
 - **Accessibility risk:** File upload, OTP challenge, long form, and status announcements.
 - **Evidence gap:** Upload constraints; Shahkar automation; exact route IA.

@@ -10,17 +10,22 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
 ## Stance
 
 - Public site lets a customer **choose a plan** from a list (plan request).
-- Plan request submission is allowed **before** احراز هویت / tenant approval;
-  customer copy must say certifications are required before managed services
-  can be delivered. See
+- Plan request submission is allowed **before** احراز هویت /
+  **`authorized = true`**;
+  customer copy should still explain certifications support delivery readiness.
+  See
   [`customer-authorization-and-tenant.md`](./customer-authorization-and-tenant.md).
 - **External validation** of that request is out of this admin application.
 - Admin **enables** the requested plan on a website; that is the commercial
   outcome for `/plan-requests` in this phase.
-- Enablement requires an existing **tenant** (authorized customer). A user
-  account alone is not enough. Tenant approval happens via احراز هویت review
-  or staff create/approve in `/users` (or create-and-return during discovery
-  assignment), not from the plan-request surface.
+- Enablement prefers an **`authorized`** customer (Proposed ADR
+  [`0016`](../../architecture/decisions/0016-customer-tenant-role-authorized-flag.md)).
+  When `authorized === false`, staff may still enable after **AlertDialog
+  confirm** + Nest `confirmUnauthorized` (**1A**). Authorization is set via
+  direct user toggle (**2A**) and/or KYC case approve in `/users`.
+- Public signup defaults to **`role = TENANT`**, creates a **Tenant shell** +
+  OWNER membership, and leaves **`authorized = false`** until staff toggle or
+  case approve.
 - Linking a plan to a website does not start it. Activation is explicit and
   records a start timestamp; discovery and ordinary assignment create inactive
   links.
@@ -36,6 +41,7 @@ Aligned with `ux-flows/admin-plan-requests.md` v0.2 (thin enablement).
 | User / tenant / احراز هویت | `/users`         | `ux-flows/admin-users.md`                   |
 | Server / agent / discovery | `/servers`       | `ux-flows/admin-servers-websites-agents.md` |
 | Managed website            | `/websites`      | same servers/websites flow                  |
+| User ↔ website visibility  | `/users/[id]`, `/websites/[id]` | `ux-flows/admin-user-website-visibility.md` |
 
 These are sibling queues with cross-links, not one wizard.
 
@@ -44,10 +50,10 @@ These are sibling queues with cross-links, not one wizard.
 | Origin                                                 | Creates                                                                        | Does not create alone                       |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------- |
 | Plan request (after OTP)                               | Chosen-plan intake for admin enablement; request linked to existing user       | Tenant, managed website, enrollment, sale   |
-| Public plan-request OTP verify                         | Customer **user** account + verified contact + session (before request submit) | Tenant, plan enablement, website assignment |
-| Public signup (if enabled)                             | User account                                                                   | Tenant, plan enablement, website assignment |
-| احراز هویت approval                                    | Tenant (authorized customer)                                                   | Plan enablement by itself                   |
-| Admin create / approve (`/users` or assignment return) | User and/or tenant, owner                                                      | Website assignment, plan enablement         |
+| Public plan-request OTP verify                         | Customer **user** (`role=TENANT`) + verified contact + session; Tenant shell + OWNER; `authorized=false` | Commercial authorization, plan enablement |
+| Public signup (if enabled)                             | Same as above (`role=TENANT`, Tenant shell, `authorized=false`) | Commercial authorization, plan enablement |
+| احراز هویت approval                                    | Sets `authorized=true` (ensures Tenant + OWNER); cases stay independent of direct toggle | Plan enablement by itself |
+| Admin create / toggle `authorized` (`/users`)          | User and/or tenant, owner; may set `authorized` without KYC files (**2A**) | Website assignment, plan enablement |
 | Agent discovery                                        | Staff-only candidate                                                           | Tenant, plan, customer visibility           |
 | Enable plan on website                                 | Active plan on that website                                                    | Payment settlement (Phase 1)                |
 

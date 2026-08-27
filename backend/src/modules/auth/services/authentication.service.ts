@@ -307,7 +307,7 @@ export class AuthenticationService {
       this.logger.log('auth.otp.creating_user', { context, phoneNumber });
       userToSignIn = await this.userService.create({
         phoneNumber,
-        role: 'USER',
+        role: 'TENANT',
         phoneVerifiedAt: new Date(),
       });
     } else {
@@ -366,7 +366,7 @@ export class AuthenticationService {
       this.logger.log('auth.otp.email.creating_user', { context, email });
       userToSignIn = await this.userService.create({
         email,
-        role: 'USER',
+        role: 'TENANT',
         emailVerifiedAt: new Date(),
       });
     } else {

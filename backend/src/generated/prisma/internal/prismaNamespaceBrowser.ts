@@ -79,6 +79,8 @@ export const ModelName = {
   ComplementaryServiceRequest: 'ComplementaryServiceRequest',
   ServiceQuotation: 'ServiceQuotation',
   ServiceAssignment: 'ServiceAssignment',
+  BillingItem: 'BillingItem',
+  BillingPeriodRow: 'BillingPeriodRow',
   ServiceUsage: 'ServiceUsage',
   ServiceDeliverable: 'ServiceDeliverable',
   Ticket: 'Ticket',
@@ -119,6 +121,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   fullName: 'fullName',
   role: 'role',
+  authorized: 'authorized',
   status: 'status',
   locale: 'locale',
   hashedRt: 'hashedRt',
@@ -667,6 +670,51 @@ export const ServiceAssignmentScalarFieldEnum = {
 } as const
 
 export type ServiceAssignmentScalarFieldEnum = (typeof ServiceAssignmentScalarFieldEnum)[keyof typeof ServiceAssignmentScalarFieldEnum]
+
+
+export const BillingItemScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  websiteId: 'websiteId',
+  kind: 'kind',
+  planId: 'planId',
+  serviceAssignmentId: 'serviceAssignmentId',
+  sourcePlanRequestId: 'sourcePlanRequestId',
+  sourceQuotationId: 'sourceQuotationId',
+  labelSnapshot: 'labelSnapshot',
+  commercialModel: 'commercialModel',
+  amount: 'amount',
+  currency: 'currency',
+  interval: 'interval',
+  status: 'status',
+  commercialState: 'commercialState',
+  periodStartsAt: 'periodStartsAt',
+  periodEndsAt: 'periodEndsAt',
+  renewsAt: 'renewsAt',
+  cancelledAt: 'cancelledAt',
+  cancellationReason: 'cancellationReason',
+  nonRenewalReason: 'nonRenewalReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BillingItemScalarFieldEnum = (typeof BillingItemScalarFieldEnum)[keyof typeof BillingItemScalarFieldEnum]
+
+
+export const BillingPeriodRowScalarFieldEnum = {
+  id: 'id',
+  billingItemId: 'billingItemId',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  amount: 'amount',
+  currency: 'currency',
+  interval: 'interval',
+  reason: 'reason',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type BillingPeriodRowScalarFieldEnum = (typeof BillingPeriodRowScalarFieldEnum)[keyof typeof BillingPeriodRowScalarFieldEnum]
 
 
 export const ServiceUsageScalarFieldEnum = {

@@ -66,6 +66,8 @@ export type PlanRequestType = {
   linkedUserName: string | null;
   linkedUserMobile?: string | null;
   linkedUserEmail?: string | null;
+  /** Commercial readiness of linked principal (ADR 0016). */
+  linkedUserAuthorized?: boolean;
   linkedTenantId: string | null;
   linkedTenantName: string | null;
   targetWebsiteId: string | null;

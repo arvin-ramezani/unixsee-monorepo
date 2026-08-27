@@ -180,10 +180,9 @@ export const navigation = [
   // },
   {
     key: "billing",
-    activeItem: undefined,
+    activeItem: "Billing",
     icon: CreditCard,
     href: "/dashboard/billing",
-    disabled: true,
   },
   {
     key: "tickets",
@@ -222,6 +221,9 @@ export const navigation = [
   //   href: "/help-center",
   // },
 ] as const;
+
+export type DashboardActiveItem =
+  (typeof navigation)[number]["activeItem"] | "Domains" | "HelpCenter";
 
 export const complementaryServicesQuickActions = [
   {

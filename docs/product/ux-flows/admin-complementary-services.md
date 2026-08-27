@@ -71,8 +71,9 @@ Unixsee can operate complementary services consistently while preserving quotati
   [`website-management-coverage.md`](./website-management-coverage.md); external
   websites are eligible for the four current families without an active
   Unixsee server plan.
-- Non-blocking intake when the customer is not yet a tenant; commercial
-  activation / assignment applyment still requires a tenant per
+- Non-blocking intake when the customer is not yet `authorized`; commercial
+  activation / assignment requires a tenant shell and, when unauthorized, AlertDialog
+  confirm + Nest `confirmUnauthorized` per
   [`../notes/customer-authorization-and-tenant.md`](../notes/customer-authorization-and-tenant.md).
 - Ownership and specialist assignment.
 - Structured requests for customer information.

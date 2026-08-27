@@ -37,7 +37,7 @@ export function RightRail({ websites }: { websites: WebsiteRecord[] }) {
 
   return (
     <aside className="sticky top-28 space-y-4.5 lg:grid lg:grid-cols-2 lg:gap-4.5 xl:grid-cols-1">
-      <Panel className="hidden h-74.25 p-4.75 lg:block">
+      <Panel className="mb-0 hidden h-74.25 p-4.75 xl:block">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold tracking-tight">
             {t("status.title")}

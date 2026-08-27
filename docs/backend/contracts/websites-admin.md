@@ -39,12 +39,17 @@ Body:
   userId?: string;
   planId?: string;
   activatePlan?: boolean; // defaults to false; valid only with planId
+  confirmUnauthorized?: boolean; // required true when activatePlan and principal unauthorized
 }
 ```
 
 - Omitting `planId` creates a planless website.
-- Providing `planId` without `activatePlan: true` creates an inactive link.
-- `activatePlan: true` records `planActivatedAt` at creation time.
+- Providing `planId` without `activatePlan: true` creates an inactive link
+  (no unauthorized confirm required).
+- `activatePlan: true` records `planActivatedAt` at creation time and requires
+  commercial terms (`amount`, `interval`, …) to create a `MANAGED_PLAN`
+  billing item. See [`billing.md`](./billing.md). When the commercial principal
+  has `authorized === false`, require `confirmUnauthorized: true` (**1A**).
 - `activatePlan: true` without `planId` returns validation error.
 
 ## Assign website
@@ -53,6 +58,8 @@ Body:
 
 When assignment supplies a `planId`, the plan is linked with
 `planActivatedAt: null`. Discovery assignment follows the same rule.
+**Proposed:** assigning ownership to a tenant whose commercial principal is
+unauthorized requires `confirmUnauthorized: true` (**1A**).
 
 ## Activation
 
@@ -60,7 +67,14 @@ Plan-request enablement is the standard activation action. It records the
 requested `planId` and `planActivatedAt` atomically with the enabled request.
 An already-active different plan returns `409 CONFLICT`; it is never replaced
 automatically. An inactive linked plan may be replaced by the requested plan
-because no plan has started yet.
+because no plan has started yet. Unauthorized principals follow the same
+`confirmUnauthorized` rule as enable.
+
+## Transfer
+
+`POST /api/v1/admin/websites/:id/transfer` (when exposed): transferring to a
+tenant whose commercial principal is unauthorized requires
+`confirmUnauthorized: true`.
 
 ## Related
 
