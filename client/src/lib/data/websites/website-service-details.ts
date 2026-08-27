@@ -18,7 +18,8 @@ export type WebsitePlanKey =
   | "business"
   | "pro"
   | "premium"
-  | "dedicatedPlan";
+  | "dedicatedPlan"
+  | "none";
 
 export interface RelativeCheckTime {
   value: number;
@@ -40,23 +41,28 @@ export interface WebsiteServiceDetails {
   domain: string;
   monogram: string;
   tone: "green" | "violet" | "blue" | "red" | "orange";
-  plan: WebsitePlanKey;
+  plan?: WebsitePlanKey;
+  managementCoverage?: string;
   availability: WebsiteAvailability;
-  lastChecked: RelativeCheckTime;
+  lastChecked?: RelativeCheckTime;
   latestCheckCode?: "HTTP 503" | "SSL_ERROR";
-  alerts: WebsiteAlert[];
+  alerts?: WebsiteAlert[];
   recommendedAction:
     | "openWordPress"
     | "reviewStorage"
     | "renewService"
     | "viewIssue"
     | "retryStatus";
-  links: {
+  links?: {
     publicWebsite: string;
     wordPressAdmin?: string;
+    wordPressAdminUsername?: string;
+    wordPressAdminPassword?: string;
     directAdmin?: string;
+    directAdminUsername?: string;
+    directAdminPassword?: string;
   };
-  service: {
+  service?: {
     serverLocation: "frankfurtGermany" | "helsinkiFinland" | "unavailable";
     controlPanel: "DirectAdmin";
   };
@@ -67,8 +73,8 @@ export interface WebsiteServiceDetails {
     renewable: boolean;
     renewalAmount: number;
     renewalCurrency: "USD";
-  };
-  software: {
+  } | null;
+  software?: {
     wordpressVersion: string;
     phpVersion: string;
     imagickVersion: string;
@@ -88,12 +94,12 @@ export interface WebsiteServiceDetails {
       checked: RelativeCheckTime;
     };
   };
-  traffic: {
+  traffic?: {
     activeNow: number | null;
     activeLast24Hours: number | null;
     freshness: RelativeCheckTime;
   };
-  storage: {
+  storage?: {
     usedGb: number;
     quotaGb: number;
   };
@@ -323,6 +329,100 @@ const websiteServiceDetailsFixtures: WebsiteServiceDetails[] = [
 export const websiteServiceDetailsIds = websiteServiceDetailsFixtures.map(
   ({ id }) => id,
 );
+
+
+/** Map a backend website entity to the client WebsiteServiceDetails shape. */
+export function mapBackendWebsiteToServiceDetails(backend: {
+  id: string;
+  domain: string;
+  displayName?: string | null;
+  managementCoverage?: string;
+  lastIsUp?: boolean | null;
+  plan?: { code?: string; nameEn?: string } | null;
+  wordpressAdminUrl?: string | null;
+  wordpressAdminUsername?: string | null;
+  wordpressAdminPassword?: string | null;
+  directAdminUrl?: string | null;
+  directAdminUsername?: string | null;
+  directAdminPassword?: string | null;
+  vpsNode?: { server?: { controlPanelUrl?: string | null } | null } | null;
+}): WebsiteServiceDetails {
+  const name = backend.displayName?.trim() || backend.domain;
+  const normalizedPlan = backend.plan?.code?.toUpperCase() ?? "";
+  let plan: WebsitePlanKey = "none";
+  if (normalizedPlan) {
+    if (normalizedPlan.includes("PEAK")) plan = "premium";
+    else if (normalizedPlan.includes("PRO")) plan = "pro";
+    else if (normalizedPlan.includes("BUSINESS")) plan = "business";
+    else if (normalizedPlan.includes("DEDICATED")) plan = "dedicatedPlan";
+    else plan = "starter";
+  }
+
+  const availability: WebsiteAvailability =
+    backend.lastIsUp === true
+      ? "online"
+      : backend.lastIsUp === false
+        ? "needsAttention"
+        : "unknown";
+
+  return {
+    fixtureKind: "website-details-ux-spec",
+    id: backend.id,
+    name,
+    domain: backend.domain,
+    monogram: name.slice(0, 1).toUpperCase(),
+    tone: "blue",
+    plan,
+    managementCoverage: backend.managementCoverage,
+    availability,
+    lastChecked: { value: -2, unit: "minute" },
+    alerts: [],
+    recommendedAction: "openWordPress",
+    links: {
+      publicWebsite: "https://" + backend.domain,
+      wordPressAdmin: backend.wordpressAdminUrl || undefined,
+      wordPressAdminUsername: backend.wordpressAdminUsername || undefined,
+      wordPressAdminPassword: backend.wordpressAdminPassword || undefined,
+      directAdmin: backend.directAdminUrl || backend.vpsNode?.server?.controlPanelUrl || undefined,
+      directAdminUsername: backend.directAdminUsername || undefined,
+      directAdminPassword: backend.directAdminPassword || undefined,
+    },
+    service: {
+      serverLocation: "frankfurtGermany",
+      controlPanel: "DirectAdmin",
+    },
+    billing: plan !== "none" ? {
+      startDate: new Date().toISOString(),
+      dueDate: new Date(Date.now() + 365 * 86_400_000).toISOString(),
+      cycle: "yearly",
+      renewable: false,
+      renewalAmount: 0,
+      renewalCurrency: "USD",
+    } : null,
+    software: {
+      wordpressVersion: "—",
+      phpVersion: "—",
+      imagickVersion: "—",
+      wordpressUpdates: {
+        status: "unknown",
+        checked: { value: -1, unit: "hour" },
+      },
+      securityScan: {
+        status: "unavailable",
+        checked: { value: -1, unit: "hour" },
+      },
+    },
+    traffic: {
+      activeNow: null,
+      activeLast24Hours: null,
+      freshness: { value: -1, unit: "hour" },
+    },
+    storage: {
+      usedGb: 0,
+      quotaGb: 0,
+    },
+  };
+}
 
 export function getWebsiteServiceDetails(id: string) {
   return websiteServiceDetailsFixtures.find((website) => website.id === id);

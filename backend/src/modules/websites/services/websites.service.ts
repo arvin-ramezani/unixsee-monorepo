@@ -73,6 +73,13 @@ export class WebsitesService {
       include: {
         ssl: true,
         plan: true,
+        vpsNode: {
+          select: {
+            server: {
+              select: { id: true, name: true, controlPanelUrl: true },
+            },
+          },
+        },
       },
     });
     if (!website) {
@@ -196,20 +203,50 @@ export class WebsitesService {
 
   async updateAdmin(
     websiteId: string,
-    input: { wordpressAdminUrl?: string | null },
+    input: {
+      wordpressAdminUrl?: string | null;
+      wordpressAdminUsername?: string | null;
+      wordpressAdminPassword?: string | null;
+      directAdminUrl?: string | null;
+      directAdminUsername?: string | null;
+      directAdminPassword?: string | null;
+      managementCoverage?: WebsiteManagementCoverage;
+    },
   ) {
     const exists = await this.prisma.website.findUnique({
       where: { id: websiteId },
-      select: { id: true },
+      select: { id: true, managementCoverage: true },
     });
     if (!exists) {
       throw new NotFoundException(ERROR_MESSAGES.fa.notFound);
     }
+    const effectiveCoverage = input.managementCoverage ?? exists.managementCoverage;
+    const isManaged = effectiveCoverage === WebsiteManagementCoverage.UNIXSEE_MANAGED;
     return this.prisma.website.update({
       where: { id: websiteId },
       data: {
-        ...(input.wordpressAdminUrl !== undefined
-          ? { wordpressAdminUrl: input.wordpressAdminUrl || null }
+        ...(isManaged ? {
+          ...(input.wordpressAdminUrl !== undefined
+            ? { wordpressAdminUrl: input.wordpressAdminUrl || null }
+            : {}),
+          ...(input.wordpressAdminUsername !== undefined
+            ? { wordpressAdminUsername: input.wordpressAdminUsername || null }
+            : {}),
+          ...(input.wordpressAdminPassword !== undefined
+            ? { wordpressAdminPassword: input.wordpressAdminPassword || null }
+            : {}),
+          ...(input.directAdminUrl !== undefined
+            ? { directAdminUrl: input.directAdminUrl || null }
+            : {}),
+          ...(input.directAdminUsername !== undefined
+            ? { directAdminUsername: input.directAdminUsername || null }
+            : {}),
+          ...(input.directAdminPassword !== undefined
+            ? { directAdminPassword: input.directAdminPassword || null }
+            : {}),
+        } : {}),
+        ...(input.managementCoverage !== undefined
+          ? { managementCoverage: input.managementCoverage }
           : {}),
       },
     });
@@ -222,6 +259,13 @@ export class WebsitesService {
     planId?: string;
     activatePlan?: boolean;
     userId?: string;
+    managementCoverage?: WebsiteManagementCoverage;
+    wordpressAdminUrl?: string;
+    wordpressAdminUsername?: string;
+    wordpressAdminPassword?: string;
+    directAdminUrl?: string;
+    directAdminUsername?: string;
+    directAdminPassword?: string;
   }) {
     if (input.activatePlan && !input.planId) {
       throw new BadRequestException(ERROR_MESSAGES.fa.validation);
@@ -231,9 +275,17 @@ export class WebsitesService {
       data: {
         tenantId: input.tenantId,
         vpsNodeId: input.vpsNodeId,
-        managementCoverage: WebsiteManagementCoverage.UNIXSEE_MANAGED,
+        managementCoverage: input.managementCoverage ?? WebsiteManagementCoverage.UNIXSEE_MANAGED,
         domain: input.domain,
         displayName: input.displayName,
+        ...(isManaged ? {
+          wordpressAdminUrl: input.wordpressAdminUrl || null,
+          wordpressAdminUsername: input.wordpressAdminUsername || null,
+          wordpressAdminPassword: input.wordpressAdminPassword || null,
+          directAdminUrl: input.directAdminUrl || null,
+          directAdminUsername: input.directAdminUsername || null,
+          directAdminPassword: input.directAdminPassword || null,
+        } : {}),
         planId: input.planId,
         planActivatedAt: input.planId && input.activatePlan ? new Date() : null,
         userId: input.userId,

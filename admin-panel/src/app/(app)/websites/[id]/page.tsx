@@ -21,7 +21,9 @@ export default async function WebsiteDetailsPage({
   } catch {
     /* shared unavailable state below */
   }
+
   if (website) return <LiveWebsiteDetailsView website={website} />;
+
   return (
     <div className="flex flex-1 items-center justify-center rounded-2xl border border-dashed border-border bg-card p-8 text-center text-muted-foreground">
       وب‌سایت موردنظر پیدا نشد یا سرویس NestJS در دسترس نیست.

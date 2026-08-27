@@ -53,6 +53,40 @@ class AdminCreateWebsiteDto {
   @IsOptional()
   @IsUUID()
   userId?: string;
+
+  @IsOptional()
+  @IsString()
+  managementCoverage?: WebsiteManagementCoverage;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  wordpressAdminUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  wordpressAdminUsername?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  wordpressAdminPassword?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  directAdminUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  directAdminUsername?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  directAdminPassword?: string;
 }
 
 class AssignWebsiteDto {
@@ -75,6 +109,10 @@ class TransferWebsiteDto {
 }
 
 class UpdateWebsiteDto {
+  @IsOptional()
+  @IsString()
+  managementCoverage?: WebsiteManagementCoverage;
+
   @IsOptional()
   @IsUrl({
     protocols: ['https'],

@@ -22,11 +22,10 @@ export function WebsiteIdentityHeader({
 }) {
   const t = useTranslations("WebsiteServiceDetails");
   const locale = useLocale() as Locale;
-  const relativeCheck = formatRelativeValue(
-    locale,
-    website.lastChecked.value,
-    website.lastChecked.unit,
-  );
+  const isExternal = website.managementCoverage !== "UNIXSEE_MANAGED";
+  const relativeCheck = website.lastChecked
+    ? formatRelativeValue(locale, website.lastChecked.value, website.lastChecked.unit)
+    : null;
 
   return (
     <header className="flex flex-col gap-5 py-6 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
@@ -45,18 +44,24 @@ export function WebsiteIdentityHeader({
             <h1 className="text-2xl font-semibold tracking-tight sm:text-[2rem]">
               {website.name}
             </h1>
-            <Badge
-              variant="outline"
-              className={cn(
-                "h-7 gap-1.5 px-2.5",
-                availabilityStyles[website.availability],
-              )}
-            >
-              <span className="[&>svg]:size-3.5">
-                <AvailabilityIcon status={website.availability} />
-              </span>
-              {t(`availability.${website.availability}.label`)}
-            </Badge>
+            {isExternal ? (
+              <Badge variant="secondary" className="h-7 gap-1.5 px-2.5">
+                {t("common.externalHosting")}
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className={cn(
+                  "h-7 gap-1.5 px-2.5",
+                  availabilityStyles[website.availability ?? "unknown"],
+                )}
+              >
+                <span className="[&>svg]:size-3.5">
+                  <AvailabilityIcon status={website.availability ?? "unknown"} />
+                </span>
+                {t(`availability.${website.availability ?? "unknown"}.label`)}
+              </Badge>
+            )}
           </div>
 
           <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
@@ -65,7 +70,7 @@ export function WebsiteIdentityHeader({
               •
             </span>
             <Link
-              href={website.links.publicWebsite}
+              href={website.links?.publicWebsite ?? `https://${website.domain}`}
               target="_blank"
               rel="noreferrer"
               dir="ltr"
@@ -78,7 +83,7 @@ export function WebsiteIdentityHeader({
           </div>
 
           <p className="text-muted-foreground mt-2 text-sm">
-            {t("header.lastChecked", { relative: relativeCheck })}
+            {relativeCheck ? t("header.lastChecked", { relative: relativeCheck }) : t("common.noData")}
             {website.latestCheckCode && (
               <>
                 {" — "}

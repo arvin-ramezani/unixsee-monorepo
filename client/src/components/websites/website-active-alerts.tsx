@@ -50,12 +50,12 @@ function AlertItem({
     }
     if (alert.kind === "updates") {
       return t("alerts.items.updates.description", {
-        count: website.software.wordpressUpdates.count ?? 0,
+        count: website.software?.wordpressUpdates.count ?? 0,
       });
     }
     if (alert.kind === "security") {
       return t("alerts.items.security.description", {
-        count: website.software.securityScan.issueCount ?? 0,
+        count: website.software?.securityScan.issueCount ?? 0,
       });
     }
     if (alert.kind === "statusUnknown") {
@@ -137,14 +137,14 @@ export function WebsiteActiveAlerts({
   website: WebsiteServiceDetails;
 }) {
   const t = useTranslations("WebsiteServiceDetails");
-  if (website.alerts.length === 0) return null;
+  if ((website.alerts ?? []).length === 0) return null;
 
   const priority: Record<WebsiteAlertSeverity, number> = {
     critical: 0,
     warning: 1,
     info: 2,
   };
-  const sortedAlerts = [...website.alerts].sort(
+  const sortedAlerts = [...(website.alerts ?? [])].sort(
     (first, second) => priority[first.severity] - priority[second.severity],
   );
 

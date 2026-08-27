@@ -11,15 +11,15 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    // remotePatterns: [
-    //   {
-    //     protocol: "https",
-    //     hostname: "cdn.shadcnstudio.com" ,
-    //     port: "",
-    //     // pathname: '/my-bucket/**',
-    //     search: "",
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "4000",
+        pathname: "/api/v1/storage/download/**",
+        // search: "",
+      },
+    ],
   },
 };
 

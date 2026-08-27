@@ -14,6 +14,11 @@ export type AdminWebsiteAgentContext = {
   managementCoverage?:
     "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
   wordpressAdminUrl?: string | null;
+  wordpressAdminUsername?: string | null;
+  wordpressAdminPassword?: string | null;
+  directAdminUrl?: string | null;
+  directAdminUsername?: string | null;
+  directAdminPassword?: string | null;
   status?: string;
   planActivatedAt?: string | null;
   tenant?: { id: string; name: string };
@@ -75,6 +80,58 @@ export async function updateWebsiteAdminUrlAction(input: {
     if (!response.success || !response.data)
       return { ok: false, message: error(response) };
     revalidatePath(`/websites/${input.websiteId}`);
+    return { ok: true, data: response.data };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+export async function updateWebsiteManagementCoverageAction(input: {
+  websiteId: string;
+  managementCoverage: "UNIXSEE_MANAGED" | "EXTERNAL_INFRASTRUCTURE" | "UNCLASSIFIED";
+}): Promise<Result<AdminWebsiteAgentContext>> {
+  try {
+    const response = await serverActionFetch<AdminWebsiteAgentContext>(
+      "/admin/websites/" + input.websiteId,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ managementCoverage: input.managementCoverage }),
+      },
+    );
+    if (!response.success || !response.data)
+      return { ok: false, message: error(response) };
+    revalidatePath("/websites/" + input.websiteId);
+    return { ok: true, data: response.data };
+  } catch {
+    return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };
+  }
+}
+
+export async function updateWebsiteCredentialsAction(input: {
+  websiteId: string;
+  wordpressAdminUrl?: string | null;
+  wordpressAdminUsername?: string | null;
+  wordpressAdminPassword?: string | null;
+  directAdminUrl?: string | null;
+  directAdminUsername?: string | null;
+  directAdminPassword?: string | null;
+}): Promise<Result<AdminWebsiteAgentContext>> {
+  try {
+    const body: Record<string, unknown> = {};
+    if (input.wordpressAdminUrl !== undefined) body.wordpressAdminUrl = input.wordpressAdminUrl || null;
+    if (input.wordpressAdminUsername !== undefined) body.wordpressAdminUsername = input.wordpressAdminUsername || null;
+    if (input.wordpressAdminPassword !== undefined) body.wordpressAdminPassword = input.wordpressAdminPassword || null;
+    if (input.directAdminUrl !== undefined) body.directAdminUrl = input.directAdminUrl || null;
+    if (input.directAdminUsername !== undefined) body.directAdminUsername = input.directAdminUsername || null;
+    if (input.directAdminPassword !== undefined) body.directAdminPassword = input.directAdminPassword || null;
+
+    const response = await serverActionFetch<AdminWebsiteAgentContext>(
+      "/admin/websites/" + input.websiteId,
+      { method: "PATCH", body: JSON.stringify(body) },
+    );
+    if (!response.success || !response.data)
+      return { ok: false, message: error(response) };
+    revalidatePath("/websites/" + input.websiteId);
     return { ok: true, data: response.data };
   } catch {
     return { ok: false, message: STAFF_API_ERROR_MESSAGES.unavailable };

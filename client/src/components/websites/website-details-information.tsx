@@ -1,6 +1,7 @@
 import {
   ExternalLink,
   Globe2,
+  Info,
   LifeBuoy,
   ShieldAlert,
   ShieldCheck,
@@ -25,19 +26,34 @@ import type { WebsiteServiceDetails } from "@/lib/data/websites/website-service-
 import { cn } from "@/lib/utils";
 import { DashboardButtonLink } from "@/app/[locale]/(dashboard)/dashboard/_components/common";
 
+function ExternalHostingNote({ className }: { className?: string }) {
+  const t = useTranslations("WebsiteServiceDetails");
+  return (
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 px-4 py-8 text-center",
+        className,
+      )}
+    >
+      <Info aria-hidden="true" className="size-5 text-muted-foreground" />
+      <p className="text-sm font-medium text-muted-foreground">
+        {t("common.externalHosting")}
+      </p>
+    </div>
+  );
+}
+
 function SoftwarePanel({ website }: { website: WebsiteServiceDetails }) {
   const t = useTranslations("WebsiteServiceDetails");
   const locale = useLocale() as Locale;
-  const updateChecked = formatRelativeValue(
-    locale,
-    website.software.wordpressUpdates.checked.value,
-    website.software.wordpressUpdates.checked.unit,
-  );
-  const securityChecked = formatRelativeValue(
-    locale,
-    website.software.securityScan.checked.value,
-    website.software.securityScan.checked.unit,
-  );
+  const isExternal = website.managementCoverage !== "UNIXSEE_MANAGED";
+  const sw = website.software;
+  const updateChecked = sw
+    ? formatRelativeValue(locale, sw.wordpressUpdates.checked.value, sw.wordpressUpdates.checked.unit)
+    : null;
+  const securityChecked = sw
+    ? formatRelativeValue(locale, sw.securityScan.checked.value, sw.securityScan.checked.unit)
+    : null;
 
   return (
     <Panel className="p-5 sm:p-6" aria-labelledby="software-heading">
@@ -47,86 +63,92 @@ function SoftwarePanel({ website }: { website: WebsiteServiceDetails }) {
         title={t("software.title")}
         description={t("software.description")}
       />
-      <DetailRows
-        rows={[
-          {
-            label: t("software.wordpress"),
-            value: website.software.wordpressVersion,
-            valueDirection: "ltr",
-          },
-          {
-            label: t("software.php"),
-            value: website.software.phpVersion,
-            valueDirection: "ltr",
-          },
-          {
-            label: t("software.imagick"),
-            value: website.software.imagickVersion,
-            valueDirection: "ltr",
-          },
-        ]}
-      />
+      {isExternal ? (
+        <ExternalHostingNote className="mt-4" />
+      ) : (
+        <>
+          <DetailRows
+            rows={[
+              {
+                label: t("software.wordpress"),
+                value: website.software.wordpressVersion,
+                valueDirection: "ltr",
+              },
+              {
+                label: t("software.php"),
+                value: website.software.phpVersion,
+                valueDirection: "ltr",
+              },
+              {
+                label: t("software.imagick"),
+                value: website.software.imagickVersion,
+                valueDirection: "ltr",
+              },
+            ]}
+          />
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <div className="border-border bg-muted/35 rounded-lg border p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-medium">
-                {t("software.updates.title")}
-              </p>
-              <p className="text-muted-foreground mt-1 text-xs leading-5">
-                {t("software.lastChecked", { relative: updateChecked })}
-              </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="border-border bg-muted/35 rounded-lg border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium">
+                    {t("software.updates.title")}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs leading-5">
+                    {t("software.lastChecked", { relative: updateChecked })}
+                  </p>
+                </div>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    website.software.wordpressUpdates.status === "upToDate" &&
+                      "border-success/30 bg-success/10 text-success-foreground dark:text-success",
+                    website.software.wordpressUpdates.status ===
+                      "updatesAvailable" &&
+                      "border-warning/40 bg-warning/15 text-warning-foreground dark:text-warning",
+                  )}
+                >
+                  {t(
+                    `software.updates.${website.software.wordpressUpdates.status}`,
+                    { count: website.software.wordpressUpdates.count ?? 0 },
+                  )}
+                </Badge>
+              </div>
             </div>
-            <Badge
-              variant="outline"
-              className={cn(
-                website.software.wordpressUpdates.status === "upToDate" &&
-                  "border-success/30 bg-success/10 text-success-foreground dark:text-success",
-                website.software.wordpressUpdates.status ===
-                  "updatesAvailable" &&
-                  "border-warning/40 bg-warning/15 text-warning-foreground dark:text-warning",
-              )}
-            >
-              {t(
-                `software.updates.${website.software.wordpressUpdates.status}`,
-                { count: website.software.wordpressUpdates.count ?? 0 },
-              )}
-            </Badge>
-          </div>
-        </div>
 
-        <div className="border-border bg-muted/35 rounded-lg border p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-medium">
-                {t("software.security.title")}
-              </p>
-              <p className="text-muted-foreground mt-1 text-xs leading-5">
-                {t("software.lastChecked", { relative: securityChecked })}
-              </p>
+            <div className="border-border bg-muted/35 rounded-lg border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium">
+                    {t("software.security.title")}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs leading-5">
+                    {t("software.lastChecked", { relative: securityChecked })}
+                  </p>
+                </div>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    website.software.securityScan.status === "noIssues" &&
+                      "border-success/30 bg-success/10 text-success-foreground dark:text-success",
+                    website.software.securityScan.status === "issuesFound" &&
+                      "border-destructive/30 bg-destructive/10 text-destructive",
+                  )}
+                >
+                  {website.software.securityScan.status === "noIssues" ? (
+                    <ShieldCheck aria-hidden="true" />
+                  ) : website.software.securityScan.status === "issuesFound" ? (
+                    <ShieldAlert aria-hidden="true" />
+                  ) : null}
+                  {t(`software.security.${website.software.securityScan.status}`, {
+                    count: website.software.securityScan.issueCount ?? 0,
+                  })}
+                </Badge>
+              </div>
             </div>
-            <Badge
-              variant="outline"
-              className={cn(
-                website.software.securityScan.status === "noIssues" &&
-                  "border-success/30 bg-success/10 text-success-foreground dark:text-success",
-                website.software.securityScan.status === "issuesFound" &&
-                  "border-destructive/30 bg-destructive/10 text-destructive",
-              )}
-            >
-              {website.software.securityScan.status === "noIssues" ? (
-                <ShieldCheck aria-hidden="true" />
-              ) : website.software.securityScan.status === "issuesFound" ? (
-                <ShieldAlert aria-hidden="true" />
-              ) : null}
-              {t(`software.security.${website.software.securityScan.status}`, {
-                count: website.software.securityScan.issueCount ?? 0,
-              })}
-            </Badge>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </Panel>
   );
 }
@@ -135,11 +157,10 @@ function TrafficPanel({ website }: { website: WebsiteServiceDetails }) {
   const t = useTranslations("WebsiteServiceDetails");
   const format = useFormatter();
   const locale = useLocale() as Locale;
-  const trafficFreshness = formatRelativeValue(
-    locale,
-    website.traffic.freshness.value,
-    website.traffic.freshness.unit,
-  );
+  const isExternal = website.managementCoverage !== "UNIXSEE_MANAGED";
+  const trafficFreshness = website.traffic
+    ? formatRelativeValue(locale, website.traffic.freshness.value, website.traffic.freshness.unit)
+    : null;
 
   return (
     <Panel className="p-5 sm:p-6" aria-labelledby="traffic-heading">
@@ -149,34 +170,38 @@ function TrafficPanel({ website }: { website: WebsiteServiceDetails }) {
         title={t("traffic.title")}
         description={t("traffic.description")}
       />
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <div className="border-border bg-muted/35 rounded-lg border p-4">
-          <p className="text-muted-foreground text-sm">
-            {t("traffic.activeNow")}
-          </p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight">
-            {website.traffic.activeNow === null
-              ? t("common.noData")
-              : format.number(website.traffic.activeNow, "integer")}
-          </p>
-          <p className="text-muted-foreground mt-2 text-xs">
-            {t("traffic.measured", { relative: trafficFreshness })}
-          </p>
+      {isExternal ? (
+        <ExternalHostingNote className="mt-4" />
+      ) : (
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className="border-border bg-muted/35 rounded-lg border p-4">
+            <p className="text-muted-foreground text-sm">
+              {t("traffic.activeNow")}
+            </p>
+            <p className="mt-3 text-3xl font-semibold tracking-tight">
+              {website.traffic?.activeNow == null
+                ? t("common.noData")
+                : format.number(website.traffic!.activeNow, "integer")}
+            </p>
+            <p className="text-muted-foreground mt-2 text-xs">
+              {t("traffic.measured", { relative: trafficFreshness })}
+            </p>
+          </div>
+          <div className="border-border bg-muted/35 rounded-lg border p-4">
+            <p className="text-muted-foreground text-sm">
+              {t("traffic.last24Hours")}
+            </p>
+            <p className="mt-3 text-3xl font-semibold tracking-tight">
+              {website.traffic?.activeLast24Hours == null
+                ? t("common.noData")
+                : format.number(website.traffic!.activeLast24Hours, "integer")}
+            </p>
+            <p className="text-muted-foreground mt-2 text-xs">
+              {t("traffic.definition")}
+            </p>
+          </div>
         </div>
-        <div className="border-border bg-muted/35 rounded-lg border p-4">
-          <p className="text-muted-foreground text-sm">
-            {t("traffic.last24Hours")}
-          </p>
-          <p className="mt-3 text-3xl font-semibold tracking-tight">
-            {website.traffic.activeLast24Hours === null
-              ? t("common.noData")
-              : format.number(website.traffic.activeLast24Hours, "integer")}
-          </p>
-          <p className="text-muted-foreground mt-2 text-xs">
-            {t("traffic.definition")}
-          </p>
-        </div>
-      </div>
+      )}
     </Panel>
   );
 }
@@ -189,6 +214,34 @@ function ServicePanel({
   planLabel: string;
 }) {
   const t = useTranslations("WebsiteServiceDetails");
+  const isExternal = website.managementCoverage !== "UNIXSEE_MANAGED";
+
+  const locationValue = isExternal ? (
+    <Badge variant="secondary" className="text-xs">
+      {t("common.externalHosting")}
+    </Badge>
+  ) : (
+    t(`service.locations.${website.service?.serverLocation ?? "unavailable"}`)
+  );
+
+  const controlPanelValue = isExternal ? (
+    <Badge variant="secondary" className="text-xs">
+      {t("common.externalHosting")}
+    </Badge>
+  ) : website.links.directAdmin ? (
+    <Link
+      href={website.links?.directAdmin ?? "#"}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={`${website.service?.controlPanel ?? "Panel"} — ${t("actions.opensNewTab")}`}
+      className="text-link inline-flex items-center gap-1 hover:underline"
+    >
+      {website.service?.controlPanel ?? "Panel"}
+      <ExternalLink aria-hidden="true" className="size-3.5" />
+    </Link>
+  ) : (
+    website.service.controlPanel
+  );
 
   return (
     <Panel className="p-5 sm:p-6" aria-labelledby="service-heading">
@@ -204,7 +257,7 @@ function ServicePanel({
             label: t("service.domain"),
             value: (
               <Link
-                href={website.links.publicWebsite}
+                href={website.links?.publicWebsite ?? `https://${website.domain}`}
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`${website.domain} — ${t("actions.opensNewTab")}`}
@@ -219,24 +272,11 @@ function ServicePanel({
           { label: t("service.plan"), value: planLabel },
           {
             label: t("service.location"),
-            value: t(`service.locations.${website.service.serverLocation}`),
+            value: locationValue,
           },
           {
             label: t("service.controlPanel"),
-            value: website.links.directAdmin ? (
-              <Link
-                href={website.links.directAdmin}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`${website.service.controlPanel} — ${t("actions.opensNewTab")}`}
-                className="text-link inline-flex items-center gap-1 hover:underline"
-              >
-                {website.service.controlPanel}
-                <ExternalLink aria-hidden="true" className="size-3.5" />
-              </Link>
-            ) : (
-              website.service.controlPanel
-            ),
+            value: controlPanelValue,
             valueDirection: "ltr",
           },
         ]}

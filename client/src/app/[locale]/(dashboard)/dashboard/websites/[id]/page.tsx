@@ -5,8 +5,11 @@ import { notFound } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { WebsiteDetailsView } from "@/components/websites/website-details-view";
 import type { Locale } from "@/i18n/routing";
+import { serverFetch } from "@/lib/api/server-fetch";
 import {
   getWebsiteServiceDetails,
+  mapBackendWebsiteToServiceDetails,
+  WebsiteServiceDetails,
   websiteServiceDetailsIds,
 } from "@/lib/data/websites/website-service-details";
 
@@ -18,12 +21,47 @@ export function generateStaticParams() {
   return websiteServiceDetailsIds.map((id) => ({ id }));
 }
 
+async function resolveWebsite(id: string) {
+  let website;
+  try {
+    const response = await serverFetch<BackendWebsiteDetail>(
+      `/websites/${id}`,
+      { method: "GET" },
+    );
+    if (response.success && response.data) {
+      // website = mapBackendWebsiteToServiceDetails(response.data);
+      website = response.data;
+    }
+  } catch {
+    // Backend unavailable
+  }
+  return website;
+}
+
+/** Shape returned by the backend GET /websites/:id endpoint. */
+type BackendWebsiteDetail = {
+  id: string;
+  domain: string;
+  displayName?: string | null;
+  managementCoverage?: string;
+  lastIsUp?: boolean | null;
+  plan?: { code?: string; nameEn?: string } | null;
+  wordpressAdminUrl?: string | null;
+  wordpressAdminUsername?: string | null;
+  wordpressAdminPassword?: string | null;
+  directAdminUrl?: string | null;
+  directAdminUsername?: string | null;
+  directAdminPassword?: string | null;
+  vpsNode?: { server?: { controlPanelUrl?: string | null } | null } | null;
+  ssl?: unknown;
+};
+
 export async function generateMetadata({
   params,
 }: WebsiteDetailsPageProps): Promise<Metadata> {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const website = getWebsiteServiceDetails(id);
+  const website = await resolveWebsite(id);
   if (!website) notFound();
 
   const t = await getTranslations("Metadata.websiteDetails");
@@ -38,7 +76,9 @@ export default async function WebsiteDetailsPage({
 }: WebsiteDetailsPageProps) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const website = getWebsiteServiceDetails(id);
+
+  const website = await resolveWebsite(id);
+  console.log(website);
   if (!website) notFound();
 
   const t = await getTranslations("WebsiteServiceDetails");

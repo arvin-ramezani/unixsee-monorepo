@@ -63,7 +63,7 @@ export default function PositioningSection({ id }: PositioningSectionProps) {
           fill
           priority
           sizes="(min-width: 1280px) 520px, (min-width: 1024px) 46vw, 100vw"
-          className="object-contain"
+          className="object-cover"
         />
       </div>
     </Section>

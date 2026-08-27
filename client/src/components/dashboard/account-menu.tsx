@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronDown, LogOut, UserRound } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, UserRound } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -51,7 +51,6 @@ export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
   }
 
   const dropdownItemClass = "gap-2 px-2 py-2 cursor-pointer";
-
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
@@ -63,13 +62,14 @@ export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
           "disabled:pointer-events-none disabled:opacity-60",
         )}
       >
-        <span className="bg-primary text-primary-foreground grid size-10 place-items-center overflow-hidden rounded-full text-xs font-semibold xl:size-12">
+        <span className="bg-primary text-primary-foreground relative grid size-10 place-items-center overflow-hidden rounded-full text-xs font-semibold xl:size-12">
           {avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <Image
               src={avatarUrl}
               alt={userName}
               className="size-full object-cover"
+              fill
+              unoptimized
             />
           ) : (
             <UserRound className="size-5 xl:size-7" />
@@ -96,6 +96,15 @@ export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
         className={isHeaderDark ? "dark" : ""}
       >
         <DropdownMenuGroup>
+          <DropdownMenuItem
+            asChild
+            className={cn(dropdownItemClass, "text-xs lg:text-sm")}
+          >
+            <Link href="/dashboard">
+              <LayoutDashboard className="shrink-0" />
+              {t("dashboard")}
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem
             asChild
             className={cn(dropdownItemClass, "text-xs lg:text-sm")}

@@ -451,10 +451,22 @@
           "description": "For WooCommerce stores that have outgrown traditional hosting and need more stable resources.",
           "badge": "Lite",
           "features": {
-            "location": { "label": "Location", "value": "Iran / Europe" },
-            "ip": { "label": "Dedicated IP", "value": "Shared" },
-            "cpu": { "label": "Processor", "value": "AMD / Intel" },
-            "memory": { "label": "Memory", "value": "16 GB" },
+            "location": {
+              "label": "Location",
+              "value": "Iran / Europe"
+            },
+            "ip": {
+              "label": "Dedicated IP",
+              "value": "Shared"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "AMD / Intel"
+            },
+            "memory": {
+              "label": "Memory",
+              "value": "16 GB"
+            },
             "suitability": {
               "label": "Best For",
               "value": "Databases under 4 GB"
@@ -470,10 +482,22 @@
           "description": "For high-traffic stores; dedicated resources and continuous infrastructure management provide greater capacity for stability.",
           "badge": "Managed Dedicated Server",
           "features": {
-            "location": { "label": "Location", "value": "Iran / Europe" },
-            "ip": { "label": "Dedicated IP", "value": "Included" },
-            "cpu": { "label": "Processor", "value": "AMD / Intel" },
-            "memory": { "label": "Memory", "value": "32 GB" },
+            "location": {
+              "label": "Location",
+              "value": "Iran / Europe"
+            },
+            "ip": {
+              "label": "Dedicated IP",
+              "value": "Included"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "AMD / Intel"
+            },
+            "memory": {
+              "label": "Memory",
+              "value": "32 GB"
+            },
             "suitability": {
               "label": "Best For",
               "value": "4–8 GB databases"
@@ -490,10 +514,22 @@
           "description": "For running high-traffic sales campaigns, with powerful computing resources and real-time monitoring to keep the shopping experience stable.",
           "badge": "Managed Campaign Server",
           "features": {
-            "location": { "label": "Location", "value": "Iran / Europe" },
-            "ip": { "label": "Dedicated IP", "value": "Included" },
-            "cpu": { "label": "Processor", "value": "Intel" },
-            "memory": { "label": "Memory", "value": "128 GB DDR4" },
+            "location": {
+              "label": "Location",
+              "value": "Iran / Europe"
+            },
+            "ip": {
+              "label": "Dedicated IP",
+              "value": "Included"
+            },
+            "cpu": {
+              "label": "Processor",
+              "value": "Intel"
+            },
+            "memory": {
+              "label": "Memory",
+              "value": "128 GB DDR4"
+            },
             "suitability": {
               "label": "Best For",
               "value": "High-traffic stores"
@@ -2494,7 +2530,8 @@
       "pro": "Pro",
       "premium": "Premium",
       "dedicated": "Dedicated",
-      "dedicatedPlan": "Dedicated Plan"
+      "dedicatedPlan": "Dedicated Plan",
+      "none": "No plan"
     },
     "statuses": {
       "online": "Online",
@@ -2634,7 +2671,8 @@
     "accountMenu": {
       "open": "Open account menu",
       "profile": "Profile",
-      "logOut": "Log out"
+      "logOut": "Log out",
+      "dashboard": "Dashboard"
     },
     "changeLanguage": "Switch language to {language}",
     "english": "English",
@@ -3056,7 +3094,6 @@
       "reassurance": "Submitting a request does not charge you. Our team will contact you to finish setup."
     }
   },
-
   "PlansSuccess": {
     "title": "Your request was submitted",
     "description": "Thank you. Our team will review your plan request and contact you to continue setup.",
@@ -3642,7 +3679,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "heading",
@@ -3655,7 +3696,11 @@
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Understand how caching works and why it is important for improving WooCommerce store performance.",
@@ -3778,11 +3823,19 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Understand the technology layers that power a managed WooCommerce store on Unixsee.",
@@ -3836,7 +3889,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "heading",
@@ -3854,11 +3911,19 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l4", "l5", "l6"]
+              "itemKeys": [
+                "l4",
+                "l5",
+                "l6"
+              ]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Learn how Unixsee manages PHP versions and how to choose a compatible version for your WooCommerce store.",
@@ -3939,11 +4004,19 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Understand how Unixsee checks website availability and detects problems before they affect your store operations.",
@@ -4024,11 +4097,19 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Learn how the Unixsee firewall helps protect WooCommerce stores by monitoring requests and blocking suspicious activity.",
@@ -4082,7 +4163,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": ["l1", "l2", "l3"]
+              "itemKeys": [
+                "l1",
+                "l2",
+                "l3"
+              ]
             },
             {
               "kind": "heading",
@@ -4122,7 +4207,11 @@
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": ["k1", "k2", "k3"]
+              "itemKeys": [
+                "k1",
+                "k2",
+                "k3"
+              ]
             }
           ],
           "lede": "Learn how to move your WooCommerce store to Unixsee infrastructure and prepare for a smooth migration.",
@@ -5183,7 +5272,8 @@
     "searchHeader": "Search websites and services...",
     "loading": "Loading website details",
     "common": {
-      "noData": "No data"
+      "noData": "No data",
+      "externalHosting": "External hosting"
     },
     "header": {
       "managedPlan": "Managed WooCommerce — {plan}",
@@ -5209,6 +5299,11 @@
         "label": "Status unknown",
         "title": "Current status is unknown",
         "summary": "The latest status check is delayed or unavailable."
+      },
+      "externalHosted": {
+        "label": "External Hosting",
+        "title": "External Hosting",
+        "summary": "This website is hosted on an external server. Monitoring and management data is not available here."
       }
     },
     "health": {
@@ -5352,7 +5447,8 @@
         "cancel": "Cancel",
         "confirm": "Confirm renewal"
       },
-      "success": "Service renewed until {date}."
+      "success": "Service renewed until {date}.",
+      "empty": "Billing information is not available. This website does not have an active plan."
     },
     "support": {
       "title": "Need help recovering this website?",

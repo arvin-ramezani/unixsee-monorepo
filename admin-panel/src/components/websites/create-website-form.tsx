@@ -59,6 +59,13 @@ export function CreateWebsiteForm({
   const [planAssignmentMode, setPlanAssignmentMode] =
     useState<PlanAssignmentMode>(PLAN_ASSIGNMENT_MODE.LINK_ONLY);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [managementCoverage, setManagementCoverage] = useState("UNIXSEE_MANAGED");
+  const [wordpressAdminUrl, setWordpressAdminUrl] = useState("");
+  const [wordpressAdminUsername, setWordpressAdminUsername] = useState("");
+  const [wordpressAdminPassword, setWordpressAdminPassword] = useState("");
+  const [directAdminUrl, setDirectAdminUrl] = useState("");
+  const [directAdminUsername, setDirectAdminUsername] = useState("");
+  const [directAdminPassword, setDirectAdminPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function validate(): boolean {
@@ -102,6 +109,13 @@ export function CreateWebsiteForm({
           domain: domain.trim(),
           displayName: displayName.trim() || undefined,
           tenantId,
+          managementCoverage,
+          wordpressAdminUrl: wordpressAdminUrl.trim() || undefined,
+          wordpressAdminUsername: wordpressAdminUsername.trim() || undefined,
+          wordpressAdminPassword: wordpressAdminPassword.trim() || undefined,
+          directAdminUrl: directAdminUrl.trim() || undefined,
+          directAdminUsername: directAdminUsername.trim() || undefined,
+          directAdminPassword: directAdminPassword.trim() || undefined,
           planId: planId || undefined,
           activatePlan:
             Boolean(planId) &&
@@ -124,6 +138,13 @@ export function CreateWebsiteForm({
 
   const selectedUser = initialUsers.find((u) => u.id === userId);
   const selectedPlan = initialPlans.find((plan) => plan.id === planId);
+  const COVERAGE_LABELS: Record<string, string> = {
+    UNIXSEE_MANAGED: "مدیریت شده توسط یونیکسی",
+    EXTERNAL_INFRASTRUCTURE: "زیرساخت خارجی",
+    UNCLASSIFIED: "نامشخص",
+  };
+  const selectedCoverageLabel = COVERAGE_LABELS[managementCoverage] ?? "انتخاب کنید";
+  const isManaged = managementCoverage === "UNIXSEE_MANAGED";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -272,6 +293,61 @@ export function CreateWebsiteForm({
           </RadioGroup>
         )}
       </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">پوشش مدیریتی</label>
+        <Select
+          value={managementCoverage}
+          onValueChange={(value) => { if (value) setManagementCoverage(value); }}
+        >
+          <SelectTrigger aria-label="پوشش مدیریتی">
+            <SelectValue>{selectedCoverageLabel}</SelectValue>
+          </SelectTrigger>
+          <SelectContent alignItemWithTrigger={false}>
+            <SelectItem value="UNIXSEE_MANAGED">مدیریت شده توسط یونیکسی</SelectItem>
+            <SelectItem value="EXTERNAL_INFRASTRUCTURE">زیرساخت خارجی</SelectItem>
+            <SelectItem value="UNCLASSIFIED">نامشخص</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+
+      {isManaged && (
+      <div className="space-y-4 rounded-xl border p-4">
+        <p className="text-sm font-medium">اطلاعات مدیریتی وب‌سایت</p>
+        <p className="text-xs text-muted-foreground">
+          این بخش فقط زمانی قابل تنظیم است که سرور وب‌سایت توسط یونیکسی مدیریت شود.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label htmlFor="wp-admin-url" className="text-xs text-muted-foreground">نشانی مدیریت وردپرس</label>
+            <Input id="wp-admin-url" dir="ltr" value={wordpressAdminUrl} onChange={(e) => setWordpressAdminUrl(e.target.value)} placeholder="https://example.com/wp-admin/" />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="wp-admin-user" className="text-xs text-muted-foreground">نام کاربری وردپرس</label>
+            <Input id="wp-admin-user" dir="ltr" value={wordpressAdminUsername} onChange={(e) => setWordpressAdminUsername(e.target.value)} placeholder="admin" />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="wp-admin-pass" className="text-xs text-muted-foreground">رمز عبور وردپرس</label>
+            <Input id="wp-admin-pass" dir="ltr" type="password" value={wordpressAdminPassword} onChange={(e) => setWordpressAdminPassword(e.target.value)} placeholder="••••••••" />
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label htmlFor="da-url" className="text-xs text-muted-foreground">نشانی DirectAdmin</label>
+            <Input id="da-url" dir="ltr" value={directAdminUrl} onChange={(e) => setDirectAdminUrl(e.target.value)} placeholder="https://panel.example.com:2222" />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="da-user" className="text-xs text-muted-foreground">نام کاربری DirectAdmin</label>
+            <Input id="da-user" dir="ltr" value={directAdminUsername} onChange={(e) => setDirectAdminUsername(e.target.value)} placeholder="admin" />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="da-pass" className="text-xs text-muted-foreground">رمز عبور DirectAdmin</label>
+            <Input id="da-pass" dir="ltr" type="password" value={directAdminPassword} onChange={(e) => setDirectAdminPassword(e.target.value)} placeholder="••••••••" />
+          </div>
+        </div>
+      </div>
+      )}
 
       <div className="flex gap-3">
         <Button type="submit" disabled={submitting}>

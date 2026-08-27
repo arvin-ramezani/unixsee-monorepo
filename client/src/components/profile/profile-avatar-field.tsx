@@ -73,6 +73,7 @@ export function ProfileAvatarField({
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
   return (
     <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-start">
       <div className="bg-primary text-primary-foreground relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-full text-xl font-semibold sm:size-24 lg:size-28">

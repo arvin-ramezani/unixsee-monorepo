@@ -429,7 +429,14 @@ model Website {
   homeDirectory   String? @map("home_directory")
   documentRoot    String? @map("document_root")
 
-  wordpressAdminUrl String?                @map("wordpress_admin_url")
+  wordpressAdminUrl      String?                @map("wordpress_admin_url")
+  wordpressAdminUsername  String?                @map("wordpress_admin_username")
+  wordpressAdminPassword String?                @map("wordpress_admin_password")
+
+  directAdminUrl      String?                @map("direct_admin_url")
+  directAdminUsername  String?                @map("direct_admin_username")
+  directAdminPassword String?                @map("direct_admin_password")
+
   isActive          Boolean                @default(true) @map("is_active")
   status            WebsiteLifecycleStatus @default(ACTIVE)
 

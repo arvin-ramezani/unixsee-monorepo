@@ -13,7 +13,9 @@ export function WebsiteDetailsView({
   website: WebsiteServiceDetails;
 }) {
   const common = useTranslations("Common");
-  const planLabel = common(`plans.${website.plan}`);
+  const planLabel = website.plan
+    ? common(`plans.${website.plan}`)
+    : common("plans.none");
 
   return (
     <div className="mx-auto w-full pb-4">

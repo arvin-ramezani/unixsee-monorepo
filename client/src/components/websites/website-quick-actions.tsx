@@ -40,14 +40,14 @@ export function WebsiteQuickActions({
           className="[&_button]:h-auto [&_button]:min-h-20 [&_button]:p-4"
         /> */}
 
-        {website.links.directAdmin ? (
+        {website.links?.directAdmin ? (
           <Button
             asChild
             variant="outline"
             className="h-auto min-h-20 justify-start gap-3 p-4 whitespace-normal"
           >
             <Link
-              href={website.links.directAdmin}
+              href={website.links!.directAdmin}
               target="_blank"
               rel="noreferrer"
               aria-label={`${t("actions.openDirectAdmin")} — ${t("actions.opensNewTab")}`}
@@ -71,14 +71,14 @@ export function WebsiteQuickActions({
           </div>
         )}
 
-        {!!website.links.wordPressAdmin && (
+        {!!website.links?.wordPressAdmin && (
           <Button
             asChild
             variant="outline"
             className="h-auto min-h-20 justify-start gap-3 p-4 whitespace-normal"
           >
             <Link
-              href={website.links.wordPressAdmin}
+              href={website.links!.wordPressAdmin}
               target="_blank"
               rel="noreferrer"
               aria-label={`${t("actions.openWordPress")} — ${t("actions.opensNewTab")}`}

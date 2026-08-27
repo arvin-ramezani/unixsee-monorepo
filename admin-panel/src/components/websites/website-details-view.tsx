@@ -200,6 +200,15 @@ export function WebsiteDetailsView({
     initialWebsite.status,
   );
   const [hasPendingStatusChange, setHasPendingStatusChange] = useState(false);
+  const [managementCoverage, setManagementCoverage] = useState(
+    initialWebsite.managementCoverage ?? "UNCLASSIFIED",
+  );
+  const COVERAGE_LABELS: Record<string, string> = {
+    UNIXSEE_MANAGED: "مدیریت شده توسط یونیکسی",
+    EXTERNAL_INFRASTRUCTURE: "زیرساخت خارجی",
+    UNCLASSIFIED: "نامشخص",
+  };
+  const selectedCoverageLabel = COVERAGE_LABELS[managementCoverage] ?? "نامشخص";
   const [renewOpen, setRenewOpen] = useState(false);
   const [changeOpen, setChangeOpen] = useState(false);
   const [selectedPlanName, setSelectedPlanName] = useState(
@@ -227,6 +236,10 @@ export function WebsiteDetailsView({
 
   const handleSaveStatus = () => {
     setHasPendingStatusChange(false);
+  };
+
+  const handleSaveManagementCoverage = () => {
+    setWebsite((prev) => ({ ...prev, managementCoverage }));
   };
 
   const handleConfirmRenew = async () => {
@@ -567,6 +580,34 @@ export function WebsiteDetailsView({
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className={cn(mutedSurfaceClassName, "p-3")}>
+              <p className="text-xs text-muted-foreground">پوشش مدیریتی</p>
+              <div className="mt-1 flex items-center gap-2">
+                <Select
+                  value={managementCoverage}
+                  onValueChange={(value) => { if (value) setManagementCoverage(value as typeof managementCoverage); }}
+                >
+                  <SelectTrigger className="w-full" aria-label="پوشش مدیریتی">
+                    <SelectValue>{selectedCoverageLabel}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent alignItemWithTrigger={false}>
+                    <SelectItem value="UNIXSEE_MANAGED">مدیریت شده توسط یونیکسی</SelectItem>
+                    <SelectItem value="EXTERNAL_INFRASTRUCTURE">زیرساخت خارجی</SelectItem>
+                    <SelectItem value="UNCLASSIFIED">نامشخص</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="shrink-0"
+                  disabled={managementCoverage === (initialWebsite.managementCoverage ?? "UNCLASSIFIED")}
+                  onClick={handleSaveManagementCoverage}
+                >
+                  ذخیره
+                </Button>
+              </div>
+            </div>
             {WEBSITE_SERVICE_FIELDS.map((field) => {
               const value = field.getValue(website);
               const href = "href" in field ? field.href(website) : undefined;

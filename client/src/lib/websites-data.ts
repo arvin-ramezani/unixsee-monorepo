@@ -1,7 +1,7 @@
 export type WebsiteStatus =
   "online" | "needsAttention" | "maintenance" | "setupPending";
 export type WebsitePlan =
-  "starter" | "business" | "pro" | "premium" | "dedicatedPlan";
+  "starter" | "business" | "pro" | "premium" | "dedicatedPlan" | "none";
 export type WebsiteDescription =
   "ecommerce" | "portfolio" | "saas" | "agency" | "blog";
 export type WebsiteManagementCoverage =
@@ -41,7 +41,8 @@ export interface WebsiteRecord {
 }
 
 function mapPlan(code: string | undefined): WebsitePlan {
-  const normalized = code?.toUpperCase() ?? "";
+  if (!code) return "none";
+  const normalized = code.toUpperCase();
   if (normalized.includes("PEAK")) return "premium";
   if (normalized.includes("PRO")) return "pro";
   if (normalized.includes("BUSINESS")) return "business";

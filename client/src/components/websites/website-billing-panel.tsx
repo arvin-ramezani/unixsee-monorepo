@@ -40,9 +40,9 @@ export function WebsiteBillingPanel({
 }: WebsiteBillingPanelProps) {
   const t = useTranslations("WebsiteServiceDetails");
   const format = useFormatter();
-  const [dueDate, setDueDate] = useState(billing.dueDate);
+  const [dueDate, setDueDate] = useState(billing?.dueDate ?? "");
   const [state, setState] = useState<"idle" | "pending" | "success">("idle");
-  const renewedDueDate = addOneYear(dueDate);
+  const renewedDueDate = dueDate ? addOneYear(dueDate) : "";
 
   async function renewService() {
     if (state === "pending") return;
@@ -50,6 +50,36 @@ export function WebsiteBillingPanel({
     await new Promise((resolve) => window.setTimeout(resolve, 700));
     setDueDate(renewedDueDate);
     setState("success");
+  }
+
+  if (!billing) {
+    return (
+      <Panel
+        id="plan-billing"
+        className="p-5 sm:p-6"
+        aria-labelledby="billing-heading"
+      >
+        <div className="flex items-start gap-3">
+          <span className="bg-muted text-foreground dark:bg-link/12 dark:text-link grid size-10 shrink-0 place-items-center rounded-lg">
+            <CalendarClock aria-hidden="true" className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <h2 id="billing-heading" className="text-lg font-semibold">
+              {t("billing.title")}
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm leading-6">
+              {t("billing.description")}
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/30 px-4 py-8 text-center">
+          <CalendarClock aria-hidden="true" className="size-5 text-muted-foreground" />
+          <p className="text-sm font-medium text-muted-foreground">
+            {t("billing.empty")}
+          </p>
+        </div>
+      </Panel>
+    );
   }
 
   const rows = [

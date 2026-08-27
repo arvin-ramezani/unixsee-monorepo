@@ -50,6 +50,11 @@ export type WebsiteMinAggregateOutputType = {
   homeDirectory: string | null
   documentRoot: string | null
   wordpressAdminUrl: string | null
+  wordpressAdminUsername: string | null
+  wordpressAdminPassword: string | null
+  directAdminUrl: string | null
+  directAdminUsername: string | null
+  directAdminPassword: string | null
   isActive: boolean | null
   status: $Enums.WebsiteLifecycleStatus | null
   lastIsUp: boolean | null
@@ -74,6 +79,11 @@ export type WebsiteMaxAggregateOutputType = {
   homeDirectory: string | null
   documentRoot: string | null
   wordpressAdminUrl: string | null
+  wordpressAdminUsername: string | null
+  wordpressAdminPassword: string | null
+  directAdminUrl: string | null
+  directAdminUsername: string | null
+  directAdminPassword: string | null
   isActive: boolean | null
   status: $Enums.WebsiteLifecycleStatus | null
   lastIsUp: boolean | null
@@ -98,6 +108,11 @@ export type WebsiteCountAggregateOutputType = {
   homeDirectory: number
   documentRoot: number
   wordpressAdminUrl: number
+  wordpressAdminUsername: number
+  wordpressAdminPassword: number
+  directAdminUrl: number
+  directAdminUsername: number
+  directAdminPassword: number
   isActive: number
   status: number
   lastIsUp: number
@@ -134,6 +149,11 @@ export type WebsiteMinAggregateInputType = {
   homeDirectory?: true
   documentRoot?: true
   wordpressAdminUrl?: true
+  wordpressAdminUsername?: true
+  wordpressAdminPassword?: true
+  directAdminUrl?: true
+  directAdminUsername?: true
+  directAdminPassword?: true
   isActive?: true
   status?: true
   lastIsUp?: true
@@ -158,6 +178,11 @@ export type WebsiteMaxAggregateInputType = {
   homeDirectory?: true
   documentRoot?: true
   wordpressAdminUrl?: true
+  wordpressAdminUsername?: true
+  wordpressAdminPassword?: true
+  directAdminUrl?: true
+  directAdminUsername?: true
+  directAdminPassword?: true
   isActive?: true
   status?: true
   lastIsUp?: true
@@ -182,6 +207,11 @@ export type WebsiteCountAggregateInputType = {
   homeDirectory?: true
   documentRoot?: true
   wordpressAdminUrl?: true
+  wordpressAdminUsername?: true
+  wordpressAdminPassword?: true
+  directAdminUrl?: true
+  directAdminUsername?: true
+  directAdminPassword?: true
   isActive?: true
   status?: true
   lastIsUp?: true
@@ -293,6 +323,11 @@ export type WebsiteGroupByOutputType = {
   homeDirectory: string | null
   documentRoot: string | null
   wordpressAdminUrl: string | null
+  wordpressAdminUsername: string | null
+  wordpressAdminPassword: string | null
+  directAdminUrl: string | null
+  directAdminUsername: string | null
+  directAdminPassword: string | null
   isActive: boolean
   status: $Enums.WebsiteLifecycleStatus
   lastIsUp: boolean | null
@@ -340,6 +375,11 @@ export type WebsiteWhereInput = {
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
   wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
   isActive?: Prisma.BoolFilter<"Website"> | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFilter<"Website"> | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.BoolNullableFilter<"Website"> | boolean | null
@@ -381,6 +421,11 @@ export type WebsiteOrderByWithRelationInput = {
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
   wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminPassword?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminPassword?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastIsUp?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -425,6 +470,11 @@ export type WebsiteWhereUniqueInput = Prisma.AtLeast<{
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
   wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
   isActive?: Prisma.BoolFilter<"Website"> | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFilter<"Website"> | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.BoolNullableFilter<"Website"> | boolean | null
@@ -466,6 +516,11 @@ export type WebsiteOrderByWithAggregationInput = {
   homeDirectory?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRoot?: Prisma.SortOrderInput | Prisma.SortOrder
   wordpressAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressAdminPassword?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  directAdminPassword?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastIsUp?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -498,6 +553,11 @@ export type WebsiteScalarWhereWithAggregatesInput = {
   homeDirectory?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   wordpressAdminUrl?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  wordpressAdminUsername?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  wordpressAdminPassword?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  directAdminUrl?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  directAdminUsername?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
+  directAdminPassword?: Prisma.StringNullableWithAggregatesFilter<"Website"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Website"> | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusWithAggregatesFilter<"Website"> | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.BoolNullableWithAggregatesFilter<"Website"> | boolean | null
@@ -518,6 +578,11 @@ export type WebsiteCreateInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -559,6 +624,11 @@ export type WebsiteUncheckedCreateInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -592,6 +662,11 @@ export type WebsiteUpdateInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -633,6 +708,11 @@ export type WebsiteUncheckedUpdateInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -670,6 +750,11 @@ export type WebsiteCreateManyInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -690,6 +775,11 @@ export type WebsiteUpdateManyMutationInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -714,6 +804,11 @@ export type WebsiteUncheckedUpdateManyInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -748,6 +843,11 @@ export type WebsiteCountOrderByAggregateInput = {
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
   wordpressAdminUrl?: Prisma.SortOrder
+  wordpressAdminUsername?: Prisma.SortOrder
+  wordpressAdminPassword?: Prisma.SortOrder
+  directAdminUrl?: Prisma.SortOrder
+  directAdminUsername?: Prisma.SortOrder
+  directAdminPassword?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastIsUp?: Prisma.SortOrder
@@ -777,6 +877,11 @@ export type WebsiteMaxOrderByAggregateInput = {
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
   wordpressAdminUrl?: Prisma.SortOrder
+  wordpressAdminUsername?: Prisma.SortOrder
+  wordpressAdminPassword?: Prisma.SortOrder
+  directAdminUrl?: Prisma.SortOrder
+  directAdminUsername?: Prisma.SortOrder
+  directAdminPassword?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastIsUp?: Prisma.SortOrder
@@ -801,6 +906,11 @@ export type WebsiteMinOrderByAggregateInput = {
   homeDirectory?: Prisma.SortOrder
   documentRoot?: Prisma.SortOrder
   wordpressAdminUrl?: Prisma.SortOrder
+  wordpressAdminUsername?: Prisma.SortOrder
+  wordpressAdminPassword?: Prisma.SortOrder
+  directAdminUrl?: Prisma.SortOrder
+  directAdminUsername?: Prisma.SortOrder
+  directAdminPassword?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastIsUp?: Prisma.SortOrder
@@ -1222,6 +1332,11 @@ export type WebsiteCreateWithoutUserInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1261,6 +1376,11 @@ export type WebsiteUncheckedCreateWithoutUserInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1327,6 +1447,11 @@ export type WebsiteScalarWhereInput = {
   homeDirectory?: Prisma.StringNullableFilter<"Website"> | string | null
   documentRoot?: Prisma.StringNullableFilter<"Website"> | string | null
   wordpressAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  wordpressAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUrl?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminUsername?: Prisma.StringNullableFilter<"Website"> | string | null
+  directAdminPassword?: Prisma.StringNullableFilter<"Website"> | string | null
   isActive?: Prisma.BoolFilter<"Website"> | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFilter<"Website"> | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.BoolNullableFilter<"Website"> | boolean | null
@@ -1347,6 +1472,11 @@ export type WebsiteCreateWithoutTenantInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1386,6 +1516,11 @@ export type WebsiteUncheckedCreateWithoutTenantInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1445,6 +1580,11 @@ export type WebsiteCreateWithoutVpsNodeInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1484,6 +1624,11 @@ export type WebsiteUncheckedCreateWithoutVpsNodeInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1543,6 +1688,11 @@ export type WebsiteCreateWithoutDiscoveriesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1583,6 +1733,11 @@ export type WebsiteUncheckedCreateWithoutDiscoveriesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1631,6 +1786,11 @@ export type WebsiteUpdateWithoutDiscoveriesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -1671,6 +1831,11 @@ export type WebsiteUncheckedUpdateWithoutDiscoveriesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -1703,6 +1868,11 @@ export type WebsiteCreateWithoutTrafficSnapshotsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1743,6 +1913,11 @@ export type WebsiteUncheckedCreateWithoutTrafficSnapshotsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1791,6 +1966,11 @@ export type WebsiteUpdateWithoutTrafficSnapshotsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -1831,6 +2011,11 @@ export type WebsiteUncheckedUpdateWithoutTrafficSnapshotsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -1863,6 +2048,11 @@ export type WebsiteCreateWithoutMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1903,6 +2093,11 @@ export type WebsiteUncheckedCreateWithoutMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -1951,6 +2146,11 @@ export type WebsiteUpdateWithoutMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -1991,6 +2191,11 @@ export type WebsiteUncheckedUpdateWithoutMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2023,6 +2228,11 @@ export type WebsiteCreateWithoutProbeMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2063,6 +2273,11 @@ export type WebsiteUncheckedCreateWithoutProbeMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2111,6 +2326,11 @@ export type WebsiteUpdateWithoutProbeMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2151,6 +2371,11 @@ export type WebsiteUncheckedUpdateWithoutProbeMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2183,6 +2408,11 @@ export type WebsiteCreateWithoutSslMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2223,6 +2453,11 @@ export type WebsiteUncheckedCreateWithoutSslMetricsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2271,6 +2506,11 @@ export type WebsiteUpdateWithoutSslMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2311,6 +2551,11 @@ export type WebsiteUncheckedUpdateWithoutSslMetricsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2343,6 +2588,11 @@ export type WebsiteCreateWithoutSslInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2383,6 +2633,11 @@ export type WebsiteUncheckedCreateWithoutSslInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2431,6 +2686,11 @@ export type WebsiteUpdateWithoutSslInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2471,6 +2731,11 @@ export type WebsiteUncheckedUpdateWithoutSslInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2503,6 +2768,11 @@ export type WebsiteCreateWithoutAlertsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2543,6 +2813,11 @@ export type WebsiteUncheckedCreateWithoutAlertsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2591,6 +2866,11 @@ export type WebsiteUpdateWithoutAlertsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2631,6 +2911,11 @@ export type WebsiteUncheckedUpdateWithoutAlertsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2663,6 +2948,11 @@ export type WebsiteCreateWithoutPlanInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2702,6 +2992,11 @@ export type WebsiteUncheckedCreateWithoutPlanInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2761,6 +3056,11 @@ export type WebsiteCreateWithoutPlanRequestsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2801,6 +3101,11 @@ export type WebsiteUncheckedCreateWithoutPlanRequestsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2849,6 +3154,11 @@ export type WebsiteUpdateWithoutPlanRequestsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2889,6 +3199,11 @@ export type WebsiteUncheckedUpdateWithoutPlanRequestsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -2921,6 +3236,11 @@ export type WebsiteCreateWithoutComplementaryRequestsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -2961,6 +3281,11 @@ export type WebsiteUncheckedCreateWithoutComplementaryRequestsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3009,6 +3334,11 @@ export type WebsiteUpdateWithoutComplementaryRequestsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3049,6 +3379,11 @@ export type WebsiteUncheckedUpdateWithoutComplementaryRequestsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3081,6 +3416,11 @@ export type WebsiteCreateWithoutTicketsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3121,6 +3461,11 @@ export type WebsiteUncheckedCreateWithoutTicketsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3169,6 +3514,11 @@ export type WebsiteUpdateWithoutTicketsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3209,6 +3559,11 @@ export type WebsiteUncheckedUpdateWithoutTicketsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3241,6 +3596,11 @@ export type WebsiteCreateWithoutActivitiesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3281,6 +3641,11 @@ export type WebsiteUncheckedCreateWithoutActivitiesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3329,6 +3694,11 @@ export type WebsiteUpdateWithoutActivitiesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3369,6 +3739,11 @@ export type WebsiteUncheckedUpdateWithoutActivitiesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3401,6 +3776,11 @@ export type WebsiteCreateWithoutOperationalActionsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3441,6 +3821,11 @@ export type WebsiteUncheckedCreateWithoutOperationalActionsInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3489,6 +3874,11 @@ export type WebsiteUpdateWithoutOperationalActionsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3529,6 +3919,11 @@ export type WebsiteUncheckedUpdateWithoutOperationalActionsInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3561,6 +3956,11 @@ export type WebsiteCreateWithoutUnixseeMessagesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3601,6 +4001,11 @@ export type WebsiteUncheckedCreateWithoutUnixseeMessagesInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3649,6 +4054,11 @@ export type WebsiteUpdateWithoutUnixseeMessagesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3689,6 +4099,11 @@ export type WebsiteUncheckedUpdateWithoutUnixseeMessagesInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3724,6 +4139,11 @@ export type WebsiteCreateManyUserInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3744,6 +4164,11 @@ export type WebsiteUpdateWithoutUserInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3783,6 +4208,11 @@ export type WebsiteUncheckedUpdateWithoutUserInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3819,6 +4249,11 @@ export type WebsiteUncheckedUpdateManyWithoutUserInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3842,6 +4277,11 @@ export type WebsiteCreateManyTenantInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3862,6 +4302,11 @@ export type WebsiteUpdateWithoutTenantInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3901,6 +4346,11 @@ export type WebsiteUncheckedUpdateWithoutTenantInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3937,6 +4387,11 @@ export type WebsiteUncheckedUpdateManyWithoutTenantInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -3960,6 +4415,11 @@ export type WebsiteCreateManyVpsNodeInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -3980,6 +4440,11 @@ export type WebsiteUpdateWithoutVpsNodeInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4019,6 +4484,11 @@ export type WebsiteUncheckedUpdateWithoutVpsNodeInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4055,6 +4525,11 @@ export type WebsiteUncheckedUpdateManyWithoutVpsNodeInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4078,6 +4553,11 @@ export type WebsiteCreateManyPlanInput = {
   homeDirectory?: string | null
   documentRoot?: string | null
   wordpressAdminUrl?: string | null
+  wordpressAdminUsername?: string | null
+  wordpressAdminPassword?: string | null
+  directAdminUrl?: string | null
+  directAdminUsername?: string | null
+  directAdminPassword?: string | null
   isActive?: boolean
   status?: $Enums.WebsiteLifecycleStatus
   lastIsUp?: boolean | null
@@ -4098,6 +4578,11 @@ export type WebsiteUpdateWithoutPlanInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4137,6 +4622,11 @@ export type WebsiteUncheckedUpdateWithoutPlanInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4173,6 +4663,11 @@ export type WebsiteUncheckedUpdateManyWithoutPlanInput = {
   homeDirectory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRoot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directAdminPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumWebsiteLifecycleStatusFieldUpdateOperationsInput | $Enums.WebsiteLifecycleStatus
   lastIsUp?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -4327,6 +4822,11 @@ export type WebsiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   homeDirectory?: boolean
   documentRoot?: boolean
   wordpressAdminUrl?: boolean
+  wordpressAdminUsername?: boolean
+  wordpressAdminPassword?: boolean
+  directAdminUrl?: boolean
+  directAdminUsername?: boolean
+  directAdminPassword?: boolean
   isActive?: boolean
   status?: boolean
   lastIsUp?: boolean
@@ -4369,6 +4869,11 @@ export type WebsiteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   homeDirectory?: boolean
   documentRoot?: boolean
   wordpressAdminUrl?: boolean
+  wordpressAdminUsername?: boolean
+  wordpressAdminPassword?: boolean
+  directAdminUrl?: boolean
+  directAdminUsername?: boolean
+  directAdminPassword?: boolean
   isActive?: boolean
   status?: boolean
   lastIsUp?: boolean
@@ -4397,6 +4902,11 @@ export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   homeDirectory?: boolean
   documentRoot?: boolean
   wordpressAdminUrl?: boolean
+  wordpressAdminUsername?: boolean
+  wordpressAdminPassword?: boolean
+  directAdminUrl?: boolean
+  directAdminUsername?: boolean
+  directAdminPassword?: boolean
   isActive?: boolean
   status?: boolean
   lastIsUp?: boolean
@@ -4425,6 +4935,11 @@ export type WebsiteSelectScalar = {
   homeDirectory?: boolean
   documentRoot?: boolean
   wordpressAdminUrl?: boolean
+  wordpressAdminUsername?: boolean
+  wordpressAdminPassword?: boolean
+  directAdminUrl?: boolean
+  directAdminUsername?: boolean
+  directAdminPassword?: boolean
   isActive?: boolean
   status?: boolean
   lastIsUp?: boolean
@@ -4435,7 +4950,7 @@ export type WebsiteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "planActivatedAt" | "managementCoverage" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "wordpressAdminUrl" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
+export type WebsiteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tenantId" | "vpsNodeId" | "planId" | "planActivatedAt" | "managementCoverage" | "domain" | "displayName" | "directAdminUser" | "homeDirectory" | "documentRoot" | "wordpressAdminUrl" | "wordpressAdminUsername" | "wordpressAdminPassword" | "directAdminUrl" | "directAdminUsername" | "directAdminPassword" | "isActive" | "status" | "lastIsUp" | "lastStatusCode" | "lastResponseTimeMs" | "lastProbeAt" | "createdAt" | "updatedAt", ExtArgs["result"]["website"]>
 export type WebsiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Website$userArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -4504,6 +5019,11 @@ export type $WebsitePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     homeDirectory: string | null
     documentRoot: string | null
     wordpressAdminUrl: string | null
+    wordpressAdminUsername: string | null
+    wordpressAdminPassword: string | null
+    directAdminUrl: string | null
+    directAdminUsername: string | null
+    directAdminPassword: string | null
     isActive: boolean
     status: $Enums.WebsiteLifecycleStatus
     lastIsUp: boolean | null
@@ -4965,6 +5485,11 @@ export interface WebsiteFieldRefs {
   readonly homeDirectory: Prisma.FieldRef<"Website", 'String'>
   readonly documentRoot: Prisma.FieldRef<"Website", 'String'>
   readonly wordpressAdminUrl: Prisma.FieldRef<"Website", 'String'>
+  readonly wordpressAdminUsername: Prisma.FieldRef<"Website", 'String'>
+  readonly wordpressAdminPassword: Prisma.FieldRef<"Website", 'String'>
+  readonly directAdminUrl: Prisma.FieldRef<"Website", 'String'>
+  readonly directAdminUsername: Prisma.FieldRef<"Website", 'String'>
+  readonly directAdminPassword: Prisma.FieldRef<"Website", 'String'>
   readonly isActive: Prisma.FieldRef<"Website", 'Boolean'>
   readonly status: Prisma.FieldRef<"Website", 'WebsiteLifecycleStatus'>
   readonly lastIsUp: Prisma.FieldRef<"Website", 'Boolean'>

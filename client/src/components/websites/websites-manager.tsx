@@ -164,6 +164,7 @@ export function WebsitesManager({
     "pro",
     "premium",
     "dedicatedPlan",
+    "none",
   ] as const;
 
   return (
