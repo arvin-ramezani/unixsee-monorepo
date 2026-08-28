@@ -14,6 +14,7 @@
     "phoneRequired": "Phone number is required",
     "phoneInvalid": "Please enter a valid phone number",
     "messageTooShort": "Message must be at least 20 characters",
+    "messageTooLong": "Message must be at most 4000 characters",
     "messageRequired": "Message content is required",
     "websiteInvalid": "Please enter a valid website url",
     "websiteRequired": "Website is required unless you don't have one yet",
@@ -247,6 +248,11 @@
         "en": "EN"
       },
       "comingSoon": "Coming soon",
+      "mobileMenu": {
+        "preferences": "Preferences",
+        "language": "Language",
+        "theme": "Theme"
+      },
       "primaryCta": {
         "label": "Request Store Assessment",
         "href": "/"
@@ -401,6 +407,16 @@
       "faq": {
         "label": "FAQ",
         "href": "faq"
+      }
+    },
+    "ContactUsSecondaryNavigation": {
+      "message": {
+        "label": "Message",
+        "href": "message"
+      },
+      "info": {
+        "label": "Info",
+        "href": "info"
       }
     },
     "MigrationSecondaryNavigation": {
@@ -2069,13 +2085,16 @@
     }
   },
   "ContactUsPage": {
+    "heading": "Contact Unixsee",
+    "lead": "Send a message about your store, or call the office directly. We follow up on one channel so nothing is lost between inboxes.",
     "ContactFormSection": {
-      "title": "Contact with Unixsee",
+      "title": "Send a message",
       "form": {
+        "optional": "Optional",
         "fields": {
           "subject": {
-            "label": "Select the subject",
-            "placeholder": "Select the subject",
+            "label": "Subject",
+            "placeholder": "Select a subject",
             "options": {
               "managedServer": {
                 "label": "Managed Server",
@@ -2109,7 +2128,7 @@
           },
           "fullName": {
             "label": "Full name",
-            "placeholder": "Full name"
+            "placeholder": "Your full name"
           },
           "email": {
             "label": "Email",
@@ -2117,48 +2136,64 @@
           },
           "phone": {
             "label": "Phone number",
-            "placeholder": "Phone number"
+            "placeholder": "912 000 0000"
           },
           "message": {
-            "label": "Message content",
-            "placeholder": "Your message..."
+            "label": "Message",
+            "placeholder": "What should we look at?"
           },
           "website": {
-            "label": "Website"
+            "label": "Website",
+            "placeholder": "https://example.com"
           },
           "activityBasin": {
-            "label": "Activity Basin"
+            "label": "Business area",
+            "placeholder": "Retail, food, services…"
           },
           "fileUpload": {
-            "label": "At most 5 images jpeg or PNG at most 1M, one video MP4 at most 50M",
-            "buttonLabel": "Upload image or video"
+            "label": "Attachments",
+            "hint": "Up to {maxFiles} files. Images, PDF, text, CSV, or ZIP up to {maxMb} MB each.",
+            "empty": "Drop files here, or browse",
+            "selected": "{count, plural, one {# file selected} other {# files selected}}",
+            "browse": "Choose files",
+            "remove": "Remove {name}",
+            "tooMany": "You can attach up to {max} files.",
+            "tooLarge": "Each file must be under {maxMb} MB.",
+            "invalidType": "That file type is not supported."
           }
         },
         "actions": {
-          "sendMessage": "Send message"
+          "sendMessage": "Send message",
+          "sending": "Sending…"
+        },
+        "toast": {
+          "success": "Thank you. We received your message and will follow up shortly.",
+          "error": "We could not send your message. Try again, or call the office."
         }
       }
     },
     "ContactInfoSection": {
-      "title": "Unixsee Information",
+      "title": "Office and support",
       "office": {
-        "title": "Central Office"
+        "title": "Central office"
       },
       "support": {
-        "title": "Post-Sales Support",
-        "description": "Please send the product for return and shipment to the post-sale services of Digikala via postal box 3469-15875. (You can initiate the return process through the 'My Orders' section)"
+        "title": "After you reach us",
+        "description": "We handle operational questions for Unixsee-managed stores. For guides and common procedures, start in the Help Center."
       },
+      "hours": {
+        "label": "Availability",
+        "value": "Support is available 24 hours a day, every day of the week."
+      },
+      "mapLabel": "Unixsee office location on the map",
       "contactInfo": {
-        "title": "24/7 Support and Availability",
+        "title": "Reach us directly",
         "phone": {
-          "label": "Phone number",
-          "phone": "+981144412446",
-          "labelNumber": "+98 11 444 12446",
-          "href": "+981144412446"
+          "label": "Phone"
         },
-        "email": {
-          "label": "Email",
-          "value": "value@example.com"
+        "helpCenter": {
+          "label": "Help Center",
+          "hrefLabel": "Browse guides"
         }
       }
     }
@@ -2511,9 +2546,18 @@
     "about": {
       "title": "About Unixsee | Operational partner for WooCommerce growth",
       "description": "What Unixsee is, why it was built, and what it takes responsibility for. Our address, landline, and how we approach support for WooCommerce store infrastructure."
+    },
+    "contactUs": {
+      "title": "Contact Unixsee | Message, office, and support",
+      "description": "Send a message to Unixsee, call the Babolsar office, or open the Help Center for operational guides."
     }
   },
   "Common": {
+    "phoneInput": {
+      "countryLabel": "Country calling code",
+      "searchPlaceholder": "Search country or code",
+      "noResults": "No countries found"
+    },
     "userName": "Jane",
     "viewAll": "View All",
     "view": "View",
@@ -3683,11 +3727,7 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "heading",
@@ -3700,11 +3740,7 @@
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Understand how caching works and why it is important for improving WooCommerce store performance.",
@@ -3827,19 +3863,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Understand the technology layers that power a managed WooCommerce store on Unixsee.",
@@ -3893,11 +3921,7 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "heading",
@@ -3915,19 +3939,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l4",
-                "l5",
-                "l6"
-              ]
+              "itemKeys": ["l4", "l5", "l6"]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Learn how Unixsee manages PHP versions and how to choose a compatible version for your WooCommerce store.",
@@ -4008,19 +4024,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Understand how Unixsee checks website availability and detects problems before they affect your store operations.",
@@ -4101,19 +4109,11 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Learn how the Unixsee firewall helps protect WooCommerce stores by monitoring requests and blocking suspicious activity.",
@@ -4167,11 +4167,7 @@
             },
             {
               "kind": "list",
-              "itemKeys": [
-                "l1",
-                "l2",
-                "l3"
-              ]
+              "itemKeys": ["l1", "l2", "l3"]
             },
             {
               "kind": "heading",
@@ -4211,11 +4207,7 @@
             },
             {
               "kind": "keyTakeaways",
-              "itemKeys": [
-                "k1",
-                "k2",
-                "k3"
-              ]
+              "itemKeys": ["k1", "k2", "k3"]
             }
           ],
           "lede": "Learn how to move your WooCommerce store to Unixsee infrastructure and prepare for a smooth migration.",

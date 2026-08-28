@@ -1,12 +1,12 @@
 import * as z from "zod";
 
+import { isValidInternationalPhone } from "@/lib/phone/international-phone";
 import { errorKey } from "../form-errors";
 import { DAILY_VISITOR_BANDS } from "./guest-plan-request-schema";
 
 export { DAILY_VISITOR_BANDS };
 
 const fullNameRegex = /^[\p{L}\p{M}]+(?:[ '\-‌][\p{L}\p{M}]+)+$/u;
-const iranNationalMobileRegex = /^(0?9\d{9}|۰?۹[۰-۹]{9})$/;
 
 export const SERVICE_VALUES = [
   "managedServer",
@@ -207,8 +207,7 @@ export const DELIVERY_TIME_BANDS = [
 ] as const;
 
 export const REQUEST_ASSESSMENT_UPLOAD = {
-  accept:
-    ".pdf,.png,.jpg,.jpeg,.doc,.docx,.xlsx,.csv,.zip,.webp",
+  accept: ".pdf,.png,.jpg,.jpeg,.doc,.docx,.xlsx,.csv,.zip,.webp",
   acceptMime: [
     "application/pdf",
     "image/png",
@@ -380,7 +379,12 @@ function validateManagedServer(
   details: ServiceDetailsType,
   ctx: z.RefinementCtx,
 ) {
-  requireField(ctx, ["serviceDetails", "hasActiveWebsite"], !!details.hasActiveWebsite, "servicesRequired");
+  requireField(
+    ctx,
+    ["serviceDetails", "hasActiveWebsite"],
+    !!details.hasActiveWebsite,
+    "servicesRequired",
+  );
 
   if (details.hasActiveWebsite === "yes") {
     requireField(
@@ -433,10 +437,25 @@ function validateWooCommerceSupport(
     !!details.storeUrl?.trim() && isValidWebsite(details.storeUrl),
     "websiteRequired",
   );
-  requireField(ctx, ["serviceDetails", "storeActive"], !!details.storeActive, "servicesRequired");
+  requireField(
+    ctx,
+    ["serviceDetails", "storeActive"],
+    !!details.storeActive,
+    "servicesRequired",
+  );
   if (details.storeActive === "yes") {
-    requireField(ctx, ["serviceDetails", "productCount"], !!details.productCount, "servicesRequired");
-    requireField(ctx, ["serviceDetails", "monthlyOrders"], !!details.monthlyOrders, "servicesRequired");
+    requireField(
+      ctx,
+      ["serviceDetails", "productCount"],
+      !!details.productCount,
+      "servicesRequired",
+    );
+    requireField(
+      ctx,
+      ["serviceDetails", "monthlyOrders"],
+      !!details.monthlyOrders,
+      "servicesRequired",
+    );
     requireField(
       ctx,
       ["serviceDetails", "wcMonthlyVisits"],
@@ -473,7 +492,12 @@ function validateSeo(details: ServiceDetailsType, ctx: z.RefinementCtx) {
     !!details.businessArea?.trim(),
     "messageRequired",
   );
-  requireField(ctx, ["serviceDetails", "mainGoal"], !!details.mainGoal, "servicesRequired");
+  requireField(
+    ctx,
+    ["serviceDetails", "mainGoal"],
+    !!details.mainGoal,
+    "servicesRequired",
+  );
   requireField(
     ctx,
     ["serviceDetails", "targetCountry"],
@@ -522,8 +546,18 @@ function validateProductDataEntry(
   details: ServiceDetailsType,
   ctx: z.RefinementCtx,
 ) {
-  requireField(ctx, ["serviceDetails", "workType"], !!details.workType, "servicesRequired");
-  requireField(ctx, ["serviceDetails", "itemCount"], !!details.itemCount, "servicesRequired");
+  requireField(
+    ctx,
+    ["serviceDetails", "workType"],
+    !!details.workType,
+    "servicesRequired",
+  );
+  requireField(
+    ctx,
+    ["serviceDetails", "itemCount"],
+    !!details.itemCount,
+    "servicesRequired",
+  );
   requireField(
     ctx,
     ["serviceDetails", "dataSources"],
@@ -627,7 +661,7 @@ function validateContact(
         message: errorKey("phoneRequired"),
         path: ["phone"],
       });
-    } else if (!iranNationalMobileRegex.test(phone)) {
+    } else if (!isValidInternationalPhone(phone)) {
       ctx.addIssue({
         code: "custom",
         message: errorKey("phoneInvalid"),
@@ -663,7 +697,7 @@ function validateContact(
       });
     }
   }
-  if (phone && !iranNationalMobileRegex.test(phone)) {
+  if (phone && !isValidInternationalPhone(phone)) {
     ctx.addIssue({
       code: "custom",
       message: errorKey("phoneInvalid"),
@@ -709,10 +743,7 @@ export const requestAssessmentSchema = z
           type: z.string(),
         }),
       )
-      .max(
-        REQUEST_ASSESSMENT_UPLOAD.maxFiles,
-        errorKey("attachmentsTooMany"),
-      )
+      .max(REQUEST_ASSESSMENT_UPLOAD.maxFiles, errorKey("attachmentsTooMany"))
       .optional(),
   })
   .superRefine((data, ctx) => {

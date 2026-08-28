@@ -67,7 +67,7 @@ export function MobileProblemSectionCard({
           },
         )}
       >
-        <div className="bg-primary relative w-full rounded-2xl lg:flex dark:bg-white">
+        <div className="bg-primary relative w-full rounded-2xl rounded-ee-none rounded-es-none lg:flex dark:bg-white">
           <div className="relative aspect-video h-auto w-full bg-black/35 lg:m-auto lg:h-[calc(100%-80px)] lg:w-[calc(100%-48px)]">
             {index === 0 ? (
               <Video
@@ -75,8 +75,8 @@ export function MobileProblemSectionCard({
                 poster="/videos/unixsee-team/slide-1/slide-1-poster.webp"
                 desktopMp4="/videos/unixsee-team/slide-1/slide-1-wide.mp4"
                 desktopWebm="/videos/unixsee-team/slide-1/slide-1-wide.webm"
-                mobileMp4="/videos/unixsee-team/slide-1/slide-1-mobile.mp4"
-                mobileWebm="/videos/unixsee-team/slide-1/slide-1-mobile.webm"
+                mobileMp4="/videos/unixsee-team/slide-1/slide-1-wide.mp4"
+                mobileWebm="/videos/unixsee-team/slide-1/slide-1-wide.webm"
               />
             ) : (
               <Video
@@ -84,13 +84,13 @@ export function MobileProblemSectionCard({
                 poster="/videos/unixsee-team/slide-2/slide-2-poster.webp"
                 desktopMp4="/videos/unixsee-team/slide-2/slide-2-wide.mp4"
                 desktopWebm="/videos/unixsee-team/slide-2/slide-2-wide.webm"
-                mobileMp4="/videos/unixsee-team/slide-2/slide-2-mobile.mp4"
-                mobileWebm="/videos/unixsee-team/slide-2/slide-2-mobile.webm"
+                mobileMp4="/videos/unixsee-team/slide-2/slide-2-wide.mp4"
+                mobileWebm="/videos/unixsee-team/slide-2/slide-2-wide.webm"
               />
             )}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 flex w-full items-end justify-between rounded-2xl bg-[linear-gradient(0deg,hsl(0_0%_100%/0.06)_0%,hsl(0_0%_100%/0)_100%)] p-8 lg:gap-8 dark:bg-[linear-gradient(0deg,oklch(0.26_0.04_254.5/0.75)_0%,oklch(0.26_0.04_254.5/0)_100%)]">
+          <div className="absolute inset-x-0 bottom-0 flex w-full items-end justify-between rounded-2xl rounded-ee-none rounded-es-none bg-[linear-gradient(0deg,hsl(0_0%_100%/0.06)_0%,hsl(0_0%_100%/0)_100%)] p-8 lg:gap-8 dark:bg-[linear-gradient(0deg,oklch(0.26_0.04_254.5/0.75)_0%,oklch(0.26_0.04_254.5/0)_100%)]">
             <div className="dark:text-text-primary text-white">
               <p className="text-5xl">{metric}</p>
               <p className="mt-1 text-nowrap lg:mt-2 lg:text-2xl">

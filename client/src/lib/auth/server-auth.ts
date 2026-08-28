@@ -3,6 +3,7 @@ import {
   getAccessTokenFromCookies,
   getServerClockOffsetInSeconds,
 } from "@/lib/auth/server-cookie";
+import { isAccessSessionAlive } from "@/lib/auth/session-alive";
 
 export async function getServerAccessToken(): Promise<string | null> {
   const accessToken = await getAccessTokenFromCookies();
@@ -14,6 +15,10 @@ export async function getServerAccessToken(): Promise<string | null> {
   const serverClockOffsetInSeconds = await getServerClockOffsetInSeconds();
 
   if (shouldRefreshToken(accessToken, serverClockOffsetInSeconds)) {
+    return null;
+  }
+
+  if (!(await isAccessSessionAlive(accessToken))) {
     return null;
   }
 

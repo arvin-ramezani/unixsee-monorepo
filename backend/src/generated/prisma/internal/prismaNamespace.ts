@@ -427,7 +427,9 @@ export const ModelName = {
   IdempotencyRecord: 'IdempotencyRecord',
   UnixseeMessage: 'UnixseeMessage',
   UnixseeMessageAttachment: 'UnixseeMessageAttachment',
-  UnixseeMessageRead: 'UnixseeMessageRead'
+  UnixseeMessageRead: 'UnixseeMessageRead',
+  NewsletterSubscription: 'NewsletterSubscription',
+  ContactMessage: 'ContactMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -443,7 +445,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteTrafficSnapshot" | "agentCommand" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "billingItem" | "billingPeriodRow" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead"
+    modelProps: "user" | "tenant" | "membership" | "authorizationCase" | "server" | "serverEnrollmentToken" | "vpsNode" | "website" | "websiteDiscovery" | "websiteTrafficSnapshot" | "agentCommand" | "websiteActiveVisitorSample" | "vpsMetric" | "webMetric" | "websiteProbeMetric" | "websiteSslMetric" | "vpsFilesystemMetric" | "vpsNetworkInterfaceMetric" | "vpsServiceMetric" | "sSLCertificate" | "alert" | "otp" | "plan" | "planRequest" | "serviceCatalogItem" | "complementaryServiceRequest" | "serviceQuotation" | "serviceAssignment" | "billingItem" | "billingPeriodRow" | "serviceUsage" | "serviceDeliverable" | "ticket" | "ticketMessage" | "ticketAttachment" | "notification" | "notificationRead" | "activity" | "auditRecord" | "operationalAction" | "idempotencyRecord" | "unixseeMessage" | "unixseeMessageAttachment" | "unixseeMessageRead" | "newsletterSubscription" | "contactMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3703,6 +3705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    NewsletterSubscription: {
+      payload: Prisma.$NewsletterSubscriptionPayload<ExtArgs>
+      fields: Prisma.NewsletterSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NewsletterSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NewsletterSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.NewsletterSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NewsletterSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.NewsletterSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.NewsletterSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.NewsletterSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NewsletterSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.NewsletterSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.NewsletterSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.NewsletterSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NewsletterSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NewsletterSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.NewsletterSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.NewsletterSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNewsletterSubscription>
+        }
+        groupBy: {
+          args: Prisma.NewsletterSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NewsletterSubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterSubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ContactMessage: {
+      payload: Prisma.$ContactMessagePayload<ExtArgs>
+      fields: Prisma.ContactMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ContactMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ContactMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ContactMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ContactMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.ContactMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        update: {
+          args: Prisma.ContactMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ContactMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactMessage>
+        }
+        groupBy: {
+          args: Prisma.ContactMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactMessageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4549,6 +4699,41 @@ export const UnixseeMessageReadScalarFieldEnum = {
 export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
 
 
+export const NewsletterSubscriptionScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  locale: 'locale',
+  source: 'source',
+  status: 'status',
+  consentedAt: 'consentedAt',
+  unsubscribedAt: 'unsubscribedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsletterSubscriptionScalarFieldEnum = (typeof NewsletterSubscriptionScalarFieldEnum)[keyof typeof NewsletterSubscriptionScalarFieldEnum]
+
+
+export const ContactMessageScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  activityBasin: 'activityBasin',
+  message: 'message',
+  attachmentKeys: 'attachmentKeys',
+  locale: 'locale',
+  source: 'source',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5197,6 +5382,48 @@ export type EnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 export type ListEnumUnixseeMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UnixseeMessageStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'NewsletterSubscriptionStatus'
+ */
+export type EnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsletterSubscriptionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'NewsletterSubscriptionStatus[]'
+ */
+export type ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsletterSubscriptionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactMessageSubject'
+ */
+export type EnumContactMessageSubjectFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactMessageSubject'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactMessageSubject[]'
+ */
+export type ListEnumContactMessageSubjectFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactMessageSubject[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactMessageStatus'
+ */
+export type EnumContactMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactMessageStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ContactMessageStatus[]'
+ */
+export type ListEnumContactMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactMessageStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -5351,6 +5578,8 @@ export type GlobalOmitConfig = {
   unixseeMessage?: Prisma.UnixseeMessageOmit
   unixseeMessageAttachment?: Prisma.UnixseeMessageAttachmentOmit
   unixseeMessageRead?: Prisma.UnixseeMessageReadOmit
+  newsletterSubscription?: Prisma.NewsletterSubscriptionOmit
+  contactMessage?: Prisma.ContactMessageOmit
 }
 
 /* Types for Logging */

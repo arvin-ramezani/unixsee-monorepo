@@ -13,6 +13,10 @@ import {
 } from 'class-validator';
 
 import {
+  IsInternationalPhone,
+  TransformToE164Phone,
+} from '#/common/validation/is-international-phone.decorator.js';
+import {
   BillingCommercialModel,
   BillingCommercialState,
   BillingInterval,
@@ -29,9 +33,9 @@ export class CreatePublicComplementaryRequestDto {
   @MaxLength(200)
   contactName!: string;
 
+  @TransformToE164Phone()
   @IsString()
-  @MinLength(1)
-  @MaxLength(32)
+  @IsInternationalPhone()
   contactPhone!: string;
 
   @IsOptional()

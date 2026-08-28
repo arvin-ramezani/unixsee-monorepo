@@ -4,8 +4,9 @@ import { publicFetch } from "@/lib/api/public-fetch";
 import { createServerClockOffsetInSeconds } from "@/lib/auth/auth-utils";
 import {
   isCompleteIranNationalMobile,
-  toE164IranFromNational,
+  toE164IranMobile,
 } from "@/lib/auth/iran-phone";
+import { toE164Phone } from "@/lib/phone/international-phone";
 import { readRetryAfterSeconds } from "@/lib/auth/otp-retry-after";
 import { setAuthSessionCookies } from "@/lib/auth/session-cookies";
 import type { AuthSessionPayload, SafeAuthUser } from "@/types/auth.types";
@@ -71,7 +72,7 @@ export async function requestGuestPlanOtpAction(input: {
   const email = input.email?.trim() ?? "";
 
   if (phone && isCompleteIranNationalMobile(phone)) {
-    const phoneNumber = toE164IranFromNational(phone);
+    const phoneNumber = toE164Phone(phone) ?? toE164IranMobile(phone);
     try {
       const response = await publicFetch<OtpRequestData>("/auth/otp/request", {
         method: "POST",
@@ -152,7 +153,7 @@ export async function verifyGuestPlanOtpAction(input: {
   const body =
     phone && isCompleteIranNationalMobile(phone)
       ? {
-          phoneNumber: toE164IranFromNational(phone),
+          phoneNumber: toE164Phone(phone) ?? toE164IranMobile(phone),
           otp,
           context: "LOGIN" as const,
         }

@@ -444,11 +444,7 @@ export function ProfileForm({
   }
   function normalizeMobile() {
     const clean = normalizeProfileMobile(draft.mobile);
-    if (!clean) {
-      update("mobile", "");
-      return;
-    }
-    update("mobile", clean.startsWith("09") ? `+98${clean.slice(1)}` : clean);
+    update("mobile", clean);
   }
 
   return (

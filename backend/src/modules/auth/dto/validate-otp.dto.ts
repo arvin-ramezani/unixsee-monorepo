@@ -1,14 +1,12 @@
 import { Transform } from 'class-transformer';
-import {
-  IsEmail,
-  IsEnum,
-  IsMobilePhone,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
 
-import { toEnglishDigits } from '#/utils/helpers.js';
+import {
+  IsInternationalPhone,
+  TransformToE164Phone,
+} from '#/common/validation/is-international-phone.decorator.js';
 import { OtpContext } from '#/generated/prisma/enums.js';
+import { toEnglishDigits } from '#/utils/digits.js';
 import { ExactlyOneOtpTarget } from './exactly-one-otp-target.validator.js';
 
 /**
@@ -23,14 +21,15 @@ import { ExactlyOneOtpTarget } from './exactly-one-otp-target.validator.js';
  */
 export class ValidateOtpDto {
   @IsOptional()
-  @IsString()
   @Transform(({ obj }) => {
     if (obj?.phoneNumber == null || obj.phoneNumber === '') {
       return obj?.phoneNumber;
     }
     return toEnglishDigits(obj.phoneNumber);
   })
-  @IsMobilePhone()
+  @TransformToE164Phone()
+  @IsString()
+  @IsInternationalPhone()
   phoneNumber?: string;
 
   @IsOptional()

@@ -19,6 +19,7 @@ import {
   ChevronRightIcon,
   ChevronLeftIcon,
   MessageSquareText,
+  MailIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,88 +38,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-
-const data = {
-  navMain: [
-    {
-      title: "نمای‌کلی",
-      url: "/",
-      icon: HomeIcon,
-    },
-    {
-      title: "وب‌سایت‌ها",
-      url: "/websites",
-      icon: GlobeIcon,
-    },
-    {
-      title: "سرورها",
-      url: "/servers",
-      icon: ServerIcon,
-    },
-    {
-      title: "کاربران",
-      url: "/users",
-      icon: UserIcon,
-    },
-    {
-      title: "بررسی احراز هویت",
-      url: "/users/authorization",
-      icon: ShieldCheck,
-    },
-    {
-      title: "تیکت‌ها",
-      url: "/tickets",
-      icon: TicketIcon,
-    },
-    {
-      title: "پیام‌های یونیکسی",
-      url: "/unixsee-messages",
-      icon: MessageSquareText,
-    },
-    {
-      title: "خدمات تکمیلی",
-      url: "/complementary-services",
-      icon: Puzzle,
-    },
-    {
-      title: "درخواست‌های پلن",
-      url: "/plan-requests",
-      icon: ClipboardList,
-    },
-    {
-      title: "فعالیت‌ها",
-      url: "/activities",
-      icon: ActivityIcon,
-    },
-    {
-      title: "اعلان‌ها",
-      url: "/notifications",
-      icon: BellIcon,
-    },
-    {
-      title: "تنظیمات",
-      url: "/settings",
-      icon: SettingsIcon,
-    },
-  ],
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-};
+import { data } from "@/lib/data/sidebar-data";
 
 export function AppSidebar({
   user,

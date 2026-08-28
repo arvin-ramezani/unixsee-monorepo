@@ -1,14 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
-import { Controller, useForm } from "react-hook-form";
-
-import {
-  contactUsSchema,
-  ContactUsSchemaType,
-} from "@/lib/zod-schemas/contact-us-schema";
+import { useLocale, useTranslations } from "next-intl";
+import { useState, type ComponentProps } from "react";
+import { Controller, useForm, type Control } from "react-hook-form";
 import { toast } from "sonner";
+
+import { submitContactMessageAction } from "@/actions/contact-message-actions";
+import { PhoneInput } from "@/components/common/phone-input";
+import { RequiredInputIcon } from "@/components/common/required-input-icon";
+import { RadialRevealButton } from "@/components/common/radial-reveal/radial-reveal-button";
+import Title from "@/components/common/title";
+import SubTitle from "@/components/common/subtitle";
 import {
   Field,
   FieldError,
@@ -16,7 +19,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { FormErrorKey } from "@/lib/form-errors";
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group";
 import {
   Select,
@@ -25,38 +27,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RequiredInputIcon } from "@/components/common/required-input-icon";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { getServerCoreApiBaseUrl } from "@/lib/auth/auth-utils";
-import Title from "@/components/common/title";
-import { UploadCloudIcon } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import type { FormErrorKey } from "@/lib/form-errors";
+import { cn } from "@/lib/utils";
+import {
+  contactUsSchema,
+  SERVICE_VALUES,
+  type ContactUsSchemaType,
+} from "@/lib/zod-schemas/contact-us-schema";
+import type { ApiResponse } from "@/types/auth.types";
+import { ContactFileUpload } from "./contact-file-upload";
 
-const SERVICE_KEYS = [
-  "managedServer",
-  "migrationOptimization",
-  "woocommerceSupport",
-  "seo",
-  "graphicDesign",
-  "productDataEntry",
-  "socialMedia",
-] as const;
+/** Navy-tinted edge on the cyan card so fields don't read as white outlines. */
+const contactControlClassName =
+  "border-ring bg-muted dark:border-border dark:bg-input/30";
 
-export type ContactFormSectionProps = object;
+export type ContactFormSectionProps = {
+  id?: string;
+};
 
-export default function ContactFormSection({}: ContactFormSectionProps) {
+type TranslateError = (message?: string) => string | undefined;
+
+type PublicUploadResult = {
+  storageKey: string;
+};
+
+export default function ContactFormSection({ id }: ContactFormSectionProps) {
   const t = useTranslations("ContactUsPage.ContactFormSection");
   const tForm = useTranslations("ContactUsPage.ContactFormSection.form");
   const tFormErrors = useTranslations("FormErrors");
+  const locale = useLocale();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const form = useForm<ContactUsSchemaType>({
     resolver: zodResolver(contactUsSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       fullName: "",
       email: "",
       phone: "",
-      subject: "",
+      subject: "" as unknown as ContactUsSchemaType["subject"],
       message: "",
       website: "",
       activityBasin: "",
@@ -64,13 +75,15 @@ export default function ContactFormSection({}: ContactFormSectionProps) {
     },
   });
 
-  const translateError = (message?: string) => {
+  const translateError: TranslateError = (message) => {
     if (!message) return undefined;
     return tFormErrors(message as FormErrorKey);
   };
 
-  async function onSubmit(data: ContactUsSchemaType) {
-    const uploadUrls: { fileName: string; downloadUrl: string }[] = [];
+  const isSubmitting = form.formState.isSubmitting;
+
+  async function onSubmit(values: ContactUsSchemaType) {
+    const attachmentKeys: string[] = [];
 
     for (const file of selectedFiles) {
       const formData = new FormData();
@@ -80,333 +93,359 @@ export default function ContactFormSection({}: ContactFormSectionProps) {
           method: "POST",
           body: formData,
         });
-        if (res.ok) {
-          const result = await res.json();
-          if (result.data) {
-            uploadUrls.push({
-              fileName: result.data.fileName,
-              downloadUrl: result.data.downloadUrl,
-            });
-          }
+        const payload = (await res
+          .json()
+          .catch(() => null)) as ApiResponse<PublicUploadResult> | null;
+
+        if (!res.ok || !payload?.success || !payload.data?.storageKey) {
+          toast.error(tForm("toast.error"));
+          return;
         }
-      } catch (err) {
-        console.error("File upload failed:", err);
+
+        attachmentKeys.push(payload.data.storageKey);
+      } catch {
+        toast.error(tForm("toast.error"));
+        return;
       }
     }
 
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify({ ...data, attachments: uploadUrls }, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
+    const result = await submitContactMessageAction({
+      subject: values.subject,
+      fullName: values.fullName,
+      email: values.email,
+      phone: values.phone,
+      website: values.website,
+      activityBasin: values.activityBasin,
+      message: values.message,
+      attachmentKeys,
+      locale: locale === "en" ? "en" : "fa",
+      source: "contact-us",
     });
+
+    if (!result.ok) {
+      toast.error(tForm("toast.error"));
+      return;
+    }
+
+    toast.success(tForm("toast.success"));
+    form.reset();
+    setSelectedFiles([]);
   }
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
-  const filesChangeHandler = (files: File[]) => {
-    setSelectedFiles(files);
-  };
-
   return (
-    <section className="w-full max-w-7xl px-5 py-4 lg:m-6 lg:w-[calc(100%-48px)] lg:rounded-lg lg:border">
-      <Title className="text-[1.4rem] font-bold lg:text-[1.6rem]">
-        {t(`title`)}
+    <section
+      id={id}
+      className="border-border bg-card w-full scroll-mt-28 rounded-xl border p-6 md:p-8"
+    >
+      {/*
+        Not wrapped in RevealOnScroll: this is the above-the-fold primary block
+        (same rule as AboutUs PositioningSection). Hiding it until hydration
+        would delay the form the page must show immediately.
+      */}
+      <Title as="h2" className="text-[1.4rem] font-bold lg:text-[1.6rem]">
+        {t("title")}
       </Title>
-      <div className="bg-primary mt-2 h-0.5 w-30 lg:mt-3 lg:w-34" />
+
       <form
-        className="mt-6 flex flex-col lg:mt-10"
+        noValidate
+        className="mt-6 flex flex-col lg:mt-8"
         onSubmit={form.handleSubmit(onSubmit)}
+        aria-busy={isSubmitting || undefined}
       >
-        <FieldGroup className="lg:grid lg:grid-cols-2">
+        <FieldGroup className="sm:grid sm:grid-cols-2 sm:items-start">
           <Controller
             name="subject"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field
-                orientation="responsive"
-                data-invalid={fieldState.invalid}
-                className="flex-col! items-start!"
-              >
-                <Label
-                  htmlFor="contact-us-form-subject"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.subject.label")}
-                  <RequiredInputIcon className="-m-1" />
-                </Label>
-                <Select
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger
-                    id="contact-us-form-subject"
-                    aria-invalid={fieldState.invalid}
-                    className="bg-muted h-12 w-full! min-w-30 px-4 py-5.5 dark:text-white"
+            render={({ field, fieldState }) => {
+              const errorId = "contact-us-form-subject-error";
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor="contact-us-form-subject"
+                    className="mb-1 flex items-start gap-1"
                   >
-                    <SelectValue
-                      className="dark:text-white"
-                      placeholder={tForm(`fields.subject.placeholder`)}
+                    {tForm("fields.subject.label")}
+                    <RequiredInputIcon />
+                  </FieldLabel>
+                  <Select
+                    name={field.name}
+                    value={field.value ? field.value : undefined}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger
+                      id="contact-us-form-subject"
+                      aria-invalid={fieldState.invalid}
+                      aria-describedby={
+                        fieldState.invalid ? errorId : undefined
+                      }
+                      className={cn(
+                        "h-12! w-full min-w-0 px-4",
+                        contactControlClassName,
+                      )}
+                    >
+                      <SelectValue
+                        placeholder={tForm("fields.subject.placeholder")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      {SERVICE_VALUES.map((item) => (
+                        <SelectItem value={item} key={item}>
+                          {tForm(`fields.subject.options.${item}.label`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError
+                      id={errorId}
+                      errors={[
+                        {
+                          message: translateError(fieldState.error?.message),
+                        },
+                      ]}
                     />
-                  </SelectTrigger>
-                  <SelectContent position="popper" className="">
-                    {SERVICE_KEYS.map((item) => (
-                      <SelectItem value={item} key={item}>
-                        {tForm(`fields.subject.options.${item}.label`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
+                  )}
+                </Field>
+              );
+            }}
           />
 
-          <Controller
+          <ContactTextField
             name="fullName"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-full-name"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.fullName.label")}
-                  <RequiredInputIcon className="-m-1" />
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="contact-us-form-full-name"
-                  aria-invalid={fieldState.invalid}
-                  autoComplete="off"
-                  className="h-12"
-                />
-                {fieldState.error?.message && (
-                  <FieldError
-                    errors={[
-                      {
-                        message: translateError(fieldState.error.message),
-                      },
-                    ]}
-                  />
-                )}
-              </Field>
-            )}
+            translateError={translateError}
+            label={tForm("fields.fullName.label")}
+            placeholder={tForm("fields.fullName.placeholder")}
+            autoComplete="name"
+            required
+            disabled={isSubmitting}
+            id="contact-us-form-full-name"
           />
 
-          <Controller
+          <ContactTextField
             name="email"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-business-email"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.email.label")}
-                  <RequiredInputIcon className="-m-1" />
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="contact-us-form-business-email"
-                  aria-invalid={fieldState.invalid}
-                  className="h-12"
-                  autoComplete="off"
-                />
-                {fieldState.error?.message && (
-                  <FieldError
-                    errors={[
-                      {
-                        message: translateError(fieldState.error.message),
-                      },
-                    ]}
-                  />
-                )}
-              </Field>
-            )}
+            translateError={translateError}
+            label={tForm("fields.email.label")}
+            placeholder={tForm("fields.email.placeholder")}
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            dir="ltr"
+            required
+            disabled={isSubmitting}
+            id="contact-us-form-business-email"
           />
 
           <Controller
             name="phone"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-phone"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.phone.label")}
-                  <RequiredInputIcon className="-m-1" />
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="contact-us-form-phone"
-                  aria-invalid={fieldState.invalid}
-                  autoComplete="off"
-                  className="h-12"
-                />
-                {fieldState.error?.message && (
-                  <FieldError
-                    errors={[
-                      {
-                        message: translateError(fieldState.error.message),
-                      },
-                    ]}
+            render={({ field, fieldState }) => {
+              const errorId = "contact-us-form-phone-error";
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor="contact-us-form-phone"
+                    className="mb-1 flex items-start gap-1"
+                  >
+                    {tForm("fields.phone.label")}
+                    <RequiredInputIcon />
+                  </FieldLabel>
+                  <PhoneInput
+                    id="contact-us-form-phone"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder={tForm("fields.phone.placeholder")}
+                    autoComplete="tel-national"
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={fieldState.invalid ? errorId : undefined}
+                    aria-required
+                    triggerClassName={contactControlClassName}
+                    inputClassName={contactControlClassName}
                   />
-                )}
-              </Field>
-            )}
+                  {fieldState.invalid && (
+                    <FieldError
+                      id={errorId}
+                      errors={[
+                        {
+                          message: translateError(fieldState.error?.message),
+                        },
+                      ]}
+                    />
+                  )}
+                </Field>
+              );
+            }}
           />
 
-          <Controller
+          <ContactTextField
             name="website"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-website"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.website.label")}
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="contact-us-form-website"
-                  aria-invalid={fieldState.invalid}
-                  autoComplete="off"
-                  className="h-12"
-                />
-                {fieldState.error?.message && (
-                  <FieldError
-                    errors={[
-                      {
-                        message: translateError(fieldState.error.message),
-                      },
-                    ]}
-                  />
-                )}
-              </Field>
-            )}
+            translateError={translateError}
+            label={tForm("fields.website.label")}
+            placeholder={tForm("fields.website.placeholder")}
+            optionalLabel={tForm("optional")}
+            type="url"
+            inputMode="url"
+            autoComplete="url"
+            dir="ltr"
+            disabled={isSubmitting}
+            id="contact-us-form-website"
           />
 
-          <Controller
+          <ContactTextField
             name="activityBasin"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-activity-basin"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm("fields.activityBasin.label")}
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="contact-us-form-activity-basin"
-                  aria-invalid={fieldState.invalid}
-                  autoComplete="off"
-                  className="h-12"
-                />
-              </Field>
-            )}
+            translateError={translateError}
+            label={tForm("fields.activityBasin.label")}
+            placeholder={tForm("fields.activityBasin.placeholder")}
+            optionalLabel={tForm("optional")}
+            autoComplete="organization-title"
+            disabled={isSubmitting}
+            id="contact-us-form-activity-basin"
           />
 
           <Controller
             name="message"
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field className="col-span-2" data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="contact-us-form-message"
-                  className="mb-1 flex items-start gap-1 text-xs lg:text-sm"
-                >
-                  {tForm(`fields.message.label`)}
-                  <RequiredInputIcon className="-m-1" />
-                </FieldLabel>
-                <InputGroup>
-                  <InputGroupTextarea
-                    {...field}
-                    id="contact-us-form-message"
-                    rows={8}
-                    className="min-h-28 resize-none px-4 py-4 lg:min-h-30"
-                    aria-invalid={fieldState.invalid}
-                  />
-                </InputGroup>
-
-                {fieldState.error?.message && (
-                  <FieldError
-                    errors={[
-                      {
-                        message: translateError(fieldState.error.message),
-                      },
-                    ]}
-                  />
-                )}
-              </Field>
-            )}
+            render={({ field, fieldState }) => {
+              const errorId = "contact-us-form-message-error";
+              return (
+                <Field className="col-span-2" data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor="contact-us-form-message"
+                    className="mb-1 flex items-start gap-1"
+                  >
+                    {tForm("fields.message.label")}
+                    <RequiredInputIcon />
+                  </FieldLabel>
+                  <InputGroup className={contactControlClassName}>
+                    <InputGroupTextarea
+                      {...field}
+                      id="contact-us-form-message"
+                      rows={8}
+                      disabled={isSubmitting}
+                      placeholder={tForm("fields.message.placeholder")}
+                      className="min-h-28 resize-none border-0 px-4 py-4 shadow-none lg:min-h-32"
+                      aria-invalid={fieldState.invalid}
+                      aria-describedby={
+                        fieldState.invalid ? errorId : undefined
+                      }
+                    />
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError
+                      id={errorId}
+                      errors={[
+                        {
+                          message: translateError(fieldState.error?.message),
+                        },
+                      ]}
+                    />
+                  )}
+                </Field>
+              );
+            }}
           />
 
-          <UploadFileInput onFileChange={filesChangeHandler} />
+          <ContactFileUpload
+            files={selectedFiles}
+            disabled={isSubmitting}
+            onChange={setSelectedFiles}
+            controlClassName={contactControlClassName}
+          />
         </FieldGroup>
 
-        <Button className="ms-auto mt-4 h-12 w-full lg:w-auto lg:px-4">
-          {tForm(`actions.sendMessage`)}
-        </Button>
+        <RadialRevealButton
+          type="submit"
+          loading={isSubmitting}
+          loadingLabel={tForm("actions.sending")}
+          className="ms-auto mt-6 h-12 w-full sm:w-auto sm:px-8"
+        >
+          {tForm("actions.sendMessage")}
+        </RadialRevealButton>
       </form>
     </section>
   );
 }
 
-type UploadFileInputProps = {
-  onFileChange: (files: File[]) => void;
+type ContactTextFieldProps = {
+  name: "fullName" | "email" | "website" | "activityBasin";
+  control: Control<ContactUsSchemaType>;
+  translateError: TranslateError;
+  label: string;
+  placeholder?: string;
+  optionalLabel?: string;
+  required?: boolean;
+  disabled?: boolean;
+  type?: string;
+  inputMode?: ComponentProps<"input">["inputMode"];
+  autoComplete?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  id: string;
 };
 
-function UploadFileInput({ onFileChange }: UploadFileInputProps) {
-  const ref = useRef<HTMLInputElement>(null);
-  const t = useTranslations(
-    "ContactUsPage.ContactFormSection.form.fields.fileUpload",
-  );
-
-  const clickHandler = () => {
-    ref.current?.click();
-  };
-
-  const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files.length) return;
-
-    const files = e.target.files;
-    onFileChange(Array.from(files));
-  };
+function ContactTextField({
+  name,
+  control,
+  translateError,
+  label,
+  placeholder,
+  optionalLabel,
+  required,
+  disabled,
+  type = "text",
+  inputMode,
+  autoComplete,
+  dir,
+  id,
+}: ContactTextFieldProps) {
+  const errorId = `${id}-error`;
 
   return (
-    <div className="col-span-2 mt-6 flex h-37 w-full flex-col items-center justify-between rounded border py-6">
-      <p className="text-center text-xs">{t(`label`)}</p>
-      <Button
-        type="button"
-        variant={"outline"}
-        className="hover:text-primary h-12 text-xs font-bold hover:bg-transparent"
-        onClick={clickHandler}
-      >
-        <UploadCloudIcon className="size-6" />
-        {t(`buttonLabel`)}
-      </Button>
-
-      <input
-        onChange={fileChangeHandler}
-        type="file"
-        multiple
-        hidden
-        ref={ref}
-        accept="image/png, image/jpg, image/jpeg, video/mp4, application/pdf, text/plain, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      />
-    </div>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <FieldLabel htmlFor={id} className="mb-1 flex items-start gap-1">
+            {label}
+            {required && <RequiredInputIcon />}
+            {!!optionalLabel && !required && (
+              <span className="text-muted-foreground font-normal">
+                ({optionalLabel})
+              </span>
+            )}
+          </FieldLabel>
+          <Input
+            {...field}
+            id={id}
+            type={type}
+            inputMode={inputMode}
+            autoComplete={autoComplete}
+            dir={dir}
+            disabled={disabled}
+            placeholder={placeholder}
+            aria-invalid={fieldState.invalid}
+            aria-describedby={fieldState.invalid ? errorId : undefined}
+            className={cn("h-12", contactControlClassName)}
+          />
+          {fieldState.invalid && (
+            <FieldError
+              id={errorId}
+              errors={[
+                {
+                  message: translateError(fieldState.error?.message),
+                },
+              ]}
+            />
+          )}
+        </Field>
+      )}
+    />
   );
 }

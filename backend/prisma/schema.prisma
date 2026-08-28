@@ -1441,3 +1441,67 @@ model UnixseeMessageRead {
   @@unique([messageId, userId])
   @@map("unixsee_message_reads")
 }
+
+enum NewsletterSubscriptionStatus {
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+/// Public newsletter intake. Nest owns persistence for Phase 1; mailing-provider
+/// / WordPress sync remains deferred.
+model NewsletterSubscription {
+  id             String                         @id @default(uuid()) @db.Uuid
+  email          String                         @unique
+  locale         String?
+  source         String?
+  status         NewsletterSubscriptionStatus   @default(ACTIVE)
+  consentedAt    DateTime                       @default(now()) @map("consented_at") @db.Timestamptz(6)
+  unsubscribedAt DateTime?                      @map("unsubscribed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@map("newsletter_subscriptions")
+}
+
+enum ContactMessageSubject {
+  managedServer
+  migrationOptimization
+  woocommerceSupport
+  seo
+  graphicDesign
+  productDataEntry
+  socialMedia
+}
+
+enum ContactMessageStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+/// Public contact-us intake. Nest owns persistence for Phase 1; staff inbox
+/// and notification email remain deferred.
+model ContactMessage {
+  id              String               @id @default(uuid()) @db.Uuid
+  subject         ContactMessageSubject
+  fullName        String               @map("full_name")
+  email           String
+  phone           String
+  website         String?
+  activityBasin   String?              @map("activity_basin")
+  message         String
+  attachmentKeys  Json                 @default("[]") @map("attachment_keys")
+  locale          String?
+  source          String?
+  status          ContactMessageStatus @default(NEW)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@map("contact_messages")
+}

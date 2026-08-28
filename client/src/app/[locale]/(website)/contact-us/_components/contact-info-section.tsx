@@ -1,78 +1,90 @@
-"use client";
-
-import { ClockIcon, HeadsetIcon, MailIcon } from "lucide-react";
+import { BookOpen, Clock, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 
+import SubTitle from "@/components/common/subtitle";
 import Title from "@/components/common/title";
+import { Link } from "@/i18n/navigation";
+import { ContactMap } from "./contact-map";
 
-// import { Skeleton } from "@/components/ui/skeleton"; // Or any fallback block wrapper you prefer
+export type ContactInfoSectionProps = {
+  id?: string;
+};
 
-const Map = dynamic(() => import("@/components/common/map"), {
-  ssr: false,
-  //   loading: () => <Skeleton className="h-full w-full min-h-[400px] bg-slate-100 dark:bg-zinc-900" />,
-});
-
-export default function ContactInfoSection() {
+export default function ContactInfoSection({ id }: ContactInfoSectionProps) {
   const t = useTranslations("ContactUsPage.ContactInfoSection");
   const tCommon = useTranslations("common");
 
   return (
-    <section className="w-full max-w-7xl px-5 py-4 lg:m-6 lg:w-[calc(100%-48px)] lg:rounded-lg lg:border">
-      <div>
-        <Title className="text-[1.4rem] font-bold lg:text-[1.6rem]">
-          {t(`title`)}
-        </Title>
-        <div className="bg-primary mt-2 h-0.5 w-30 lg:mt-3 lg:w-34" />
-      </div>
+    <section
+      id={id}
+      className="border-border bg-card w-full scroll-mt-28 rounded-xl border p-6 md:p-8 lg:sticky lg:top-28 lg:flex lg:h-full lg:flex-col"
+    >
+      <Title as="h2" className="text-[1.4rem] font-bold lg:text-[1.6rem]">
+        {t("title")}
+      </Title>
 
-      <div className="mt-6 flex items-center gap-2 lg:mt-8">
-        <div className="bg-primary size-6 rounded-full" />
-        <h3 className="text-lg font-medium">{t(`office.title`)}</h3>
-      </div>
-
-      <address className="mt-2 text-sm not-italic">
-        {tCommon(`address.value`)}
-      </address>
-
-      <h3 className="mt-4 text-lg font-medium lg:mt-6">{t(`support.title`)}</h3>
-      <p className="mt-2 text-sm">{t(`support.description`)}</p>
-
-      <div className="mt-3 h-75 w-full overflow-hidden rounded-xs lg:mt-6 lg:rounded-md">
-        <Map key="contact-info-map" />
-      </div>
-
-      <div className="bg-muted my-4 h-px" />
-
-      <h5 className="mt-4 flex w-full items-center justify-center gap-2 text-sm font-bold">
-        <ClockIcon className="size-6" />
-        <span>{t(`contactInfo.title`)}</span>
-      </h5>
-
-      <div className="mt-4 flex gap-4 text-sm">
-        <div className="bg-muted flex h-39 flex-1 flex-col items-center justify-center gap-3 rounded-2xl">
-          <HeadsetIcon className="size-6" />
-          <span>{t(`contactInfo.phone.label`)}</span>
-          <a
-            href={`tel:${t(`contactInfo.phone.href`)}`}
-            className="text-primary hover:underline"
-            dir="ltr"
-          >
-            {t(`contactInfo.phone.labelNumber`)}
-          </a>
+      <dl className="mt-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <dt className="text-text-secondary flex items-center gap-2 text-sm font-semibold">
+            <MapPin aria-hidden="true" className="size-4 shrink-0" />
+            {t("office.title")}
+          </dt>
+          <dd>
+            <address className="text-sm not-italic rtl:leading-loose">
+              {tCommon("address.value")}
+            </address>
+          </dd>
         </div>
 
-        <div className="bg-muted flex h-39 flex-1 flex-col items-center justify-center gap-3 rounded-2xl">
-          <MailIcon className="size-6" />
-          <span>{t(`contactInfo.email.label`)}</span>
-          <a
-            href={`mailto:${t(`contactInfo.email.value`)}`}
-            className="text-primary hover:underline"
-          >
-            {t(`contactInfo.email.value`)}
-          </a>
+        <div className="flex flex-col gap-2">
+          <dt className="text-text-secondary flex items-center gap-2 text-sm font-semibold">
+            <Clock aria-hidden="true" className="size-4 shrink-0" />
+            {t("hours.label")}
+          </dt>
+          <dd className="text-sm rtl:leading-loose">{t("hours.value")}</dd>
         </div>
-      </div>
+      </dl>
+
+      <ul className="mt-6 flex flex-col gap-3">
+        <li>
+          <a
+            href={`tel:${tCommon("phone.href")}`}
+            className="bg-muted hover:bg-muted/80 focus-visible:ring-ring flex min-h-14 items-center gap-3 rounded-xl px-4 py-3 text-start transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <span className="bg-background text-muted-foreground grid size-10 shrink-0 place-items-center rounded-full border">
+              <Phone aria-hidden="true" className="size-4" />
+            </span>
+            <span className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-text-secondary text-xs font-medium">
+                {t("contactInfo.phone.label")}
+              </span>
+              <span dir="ltr" className="text-foreground text-sm font-semibold">
+                {tCommon("phone.label")}
+              </span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <Link
+            href="/help-center"
+            className="bg-muted hover:bg-muted/80 focus-visible:ring-ring flex min-h-14 items-center gap-3 rounded-xl px-4 py-3 text-start transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <span className="bg-background text-muted-foreground grid size-10 shrink-0 place-items-center rounded-full border">
+              <BookOpen aria-hidden="true" className="size-4" />
+            </span>
+            <span className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-text-secondary text-xs font-medium">
+                {t("contactInfo.helpCenter.label")}
+              </span>
+              <span className="text-foreground text-sm font-semibold rtl:leading-[1.7]">
+                {t("contactInfo.helpCenter.hrefLabel")}
+              </span>
+            </span>
+          </Link>
+        </li>
+      </ul>
+
+      <ContactMap label={t("mapLabel")} />
     </section>
   );
 }

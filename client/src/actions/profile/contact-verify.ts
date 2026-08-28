@@ -4,13 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { serverActionFetch } from "@/lib/api/server-action-fetch";
 import { mapApiError, type MappedApiError } from "@/lib/api/map-api-error";
-import { toE164IranPhone } from "@/lib/auth/auth-utils";
+import { toE164Phone } from "@/lib/phone/international-phone";
 import type { MeProfileResponse } from "@/lib/profile/map-me-to-profile";
 import type { ApiResponse } from "@/types/auth.types";
 
 export type ProfileContactActionResult<T = MeProfileResponse> =
-  | { ok: true; data: T }
-  | { ok: false; error: MappedApiError };
+  { ok: true; data: T } | { ok: false; error: MappedApiError };
 
 function toResult<T>(response: ApiResponse<T>): ProfileContactActionResult<T> {
   if (!response.success || response.data == null) {
@@ -34,9 +33,7 @@ function unavailable(): ProfileContactActionResult {
 }
 
 function normalizePhone(phone: string): string {
-  const cleaned = phone.replace(/[\s-]/g, "");
-  if (cleaned.startsWith("+")) return cleaned;
-  return toE164IranPhone(cleaned);
+  return toE164Phone(phone) ?? phone;
 }
 
 export async function requestPhoneVerifyOtpAction(input: {

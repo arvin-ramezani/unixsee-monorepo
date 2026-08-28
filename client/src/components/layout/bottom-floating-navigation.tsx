@@ -15,6 +15,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
   HOME_PAGE_SECTION_IDS,
+  CONTACT_US_PAGE_NAV_ITEMS_KEYS,
   MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS,
   MIGRATION_PAGE_NAV_ITEMS_KEYS,
 } from "@/lib/constants";
@@ -27,6 +28,7 @@ export type BottomFloatingNavigationProps = object;
 
 const MIGRATION_PAGE_PATH = "migration-optimization";
 const MANAGED_SERVER_PAGE_PATH = "managed-woocommerce-server";
+const CONTACT_US_PAGE_PATH = "contact-us";
 const ITEM_REVEAL_INTERVAL_SECONDS = 0.07;
 const SPECIALS_ITEM_REVEAL_INTERVAL_SECONDS = 0.15;
 const WHEEL_DELTA_LINE = 1;
@@ -54,6 +56,7 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
   const tManagedServerNav = useTranslations(
     "Layout.ManagedServerSecondaryNavigation",
   );
+  const tContactUsNav = useTranslations("Layout.ContactUsSecondaryNavigation");
   const tNavigation = useTranslations("Layout.HomeSecondaryNavigation");
   const tSpecialNavigation = useTranslations("Layout.SpecialNavigation");
 
@@ -76,11 +79,18 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
       }));
     }
 
+    if (pathname.includes(CONTACT_US_PAGE_PATH)) {
+      return CONTACT_US_PAGE_NAV_ITEMS_KEYS.map((key) => ({
+        label: tContactUsNav(`${key}.label`),
+        href: tContactUsNav(`${key}.href`),
+      }));
+    }
+
     return HOME_PAGE_SECTION_IDS.map((key) => ({
       label: tNavigation(`${key}.label`),
       href: tNavigation(`${key}.href`),
     }));
-  }, [tMigrationNav, tManagedServerNav, tNavigation, pathname]);
+  }, [tMigrationNav, tManagedServerNav, tContactUsNav, tNavigation, pathname]);
 
   const { activeHref, scrollToSection } = useActiveSectionHash(navItems, {});
 
@@ -400,6 +410,7 @@ export default function BottomFloatingNavigation({}: BottomFloatingNavigationPro
         "pointer-events-none fixed inset-s-1/2 bottom-4 z-20 w-[calc(100%-2rem)] -translate-x-1/2 md:max-w-md lg:max-w-lg rtl:translate-x-1/2",
         {
           "ms-[calc(var(--scrollbar-width)/2)]": isScrollLocked,
+          "lg:hidden": pathname.includes(CONTACT_US_PAGE_PATH),
         },
       )}
     >

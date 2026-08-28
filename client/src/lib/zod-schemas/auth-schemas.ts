@@ -1,9 +1,11 @@
 import * as z from "zod";
 
+import { toNationalPhone } from "@/lib/phone/international-phone";
+
 import { errorKey } from "../form-errors";
+import { internationalPhoneSchema } from "./international-phone-schema";
 
 const fullNameRegex = /^[\p{L}\p{M}]+(?:[ '\-‌][\p{L}\p{M}]+)+$/u;
-const nationalPhoneRegex = /^(0?9\d{9}|۰?۹[۰-۹]{9})$/;
 const otpRegex = /^\d{6}$/;
 
 export const OTP_LENGTH = 6;
@@ -14,16 +16,9 @@ export const MOCK_EXISTING_PHONE = "9000000000";
 export const identifierModeSchema = z.enum(["phone", "email"]);
 export type IdentifierMode = z.infer<typeof identifierModeSchema>;
 
-export const phoneNationalSchema = z
-  .string()
-  .trim()
-  .transform((value) => value.replace(/[\s()-]/g, ""))
-  .pipe(
-    z
-      .string()
-      .min(1, errorKey("phoneRequired"))
-      .regex(nationalPhoneRegex, errorKey("phoneInvalid")),
-  );
+export const phoneNationalSchema = internationalPhoneSchema({
+  output: "national",
+});
 
 export const emailSchema = z
   .email(errorKey("emailInvalid"))
@@ -114,10 +109,15 @@ export const resetPasswordSchema = z
 export type ResetPasswordSchemaType = z.infer<typeof resetPasswordSchema>;
 
 export function normalizeNationalPhone(value: string) {
+  const national = toNationalPhone(value);
+  if (national) return national;
   return value.replace(/[\s()-]/g, "").replace(/^0/, "");
 }
 
-export function isMockExistingAccount(mode: IdentifierMode, identifier: string) {
+export function isMockExistingAccount(
+  mode: IdentifierMode,
+  identifier: string,
+) {
   if (mode === "email") {
     return identifier.trim().toLowerCase() === MOCK_EXISTING_EMAIL;
   }

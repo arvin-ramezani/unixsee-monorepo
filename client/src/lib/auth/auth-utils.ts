@@ -31,16 +31,7 @@ export function createServerClockOffsetInSeconds(
   return serverTimeInSeconds - localNowInSeconds;
 }
 
-export function toE164IranPhone(nationalPhone: string): string {
-  const digits = nationalPhone.replace(/[\s()-]/g, "").replace(/^0/, "");
-  if (digits.startsWith("+")) {
-    return digits;
-  }
-  if (digits.startsWith("98")) {
-    return `+${digits}`;
-  }
-  return `+98${digits}`;
-}
+export { toE164Phone as toE164IranPhone } from "@/lib/phone/international-phone";
 
 export function isSafeReturnToPath(value: string | null | undefined): boolean {
   if (!value) return false;

@@ -187,7 +187,9 @@ function FooterDescription() {
 
   return (
     <>
-      <h4 className="text-center">{t(`HomePage.SiteFooter.title`)}</h4>
+      <h4 className="text-center lg:text-start">
+        {t(`HomePage.SiteFooter.title`)}
+      </h4>
       <motion.p
         animate={isDescriptionOpen ? { height: "auto" } : { height: "50px" }}
         className="text-muted-foreground max-w-sm overflow-hidden text-center text-sm lg:max-w-max lg:text-start"

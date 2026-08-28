@@ -22,6 +22,18 @@ function createAuthenticatedRequestInit(
   };
 }
 
+function redirectToSignInAfterSessionLoss() {
+  if (typeof window === "undefined") return;
+  const segments = window.location.pathname.split("/");
+  const maybeLocale = segments[1];
+  const locale =
+    maybeLocale === "en" || maybeLocale === "fa" ? maybeLocale : "fa";
+  const returnTo = `${window.location.pathname}${window.location.search}`;
+  const url = new URL(`/${locale}/auth`, window.location.origin);
+  url.searchParams.set("returnTo", returnTo);
+  window.location.assign(url.toString());
+}
+
 export async function clientFetch<T>(
   endpoint: string,
   options?: RequestInit,
@@ -41,10 +53,15 @@ export async function clientFetch<T>(
         url,
         createAuthenticatedRequestInit(options, refreshedAccessToken),
       );
+    } else {
+      redirectToSignInAfterSessionLoss();
+      throw new Error("Session revoked");
     }
   }
 
-  const data = (await response.json().catch(() => null)) as ApiResponse<T> | null;
+  const data = (await response
+    .json()
+    .catch(() => null)) as ApiResponse<T> | null;
 
   if (!data) {
     throw new Error("Request failed");

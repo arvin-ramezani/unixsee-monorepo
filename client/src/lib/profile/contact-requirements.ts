@@ -1,10 +1,15 @@
+import {
+  isValidInternationalPhone,
+  toE164Phone,
+} from "@/lib/phone/international-phone";
 import type { UserProfile } from "@/lib/data/profile/profile-data";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MOBILE_RE = /^(09\d{9}|\+989\d{9})$/;
 
 export function normalizeProfileMobile(value: string): string {
-  return value.replace(/[\s-]/g, "");
+  const trimmed = value.replace(/[\s-]/g, "");
+  if (!trimmed) return "";
+  return toE164Phone(trimmed) ?? trimmed;
 }
 
 export function isValidProfileEmail(value: string): boolean {
@@ -12,7 +17,7 @@ export function isValidProfileEmail(value: string): boolean {
 }
 
 export function isValidProfileMobile(value: string): boolean {
-  return MOBILE_RE.test(normalizeProfileMobile(value));
+  return isValidInternationalPhone(value);
 }
 
 /** Saved contact that is present and verified satisfies the other channel. */

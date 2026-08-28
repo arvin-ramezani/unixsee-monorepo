@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/accordion";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { ModeToggle } from "@/components/ui/theme-toggle";
 
 type NavigationItem = {
   key: string;
@@ -83,11 +84,6 @@ export default function MobileNavigation({
               <AccordionTrigger
                 indicator={hasChildren ? "chevron" : "none"}
                 className="py-3 text-base font-medium"
-                // onClick={() => {
-                //   if (!hasChildren) {
-                //     window.location.href = item.href;
-                //   }
-                // }}
               >
                 {getLabel(item)}
               </AccordionTrigger>
@@ -130,6 +126,18 @@ export default function MobileNavigation({
           );
         })}
       </Accordion>
+
+      <div className="border-border mt-auto border-t pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-medium">
+            {tNavigation("mobileMenu.theme")}
+          </span>
+          <ModeToggle
+            iconClassName="size-4"
+            triggerClassName="dark:bg-transparent size-10 bg-background border-border text-foreground hover:bg-background/90 hover:text-foreground"
+          />
+        </div>
+      </div>
     </MobileMenu>
   );
 }

@@ -102,7 +102,7 @@ const USER_IDENTITY_FIELDS = [
     key: "origin",
     label: "منبع ایجاد",
     getValue: (user: CustomerUserType) => ACCOUNT_ORIGIN_LABELS[user.origin],
-    getHint: () => "منبع ایجاد به‌تنهایی تأیید پلن یا تخصیص وب‌سایت نیست.",
+    getHint: () => null,
   },
   {
     key: "invite",

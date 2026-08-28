@@ -12,6 +12,7 @@ import {
 } from "@/lib/auth/cookie-names";
 import { shouldRefreshToken } from "@/lib/auth/jwt";
 import { getServerClockOffsetInSeconds } from "@/lib/auth/server-cookie";
+import { isAccessSessionAlive } from "@/lib/auth/session-alive";
 import type { ApiResponse, AuthTokens } from "@/types/auth.types";
 
 export async function getServerActionAccessToken() {
@@ -21,7 +22,8 @@ export async function getServerActionAccessToken() {
 
   if (
     accessToken &&
-    !shouldRefreshToken(accessToken, serverClockOffsetInSeconds)
+    !shouldRefreshToken(accessToken, serverClockOffsetInSeconds) &&
+    (await isAccessSessionAlive(accessToken))
   ) {
     return accessToken;
   }
@@ -29,6 +31,11 @@ export async function getServerActionAccessToken() {
   const refreshToken = cookieStore.get(AUTH_COOKIE_NAMES.refreshToken)?.value;
 
   if (!refreshToken) {
+    if (accessToken) {
+      cookieStore.delete(AUTH_COOKIE_NAMES.accessToken);
+      cookieStore.delete(AUTH_COOKIE_NAMES.refreshToken);
+      cookieStore.delete(AUTH_COOKIE_NAMES.serverClockOffset);
+    }
     return null;
   }
 

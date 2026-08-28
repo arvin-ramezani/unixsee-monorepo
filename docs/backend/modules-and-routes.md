@@ -241,6 +241,34 @@ UX: [`../product/ux-flows/customer-public-plan-request.md`](../product/ux-flows/
 Rules: public submit ≠ payment ≠ enablement; enablement links an **existing**
 user/tenant and at most one active plan per website.
 
+### Newsletter subscriptions — add `subscriptions`
+
+| Method | Path                           | Audience |
+| ------ | ------------------------------ | -------- |
+| POST   | `/api/v1/public/subscriptions` | Public   |
+
+Contract: [`contracts/subscriptions-public.md`](./contracts/subscriptions-public.md).
+
+Nest persists consent/status; mailing-provider / WordPress sync is deferred.
+Client must persist first, then notify.
+
+### Contact messages — add `contact-messages`
+
+| Method | Path                                        | Audience |
+| ------ | ------------------------------------------- | -------- |
+| POST   | `/api/v1/public/contact-messages`           | Public   |
+| GET    | `/api/v1/admin/contact-messages`            | Admin    |
+| GET    | `/api/v1/admin/contact-messages/:id`        | Admin    |
+| PATCH  | `/api/v1/admin/contact-messages/:id/status` | Admin    |
+
+Contracts: [`contracts/contact-messages-public.md`](./contracts/contact-messages-public.md),
+[`contracts/contact-messages-admin.md`](./contracts/contact-messages-admin.md).
+
+Nest persists public contact-us intake and staff triage (`NEW` / `READ` /
+`ARCHIVED`). Notification email and in-app reply remain deferred. Optional
+attachments use `POST /api/v1/uploads/public` first; the create body stores
+returned `storageKey` values; admin detail returns signed download URLs.
+
 ### Complementary services — add `complementary-services`
 
 | Method    | Path                                                          | Audience                                    |
@@ -260,18 +288,18 @@ user/tenant and at most one active plan per website.
 
 ### Billing (commercial records) — add `billing`
 
-| Method | Path                                                              | Audience |
-| ------ | ----------------------------------------------------------------- | -------- |
-| GET    | `/api/v1/admin/websites/:websiteId/billing-items`                 | Admin    |
-| GET    | `/api/v1/admin/billing-items/:id`                                 | Admin    |
-| POST   | `/api/v1/admin/websites/:websiteId/billing-items/record-plan-terms` | Admin  |
-| POST   | `/api/v1/admin/billing-items/:id/renew`                           | Admin    |
-| POST   | `/api/v1/admin/websites/:websiteId/billing-items/replace-plan`    | Admin    |
-| POST   | `/api/v1/admin/billing-items/:id/cancel`                          | Admin    |
-| POST   | `/api/v1/admin/billing-items/:id/complete`                        | Admin    |
-| POST   | `/api/v1/admin/billing-items/:id/pause`                           | Admin    |
-| GET    | `/api/v1/billing`                                                 | Customer |
-| GET    | `/api/v1/websites/:id/billing`                                    | Customer |
+| Method | Path                                                                | Audience |
+| ------ | ------------------------------------------------------------------- | -------- |
+| GET    | `/api/v1/admin/websites/:websiteId/billing-items`                   | Admin    |
+| GET    | `/api/v1/admin/billing-items/:id`                                   | Admin    |
+| POST   | `/api/v1/admin/websites/:websiteId/billing-items/record-plan-terms` | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/renew`                             | Admin    |
+| POST   | `/api/v1/admin/websites/:websiteId/billing-items/replace-plan`      | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/cancel`                            | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/complete`                          | Admin    |
+| POST   | `/api/v1/admin/billing-items/:id/pause`                             | Admin    |
+| GET    | `/api/v1/billing`                                                   | Customer |
+| GET    | `/api/v1/websites/:id/billing`                                      | Customer |
 
 Contract: [`contracts/billing.md`](./contracts/billing.md). Product:
 [`../product/notes/commercial-records.md`](../product/notes/commercial-records.md).

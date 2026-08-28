@@ -1,32 +1,5 @@
-export function toEnglishDigits(input: string | undefined) {
-  if (typeof input !== 'string') return input;
-
-  return input
-    .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
-  //   return Number(englishDigits);
-}
-
-/** Align public intake phone lookup with client auth E.164 Iran formatting. */
-export function normalizeContactPhoneToE164(phone: string): string {
-  let english = toEnglishDigits(phone)?.replace(/[\s()-]/g, '') ?? '';
-  if (!english) return '';
-
-  if (english.startsWith('+')) {
-    english = english.slice(1);
-  }
-
-  if (english.startsWith('00')) {
-    english = english.slice(2);
-  }
-
-  if (english.startsWith('98')) {
-    return `+${english}`;
-  }
-
-  const national = english.replace(/^0/, '');
-  return `+98${national}`;
-}
+export { toEnglishDigits } from './digits.js';
+export { toE164Phone as normalizeContactPhoneToE164 } from '#/common/validation/phone.js';
 
 export function normalizeContactEmail(
   email: string | undefined,

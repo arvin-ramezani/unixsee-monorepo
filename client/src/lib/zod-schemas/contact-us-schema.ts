@@ -1,11 +1,22 @@
 import * as z from "zod";
+
 import { errorKey } from "../form-errors";
 import { FileSchema } from "./common-schema";
+import { internationalPhoneSchema } from "./international-phone-schema";
 
 const fullNameRegex = /^[\p{L}\p{M}]+(?:[ '\-‌][\p{L}\p{M}]+)+$/u;
-const globalAndPersianPhoneRegex =
-  /^(\+?[1-9]\d{1,14}|(?:\+|۰)?[۱-۹][۰-۹]{1,14})$/;
-// const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/;
+
+/** Align with Nest `POST /api/v1/uploads/public` allowlist and 5MB limit. */
+export const CONTACT_US_PUBLIC_UPLOAD_MIME = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "application/zip",
+  "application/x-zip-compressed",
+] as const;
 
 export const SERVICE_VALUES = [
   "managedServer",
@@ -15,8 +26,35 @@ export const SERVICE_VALUES = [
   "graphicDesign",
   "productDataEntry",
   "socialMedia",
-  "",
 ] as const;
+
+export type ContactUsServiceValue = (typeof SERVICE_VALUES)[number];
+
+export const CONTACT_US_UPLOAD = {
+  maxFiles: 5,
+  maxFileBytes: 5 * 1024 * 1024,
+  acceptMime: [...CONTACT_US_PUBLIC_UPLOAD_MIME],
+  accept: CONTACT_US_PUBLIC_UPLOAD_MIME.join(","),
+} as const;
+
+export function isAcceptedContactUsFile(file: File) {
+  if (file.size <= 0) return false;
+  if (
+    !CONTACT_US_UPLOAD.acceptMime.includes(
+      file.type as (typeof CONTACT_US_PUBLIC_UPLOAD_MIME)[number],
+    )
+  ) {
+    return false;
+  }
+  return file.size <= CONTACT_US_UPLOAD.maxFileBytes;
+}
+
+function normalizeWebsite(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
 
 export const contactUsSchema = z.object({
   subject: z.enum(SERVICE_VALUES, {
@@ -27,29 +65,28 @@ export const contactUsSchema = z.object({
     .trim()
     .min(1, errorKey("fullNameRequired"))
     .regex(fullNameRegex, errorKey("fullNameInvalid")),
-
   email: z
     .email(errorKey("emailInvalid"))
     .trim()
     .min(1, errorKey("emailRequired")),
-  phone: z
-    .string(errorKey("phoneInvalid")) // Forces strict string type checking upfront
+  phone: internationalPhoneSchema({ output: "e164" }),
+  website: z
+    .string()
     .trim()
-    .transform((value) => value.replace(/[\s()-]/g, "")) // Safely cleans layout formatting
-    .pipe(
-      z
-        .string()
-        .min(1, errorKey("phoneRequired"))
-        .regex(globalAndPersianPhoneRegex, errorKey("phoneInvalid")),
-    ),
-  website: z.url(errorKey("websiteInvalid")).optional(),
-  activityBasin: z.string().optional(),
+    .transform(normalizeWebsite)
+    .refine(
+      (value) => value === "" || z.url().safeParse(value).success,
+      errorKey("websiteInvalid"),
+    )
+    .optional(),
+  activityBasin: z.string().trim().optional(),
   files: z.array(FileSchema).optional(),
   message: z
     .string()
     .trim()
     .min(1, errorKey("messageRequired"))
-    .min(20, errorKey("messageTooShort")),
+    .min(20, errorKey("messageTooShort"))
+    .max(4000, errorKey("messageTooLong")),
 });
 
 export type ContactUsSchemaType = z.infer<typeof contactUsSchema>;

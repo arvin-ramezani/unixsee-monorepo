@@ -1,10 +1,12 @@
 import * as z from "zod";
 
-import { toE164IranFromNational } from "@/lib/auth/iran-phone";
+import {
+  isValidInternationalPhone,
+  toE164Phone,
+} from "@/lib/phone/international-phone";
 import { errorKey } from "../form-errors";
 
 const fullNameRegex = /^[\p{L}\p{M}]+(?:[ '\-‌][\p{L}\p{M}]+)+$/u;
-const iranNationalMobileRegex = /^(0?9\d{9}|۰?۹[۰-۹]{9})$/;
 
 export const DATABASE_SIZE_BANDS = [
   "under_1gb",
@@ -115,7 +117,7 @@ export const guestPlanRequestSchema = z
           message: errorKey("phoneRequired"),
           path: ["phone"],
         });
-      } else if (!iranNationalMobileRegex.test(phone)) {
+      } else if (!isValidInternationalPhone(phone)) {
         ctx.addIssue({
           code: "custom",
           message: errorKey("phoneInvalid"),
@@ -149,7 +151,7 @@ export const guestPlanRequestSchema = z
           });
         }
       }
-      if (phone && !iranNationalMobileRegex.test(phone)) {
+      if (phone && !isValidInternationalPhone(phone)) {
         ctx.addIssue({
           code: "custom",
           message: errorKey("phoneInvalid"),
@@ -253,7 +255,7 @@ export function guestPlanRequestToApiPayload(data: GuestPlanRequestSchemaType) {
 
   return {
     contactName: data.fullName.trim(),
-    ...(phone ? { contactPhone: toE164IranFromNational(phone) } : {}),
+    ...(phone ? { contactPhone: toE164Phone(phone) ?? phone } : {}),
     ...(email ? { contactEmail: email } : {}),
     ...(data.noWebsiteYet
       ? {}

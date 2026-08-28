@@ -14,11 +14,11 @@ import {
 import { OtpInput } from "@/components/auth/otp-input";
 import { PhoneField } from "@/components/auth/phone-field";
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
+import { SlidingPillToggle } from "@/components/common/sliding-pill-toggle";
 import { useAuthStore } from "@/components/providers/auth-store-provider";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isCompleteIranNationalMobile } from "@/lib/auth/iran-phone";
 import {
   emailsMatch,
@@ -190,55 +190,25 @@ export function RequestAssessmentContactTabs({
         name="preferredContact"
         control={control}
         render={({ field }) => (
-          <Tabs
-            value={field.value}
-            onValueChange={(value) => {
-              if (contactInputDisabled) return;
-              field.onChange(value as ContactOtpChannel);
-              resetOtpUi();
-            }}
-          >
-            <TabsList
-              aria-label={t("tabsLabel")}
-              className="grid h-11! w-full grid-cols-2"
-            >
-              {(["phone", "email"] as const).map((channel) => (
-                <TabsTrigger
-                  key={channel}
-                  value={channel}
-                  disabled={contactInputDisabled}
-                  className={cn(
-                    "relative z-0 overflow-hidden",
-                    "data-active:bg-transparent! data-active:shadow-none!",
-                    "dark:data-active:border-transparent! dark:data-active:bg-transparent!",
-                  )}
-                >
-                  {preferredContact === channel && (
-                    <motion.span
-                      layoutId="request-assessment-contact-tab-pill"
-                      aria-hidden
-                      className="bg-background dark:bg-input/30 pointer-events-none absolute inset-0 z-0 rounded-md shadow-sm"
-                      transition={
-                        shouldReduceMotion
-                          ? { duration: 0 }
-                          : {
-                              type: "spring",
-                              stiffness: 420,
-                              damping: 38,
-                              mass: 0.65,
-                            }
-                      }
-                    />
-                  )}
-                  <span className="relative z-10">
-                    {channel === "phone" ? t("phoneTab") : t("emailTab")}
-                  </span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
+          <div className="flex flex-col gap-4">
+            <SlidingPillToggle
+              value={field.value}
+              onChange={(value) => {
+                if (contactInputDisabled) return;
+                field.onChange(value);
+                resetOtpUi();
+              }}
+              disabled={contactInputDisabled}
+              ariaLabel={t("tabsLabel")}
+              options={[
+                { value: "phone", label: t("phoneTab") },
+                { value: "email", label: t("emailTab") },
+              ]}
+            />
 
-            <TabsContent value="phone" className="mt-4" asChild>
+            {field.value === "phone" ? (
               <motion.div
+                key="phone"
                 initial={
                   shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }
                 }
@@ -248,7 +218,7 @@ export function RequestAssessmentContactTabs({
                     ? { duration: 0 }
                     : { duration: 0.2, ease: "easeOut" }
                 }
-                className="mt-4 flex flex-col gap-3"
+                className="flex flex-col gap-3"
               >
                 <Controller
                   name="phone"
@@ -329,10 +299,9 @@ export function RequestAssessmentContactTabs({
                   )}
                 />
               </motion.div>
-            </TabsContent>
-
-            <TabsContent value="email" asChild>
+            ) : (
               <motion.div
+                key="email"
                 initial={
                   shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }
                 }
@@ -342,7 +311,7 @@ export function RequestAssessmentContactTabs({
                     ? { duration: 0 }
                     : { duration: 0.2, ease: "easeOut" }
                 }
-                className="mt-4 flex flex-col gap-3"
+                className="flex flex-col gap-3"
               >
                 <Controller
                   name="email"
@@ -430,8 +399,8 @@ export function RequestAssessmentContactTabs({
                   )}
                 />
               </motion.div>
-            </TabsContent>
-          </Tabs>
+            )}
+          </div>
         )}
       />
 

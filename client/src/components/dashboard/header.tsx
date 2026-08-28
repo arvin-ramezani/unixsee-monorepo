@@ -60,7 +60,7 @@ export function Header({
     startLogoutTransition(async () => {
       clearClientSession();
       await logoutAction();
-      router.replace("/auth");
+      router.replace("/");
       router.refresh();
     });
   }

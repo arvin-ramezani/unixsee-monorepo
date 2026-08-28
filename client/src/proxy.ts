@@ -12,13 +12,20 @@ import {
 } from "@/lib/auth/cookie-names";
 import { shouldRefreshToken } from "@/lib/auth/jwt";
 import { routing } from "./i18n/routing";
+import { isAccessSessionAlive } from "@/lib/auth/session-alive";
 import type { ApiResponse, AuthTokens } from "@/types/auth.types";
 
 const handleI18nRouting = createMiddleware(routing);
 
 const protectedRoutePrefixes = ["/dashboard"];
 
-const guestOnlyAuthRoutes = ["/auth", "/sign-in", "/sign-up", "/otp", "/register"];
+const guestOnlyAuthRoutes = [
+  "/auth",
+  "/sign-in",
+  "/sign-up",
+  "/otp",
+  "/register",
+];
 
 function extractLocaleFromPathname(pathname: string) {
   const locale = pathname.split("/")[1];
@@ -55,6 +62,12 @@ function stripLocalePrefix(path: string) {
   return path.replace(/^\/(en|fa)(?=\/|$)/, "") || "/";
 }
 
+function clearAuthCookies(response: NextResponse) {
+  response.cookies.delete(AUTH_COOKIE_NAMES.accessToken);
+  response.cookies.delete(AUTH_COOKIE_NAMES.refreshToken);
+  response.cookies.delete(AUTH_COOKIE_NAMES.serverClockOffset);
+}
+
 function redirectToSignIn(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const locale = extractLocaleFromPathname(pathname) ?? routing.defaultLocale;
@@ -62,9 +75,7 @@ function redirectToSignIn(request: NextRequest) {
   signInUrl.searchParams.set("returnTo", request.nextUrl.pathname);
 
   const response = NextResponse.redirect(signInUrl);
-  response.cookies.delete(AUTH_COOKIE_NAMES.accessToken);
-  response.cookies.delete(AUTH_COOKIE_NAMES.refreshToken);
-  response.cookies.delete(AUTH_COOKIE_NAMES.serverClockOffset);
+  clearAuthCookies(response);
   return response;
 }
 
@@ -131,25 +142,7 @@ export async function proxy(request: NextRequest) {
   const refreshToken = request.cookies.get(
     AUTH_COOKIE_NAMES.refreshToken,
   )?.value;
-
-  if (isGuestOnlyAuthRoute(pathnameWithoutLocale)) {
-    if (refreshToken) {
-      return redirectAuthenticatedAwayFromAuth(request);
-    }
-
-    return handleI18nRouting(request);
-  }
-
-  if (!isProtectedRoute(pathnameWithoutLocale)) {
-    return handleI18nRouting(request);
-  }
-
   const accessToken = request.cookies.get(AUTH_COOKIE_NAMES.accessToken)?.value;
-
-  if (!refreshToken) {
-    return redirectToSignIn(request);
-  }
-
   const clockOffsetRaw = request.cookies.get(
     AUTH_COOKIE_NAMES.serverClockOffset,
   )?.value;
@@ -157,9 +150,43 @@ export async function proxy(request: NextRequest) {
     ? Number(clockOffsetRaw)
     : 0;
 
+  if (isGuestOnlyAuthRoute(pathnameWithoutLocale)) {
+    if (!refreshToken) {
+      return handleI18nRouting(request);
+    }
+
+    if (
+      accessToken &&
+      !shouldRefreshToken(accessToken, serverClockOffsetInSeconds) &&
+      (await isAccessSessionAlive(accessToken))
+    ) {
+      return redirectAuthenticatedAwayFromAuth(request);
+    }
+
+    const refreshedTokens = await refreshTokens(refreshToken);
+    if (refreshedTokens?.accessToken && refreshedTokens.refreshToken) {
+      const response = redirectAuthenticatedAwayFromAuth(request);
+      setAuthTokenCookies(response, refreshedTokens);
+      return response;
+    }
+
+    const response = handleI18nRouting(request);
+    clearAuthCookies(response);
+    return response;
+  }
+
+  if (!isProtectedRoute(pathnameWithoutLocale)) {
+    return handleI18nRouting(request);
+  }
+
+  if (!refreshToken) {
+    return redirectToSignIn(request);
+  }
+
   if (
     accessToken &&
-    !shouldRefreshToken(accessToken, serverClockOffsetInSeconds)
+    !shouldRefreshToken(accessToken, serverClockOffsetInSeconds) &&
+    (await isAccessSessionAlive(accessToken))
   ) {
     return handleI18nRouting(request);
   }

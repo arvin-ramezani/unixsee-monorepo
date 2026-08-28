@@ -9,6 +9,7 @@ export const FORM_ERROR_KEYS = [
   "phoneRequired",
   "phoneInvalid",
   "messageTooShort",
+  "messageTooLong",
   "messageRequired",
   "emailRequired",
   "emailInvalid",

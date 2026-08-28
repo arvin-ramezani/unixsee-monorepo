@@ -3,6 +3,7 @@
 import { z } from "zod";
 
 import { routing } from "@/i18n/routing";
+import { publicFetch } from "@/lib/api/public-fetch";
 import { sendNewsletterEmail } from "@/lib/email/services/newsletter-email-service";
 import type { ServerActionState } from "@/types/server-action-state";
 
@@ -17,6 +18,16 @@ const newsletterSchema = z.object({
 
 type NewsletterInput = z.infer<typeof newsletterSchema>;
 
+type NestNewsletterSubscription = {
+  id: string;
+  email: string;
+  status: "ACTIVE" | "UNSUBSCRIBED";
+  locale: string | null;
+  source: string | null;
+  consentedAt: string;
+  created: boolean;
+};
+
 export type NewsletterActionMessageKey =
   | "validationFailed"
   | "submissionFailed"
@@ -25,7 +36,7 @@ export type NewsletterActionMessageKey =
 
 /**
  * Public newsletter intake.
- * Persistence belongs in NestJS; this client action only validates and notifies.
+ * Nest persists the subscriber; confirmation email is best-effort after success.
  */
 export async function subscribeNewsletterAction(
   _previousState: ServerActionState,
@@ -44,13 +55,52 @@ export async function subscribeNewsletterAction(
     };
   }
 
-  const { email, locale } = parsed.data;
+  const { email, locale, source } = parsed.data;
 
   try {
-    await sendNewsletterEmail({
-      email,
-      locale,
-    });
+    const response = await publicFetch<NestNewsletterSubscription>(
+      "/public/subscriptions",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          locale,
+          source: source ?? "footer",
+        }),
+      },
+    );
+
+    if (
+      !response.success &&
+      response.statusCode === 409 &&
+      response.error?.code === "ALREADY_SUBSCRIBED"
+    ) {
+      return {
+        ok: false,
+        message: "alreadySubscribed",
+        submittedAt: Date.now(),
+      };
+    }
+
+    if (!response.success || !response.data) {
+      return {
+        ok: false,
+        message: "submissionFailed",
+        submittedAt: Date.now(),
+      };
+    }
+
+    try {
+      await sendNewsletterEmail({ email, locale });
+    } catch (error) {
+      console.error("Newsletter confirmation email failed after persist.", {
+        subscriptionId: response.data.id,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown email delivery error",
+      });
+    }
 
     return {
       ok: true,

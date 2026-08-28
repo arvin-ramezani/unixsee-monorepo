@@ -45,7 +45,7 @@ export function AccountMenu({ userName, avatarUrl }: AccountMenuProps) {
     startTransition(async () => {
       clearClientSession();
       await logoutAction();
-      router.replace("/auth");
+      router.replace("/");
       router.refresh();
     });
   }

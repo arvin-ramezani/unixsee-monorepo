@@ -40,6 +40,8 @@ import { OperationalActionsModule } from './modules/operational-actions/operatio
 import { AuthorizationCasesModule } from './modules/authorization-cases/authorization-cases.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
 import { BillingModule } from './modules/billing/billing.module.js';
+import { ContactMessagesModule } from './modules/contact-messages/contact-messages.module.js';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 
 @Module({
   imports: [
@@ -80,6 +82,8 @@ import { BillingModule } from './modules/billing/billing.module.js';
     PlanRequestsModule,
     ComplementaryServicesModule,
     BillingModule,
+    SubscriptionsModule,
+    ContactMessagesModule,
     ServersModule,
     DiscoveriesModule,
     TicketsModule,

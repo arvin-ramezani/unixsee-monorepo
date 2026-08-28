@@ -16,7 +16,6 @@ import {
   IsEmail,
   IsOptional,
   IsString,
-  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -25,6 +24,10 @@ import { UsersService } from '../services/users.service.js';
 import { CurrentUser } from '#/modules/auth/decorators/current-user.decorator.js';
 import type { CurrentUserType } from '#/@types/express/index.js';
 import { ApiResponseBuilder } from '#/common/http/api-response.builder.js';
+import {
+  IsInternationalPhone,
+  TransformToE164Phone,
+} from '#/common/validation/is-international-phone.decorator.js';
 import { RateLimit } from '#/common/rate-limit/rate-limit.decorator.js';
 import { RateLimitGuard } from '#/common/rate-limit/rate-limit.guard.js';
 import {
@@ -49,14 +52,16 @@ class UpdateMeDto {
 }
 
 class RequestPhoneVerifyOtpDto {
+  @TransformToE164Phone()
   @IsString()
-  @Matches(/^\+[1-9]\d{7,14}$/)
+  @IsInternationalPhone()
   phoneNumber!: string;
 }
 
 class VerifyPhoneOtpDto {
+  @TransformToE164Phone()
   @IsString()
-  @Matches(/^\+[1-9]\d{7,14}$/)
+  @IsInternationalPhone()
   phoneNumber!: string;
 
   @IsString()

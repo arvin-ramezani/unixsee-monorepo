@@ -91,11 +91,13 @@ export default function Header() {
 
               <HeaderNavigation items={NAVIGATION_ITEMS} />
             </div>
-            <div className="ms-auto me-2 flex items-center gap-2">
-              <ModeToggle
-                iconClassName="size-4 lg:size-[1.2rem]"
-                triggerClassName="dark:bg-transparent size-8 lg:size-10 bg-background border-border text-foreground hover:bg-background/90 hover:text-foreground"
-              />
+            <div className="ms-auto me-2 flex items-center gap-1.5 sm:gap-2">
+              <span className="hidden lg:contents">
+                <ModeToggle
+                  iconClassName="size-4 lg:size-[1.2rem]"
+                  triggerClassName="dark:bg-transparent size-8 lg:size-10 bg-background border-border text-foreground hover:bg-background/90 hover:text-foreground"
+                />
+              </span>
               <LocaleSwitcher
                 className="h-8 lg:h-10"
                 textClassName="size-7 lg:size-9.5"
@@ -104,7 +106,7 @@ export default function Header() {
                 }}
               />
 
-              <HeaderAuthControl className="hidden text-xs lg:flex" />
+              <HeaderAuthControl className="h-8 rounded-sm px-2.5 text-xs sm:min-h-10 lg:h-10 lg:rounded-md lg:px-3" />
             </div>
             <Button
               size="icon"

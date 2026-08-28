@@ -28,6 +28,8 @@ export const MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS = [
   "faq",
 ] as const;
 
+export const CONTACT_US_PAGE_NAV_ITEMS_KEYS = ["message", "info"] as const;
+
 export const MIGRATION_PAGE_NAV_ITEMS_KEYS = [
   "plans",
   "monitoring",

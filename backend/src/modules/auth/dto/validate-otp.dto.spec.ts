@@ -50,6 +50,50 @@ describe('ValidateOtpDto', () => {
     expect(dto.otp).toBe('123456');
   });
 
+  it('accepts national phone without leading plus', async () => {
+    const dto = plainToInstance(ValidateOtpDto, {
+      phoneNumber: '09121234567',
+      otp: '123456',
+      context: 'LOGIN',
+    });
+
+    await expect(validate(dto)).resolves.toHaveLength(0);
+    expect(dto.phoneNumber).toBe('+989121234567');
+  });
+
+  it('accepts Persian national digits without leading plus', async () => {
+    const dto = plainToInstance(ValidateOtpDto, {
+      phoneNumber: '۰۹۱۲۱۲۳۴۵۶۷',
+      otp: '123456',
+      context: 'LOGIN',
+    });
+
+    await expect(validate(dto)).resolves.toHaveLength(0);
+    expect(dto.phoneNumber).toBe('+989121234567');
+  });
+
+  it('accepts Arabic-Indic national digits and 00 prefix', async () => {
+    const dto = plainToInstance(ValidateOtpDto, {
+      phoneNumber: '٠٠٩٨٩١٢١٢٣٤٥٦٧',
+      otp: '123456',
+      context: 'LOGIN',
+    });
+
+    await expect(validate(dto)).resolves.toHaveLength(0);
+    expect(dto.phoneNumber).toBe('+989121234567');
+  });
+
+  it('accepts international phone digits without leading plus', async () => {
+    const dto = plainToInstance(ValidateOtpDto, {
+      phoneNumber: '14155552671',
+      otp: '123456',
+      context: 'LOGIN',
+    });
+
+    await expect(validate(dto)).resolves.toHaveLength(0);
+    expect(dto.phoneNumber).toBe('+14155552671');
+  });
+
   it('accepts one normalized email target', async () => {
     const dto = plainToInstance(ValidateOtpDto, {
       email: ' User@Example.COM ',

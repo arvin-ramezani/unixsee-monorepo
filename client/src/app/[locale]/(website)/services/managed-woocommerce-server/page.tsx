@@ -1,5 +1,8 @@
 import { useTranslations } from "next-intl";
 
+import RevealOnScroll, {
+  RevealOnScrollNoScript,
+} from "@/components/common/motion/reveal-on-scroll";
 import { MANAGED_SERVER_PAGE_NAV_ITEMS_KEYS } from "@/lib/constants";
 import ConnectSection from "../_components/sections/connect-section";
 // import CtaSection from "../_components/sections/cta-section";
@@ -24,17 +27,35 @@ export default function Page({}: PageProps) {
 
   return (
     <main className="pb-20">
+      <RevealOnScrollNoScript />
+
+      {/* Above-the-fold: no reveal (same rule as AboutUs PositioningSection). */}
       <HeroSection />
-      <PlansSection id={sectionIds[0]} />
-      <CommonFeaturesSection id={sectionIds[1]} />
+
+      <RevealOnScroll>
+        <PlansSection id={sectionIds[0]} />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <CommonFeaturesSection id={sectionIds[1]} />
+      </RevealOnScroll>
       {/* <TechnicalFeaturesSection /> */}
       {/* <VideoSection /> */}
-      <ManageSection id={sectionIds[2]} />
-      <ConnectSection id={sectionIds[3]} />
-      <PerformanceSection id={sectionIds[4]} />
-      <ProtectionSection id={sectionIds[5]} />
+      <RevealOnScroll>
+        <ManageSection id={sectionIds[2]} />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <ConnectSection id={sectionIds[3]} />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <PerformanceSection id={sectionIds[4]} />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <ProtectionSection id={sectionIds[5]} />
+      </RevealOnScroll>
       {/* <CtaSection /> */}
-      <FaqSection id={sectionIds[6]} />
+      <RevealOnScroll>
+        <FaqSection id={sectionIds[6]} />
+      </RevealOnScroll>
     </main>
   );
 }

@@ -2,10 +2,10 @@ import * as z from "zod";
 
 import { AUTHORIZATION_UPLOAD } from "@/lib/data/authorization/authorization-data";
 import { errorKey } from "../form-errors";
+import { internationalPhoneSchema } from "./international-phone-schema";
 
 const iranNationalIdRegex = /^(\d{10}|[۰-۹]{10})$/;
 const iranPostalCodeRegex = /^(\d{10}|[۰-۹]{10})$/;
-const iranNationalMobileRegex = /^(0?9\d{9}|\+989\d{9}|۰?۹[۰-۹]{9})$/;
 
 function toAsciiDigits(value: string) {
   return value.replace(
@@ -43,16 +43,11 @@ export const authorizationIdentitySchema = z.object({
         .refine(isValidIranianNationalId, errorKey("nationalIdInvalid")),
     ),
   birthDate: z.string().trim().min(1, errorKey("birthDateRequired")),
-  mobile: z
-    .string()
-    .trim()
-    .transform((value) => value.replace(/[\s()-]/g, ""))
-    .pipe(
-      z
-        .string()
-        .min(1, errorKey("mobileRequired"))
-        .regex(iranNationalMobileRegex, errorKey("mobileInvalid")),
-    ),
+  mobile: internationalPhoneSchema({
+    requiredMessage: errorKey("mobileRequired"),
+    invalidMessage: errorKey("mobileInvalid"),
+    output: "e164",
+  }),
   mobileBelongsToNationalId: z.boolean(),
 });
 
@@ -84,11 +79,9 @@ export const authorizationAddressSchema = z.object({
 });
 
 export const authorizationReviewSchema = z.object({
-  attestedTruthful: z
-    .boolean()
-    .refine((value) => value === true, {
-      message: errorKey("attestationRequired"),
-    }),
+  attestedTruthful: z.boolean().refine((value) => value === true, {
+    message: errorKey("attestationRequired"),
+  }),
 });
 
 export function isAcceptedNationalIdFile(file: File) {

@@ -1,3 +1,4 @@
+import { toNationalPhone } from "@/lib/phone/international-phone";
 import type { VerificationStatus } from "@/lib/data/profile/profile-data";
 
 export const AUTHORIZATION_STATUS = {
@@ -32,10 +33,7 @@ export const AUTHORIZATION_STEP_ORDER = [
 ] as const;
 
 export type ContactChallengeState =
-  | "skipped_already_verified"
-  | "verified"
-  | "pending"
-  | "unverified";
+  "skipped_already_verified" | "verified" | "pending" | "unverified";
 
 /** Signed-in account contacts used to seed and skip-reverify. */
 export type AccountContactSeed = {
@@ -122,6 +120,12 @@ export function normalizeContact(value: string) {
   return value.replace(/[\s()-]/g, "").toLowerCase();
 }
 
+function normalizeMobileForCompare(value: string) {
+  const national = toNationalPhone(value);
+  if (national) return national;
+  return normalizeContact(value);
+}
+
 /** Account already has a mobile (phone signup / profile) — KYC uses checkbox, not OTP. */
 export function accountHasMobile(account: AccountContactSeed) {
   return Boolean(normalizeContact(account.mobile));
@@ -132,7 +136,10 @@ export function mobileMatchesAccount(
   account: AccountContactSeed,
 ) {
   if (!normalizeContact(account.mobile)) return false;
-  return normalizeContact(mobile) === normalizeContact(account.mobile);
+  return (
+    normalizeMobileForCompare(mobile) ===
+    normalizeMobileForCompare(account.mobile)
+  );
 }
 
 export function emptyAuthorizationPackage(
@@ -147,8 +154,7 @@ export function emptyAuthorizationPackage(
   const mobile = seed.mobile.trim();
   const email = seed.email.trim();
   const hasAccountMobile = accountHasMobile(seed);
-  const emailVerified =
-    Boolean(email) && seed.emailStatus === "verified";
+  const emailVerified = Boolean(email) && seed.emailStatus === "verified";
 
   return {
     nationalId: "",
@@ -200,19 +206,19 @@ export function isContactSatisfied(state: ContactChallengeState) {
 export function isPackageComplete(pkg: AuthorizationPackage) {
   return Boolean(
     pkg.nationalId.trim() &&
-      pkg.birthDate.trim() &&
-      pkg.mobile.trim() &&
-      isContactSatisfied(pkg.mobileChallenge) &&
-      (pkg.mobileChallenge !== "skipped_already_verified" ||
-        pkg.mobileBelongsToNationalId) &&
-      pkg.email.trim() &&
-      isContactSatisfied(pkg.emailChallenge) &&
-      pkg.province &&
-      pkg.city &&
-      pkg.address.trim() &&
-      pkg.postalCode.trim() &&
-      pkg.nationalIdCardFileName &&
-      pkg.attestedTruthful,
+    pkg.birthDate.trim() &&
+    pkg.mobile.trim() &&
+    isContactSatisfied(pkg.mobileChallenge) &&
+    (pkg.mobileChallenge !== "skipped_already_verified" ||
+      pkg.mobileBelongsToNationalId) &&
+    pkg.email.trim() &&
+    isContactSatisfied(pkg.emailChallenge) &&
+    pkg.province &&
+    pkg.city &&
+    pkg.address.trim() &&
+    pkg.postalCode.trim() &&
+    pkg.nationalIdCardFileName &&
+    pkg.attestedTruthful,
   );
 }
 

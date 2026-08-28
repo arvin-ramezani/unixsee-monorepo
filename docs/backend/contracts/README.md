@@ -25,6 +25,8 @@ docs/backend/contracts/
 ├── complementary-services-customer.md # customer complementary target intake/acceptance
 ├── plan-requests-customer.md      # customer plan-request create/list
 ├── plan-requests-public.md        # anonymous public plan-request intake
+├── subscriptions-public.md        # public newsletter subscribe
+├── contact-messages-public.md     # public contact-us message intake
 ├── plan-requests-admin.md         # staff plan-request queue
 ├── websites-admin.md              # website assignment vs plan activation
 ├── billing.md                     # commercial billing items + renew/replace
@@ -44,6 +46,8 @@ docs/backend/contracts/
 | [`complementary-services-customer.md`](./complementary-services-customer.md) | Customer + admin acceptance     | Domain-only intake, delayed external Website resolution, and lifecycle separation |
 | [`plan-requests-customer.md`](./plan-requests-customer.md)                   | `/api/v1/plan-requests/*`       | Logged-in create, list, detail                                                    |
 | [`plan-requests-public.md`](./plan-requests-public.md)                       | `/api/v1/public/plan-requests`  | Anonymous create; account guard                                                   |
+| [`subscriptions-public.md`](./subscriptions-public.md)                       | `/api/v1/public/subscriptions`  | Public newsletter subscribe + dedupe                                              |
+| [`contact-messages-public.md`](./contact-messages-public.md)                 | `/api/v1/public/contact-messages` | Public contact-us message create + optional attachment keys                     |
 | [`plan-requests-admin.md`](./plan-requests-admin.md)                         | `/api/v1/admin/plan-requests/*` | Staff list, detail, link, enable, decline                                         |
 | [`websites-admin.md`](./websites-admin.md)                                   | `/api/v1/admin/websites/*`      | Staff website creation, assignment, and plan activation state                     |
 | [`billing.md`](./billing.md)                                                 | Admin + customer website        | Nest commercial billing items, renew, replace-plan, record-terms                  |

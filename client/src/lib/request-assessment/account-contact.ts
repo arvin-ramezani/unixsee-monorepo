@@ -1,4 +1,5 @@
-import { parseIranPhoneInput } from "@/lib/auth/iran-phone";
+import { extractIranMobileNational } from "@/lib/auth/iran-phone";
+import { toNationalPhone } from "@/lib/phone/international-phone";
 import type { SafeAuthUser } from "@/types/auth.types";
 import type { RequestAssessmentSchemaType } from "@/lib/zod-schemas/request-assessment-schema";
 
@@ -9,7 +10,7 @@ export function toNationalIranPhone(value: string | null | undefined): string {
     return "";
   }
 
-  return parseIranPhoneInput(value).national;
+  return toNationalPhone(value) ?? extractIranMobileNational(value) ?? "";
 }
 
 export function phonesMatch(

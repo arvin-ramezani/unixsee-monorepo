@@ -1118,6 +1118,57 @@ export type EnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
 }
 
+export type EnumNewsletterSubscriptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.NewsletterSubscriptionStatus | Prisma.EnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel> | $Enums.NewsletterSubscriptionStatus
+}
+
+export type EnumNewsletterSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NewsletterSubscriptionStatus | Prisma.EnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNewsletterSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.NewsletterSubscriptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel>
+}
+
+export type EnumContactMessageSubjectFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageSubject | Prisma.EnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel> | $Enums.ContactMessageSubject
+}
+
+export type EnumContactMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageStatus | Prisma.EnumContactMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel> | $Enums.ContactMessageStatus
+}
+
+export type EnumContactMessageSubjectWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageSubject | Prisma.EnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageSubjectWithAggregatesFilter<$PrismaModel> | $Enums.ContactMessageSubject
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel>
+}
+
+export type EnumContactMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageStatus | Prisma.EnumContactMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContactMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2153,6 +2204,57 @@ export type NestedEnumUnixseeMessageStatusWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumUnixseeMessageStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.NewsletterSubscriptionStatus | Prisma.EnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel> | $Enums.NewsletterSubscriptionStatus
+}
+
+export type NestedEnumNewsletterSubscriptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NewsletterSubscriptionStatus | Prisma.EnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NewsletterSubscriptionStatus[] | Prisma.ListEnumNewsletterSubscriptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNewsletterSubscriptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.NewsletterSubscriptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNewsletterSubscriptionStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumContactMessageSubjectFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageSubject | Prisma.EnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel> | $Enums.ContactMessageSubject
+}
+
+export type NestedEnumContactMessageStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageStatus | Prisma.EnumContactMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel> | $Enums.ContactMessageStatus
+}
+
+export type NestedEnumContactMessageSubjectWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageSubject | Prisma.EnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageSubject[] | Prisma.ListEnumContactMessageSubjectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageSubjectWithAggregatesFilter<$PrismaModel> | $Enums.ContactMessageSubject
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactMessageSubjectFilter<$PrismaModel>
+}
+
+export type NestedEnumContactMessageStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactMessageStatus | Prisma.EnumContactMessageStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ContactMessageStatus[] | Prisma.ListEnumContactMessageStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumContactMessageStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContactMessageStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactMessageStatusFilter<$PrismaModel>
 }
 
 

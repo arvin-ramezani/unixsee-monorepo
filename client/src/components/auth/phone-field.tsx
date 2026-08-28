@@ -2,11 +2,12 @@
 
 import { useId } from "react";
 import { useTranslations } from "next-intl";
+import type { CountryCode } from "libphonenumber-js";
 
+import { PhoneInput } from "@/components/common/phone-input";
 import { RequiredInputIcon } from "@/components/common/required-input-icon";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { parseIranPhoneInput } from "@/lib/auth/iran-phone";
+import { DEFAULT_PHONE_COUNTRY } from "@/lib/phone/international-phone";
 import { cn } from "@/lib/utils";
 
 export type PhoneFieldProps = {
@@ -14,7 +15,9 @@ export type PhoneFieldProps = {
   onChange: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  /** @deprecated Dial code comes from the country picker; kept for call-site compat. */
   countryCode?: string;
+  defaultCountry?: CountryCode;
   className?: string;
   autoComplete?: string;
   /** Override default Auth.common.phoneLabel; pass empty string to hide. */
@@ -31,9 +34,9 @@ export function PhoneField({
   onChange,
   error,
   disabled,
-  countryCode = "+98",
+  defaultCountry = DEFAULT_PHONE_COUNTRY,
   className,
-  autoComplete = "tel",
+  autoComplete = "tel-national",
   label,
   id: idProp,
   placeholder: placeholderProp,
@@ -48,11 +51,6 @@ export function PhoneField({
   const resolvedLabel = label === undefined ? t("phoneLabel") : label;
   const resolvedPlaceholder = placeholderProp ?? t("phonePlaceholder");
 
-  function handleChange(raw: string) {
-    const parsed = parseIranPhoneInput(raw);
-    onChange(parsed.national);
-  }
-
   return (
     <Field data-invalid={invalid || undefined} className={cn(className)}>
       {!!resolvedLabel && (
@@ -61,34 +59,21 @@ export function PhoneField({
           {required && <RequiredInputIcon />}
         </FieldLabel>
       )}
-      <div className={cn("flex gap-2")} dir="ltr">
-        <Input
-          type="text"
-          inputMode="tel"
-          readOnly
-          tabIndex={-1}
-          value={countryCode}
-          aria-label={t("countryCode")}
-          disabled={disabled}
-          className="bg-muted/50 text-muted-foreground h-12 w-16 shrink-0 px-2 text-center text-base md:text-base"
-        />
-        <Input
-          id={id}
-          type="tel"
-          inputMode="numeric"
-          autoComplete={autoComplete}
-          enterKeyHint="next"
-          placeholder={resolvedPlaceholder}
-          value={value}
-          disabled={disabled}
-          aria-invalid={invalid || undefined}
-          aria-describedby={invalid ? errorId : undefined}
-          aria-required={required || undefined}
-          onChange={(event) => handleChange(event.target.value)}
-          onBlur={onBlur}
-          className="h-12 min-h-12 flex-1 text-base md:text-base"
-        />
-      </div>
+      <PhoneInput
+        id={id}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        defaultCountry={defaultCountry}
+        output="international"
+        disabled={disabled}
+        autoComplete={autoComplete}
+        placeholder={resolvedPlaceholder}
+        aria-invalid={invalid || undefined}
+        aria-describedby={invalid ? errorId : undefined}
+        aria-required={required || undefined}
+        inputClassName="text-base md:text-base"
+      />
       {invalid && (
         <FieldError id={errorId} className="mt-1.5">
           {error}

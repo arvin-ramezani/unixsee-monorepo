@@ -94,7 +94,9 @@ export const ModelName = {
   IdempotencyRecord: 'IdempotencyRecord',
   UnixseeMessage: 'UnixseeMessage',
   UnixseeMessageAttachment: 'UnixseeMessageAttachment',
-  UnixseeMessageRead: 'UnixseeMessageRead'
+  UnixseeMessageRead: 'UnixseeMessageRead',
+  NewsletterSubscription: 'NewsletterSubscription',
+  ContactMessage: 'ContactMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -918,6 +920,41 @@ export const UnixseeMessageReadScalarFieldEnum = {
 } as const
 
 export type UnixseeMessageReadScalarFieldEnum = (typeof UnixseeMessageReadScalarFieldEnum)[keyof typeof UnixseeMessageReadScalarFieldEnum]
+
+
+export const NewsletterSubscriptionScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  locale: 'locale',
+  source: 'source',
+  status: 'status',
+  consentedAt: 'consentedAt',
+  unsubscribedAt: 'unsubscribedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsletterSubscriptionScalarFieldEnum = (typeof NewsletterSubscriptionScalarFieldEnum)[keyof typeof NewsletterSubscriptionScalarFieldEnum]
+
+
+export const ContactMessageScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  activityBasin: 'activityBasin',
+  message: 'message',
+  attachmentKeys: 'attachmentKeys',
+  locale: 'locale',
+  source: 'source',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
 
 
 export const SortOrder = {

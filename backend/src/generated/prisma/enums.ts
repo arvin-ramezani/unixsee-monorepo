@@ -351,3 +351,33 @@ export const BillingPeriodReason = {
 } as const
 
 export type BillingPeriodReason = (typeof BillingPeriodReason)[keyof typeof BillingPeriodReason]
+
+
+export const NewsletterSubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  UNSUBSCRIBED: 'UNSUBSCRIBED'
+} as const
+
+export type NewsletterSubscriptionStatus = (typeof NewsletterSubscriptionStatus)[keyof typeof NewsletterSubscriptionStatus]
+
+
+export const ContactMessageSubject = {
+  managedServer: 'managedServer',
+  migrationOptimization: 'migrationOptimization',
+  woocommerceSupport: 'woocommerceSupport',
+  seo: 'seo',
+  graphicDesign: 'graphicDesign',
+  productDataEntry: 'productDataEntry',
+  socialMedia: 'socialMedia'
+} as const
+
+export type ContactMessageSubject = (typeof ContactMessageSubject)[keyof typeof ContactMessageSubject]
+
+
+export const ContactMessageStatus = {
+  NEW: 'NEW',
+  READ: 'READ',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ContactMessageStatus = (typeof ContactMessageStatus)[keyof typeof ContactMessageStatus]
